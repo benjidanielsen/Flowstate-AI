@@ -1,249 +1,231 @@
-# 🌍 Flowstate-AI
+# Flowstate-AI
 
-Flowstate-AI is not just a CRM system.  
-It is evolving into a **self-improving, living system** that continuously learns, adapts, and empowers humans to reach their highest potential.  
+Flowstate-AI is an AI-first, self-improving CRM-OS for network marketers and solo founders. It enforces the Frazer Method with a strict pipeline, automates follow-ups, tracks no-show and inactivity, and surfaces Next Best Actions (NBA). Built with React/Tailwind + Node/TypeScript and a Python AI worker, it learns from logs to get smarter with each iteration.
 
-What began as a simple CRM has grown into an **AI-driven ecosystem** designed to help **network marketing builders thrive**, enhance collaboration, and ultimately make the world a better place.  
+## Features
 
----
+### 🎯 Frazer Pipeline Method
+- **7-Stage Pipeline**: Lead → Relationship → Invited → Qualified → Presentation Sent → Follow-up → SIGNED-UP
+- **Automated Stage Progression**: Smart recommendations for moving customers through the pipeline
+- **Pipeline Analytics**: Visual dashboard showing distribution and conversion rates
 
-## 📂 Project Structure
-- **code/** → all source code and implementation  
-- **docs/** → documentation, design notes, and plans  
-- **process_logs/** → stress test logs and evaluations  
-- **blueprints/** → architecture, wireframes, mockups  
+### 👤 Customer Card System
+- **Complete Customer Profiles**: Contact info, status, notes, and interaction history
+- **Interaction Tracking**: Log calls, emails, meetings, and notes with timestamps
+- **Next Step Management**: Define and track next actions with due dates
+- **Smart Recommendations**: AI-powered suggestions for next best actions
 
----
+### 🔔 Intelligent Reminder System
+- **Multi-Interval Reminders**: 24h/48h, 2h/1d, and 7d follow-up schedules
+- **Automated Escalation**: Progressive reminder sequences based on customer status
+- **Smart Processing**: Python worker automatically processes due reminders
 
-## 🔄 Iterative Process
-The system evolves through **process runs** (100x100 → 1,000,000x1,000,000).  
-Each run stress-tests design and logic, refining the system until it is:  
+### 🧠 Next Best Action (NBA) Engine
+- **AI-Powered Recommendations**: Smart suggestions based on customer data and behavior
+- **Priority Scoring**: Weighted recommendations with urgency indicators
+- **Global & Customer-Specific**: Both overview and detailed individual recommendations
 
-- ✅ Idiot-proof  
-- ✅ Elegant  
-- ✅ Scalable  
-- ✅ Future-ready  
+### 📊 Event Logging & Analytics
+- **Comprehensive Event Log**: JSON-based logging of all customer interactions and system events
+- **Performance Tracking**: Monitor pipeline effectiveness and conversion metrics
+- **Data-Driven Insights**: Learn from historical data to improve recommendations
 
-Every iteration includes:  
-1. **Front-test & Back-test**  
-2. **Cross-check (backend & frontend)**  
-3. **Stress-test (scalable simulations)**  
-4. **Refinement & re-run**  
-5. **Documentation update**  
+## Technology Stack
 
----
+- **Frontend**: React 18 + TypeScript + Tailwind CSS + Vite
+- **Backend**: Node.js + Express + TypeScript + SQLite (dev) / PostgreSQL (prod)
+- **AI Worker**: Python + FastAPI for reminders and NBA processing
+- **Database**: SQLite for development, PostgreSQL for production
+- **Containerization**: Docker + Docker Compose
+- **CI/CD**: GitHub Actions
 
-## 📖 Documentation Standards
-- **System Design Notes** → architecture, logic flow, AI evolution  
-- **Process Reports** → stress-test results  
-- **Improvement Logs** → refinements during iterations  
-- **Blueprints** → visuals and logic mapping  
+## Quick Start
 
----
+### Prerequisites
+- Node.js 18+ 
+- Python 3.11+
+- Docker & Docker Compose (optional)
 
-# 🚀 Roadmap
+### Option 1: Local Development
 
-This roadmap outlines the **evolutionary path of Flowstate-AI**, ensuring robustness, scalability, and alignment with the vision of becoming a living AI system for network marketing builders.  
+1. **Clone and Setup**
+   ```bash
+   git clone https://github.com/benjidanielsen/Flowstate-AI.git
+   cd Flowstate-AI
+   npm run setup  # Installs all dependencies
+   ```
 
-### Phase 1: Foundation
-- ✅ Establish core folder structure (code, docs, process_logs, blueprints)  
-- ✅ Create logging and documentation standards  
-- ✅ Initial stress-testing methodology  
+2. **Configure Environment**
+   ```bash
+   cp backend/.env.example backend/.env
+   # Edit backend/.env with your configuration
+   ```
 
-### Phase 2: Blueprinting & Architecture
-- Define AI core modules (input, reasoning, memory, output)  
-- Design API integration points (CRM, communication tools, dashboards)  
-- Map user flows & UX prototypes in `blueprints/`  
+3. **Initialize Database**
+   ```bash
+   npm run db:migrate  # Run database migrations
+   npm run db:seed     # Seed with sample data
+   ```
 
-### Phase 3: Implementation Iteration 1 (MVP)
-- Implement basic logging system (started)  
-- Add simulation engine for stress-tests  
-- Draft first CRM-to-AI adapter  
+4. **Start Development Servers**
+   ```bash
+   npm run dev  # Starts all services concurrently
+   ```
 
-### Phase 4: Testing & Stress-Validation
-- Backtest historical flows  
-- Front-test synthetic edge cases  
-- Run recursive meta stress-tests (1000x1000 → 1M x 1M)  
-- Document results in `process_logs/`  
+   Or start services individually:
+   ```bash
+   # Terminal 1 - Backend
+   cd backend && npm run dev
+   
+   # Terminal 2 - Frontend  
+   cd frontend && npm run dev
+   
+   # Terminal 3 - Python Worker
+   cd python-worker && python -m uvicorn src.main:app --reload
+   ```
 
-### Phase 5: Implementation Iteration 2 (Evolved AI)
-- Add persistent memory (vector DB / embeddings)  
-- Introduce autonomous task planning  
-- Layer in reinforcement learning signals  
+5. **Access Application**
+   - Frontend: http://localhost:3000
+   - Backend API: http://localhost:3001/api
+   - Python Worker: http://localhost:8000
+   - API Health: http://localhost:3001/api/health
 
-### Phase 6: User-Facing Layer
-- Create clean, gamified UI for network marketing builders  
-- Mobile + web dashboards  
-- AI assistant interface (**Frazer AI personality**)  
+### Option 2: Docker Compose
 
-### Phase 7: Final Refinement & Evolution
-- Continuous improvement loop  
-- Automatic architecture refinements based on logs  
-- Prepare system for large-scale deployment  
+1. **Clone Repository**
+   ```bash
+   git clone https://github.com/benjidanielsen/Flowstate-AI.git
+   cd Flowstate-AI
+   ```
 
----
+2. **Start with Docker Compose**
+   ```bash
+   docker-compose up -d
+   ```
 
-## ✅ Milestones
-- [ ] MVP finished  
-- [ ] First AI-human interactive test  
-- [ ] First 100x1000 stress-test complete  
-- [ ] Frazer AI assistant online  
-- [ ] First live deployment with network marketing users  
+3. **Initialize Database**
+   ```bash
+   docker-compose exec backend npm run db:migrate
+   docker-compose exec backend npm run db:seed
+   ```
 
----
+## API Endpoints
 
-# 🌐 FlowState OS – Intelligent CRM (Single-User Beta v2.1)
+### Customers
+- `GET /api/customers` - List all customers
+- `GET /api/customers/:id` - Get customer details
+- `POST /api/customers` - Create new customer
+- `PUT /api/customers/:id` - Update customer
+- `DELETE /api/customers/:id` - Delete customer
+- `POST /api/customers/:id/next-stage` - Move to next pipeline stage
+- `GET /api/customers/stats` - Get pipeline statistics
 
-## 🧭 What is FlowState OS?
-FlowState OS is an **AI-first CRM** designed for **network marketers and solo entrepreneurs**, based on the **Frazer Method**:  
-**Talk → Invite → Show → Keep Talking**.  
+### Interactions
+- `GET /api/interactions/customer/:id` - Get customer interactions
+- `POST /api/interactions` - Create new interaction
+- `PUT /api/interactions/:id` - Update interaction
+- `DELETE /api/interactions/:id` - Delete interaction
+- `GET /api/interactions/upcoming` - Get upcoming scheduled interactions
 
-Unlike traditional CRMs, FlowState OS is:  
-- 🧠 **Smart** → AI reminders & prioritization  
-- 🎯 **Simple** → Only core functions, no clutter  
-- 🔄 **Self-learning** → Feedback loop improves the system over time  
-- 🧍 **Single-user** → Designed for individuals in Beta  
+### Python Worker (NBA & Reminders)
+- `GET /nba` - Get Next Best Action recommendations
+- `POST /reminders` - Create reminder
+- `GET /reminders/due` - Get due reminders
+- `POST /reminders/process-due` - Process all due reminders
 
----
+## Project Structure
 
-## 📖 Features
-- **Prospects Management** → Add leads with minimal info  
-- **Pipeline Flow** → Strict Frazer-style progression  
-- **Follow-Up System** →  
-  - Video Sent reminders (24h/48h)  
-  - No-Show reminders (2h/1d)  
-  - Inactivity reminders (7d)  
-- **Customer Cards (Kundekort)** → Profile | Notes | Interactions | Next Step  
-- **Dashboard** → Daily activity goals (20 convos, 30 follow-ups)  
-- **Feedback Button** → Logs errors, suggestions, ideas  
-- **Improvement Engine** → Analyzes feedback, generates developer reports  
+```
+Flowstate-AI/
+├── backend/                 # Node.js/Express API
+│   ├── src/
+│   │   ├── controllers/     # Request handlers
+│   │   ├── services/        # Business logic
+│   │   ├── database/        # Database setup and migrations
+│   │   ├── routes/          # API routes
+│   │   ├── types/           # TypeScript types
+│   │   └── tests/           # Unit tests
+├── frontend/                # React application
+│   ├── src/
+│   │   ├── components/      # React components
+│   │   ├── pages/           # Page components
+│   │   ├── services/        # API client
+│   │   └── types/           # TypeScript types
+├── python-worker/           # AI worker service
+│   ├── src/                 # FastAPI application
+│   └── services/            # NBA and reminder services
+├── .github/workflows/       # CI/CD pipelines
+└── docker-compose.yml       # Container orchestration
+```
 
----
+## Development
 
-## 🚀 Daily Method of Operation (DMO)
-- [ ] Start 20 new conversations  
-- [ ] Follow up 30 existing leads  
-- [ ] Send 5–10 invites  
-- [ ] Hold 3–5 presentations  
-- [ ] Log everything  
-
----
-
-## 🧑‍💻 Tech Stack
-- **Frontend:** React.js + Tailwind CSS  
-- **Backend:** Node.js + Express  
-- **Database:** PostgreSQL / SQLite (Beta)  
-- **AI Layer:** Python (scoring, reminders, prioritization)  
-- **Logging:** JSON-based event log  
-- **Automation:** CronJobs for reminders  
-
-## 🔧 Blueprints and quick-run
-
-This repo now includes example blueprints in the `blueprints/` folder (for example `frazer_method.json` and `flowstate_os_v2.json`) and a small loader utility at `code/blueprint_loader.py` that writes a sample process log to `process_logs/`.
-
-Quick smoke test (Python must be available):
-
+### Testing
 ```bash
-python ./code/blueprint_loader.py
+# Run all tests
+npm test
+
+# Individual service tests
+npm run test:frontend
+npm run test:backend
+cd python-worker && python -m pytest
 ```
 
-## 🛑 Project rule: TypeScript only
+### Linting
+```bash
+# Lint all code
+npm run lint
 
-Per project policy, new server/backend code must be written in TypeScript. JavaScript files are deprecated for server-side code and new contributions should add `.ts` sources under `code/` and update `tsconfig.json` as needed. The repo now includes `code/server/index.ts` as the canonical server entry.
+# Auto-fix issues
+npm run lint:fix
+```
 
-Local setup to build and run TypeScript server:
-
-```powershell
-# install dev deps (typescript + types)
-npm install --save-dev
-# build
+### Building
+```bash
+# Build all services
 npm run build
-# run compiled server
-npm start
+
+# Individual builds
+npm run build:frontend
+npm run build:backend
 ```
 
-Note: The legacy `code/server/index.js` file was removed to enforce the TypeScript rule. If you still need a JS fallback, let me know and I can keep it behind a compatibility flag.
+## Production Deployment
 
-## 🚢 Docker / local containers
+1. **Environment Variables**
+   - Set `NODE_ENV=production`
+   - Configure PostgreSQL connection
+   - Set strong JWT secrets
+   - Configure Python worker endpoints
 
-You can run the TypeScript server and the Python worker together with docker-compose (recommended for local dev consistency).
+2. **Database Migration**
+   ```bash
+   npm run db:migrate
+   ```
 
-1. Build and run:
+3. **Docker Production Build**
+   ```bash
+   docker-compose -f docker-compose.yml up -d --profile production
+   ```
 
-```powershell
-# from repo root
-docker compose -f docker/docker-compose.yml up --build
-```
+## Contributing
 
-2. The TypeScript server will be available at http://localhost:3000 and the worker will run the reminders simulator.
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature-name`
+3. Make your changes and add tests
+4. Run linting and tests: `npm run lint && npm test`
+5. Commit your changes: `git commit -m 'Add feature'`
+6. Push to branch: `git push origin feature-name`
+7. Submit a pull request
 
-If you don't have Docker installed yet, use the local instructions above (npm run build, npm start) and run Python scripts directly.
+## License
 
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-CI and reminders simulator
+## Support
 
-- The repo includes a GitHub Actions workflow at `.github/workflows/ci.yml` that builds TypeScript and runs Python tests.
-- Run the reminders simulator locally to generate follow-up logs from your prospect hub:
-
-```powershell
-python ./code/reminders_simulator.py
-```
-
-
-
----
-
-## 🛠 Developer Report (Beta v2.1 Simulation)
-
-### 📅 Report Date
-2025-09-26  
-
-### 1. Critical Errors
-- **Bug in Follow-Up Reminder** (48h video reminder not triggered).  
-  - Status: ❌ Not fixed.  
-  - Fix: Review cron scheduler.  
-
-### 2. High-Priority Improvements
-- **Customer Card Notes visibility** → Move to top of UI.  
-- **Dashboard Progress Bar** → Add visual tracker for DMO.  
-
-### 3. Medium-Priority Suggestions
-- **AI Coach Weekly Summary** → Generate automatic Sunday report.  
-
-### 4. Low-Priority Enhancements
-- **Dark Mode** → Tailwind toggle (cosmetic).  
+For support, please open an issue on GitHub or contact [support@flowstate-ai.com](mailto:support@flowstate-ai.com).
 
 ---
 
-## 5. Summary
-- Critical: 1  
-- High: 2  
-- Medium: 1  
-- Low: 1  
-
-### Next Steps
-- [ ] Fix reminder bug  
-- [ ] Update Customer Card UI  
-- [ ] Add Dashboard progress bar  
-- [ ] Implement AI Coach weekly summary  
-- [ ] Add Dark Mode toggle  
-
----
-
-## 🔄 Stress-Test Iteration Roadmap
-- **1M Iterations** → Core validated  
-- **2M Iterations** → AI prioritization consistent  
-- **3M Iterations** → Error tolerance checked  
-- **4M Iterations** → Feedback loops working  
-- **5M Iterations** → Max stability  
-- **6M Iterations** → Ready for scale  
-
----
-
-# 🌍 Vision (Revisited)
-Flowstate-AI is **not just a tool**.  
-It is a **living AI system**, built to support human growth, network marketing mastery, and global collaboration.  
-
----
-
-👉 This README is your **master document** — single source of truth for the system, roadmap, development, and evolution.  
+Built with ❤️ for network marketers and solo founders who want to scale their relationships systematically.

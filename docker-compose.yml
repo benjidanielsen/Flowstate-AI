@@ -1,0 +1,78 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+    networks:
+      - flowstate-network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=development
+      - PORT=3001
+      - DATABASE_URL=./data/flowstate.db
+      - DATABASE_TYPE=sqlite
+      - JWT_SECRET=your-super-secret-jwt-key-change-in-production
+      - PYTHON_WORKER_URL=http://python-worker:8000
+    volumes:
+      - ./backend:/app
+      - ./data:/app/data
+      - /app/node_modules
+    depends_on:
+      - python-worker
+    networks:
+      - flowstate-network
+
+  python-worker:
+    build:
+      context: ./python-worker
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - PORT=8000
+      - DATABASE_URL=./data/flowstate.db
+    volumes:
+      - ./python-worker:/app
+      - ./data:/app/data
+    networks:
+      - flowstate-network
+
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: flowstate_ai
+      POSTGRES_USER: flowstate
+      POSTGRES_PASSWORD: flowstate_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - flowstate-network
+    profiles:
+      - production
+
+volumes:
+  postgres_data:
+
+networks:
+  flowstate-network:
+    driver: bridge
