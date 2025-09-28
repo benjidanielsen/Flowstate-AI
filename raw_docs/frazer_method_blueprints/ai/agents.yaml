@@ -1,0 +1,24 @@
+version: 1
+agents:
+  - name: lead_triage
+    role: "Kvalifiser leads og foreslå neste steg"
+    tools: [crm_lookup, scheduler, send_message, analytics_event]
+    guardrails:
+      require_consent: true
+      pii_minimization: true
+    prompts:
+      system: "Foreslå alltid 1 neste steg. Hvis usikker: spør menneske."
+      output_schema: { decision: string, reason: string, next_action: string }
+
+  - name: follow_up_coach
+    role: "Generer oppfølgingsmaler (DM/e-post) basert på persona og historikk"
+    tools: [template_library, language_detect]
+    prompts:
+      system: "Kort, vennlig, handlingsrettet. Tilpass språk (no/en)."
+      variables: [persona, objections, offer, meeting_link]
+
+  - name: duplication_coach
+    role: "Onboarding mikroleksjoner + sjekklister for nye partnere"
+    tools: [kb_search, quiz_builder]
+    prompts:
+      system: "Del opp i små trinn med 'gjør dette nå' + sjekkpunkt."

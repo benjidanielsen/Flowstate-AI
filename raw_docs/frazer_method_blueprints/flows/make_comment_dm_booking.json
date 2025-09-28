@@ -1,0 +1,107 @@
+{
+  "name": "Comment\u2192DM\u2192Qualify\u2192CRM Upsert\u2192Booking\u2192Notify\u2192CAPI",
+  "modules": [
+    {
+      "id": "webhook_in",
+      "type": "webhook.trigger",
+      "config": {
+        "path": "/hooks/dm"
+      }
+    },
+    {
+      "id": "transform",
+      "type": "function.transform",
+      "config": {
+        "script": "map payload to contact, deal, events"
+      }
+    },
+    {
+      "id": "dedupe",
+      "type": "datastore.check",
+      "config": {
+        "store": "contacts",
+        "key": "user_id"
+      }
+    },
+    {
+      "id": "upsert_contact",
+      "type": "http.request",
+      "config": {
+        "url": "https://YOUR_CRM/contacts/upsert",
+        "method": "POST",
+        "body": "{{contact}}"
+      }
+    },
+    {
+      "id": "upsert_deal",
+      "type": "http.request",
+      "config": {
+        "url": "https://YOUR_CRM/deals/upsert",
+        "method": "POST",
+        "body": "{{deal}}"
+      }
+    },
+    {
+      "id": "scheduler_link",
+      "type": "http.request",
+      "config": {
+        "url": "https://YOUR_SCHEDULER/links",
+        "method": "POST",
+        "body": "{contact_id,owner_id,routing_form}"
+      }
+    },
+    {
+      "id": "send_dm",
+      "type": "http.request",
+      "config": {
+        "url": "https://YOUR_DM/messages",
+        "method": "POST",
+        "body": "{to:user_id,text:'Book her: {{link}}'}"
+      }
+    },
+    {
+      "id": "notify_ops",
+      "type": "http.request",
+      "config": {
+        "url": "https://YOUR_CHAT_WEBHOOK",
+        "method": "POST",
+        "body": "{text:'Ny kvalifisert lead'}"
+      }
+    },
+    {
+      "id": "emit_event",
+      "type": "http.request",
+      "config": {
+        "url": "https://YOUR_ANALYTICS/events",
+        "method": "POST",
+        "body": "{{events}}"
+      }
+    },
+    {
+      "id": "capi",
+      "type": "http.request",
+      "config": {
+        "url": "https://graph.facebook.com/vXX.X/{{pixel}}/events",
+        "method": "POST",
+        "body": "{{capi_payload}}"
+      }
+    },
+    {
+      "id": "ok",
+      "type": "respond.json",
+      "config": {
+        "status": 200,
+        "body": {
+          "ok": true
+        }
+      }
+    }
+  ],
+  "errors": {
+    "retry": {
+      "max_attempts": 5,
+      "backoff_ms": 2000
+    },
+    "dlq": "dlq/events"
+  }
+}

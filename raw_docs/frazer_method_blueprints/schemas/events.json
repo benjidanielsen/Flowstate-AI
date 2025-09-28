@@ -1,0 +1,83 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "FRAZER Events",
+  "type": "object",
+  "properties": {
+    "event_name": {
+      "type": "string",
+      "enum": [
+        "DM_STARTED",
+        "LEAD_QUALIFIED",
+        "MEETING_BOOKED",
+        "MEETING_HELD",
+        "NO_SHOW",
+        "PURCHASED",
+        "JOINED_TEAM",
+        "UNSUBSCRIBED"
+      ]
+    },
+    "event_id": {
+      "type": "string"
+    },
+    "user_id": {
+      "type": "string"
+    },
+    "account_id": {
+      "type": "string"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "source": {
+      "type": "string",
+      "description": "ig|messenger|whatsapp|web|ads|manual"
+    },
+    "properties": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "consent": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "boolean"
+        },
+        "sms": {
+          "type": "boolean"
+        },
+        "messaging": {
+          "type": "boolean"
+        },
+        "terms_version": {
+          "type": "string"
+        }
+      }
+    },
+    "utm": {
+      "type": "object",
+      "properties": {
+        "source": {
+          "type": "string"
+        },
+        "medium": {
+          "type": "string"
+        },
+        "campaign": {
+          "type": "string"
+        },
+        "content": {
+          "type": "string"
+        },
+        "term": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "required": [
+    "event_name",
+    "event_id",
+    "timestamp"
+  ]
+}

@@ -1,0 +1,49 @@
+{
+  "contact": {
+    "external_id": "string",
+    "first_name": "string",
+    "last_name": "string",
+    "email": "string",
+    "phone": "string",
+    "handle_ig": "string",
+    "country": "string",
+    "language": "string",
+    "owner_id": "string",
+    "lifecycle_stage": "subscriber|lead|mql|sql|customer|partner",
+    "consent": {
+      "email": true,
+      "sms": false,
+      "messaging": true
+    },
+    "utm": {
+      "source": "",
+      "medium": "",
+      "campaign": "",
+      "content": "",
+      "term": ""
+    },
+    "custom": {}
+  },
+  "deal": {
+    "external_id": "string",
+    "pipeline": "Recruiting|Sales",
+    "stage": "New|Qualified|Booked|Held|Won|Lost|No-Show",
+    "amount": 0,
+    "currency": "EUR",
+    "owner_id": "string",
+    "contact_external_id": "string",
+    "product": "string",
+    "booking_time": "ISO-8601",
+    "booking_status": "pending|confirmed|held|no-show|canceled",
+    "custom": {}
+  },
+  "team_member": {
+    "id": "string",
+    "name": "string",
+    "role": "upline|coach|rep",
+    "territory": "string",
+    "calendars": [
+      "string"
+    ]
+  }
+}

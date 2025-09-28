@@ -1,0 +1,48 @@
+{
+  "name": "Detect no-show \u2192 Rebook \u2192 Notify",
+  "schedule": "0 */1 * * *",
+  "modules": [
+    {
+      "id": "fetch_past",
+      "type": "http.request",
+      "config": {
+        "method": "GET",
+        "url": "https://YOUR_SCHEDULER/meetings?past=true"
+      }
+    },
+    {
+      "id": "filter_no_show",
+      "type": "function.filter",
+      "config": {
+        "expr": "meeting.status == 'no-show'"
+      }
+    },
+    {
+      "id": "update_deal",
+      "type": "http.request",
+      "config": {
+        "method": "POST",
+        "url": "https://YOUR_CRM/deals/update",
+        "body": "{stage:'No-Show'}"
+      }
+    },
+    {
+      "id": "send_rebook",
+      "type": "http.request",
+      "config": {
+        "method": "POST",
+        "url": "https://YOUR_DM/messages",
+        "body": "{to:user_id,template:'no_show_rebook',link:'{{new_link}}'}"
+      }
+    },
+    {
+      "id": "analytics",
+      "type": "http.request",
+      "config": {
+        "method": "POST",
+        "url": "https://YOUR_ANALYTICS/events",
+        "body": "{event:'NO_SHOW'}"
+      }
+    }
+  ]
+}
