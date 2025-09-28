@@ -57,6 +57,22 @@ const migrations = [
       CREATE INDEX IF NOT EXISTS idx_event_logs_timestamp ON event_logs(timestamp);
     `
   }
+  ,
+  {
+    version: 2,
+    up: `
+      -- Extend customers with metadata for consent/utm/source/handles per docs
+      ALTER TABLE customers ADD COLUMN source TEXT;
+      ALTER TABLE customers ADD COLUMN handle_ig TEXT;
+      ALTER TABLE customers ADD COLUMN handle_whatsapp TEXT;
+      ALTER TABLE customers ADD COLUMN country TEXT;
+      ALTER TABLE customers ADD COLUMN language TEXT;
+      ALTER TABLE customers ADD COLUMN consent_json TEXT;
+      ALTER TABLE customers ADD COLUMN utm_json TEXT;
+
+      CREATE INDEX IF NOT EXISTS idx_customers_source ON customers(source);
+    `
+  }
 ];
 
 export async function runMigrations(): Promise<void> {
