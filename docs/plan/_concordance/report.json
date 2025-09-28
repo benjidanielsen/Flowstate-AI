@@ -1,0 +1,1301 @@
+{
+  "summary": {
+    "counts_by_ext": {
+      ".md": 25,
+      ".txt": 5,
+      ".markdown": 5,
+      ".yaml": 2,
+      ".json": 7,
+      ".js": 2,
+      ".py": 1,
+      ".sql": 3
+    },
+    "keyword_totals": {
+      "Frazer": 551,
+      "Frazer Brookes": 91,
+      "Frazer Method": 23,
+      "pipeline": 1422,
+      "Pipeline": 1422,
+      "DMO": 107,
+      "Invite": 877,
+      "Show": 949,
+      "Keep Talking": 5,
+      "event": 546,
+      "Event": 546,
+      "Dashboard": 1597,
+      "no-show": 494,
+      "No-Show": 494,
+      "NBA": 967,
+      "webhook": 75,
+      "CAPI": 31,
+      "reminder": 169,
+      "Reminder": 169,
+      "Next Best": 206,
+      "Kundekort": 1321
+    }
+  },
+  "files": [
+    {
+      "path": "docs/raw_docs_legacy/2 - BUILDING BLOCKS (UPDATED).md",
+      "ext": ".md",
+      "title": "# FRAZER METHOD",
+      "hits": {
+        "Frazer": 8,
+        "Frazer Brookes": 2,
+        "Frazer Method": 1,
+        "pipeline": 9,
+        "Pipeline": 9,
+        "DMO": 8,
+        "Invite": 2,
+        "Show": 5,
+        "Keep Talking": 2,
+        "event": 1,
+        "Event": 1
+      },
+      "snippets": [
+        {
+          "kw": "Frazer",
+          "snippet": "# FRAZER METHOD  Here is Frazer Brookes methods broken down from 5 different videos from th"
+        },
+        {
+          "kw": "pipeline",
+          "snippet": "ne that systematically moves people through your recruiting pipeline. The goal is to perform these actions daily to ensure conti"
+        }
+      ]
+    },
+    {
+      "path": "docs/raw_docs_legacy/2 - BUILDING BLOCKS.md",
+      "ext": ".md",
+      "title": "# 2 \\- BUILDING BLOCKS",
+      "hits": {
+        "Frazer": 1,
+        "Frazer Method": 1
+      },
+      "snippets": [
+        {
+          "kw": "Frazer",
+          "snippet": "cmCNwCTljSmgZH1N41BglmhA2XKunQ/edit?tab=t.868rft2s8hmk)  * “FRAZER METHOD”     [https://docs.google.com/document/d/1uJb051a72h"
+        }
+      ]
+    },
+    {
+      "path": "docs/raw_docs_legacy/3 - BUILDING BLOCKS (2).md",
+      "ext": ".md",
+      "title": "# 3 \\- BUILDING BLOCKS",
+      "hits": {
+        "Frazer": 1,
+        "Frazer Method": 1
+      },
+      "snippets": [
+        {
+          "kw": "Frazer",
+          "snippet": "cmCNwCTljSmgZH1N41BglmhA2XKunQ/edit?tab=t.868rft2s8hmk)  * “FRAZER METHOD”     [https://docs.google.com/document/d/1uJb051a72h"
+        }
+      ]
+    },
+    {
+      "path": "docs/raw_docs_legacy/3 - BUILDING BLOCKS.md",
+      "ext": ".md",
+      "title": "# **AI \\+ CRM (MODERN)**",
+      "hits": {
+        "Frazer": 6,
+        "Frazer Method": 2,
+        "Dashboard": 6,
+        "pipeline": 19,
+        "Pipeline": 19,
+        "DMO": 1,
+        "Invite": 2,
+        "Show": 7,
+        "no-show": 7,
+        "No-Show": 7,
+        "NBA": 1,
+        "event": 41,
+        "Event": 41,
+        "webhook": 34,
+        "CAPI": 16
+      },
+      "snippets": [
+        {
+          "kw": "Frazer",
+          "snippet": "# **Eksempel fil**  Fil blueprint-pakken (ZIP)    Filnavn: “frazer\\_method\\_blueprints.zip”  # **Hvordan bruke (eksempel, ikke"
+        },
+        {
+          "kw": "Dashboard",
+          "snippet": "nkle API-broer i eget miljø.  * **Hvorfor/hvordan:** Bygg **dashboard** raskt, koble sensorer via **MQTT**, eksponer **HTTP In/Ou"
+        },
+        {
+          "kw": "NBA",
+          "snippet": "* (approve/deny).    ## **Pipefy**  * **Kjerne:** Prosess/kanban-rør (Pipes), skjema, SLA/automations, dokumentgenerering. "
+        },
+        {
+          "kw": "no-show",
+          "snippet": "upsert→Booking→Varsling→Server-side *Conversions* \\+ egen **No-show→Rebook**.  * **AI** (YAML): RAG-pipeline \\+ tre agent-rolle"
+        },
+        {
+          "kw": "pipeline",
+          "snippet": "versions* \\+ egen **No-show→Rebook**.  * **AI** (YAML): RAG-pipeline \\+ tre agent-roller (lead\\_triage, follow\\_up\\_coach, dupli"
+        }
+      ]
+    },
+    {
+      "path": "docs/raw_docs_legacy/AI_Work_Order_NWM_CRM_ZeroBased.md",
+      "ext": ".md",
+      "title": "# AI WORK ORDER — Zero‑Based, Verktøy‑Agnostisk NWM/CRM (Pro Builder Edition)",
+      "hits": {
+        "pipeline": 1,
+        "Pipeline": 1,
+        "DMO": 1,
+        "Show": 9,
+        "reminder": 1,
+        "Reminder": 1,
+        "NBA": 5,
+        "Next Best": 2,
+        "event": 2,
+        "Event": 2
+      },
+      "snippets": [
+        {
+          "kw": "NBA",
+          "snippet": " riktig oppfølging.  ---  ## 5) Scoring & Next Best Action (NBA) - **Interesse (1–5)**, **Relasjon (1–5)** → **Prioritet (A"
+        },
+        {
+          "kw": "reminder",
+          "snippet": ": \"string\", \"enum\": [\"Connect\",\"MessageSent\",\"VideoShared\",\"Reminder\",\"Meeting\",\"FollowUp\",\"SystemPing\",\"StatusChange\"] },     \""
+        },
+        {
+          "kw": "pipeline",
+          "snippet": " 2.1 Begreper (eksempler – AI skal utvide/justere) DMO/IPA, Pipeline, Status, Follow‑up, No‑show, Score, Win/Loss, Pod/Team, Onb"
+        }
+      ]
+    },
+    {
+      "path": "docs/raw_docs_legacy/BEKSRIVELSER + BLUEPRINTS + CODE (1).md",
+      "ext": ".md",
+      "title": "# **Innholdsfortegnelse for Blueprint: FlowState OS v2.0 (Strukturert Original)**",
+      "hits": {
+        "Frazer": 53,
+        "Frazer Brookes": 16,
+        "Dashboard": 271,
+        "Kundekort": 162,
+        "pipeline": 193,
+        "Pipeline": 193,
+        "DMO": 4,
+        "Invite": 204,
+        "Show": 202,
+        "reminder": 37,
+        "Reminder": 37,
+        "no-show": 130,
+        "No-Show": 130,
+        "NBA": 141,
+        "Next Best": 45,
+        "event": 74,
+        "Event": 74,
+        "webhook": 7
+      },
+      "snippets": [
+        {
+          "kw": "Frazer",
+          "snippet": " og Viktig Informasjon**     * Overordnet formål og metode (Frazer Brookes)     * Regler for tolkning av dokumentet     * Defi"
+        },
+        {
+          "kw": "Dashboard",
+          "snippet": "ovedkomponenter**     * C.1: Visjon for systemet     * C.2: Dashboardet (\"Action-Board\")     * C.3: Kundekortet     * C.4: Databa"
+        },
+        {
+          "kw": "Kundekort",
+          "snippet": "systemet     * C.2: Dashboardet (\"Action-Board\")     * C.3: Kundekortet     * C.4: Databasen (\"Prospect Hub\")   * **D: Komplett F"
+        },
+        {
+          "kw": "NBA",
+          "snippet": "(A).  Du kan bytte visning mellom liste (for kontroll) og kanban board (for status-flow).  Søk og filtrering  Airtable har "
+        },
+        {
+          "kw": "reminder",
+          "snippet": "inger   AI oppretter follow-ups:  No-show → 12t / 24t / 48t reminder.  Video sendt → oppfølging etter 24t.  “Ingen kontakt siste"
+        },
+        {
+          "kw": "no-show",
+          "snippet": "ontekstuell ros, påminnelser eller strategiske tips.   * **\"No-show\" Håndtering:** Integrasjon med kalender. Hvis en avtale pas"
+        },
+        {
+          "kw": "pipeline",
+          "snippet": "ukervennlighet.  ### **Dashboard & Visuell Oversikt:**  * **Pipeline View:** En visuell representasjon av salgstrakten, som vise"
+        }
+      ]
+    },
+    {
+      "path": "docs/raw_docs_legacy/BEKSRIVELSER + BLUEPRINTS + CODE.md",
+      "ext": ".md",
+      "title": "### **1\\. Forbedret Dokumentbeskrivelse (For en annen AI)**",
+      "hits": {
+        "Frazer": 4,
+        "Frazer Brookes": 3,
+        "Dashboard": 4,
+        "Kundekort": 4,
+        "pipeline": 4,
+        "Pipeline": 4,
+        "Invite": 1,
+        "Show": 2,
+        "no-show": 2,
+        "No-Show": 2,
+        "Next Best": 1
+      },
+      "snippets": [
+        {
+          "kw": "Frazer",
+          "snippet": "on.  **Kjernefilosofi:** Systemet er fundamentalt basert på Frazer Brookes' pipeline-metodikk, med fokus på relasjonsbygging, "
+        },
+        {
+          "kw": "Dashboard",
+          "snippet": "ta, historikk og AI-genererte forslag.   * **\"Action-Board\" Dashboard:** En dynamisk startside som gir brukeren dagens viktigste "
+        },
+        {
+          "kw": "Kundekort",
+          "snippet": "sk tildeler score for relasjon og interesse.   * **Dynamisk Kundekort:** Et interaktivt \"pop-up\" kort for hver prospect som gir 3"
+        },
+        {
+          "kw": "no-show",
+          "snippet": "eslå neste steg.   * Automatiserte regler for oppfølging av no-shows, videosendinger og \"døde\" leads.   * Sømløs integrasjon me"
+        },
+        {
+          "kw": "pipeline",
+          "snippet": "osofi:** Systemet er fundamentalt basert på Frazer Brookes' pipeline-metodikk, med fokus på relasjonsbygging, kvalifisering og e"
+        }
+      ]
+    },
+    {
+      "path": "docs/raw_docs_legacy/Beta v2 - Conversation ChatGPT.md",
+      "ext": ".md",
+      "title": "# **📂 Ferdig Phase 1 – Komplett kode (desktop/browser only)**",
+      "hits": {
+        "Frazer": 118,
+        "Frazer Brookes": 9,
+        "Frazer Method": 7,
+        "Dashboard": 151,
+        "Kundekort": 203,
+        "pipeline": 245,
+        "Pipeline": 245,
+        "DMO": 67,
+        "Invite": 43,
+        "Show": 23,
+        "reminder": 3,
+        "Reminder": 3,
+        "NBA": 200,
+        "Next Best": 13,
+        "event": 50,
+        "Event": 50,
+        "CAPI": 3
+      },
+      "snippets": [
+        {
+          "kw": "Frazer",
+          "snippet": " i 3 runder**.    Vil du at vi nå går videre til **Phase 2: Frazer pipeline rebuild** (implementere de nye pipeline-stegene og"
+        },
+        {
+          "kw": "Dashboard",
+          "snippet": "nderNav() {`         `const navItems = [`           `{ id: 'dashboard', name: 'Dashboard' },`           `{ id: 'pipeline', name: "
+        },
+        {
+          "kw": "Kundekort",
+          "snippet": "12 6v6m0 0v6m0-6h6m-6 0H6\"></path></svg>`             `Nytt kundekort`           `</button>`         `</div>`       `</aside>`   "
+        },
+        {
+          "kw": "NBA",
+          "snippet": "* direkte i systemet (oppdatere pipeline stages, kundekort, NBA-logikk osv.)?  ##### **Du sa:**  Ja  ###### **Code GPT sa:*"
+        },
+        {
+          "kw": "reminder",
+          "snippet": "n (badges, streaks, onboarding flows).  * Automatisering av reminders & tasks.  * Integrasjon av eksterne datakilder (sosiale me"
+        },
+        {
+          "kw": "pipeline",
+          "snippet": "`{ id: 'dashboard', name: 'Dashboard' },`           `{ id: 'pipeline', name: 'Pipeline' },`           `{ id: 'logg', name: 'Akti"
+        }
+      ]
+    },
+    {
+      "path": "docs/raw_docs_legacy/Conversation ChatGPT - Beta Blueprint.md",
+      "ext": ".md",
+      "title": "# Affiliate Network Marketing CRM – Master Build File (Refined + Example AI Scripts)",
+      "hits": {
+        "Frazer": 213,
+        "Frazer Brookes": 20,
+        "Frazer Method": 8,
+        "Dashboard": 493,
+        "Kundekort": 530,
+        "pipeline": 521,
+        "Pipeline": 521,
+        "DMO": 5,
+        "Invite": 167,
+        "Show": 197,
+        "reminder": 20,
+        "Reminder": 20,
+        "no-show": 18,
+        "No-Show": 18,
+        "NBA": 297,
+        "Next Best": 51,
+        "event": 190,
+        "Event": 190
+      },
+      "snippets": [
+        {
+          "kw": "Frazer",
+          "snippet": ", prospect hub, automation, and example code. Also stresses Frazer Brookes principles and IPA focus.  Zero-Based Checklist (NW"
+        },
+        {
+          "kw": "Dashboard",
+          "snippet": "n-negotiable CRM blueprint: beginner-friendly, Activo-style dashboard, pop-up kundekort, AI automation (follow-ups, no-shows, web"
+        },
+        {
+          "kw": "Kundekort",
+          "snippet": "lueprint: beginner-friendly, Activo-style dashboard, pop-up kundekort, AI automation (follow-ups, no-shows, webinars, dead leads)"
+        },
+        {
+          "kw": "NBA",
+          "snippet": "all modules (architecture, data model, automation, scoring, NBAs, compliance) are delivered.  Full Documentation (CRM_Compl"
+        },
+        {
+          "kw": "reminder",
+          "snippet": "gle Calendar sync, Follow-up system.  Build in daily goals, reminders, gamification, auto-import from CSV, AI scoring.  Include "
+        },
+        {
+          "kw": "no-show",
+          "snippet": "yle dashboard, pop-up kundekort, AI automation (follow-ups, no-shows, webinars, dead leads), pipeline (Connect → Video → Follow"
+        },
+        {
+          "kw": "pipeline",
+          "snippet": "AI automation (follow-ups, no-shows, webinars, dead leads), pipeline (Connect → Video → Follow-Up → Webinar → 1:1 Zoom), GDPR co"
+        }
+      ]
+    },
+    {
+      "path": "docs/raw_docs_legacy/CRM_Complete_Documentation.md",
+      "ext": ".md",
+      "title": "# Affiliate Network Marketing CRM - Komplett Dokumentasjon",
+      "hits": {
+        "Dashboard": 2,
+        "Kundekort": 2,
+        "pipeline": 25,
+        "Pipeline": 25,
+        "Invite": 5,
+        "Show": 5,
+        "reminder": 3,
+        "Reminder": 3,
+        "no-show": 5,
+        "No-Show": 5
+      },
+      "snippets": [
+        {
+          "kw": "Dashboard",
+          "snippet": "EX(FILTER(Pipeline!A:A,Pipeline!K:K=\"A\"),1)` - \"Tilbake til Dashboard\"-knapp  ---  # 📖 4. Dashboard  ### KPI-bokser - Nye leads: "
+        },
+        {
+          "kw": "Kundekort",
+          "snippet": ".2025 | Webinar | \"Asked questions during Q&A\"  ---  # 📖 3. Kundekort  ### Funksjoner - Viser 1 lead basert på ID - Felter vist: "
+        },
+        {
+          "kw": "reminder",
+          "snippet": "te: `=COUNTIF(Pipeline!C:C,\"Kunde\")/COUNTA(Pipeline!A:A)` - Reminder-liste: Leads >7 dager uten kontakt - Pipeline Health Score:"
+        },
+        {
+          "kw": "no-show",
+          "snippet": ", Venter svar, Video sendt, Webinar, Møte booket/IntroCall, No-show, På oppfølging, Ikke interessert, Dødt lead, Kunde, Team) -"
+        },
+        {
+          "kw": "pipeline",
+          "snippet": ", og bygge systemet uten å mangle informasjon.  ---  # 📖 1. Pipeline  ### Felter - ID (Auto) - Navn - Kontaktkanal (FB, IG, LI, "
+        }
+      ]
+    },
+    {
+      "path": "docs/raw_docs_legacy/DESCRIPTION+CODE+BLUEPRINT.md",
+      "ext": ".md",
+      "title": "# **DESCRIPTION \\+ CODE \\+ BLUEPRINT**",
+      "hits": {
+        "Frazer": 26,
+        "Frazer Brookes": 8,
+        "Dashboard": 128,
+        "Kundekort": 103,
+        "pipeline": 60,
+        "Pipeline": 60,
+        "DMO": 2,
+        "Invite": 33,
+        "Show": 60,
+        "reminder": 18,
+        "Reminder": 18,
+        "no-show": 51,
+        "No-Show": 51,
+        "NBA": 10,
+        "Next Best": 4,
+        "event": 9,
+        "Event": 9,
+        "webhook": 7
+      },
+      "snippets": [
+        {
+          "kw": "Frazer",
+          "snippet": "iktig Informasjon\\*\\*       \\* Overordnet formål og metode (Frazer Brookes)       \\* Regler for tolkning av dokumentet       \\"
+        },
+        {
+          "kw": "Dashboard",
+          "snippet": "onenter\\*\\*       \\* C.1: Visjon for systemet       \\* C.2: Dashboardet (\"Action-Board\")       \\* C.3: Kundekortet       \\* C.4: "
+        },
+        {
+          "kw": "Kundekort",
+          "snippet": "et       \\* C.2: Dashboardet (\"Action-Board\")       \\* C.3: Kundekortet       \\* C.4: Databasen (\"Prospect Hub\")   \\* \\*\\*D: Komp"
+        },
+        {
+          "kw": "NBA",
+          "snippet": "   \\* Du kan bytte visning mellom liste (for kontroll) og kanban board (for status-flow).   \\* \\*\\*Søk og filtrering\\*\\*   "
+        },
+        {
+          "kw": "reminder",
+          "snippet": "ppretter follow-ups:           \\* No-show → 12t / 24t / 48t reminder.           \\* Video sendt → oppfølging etter 24t.          "
+        },
+        {
+          "kw": "no-show",
+          "snippet": "ekstuell ros, påminnelser eller strategiske tips.   \\* \\*\\*\"No-show\" Håndtering:\\*\\* Integrasjon med kalender. Hvis en avtale p"
+        },
+        {
+          "kw": "pipeline",
+          "snippet": "ervennlighet.  \\#\\#\\# Dashboard & Visuell Oversikt:  \\* \\*\\*Pipeline View:\\*\\* En visuell representasjon av salgstrakten, som vi"
+        }
+      ]
+    },
+    {
+      "path": "docs/raw_docs_legacy/Description.text.txt",
+      "ext": ".txt",
+      "title": "﻿FlowState OS: Final Implementation Blueprint & Build Kit",
+      "hits": {
+        "Dashboard": 6,
+        "Kundekort": 1,
+        "pipeline": 1,
+        "Pipeline": 1,
+        "Invite": 10,
+        "Show": 3,
+        "reminder": 1,
+        "Reminder": 1,
+        "no-show": 2,
+        "No-Show": 2,
+        "NBA": 5,
+        "Next Best": 1,
+        "event": 2,
+        "Event": 2
+      },
+      "snippets": [
+        {
+          "kw": "Dashboard",
+          "snippet": "e (Hot > Warm > Cold).    5. Present the top 5 tasks on the Dashboard. F) NON-FUNCTIONAL REQUIREMENTS & OPERATIONS * Usability: ≤"
+        },
+        {
+          "kw": "Kundekort",
+          "snippet": "ows \"Follow up with Kari\". (1 click, 3s).    * User clicks, Kundekort opens with AI Oppsummering. (1 click, 2s).    * User opens "
+        },
+        {
+          "kw": "NBA",
+          "snippet": " brief with goals (20 new, 30 F/U) and the top 3 tasks from NBA queue. \tE) SCORING & NEXT BEST ACTION (NBA) * Interest Scor"
+        },
+        {
+          "kw": "reminder",
+          "snippet": "log a completed task. * SLOs: p95 NBA computation < 1s; p99 reminders delivered within ±2 minutes. * Observability: All state ch"
+        },
+        {
+          "kw": "no-show",
+          "snippet": "ss];  D) AUTOMATION RULES Rule \tTrigger \tCondition \tAction \tNo-Show \tCalendar event with \"Intro\" ends \tProspect.status is still"
+        },
+        {
+          "kw": "pipeline",
+          "snippet": "rospect's full name. \t  \tstatus \tEnum \tCurrent stage in the pipeline. \t  \ttemperature \tEnum \tHot, Warm, Cold, Frozen. \t  \tpriori"
+        }
+      ]
+    },
+    {
+      "path": "docs/raw_docs_legacy/FlowState OS - OLD DESCRIPTION.txt",
+      "ext": ".txt",
+      "title": "FlowState OS - OLD DESCRIPTION",
+      "hits": {
+        "Frazer": 51,
+        "Frazer Brookes": 14,
+        "Dashboard": 224,
+        "Kundekort": 121,
+        "pipeline": 125,
+        "Pipeline": 125,
+        "DMO": 4,
+        "Invite": 194,
+        "Show": 190,
+        "reminder": 37,
+        "Reminder": 37,
+        "no-show": 128,
+        "No-Show": 128,
+        "NBA": 140,
+        "Next Best": 41,
+        "event": 48,
+        "Event": 48,
+        "webhook": 7
+      },
+      "snippets": [
+        {
+          "kw": "Frazer",
+          "snippet": "EN BESTE PROGRAMVARE/SOFTWARE/CRM/PIPLE - DET SKAL BUNNES I FRAZER BROOKES METODEN OG ANDRE FILER SOM ER TILLAGT, MEN ALLE FUN"
+        },
+        {
+          "kw": "Dashboard",
+          "snippet": "vis Status = Video sendt → etter 24 timer popper det opp på Dashboard: “Har han sett videoen?” (Yes/No).   Hvis du ikke huker av "
+        },
+        {
+          "kw": "Kundekort",
+          "snippet": "ble CRM for Network Marketing 🔹 Viktige funksjoner du ba om Kundekort (popup)   Når du klikker på et navn → får du opp hele korte"
+        },
+        {
+          "kw": "NBA",
+          "snippet": "A).   Du kan bytte visning mellom liste (for kontroll) og kanban board (for status-flow).    Søk og filtrering   Airtable h"
+        },
+        {
+          "kw": "reminder",
+          "snippet": "ginger AI oppretter follow-ups:   No-show → 12t / 24t / 48t reminder.   Video sendt → oppfølging etter 24t.   “Ingen kontakt sis"
+        },
+        {
+          "kw": "no-show",
+          "snippet": " huker av noe → systemet minner deg igjen etter 48 timer.   No-shows → automatisk påminnelse i Dashboard “Følg opp no-show ette"
+        },
+        {
+          "kw": "pipeline",
+          "snippet": "le labs.    🔹 Ekstra forslag (du kanskje ikke har tenkt på) Pipeline Gamification 🎯: Airtable kan vise hvor mange leads du har i"
+        }
+      ]
+    },
+    {
+      "path": "docs/raw_docs_legacy/FlowState OS Dashboard Implementation.md",
+      "ext": ".md",
+      "title": "FlowState OS Dashboard Implementation",
+      "hits": {
+        "Frazer": 2,
+        "Frazer Brookes": 1,
+        "Dashboard": 7,
+        "Kundekort": 8,
+        "pipeline": 6,
+        "Pipeline": 6,
+        "NBA": 5
+      },
+      "snippets": [
+        {
+          "kw": "Frazer",
+          "snippet": "OS Dashboard Implementation    Bygg Rekrutterings-Pipeline: Frazer Brookes    Enkel Mal for Nettverksinvitasjoner    Hvis syst"
+        },
+        {
+          "kw": "Dashboard",
+          "snippet": "FlowState OS Dashboard Implementation    Bygg Rekrutterings-Pipeline: Frazer Brook"
+        },
+        {
+          "kw": "Kundekort",
+          "snippet": "ge (Phase 2 R2) var bedre fordi den hadde klarere pipeline, kundekort, og dashboard, men vi har mistet den røde tråden når vi bla"
+        },
+        {
+          "kw": "NBA",
+          "snippet": "avkoblet” fra dashboard.    ✅ Løsning: Dashboard = I Fokus (NBA) + Pipeline-widget. Kundekort = overlay med full styring.  "
+        },
+        {
+          "kw": "pipeline",
+          "snippet": "FlowState OS Dashboard Implementation    Bygg Rekrutterings-Pipeline: Frazer Brookes    Enkel Mal for Nettverksinvitasjoner    H"
+        }
+      ]
+    },
+    {
+      "path": "docs/raw_docs_legacy/FlowState OS v2.0 - OLD DESCRIPTION.txt",
+      "ext": ".txt",
+      "title": "",
+      "hits": {
+        "Frazer": 53,
+        "Frazer Brookes": 16,
+        "Dashboard": 271,
+        "Kundekort": 162,
+        "pipeline": 193,
+        "Pipeline": 193,
+        "DMO": 4,
+        "Invite": 204,
+        "Show": 202,
+        "reminder": 37,
+        "Reminder": 37,
+        "no-show": 130,
+        "No-Show": 130,
+        "NBA": 141,
+        "Next Best": 45,
+        "event": 74,
+        "Event": 74,
+        "webhook": 7
+      },
+      "snippets": [
+        {
+          "kw": "Frazer",
+          "snippet": "nsipper og Viktig Informasjon  Overordnet formål og metode (Frazer Brookes)  Regler for tolkning av dokumentet  Definisjon av "
+        },
+        {
+          "kw": "Dashboard",
+          "snippet": "itektur og Hovedkomponenter  C.1: Visjon for systemet  C.2: Dashboardet (\"Action-Board\")  C.3: Kundekortet  C.4: Databasen (\"Pros"
+        },
+        {
+          "kw": "Kundekort",
+          "snippet": "isjon for systemet  C.2: Dashboardet (\"Action-Board\")  C.3: Kundekortet  C.4: Databasen (\"Prospect Hub\")  D: Komplett Funksjonssp"
+        },
+        {
+          "kw": "NBA",
+          "snippet": "      Du kan bytte visning mellom liste (for kontroll) og kanban board (for status-flow).        Søk og filtrering      Air"
+        },
+        {
+          "kw": "reminder",
+          "snippet": "er  AI oppretter follow-ups:      No-show → 12t / 24t / 48t reminder.      Video sendt → oppfølging etter 24t.      “Ingen konta"
+        },
+        {
+          "kw": "no-show",
+          "snippet": "med kontekstuell ros, påminnelser eller strategiske tips.  \"No-show\" Håndtering: Integrasjon med kalender. Hvis en avtale passe"
+        },
+        {
+          "kw": "pipeline",
+          "snippet": "ivitet og brukervennlighet.  Dashboard & Visuell Oversikt:  Pipeline View: En visuell representasjon av salgstrakten, som viser "
+        }
+      ]
+    },
+    {
+      "path": "docs/raw_docs_legacy/FlowState_OS_Implementation_Kickoff.md",
+      "ext": ".md",
+      "title": "# FlowState OS — Implementation Kickoff & Command Pack (Tool-Agnostic, Versionless)",
+      "hits": {
+        "Dashboard": 4,
+        "Invite": 1,
+        "Show": 4,
+        "no-show": 3,
+        "No-Show": 3,
+        "NBA": 10,
+        "event": 2,
+        "Event": 2
+      },
+      "snippets": [
+        {
+          "kw": "Dashboard",
+          "snippet": " model (Prospects, Interactions, Tasks), interface screens (Dashboard with NBA top-5, Prospect card, Tasks board), and event auto"
+        },
+        {
+          "kw": "NBA",
+          "snippet": " produce stack-specific assets.   - Honor the blueprint’s **NBA, state machine, automation rules, NFR/SLO**.   - Use the up"
+        },
+        {
+          "kw": "no-show",
+          "snippet": "p-5, Prospect card, Tasks board), and event automations for No-Show (2–6h + next day 12/16), Video (~24h), Re-engagement (1w→2w"
+        }
+      ]
+    },
+    {
+      "path": "docs/raw_docs_legacy/FRAZER METHOD.md",
+      "ext": ".md",
+      "title": "# FRAZER METHOD",
+      "hits": {
+        "Frazer": 8,
+        "Frazer Brookes": 2,
+        "Frazer Method": 1,
+        "pipeline": 9,
+        "Pipeline": 9,
+        "DMO": 8,
+        "Invite": 2,
+        "Show": 5,
+        "Keep Talking": 2,
+        "event": 1,
+        "Event": 1
+      },
+      "snippets": [
+        {
+          "kw": "Frazer",
+          "snippet": "# FRAZER METHOD  Here is Frazer Brookes methods broken down from 5 different videos from th"
+        },
+        {
+          "kw": "pipeline",
+          "snippet": "ne that systematically moves people through your recruiting pipeline. The goal is to perform these actions daily to ensure conti"
+        }
+      ]
+    },
+    {
+      "path": "docs/raw_docs_legacy/Full code - beta 1.txt",
+      "ext": ".txt",
+      "title": "<!DOCTYPE html>",
+      "hits": {
+        "Dashboard": 2,
+        "Kundekort": 8,
+        "pipeline": 2,
+        "Pipeline": 2,
+        "Invite": 4,
+        "Show": 4,
+        "NBA": 11,
+        "event": 4,
+        "Event": 4
+      },
+      "snippets": [
+        {
+          "kw": "Dashboard",
+          "snippet": "========================================     function renderDashboard() {       const container = document.getElementById(\"main-c"
+        },
+        {
+          "kw": "Kundekort",
+          "snippet": " py-1 rounded\" data-prospect-id=\"${p.id}\" data-action=\"view-kundekort\">Åpne Kundekort</button>             <button class=\"bg-gray"
+        },
+        {
+          "kw": "NBA",
+          "snippet": "alifisert i går\", completed: false }       ]     };     let nbaIndex = 0;      // ========================================="
+        },
+        {
+          "kw": "pipeline",
+          "snippet": "=================================================     const pipelineStages = [\"Nytt Lead\", \"Relationship Building\", \"Invited\", \""
+        }
+      ]
+    },
+    {
+      "path": "docs/raw_docs_legacy/GAMMEL BESKRIVELSE.txt",
+      "ext": ".txt",
+      "title": "1. Ja men vi lærer hverandre underveis at når dette popper opp så kan jeg kommentere osv. ",
+      "hits": {
+        "Kundekort": 2
+      },
+      "snippets": [
+        {
+          "kw": "Kundekort",
+          "snippet": "2. Jeg ønsker at det skal være minimum 20 nye prospects/nye kundekort og minimum 30 follow ups gjennomført med resultater i form "
+        }
+      ]
+    },
+    {
+      "path": "docs/raw_docs_legacy/NWM_CRM_AI_and_Project_Guidelines.markdown",
+      "ext": ".markdown",
+      "title": "# Affiliate Network Marketing CRM: AI Execution and Project Guidelines",
+      "hits": {
+        "Dashboard": 7,
+        "Kundekort": 2,
+        "Show": 1,
+        "no-show": 1,
+        "No-Show": 1
+      },
+      "snippets": [
+        {
+          "kw": "Dashboard",
+          "snippet": " preserving all features (e.g., AI automation, Activo-style Dashboard). created: 2025-08-29 intended_audience: AIs for prompt dev"
+        },
+        {
+          "kw": "Kundekort",
+          "snippet": "ut prospects (via forms), monitor Dashboard (ticker, “Neste kundekort”), and review AI coaching (4-6 daily questions).   - **Work"
+        },
+        {
+          "kw": "no-show",
+          "snippet": "rds). - **Testing**: Simulate flows (add 20 prospects, mark no-show, check ticker) to match backtested 26-29% conversions, 7-9%"
+        }
+      ]
+    },
+    {
+      "path": "docs/raw_docs_legacy/NWM_CRM_Complete_System.markdown",
+      "ext": ".markdown",
+      "title": "# Affiliate Network Marketing CRM: System Specification and Implementation Plans",
+      "hits": {
+        "Dashboard": 11,
+        "Kundekort": 12,
+        "pipeline": 2,
+        "Pipeline": 2,
+        "Invite": 2,
+        "Show": 11,
+        "no-show": 8,
+        "No-Show": 8,
+        "NBA": 1
+      },
+      "snippets": [
+        {
+          "kw": "Dashboard",
+          "snippet": "wapped, but CRM features (e.g., AI automation, Activo-style Dashboard) must remain unchanged. created: 2025-08-29 intended_audien"
+        },
+        {
+          "kw": "Kundekort",
+          "snippet": "llow-ups, AI-driven automation, Activo-style Dashboard with kundekort, gamification, GDPR compliance, pipeline: Connect → Video →"
+        },
+        {
+          "kw": "NBA",
+          "snippet": "on (checkbox/date), Tid brukt (duration).    - **Views**: Kanban (by status); pop-up cards for editing.    - **Automations*"
+        },
+        {
+          "kw": "no-show",
+          "snippet": "s + 30 follow-ups. - **Automation**: AI handles follow-ups, no-shows (same evening for day meetings, next day 12/16 for evening"
+        },
+        {
+          "kw": "pipeline",
+          "snippet": "le Dashboard with kundekort, gamification, GDPR compliance, pipeline: Connect → Video → Follow-Up → Webinar → 1:1 Zoom, progress"
+        }
+      ]
+    },
+    {
+      "path": "docs/raw_docs_legacy/NWM_CRM_ZeroBased_Checklist.md",
+      "ext": ".md",
+      "title": "# NWM/CRM — Zero‑Based Funksjonell Spesifikasjon  ",
+      "hits": {
+        "pipeline": 1,
+        "Pipeline": 1,
+        "DMO": 1,
+        "Invite": 1,
+        "Show": 2,
+        "Next Best": 3
+      },
+      "snippets": [
+        {
+          "kw": "pipeline",
+          "snippet": "ospect, Aktivitet, Avtale, Follow‑up, Notat, Status, Score, Pipeline‑steg, Mål/Vane, Win/Loss, Team/Pod. - [ ] Feltliste pr. ent"
+        }
+      ]
+    },
+    {
+      "path": "docs/raw_docs_legacy/Project_End_Result.markdown",
+      "ext": ".markdown",
+      "title": "# End Result",
+      "hits": {
+        "Dashboard": 1,
+        "reminder": 1,
+        "Reminder": 1
+      },
+      "snippets": [
+        {
+          "kw": "Dashboard",
+          "snippet": "auto-learning). - **Deployed Tools**: Configured all-in-one dashboard (e.g., HubSpot/Airtable with CRM + optimizations), 3-5 step"
+        },
+        {
+          "kw": "reminder",
+          "snippet": "low-ups daily, AI-scored). - Stress: 90% details covered by reminders/coaching (e.g., 4-6 daily AI questions, no clutter). - Ove"
+        }
+      ]
+    },
+    {
+      "path": "docs/raw_docs_legacy/Project_Ground_Rules.markdown",
+      "ext": ".markdown",
+      "title": "# Ground Rules",
+      "hits": {
+        "Dashboard": 1,
+        "pipeline": 1,
+        "Pipeline": 1,
+        "reminder": 1,
+        "Reminder": 1
+      },
+      "snippets": [
+        {
+          "kw": "Dashboard",
+          "snippet": "ll specs from files (e.g., pipeline stages, AI automations, Dashboard features, backtested results). Platforms/examples (e.g., Hu"
+        },
+        {
+          "kw": "reminder",
+          "snippet": "esponse must advance metrics (4h→1h manual, 100% leads, 90% reminders). Prioritize free/minimal-setup/ADHD-friendly (e.g., no-te"
+        },
+        {
+          "kw": "pipeline",
+          "snippet": ". 2. **CRM Fidelity**: Preserve all specs from files (e.g., pipeline stages, AI automations, Dashboard features, backtested resu"
+        }
+      ]
+    },
+    {
+      "path": "docs/raw_docs_legacy/Project_Structure.markdown",
+      "ext": ".markdown",
+      "title": "# Project Structure",
+      "hits": {
+        "Dashboard": 3,
+        "Show": 1,
+        "reminder": 1,
+        "Reminder": 1,
+        "no-show": 1,
+        "No-Show": 1
+      },
+      "snippets": [
+        {
+          "kw": "Dashboard",
+          "snippet": "mponent)**: Core prospect management (from files: Prospects/Dashboard/Improvements tables, AI automations). Integrates with all o"
+        },
+        {
+          "kw": "reminder",
+          "snippet": "(1 component)**: Connectors for flow (e.g., Zapier/Make for reminders/follow-ups/no-shows syncing to calendar). 4. **Logging/Sel"
+        },
+        {
+          "kw": "no-show",
+          "snippet": "ectors for flow (e.g., Zapier/Make for reminders/follow-ups/no-shows syncing to calendar). 4. **Logging/Self-Improving System ("
+        }
+      ]
+    },
+    {
+      "path": "docs/raw_docs_legacy/README.md",
+      "ext": ".md",
+      "title": "# 🌍 Flowstate-AI",
+      "hits": {
+        "Frazer": 4,
+        "Frazer Method": 1,
+        "Dashboard": 5,
+        "Kundekort": 1,
+        "pipeline": 1,
+        "Pipeline": 1,
+        "DMO": 2,
+        "Invite": 2,
+        "Show": 2,
+        "Keep Talking": 1,
+        "reminder": 9,
+        "Reminder": 9,
+        "no-show": 1,
+        "No-Show": 1,
+        "event": 1,
+        "Event": 1
+      },
+      "snippets": [
+        {
+          "kw": "Frazer",
+          "snippet": "s   - Mobile + web dashboards   - AI assistant interface (**Frazer AI personality**)    ### Phase 7: Final Refinement & Evolut"
+        },
+        {
+          "kw": "Dashboard",
+          "snippet": " - Design API integration points (CRM, communication tools, dashboards)   - Map user flows & UX prototypes in `blueprints/`    ##"
+        },
+        {
+          "kw": "Kundekort",
+          "snippet": "h/1d)     - Inactivity reminders (7d)   - **Customer Cards (Kundekort)** → Profile | Notes | Interactions | Next Step   - **Dashb"
+        },
+        {
+          "kw": "reminder",
+          "snippet": "ike traditional CRMs, FlowState OS is:   - 🧠 **Smart** → AI reminders & prioritization   - 🎯 **Simple** → Only core functions, n"
+        },
+        {
+          "kw": "no-show",
+          "snippet": "ow-Up System** →     - Video Sent reminders (24h/48h)     - No-Show reminders (2h/1d)     - Inactivity reminders (7d)   - **Cus"
+        },
+        {
+          "kw": "pipeline",
+          "snippet": "*Prospects Management** → Add leads with minimal info   - **Pipeline Flow** → Strict Frazer-style progression   - **Follow-Up Sy"
+        }
+      ]
+    },
+    {
+      "path": "docs/raw_docs_legacy/frazer_method_blueprints/README.md",
+      "ext": ".md",
+      "title": "# FRAZER METHOD – Vendor‑Agnostic Blueprints (EXAMPLES ONLY)",
+      "hits": {
+        "Frazer": 2,
+        "Frazer Method": 1,
+        "pipeline": 2,
+        "Pipeline": 2,
+        "Show": 1,
+        "event": 4,
+        "Event": 4,
+        "webhook": 1,
+        "CAPI": 1
+      },
+      "snippets": [
+        {
+          "kw": "Frazer",
+          "snippet": "# FRAZER METHOD – Vendor‑Agnostic Blueprints (EXAMPLES ONLY)  **Vikt"
+        },
+        {
+          "kw": "pipeline",
+          "snippet": "am/Zapier) + server‑side Conversions mapping. - `ai/` – RAG‑pipeline og multi‑agent roller (YAML) + prompt‑tips. - `crm/` – pipe"
+        }
+      ]
+    },
+    {
+      "path": "docs/raw_docs_legacy/frazer_method_blueprints/ai/agents.yaml",
+      "ext": ".yaml",
+      "title": "version: 1",
+      "hits": {
+        "event": 1,
+        "Event": 1
+      },
+      "snippets": []
+    },
+    {
+      "path": "docs/raw_docs_legacy/frazer_method_blueprints/ai/prompt_tips.md",
+      "ext": ".md",
+      "title": "# Prompt‑tips (vendor‑agnostisk)",
+      "hits": {},
+      "snippets": []
+    },
+    {
+      "path": "docs/raw_docs_legacy/frazer_method_blueprints/ai/rag_pipeline.yaml",
+      "ext": ".yaml",
+      "title": "version: 1",
+      "hits": {},
+      "snippets": []
+    },
+    {
+      "path": "docs/raw_docs_legacy/frazer_method_blueprints/consent/gdpr_guardrails.md",
+      "ext": ".md",
+      "title": "# GDPR‑vakter (eksempel)",
+      "hits": {
+        "event": 1,
+        "Event": 1,
+        "CAPI": 1
+      },
+      "snippets": []
+    },
+    {
+      "path": "docs/raw_docs_legacy/frazer_method_blueprints/crm/generic_crm_fields.md",
+      "ext": ".md",
+      "title": "# Generiske CRM‑felter (map til hvilket som helst CRM)",
+      "hits": {
+        "pipeline": 1,
+        "Pipeline": 1
+      },
+      "snippets": [
+        {
+          "kw": "pipeline",
+          "snippet": "version - utm: source/medium/campaign/content/term  Deal: - pipeline (Recruiting|Sales), stage, amount, currency - contact_exter"
+        }
+      ]
+    },
+    {
+      "path": "docs/raw_docs_legacy/frazer_method_blueprints/crm/pipelines.json",
+      "ext": ".json",
+      "title": "{",
+      "hits": {
+        "Show": 2,
+        "no-show": 2,
+        "No-Show": 2
+      },
+      "snippets": [
+        {
+          "kw": "no-show",
+          "snippet": "\",     \"Booked\",     \"Held\",     \"Joined\",     \"Lost\",     \"No-Show\"   ],   \"Sales\": [     \"New\",     \"Qualified\",     \"Booked\""
+        }
+      ]
+    },
+    {
+      "path": "docs/raw_docs_legacy/frazer_method_blueprints/flows/make_comment_dm_booking.json",
+      "ext": ".json",
+      "title": "{",
+      "hits": {
+        "event": 6,
+        "Event": 6,
+        "webhook": 3,
+        "CAPI": 3
+      },
+      "snippets": []
+    },
+    {
+      "path": "docs/raw_docs_legacy/frazer_method_blueprints/flows/make_no_show_rebook.json",
+      "ext": ".json",
+      "title": "{",
+      "hits": {
+        "Show": 6,
+        "no-show": 3,
+        "No-Show": 3,
+        "event": 2,
+        "Event": 2
+      },
+      "snippets": [
+        {
+          "kw": "no-show",
+          "snippet": "{   \"name\": \"Detect no-show \\u2192 Rebook \\u2192 Notify\",   \"schedule\": \"0 */1 * * *\", "
+        }
+      ]
+    },
+    {
+      "path": "docs/raw_docs_legacy/frazer_method_blueprints/flows/meta_capi_mapping.json",
+      "ext": ".json",
+      "title": "{",
+      "hits": {
+        "event": 9,
+        "Event": 9
+      },
+      "snippets": []
+    },
+    {
+      "path": "docs/raw_docs_legacy/frazer_method_blueprints/flows/n8n_comment_dm_booking.json",
+      "ext": ".json",
+      "title": "{",
+      "hits": {
+        "event": 2,
+        "Event": 2,
+        "webhook": 3,
+        "CAPI": 1
+      },
+      "snippets": []
+    },
+    {
+      "path": "docs/raw_docs_legacy/frazer_method_blueprints/flows/pipedream_comment_dm_booking.js",
+      "ext": ".js",
+      "title": "/**",
+      "hits": {
+        "event": 2,
+        "Event": 2,
+        "CAPI": 1
+      },
+      "snippets": []
+    },
+    {
+      "path": "docs/raw_docs_legacy/frazer_method_blueprints/flows/zapier_comment_dm_booking.md",
+      "ext": ".md",
+      "title": "# Zapier – Comment→DM→CRM→Booking (Pseudo)",
+      "hits": {
+        "event": 2,
+        "Event": 2,
+        "webhook": 5,
+        "CAPI": 1
+      },
+      "snippets": []
+    },
+    {
+      "path": "docs/raw_docs_legacy/frazer_method_blueprints/messages/dm_no_show.md",
+      "ext": ".md",
+      "title": "Hei {{first_name}} – vi savnet deg i dag. Vil du velge et nytt tidspunkt? {{rebook_link}} ",
+      "hits": {},
+      "snippets": []
+    },
+    {
+      "path": "docs/raw_docs_legacy/frazer_method_blueprints/messages/dm_qualify_no.md",
+      "ext": ".md",
+      "title": "Hei {{first_name}}! Takk for interessen 🙌",
+      "hits": {},
+      "snippets": []
+    },
+    {
+      "path": "docs/raw_docs_legacy/frazer_method_blueprints/metrics/metrics_kpis.md",
+      "ext": ".md",
+      "title": "# KPIer & målemodell",
+      "hits": {
+        "Show": 2
+      },
+      "snippets": []
+    },
+    {
+      "path": "docs/raw_docs_legacy/frazer_method_blueprints/schemas/crm_objects.json",
+      "ext": ".json",
+      "title": "{",
+      "hits": {
+        "pipeline": 1,
+        "Pipeline": 1,
+        "Show": 2,
+        "no-show": 2,
+        "No-Show": 2
+      },
+      "snippets": [
+        {
+          "kw": "no-show",
+          "snippet": "ng|Sales\",     \"stage\": \"New|Qualified|Booked|Held|Won|Lost|No-Show\",     \"amount\": 0,     \"currency\": \"EUR\",     \"owner_id\": \""
+        },
+        {
+          "kw": "pipeline",
+          "snippet": "tom\": {}   },   \"deal\": {     \"external_id\": \"string\",     \"pipeline\": \"Recruiting|Sales\",     \"stage\": \"New|Qualified|Booked|He"
+        }
+      ]
+    },
+    {
+      "path": "docs/raw_docs_legacy/frazer_method_blueprints/schemas/events.json",
+      "ext": ".json",
+      "title": "{",
+      "hits": {
+        "Frazer": 1,
+        "Show": 1,
+        "event": 5,
+        "Event": 5
+      },
+      "snippets": [
+        {
+          "kw": "Frazer",
+          "snippet": "\"https://json-schema.org/draft/2020-12/schema\",   \"title\": \"FRAZER Events\",   \"type\": \"object\",   \"properties\": {     \"event_n"
+        }
+      ]
+    },
+    {
+      "path": "docs/raw_docs_legacy/frazer_method_blueprints/server_stubs/server_capi_stub.py",
+      "ext": ".py",
+      "title": "# server_capi_stub.py (eksempel)",
+      "hits": {
+        "event": 2,
+        "Event": 2,
+        "CAPI": 4
+      },
+      "snippets": []
+    },
+    {
+      "path": "docs/raw_docs_legacy/frazer_method_blueprints/server_stubs/webhook_handler_stub.js",
+      "ext": ".js",
+      "title": "// webhook_handler_stub.js (eksempel)",
+      "hits": {
+        "event": 1,
+        "Event": 1,
+        "webhook": 1
+      },
+      "snippets": []
+    },
+    {
+      "path": "docs/raw_docs_legacy/frazer_method_blueprints/sql_dbt/dim_contacts.sql",
+      "ext": ".sql",
+      "title": "-- dim_contacts.sql (eksempel)",
+      "hits": {},
+      "snippets": []
+    },
+    {
+      "path": "docs/raw_docs_legacy/frazer_method_blueprints/sql_dbt/fct_funnel.sql",
+      "ext": ".sql",
+      "title": "-- fct_funnel.sql (eksempel)",
+      "hits": {
+        "event": 6,
+        "Event": 6
+      },
+      "snippets": []
+    },
+    {
+      "path": "docs/raw_docs_legacy/frazer_method_blueprints/sql_dbt/README.md",
+      "ext": ".md",
+      "title": "# dbt‑stil modeller (eksempel – mapp til ditt lager)",
+      "hits": {},
+      "snippets": []
+    },
+    {
+      "path": "docs/raw_docs_legacy/frazer_method_blueprints/sql_dbt/stg_events.sql",
+      "ext": ".sql",
+      "title": "-- stg_events.sql (eksempel)",
+      "hits": {
+        "event": 4,
+        "Event": 4
+      },
+      "snippets": []
+    }
+  ],
+  "pdfs": [
+    {
+      "path": "docs/raw_docs_legacy/2 - BUILDING BLOCKS.pdf",
+      "pages": 1,
+      "snippet": "2   -   BUILDING   BLOCKS       Description   of   end   product:     AI   will   gather   information   from   3   documents   containing   important   building   blocks   to   build   the   best   AI-driven   CRM   system   for   Network   Marketing   with   automation.       Built   from   these   3:   ●   “DESCRIPTION   +   CODE   +   BLUEPRINT”   https://docs.google.com/document/d/1uJb051a72h"
+    },
+    {
+      "path": "docs/raw_docs_legacy/Affiliate Network Marketing - CRM System builder.pdf",
+      "pages": 118,
+      "snippet": "Vi   skal   kjøre   et   rollespill,   du   skal   være   affiliate   network   marketing   ekspert   og   jeg   er   også   det   samme,   men   du   er   min   upline.   Jeg   skal   launche   et   stort   team   og   du   skal   hjelpe   meg   step   by   step   til   å   bli   den   mest   suksessfulle   network   marketing   legenden   ChatGPT   sa:   Tenkte   i   23s   Din   Nm   Launch   Pl"
+    },
+    {
+      "path": "docs/raw_docs_legacy/DESCRIPTION + CODE + BLUEPRINT & FRAZERS METHOD.pdf",
+      "pages": 83,
+      "snippet": "DESCRIPTION   +   CODE   +   BLUEPRINT     #   Innholdsfortegnelse   for   Blueprint:   FlowState   OS   v2.0   (Strukturert   Original)     *   **A:   Master   Description   &   Changelog**        *   Redaktørens   Prosesslogg   (utført   av   Gemini)        *   Struktur-guide   for   AI   *   **B:   Grunnleggende   Prinsipper   og   Viktig   Informasjon**        *   Overordnet   formål   og   me"
+    }
+  ],
+  "events_schema": [
+    "DM_STARTED",
+    "LEAD_QUALIFIED",
+    "MEETING_BOOKED",
+    "MEETING_HELD",
+    "NO_SHOW",
+    "PURCHASED",
+    "JOINED_TEAM",
+    "UNSUBSCRIBED"
+  ],
+  "pipelines": {
+    "Recruiting": [
+      "New",
+      "Qualified",
+      "Booked",
+      "Held",
+      "Joined",
+      "Lost",
+      "No-Show"
+    ],
+    "Sales": [
+      "New",
+      "Qualified",
+      "Booked",
+      "Held",
+      "Won",
+      "Lost",
+      "No-Show"
+    ]
+  }
+}
