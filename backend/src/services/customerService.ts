@@ -1,5 +1,5 @@
 import DatabaseManager from '../database';
-import { Customer, PipelineStatus, EventLog } from '../types';
+import { Customer, PipelineStatus } from '../types';
 import { v4 as uuidv4 } from 'uuid';
 import { EventLogService } from './eventLogService';
 

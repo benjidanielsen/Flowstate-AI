@@ -1,5 +1,5 @@
 import DatabaseManager from '../database';
-import { Interaction, InteractionType } from '../types';
+import { Interaction } from '../types';
 import { v4 as uuidv4 } from 'uuid';
 import { EventLogService } from './eventLogService';
 

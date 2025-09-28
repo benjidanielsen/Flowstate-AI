@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { ArrowLeft, Edit, Phone, Mail, Calendar, Plus, MessageSquare, ArrowRight } from 'lucide-react';
 import { customerApi, interactionApi } from '../services/api';
@@ -14,13 +14,7 @@ const CustomerDetail: React.FC = () => {
   const [editMode, setEditMode] = useState(false);
   const [showAddInteraction, setShowAddInteraction] = useState(false);
 
-  useEffect(() => {
-    if (id) {
-      fetchCustomerData(id);
-    }
-  }, [id]);
-
-  const fetchCustomerData = async (customerId: string) => {
+  const fetchCustomerData = useCallback(async (customerId: string) => {
     try {
       setLoading(true);
       const [customerData, interactionsData] = await Promise.all([
@@ -35,7 +29,13 @@ const CustomerDetail: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [navigate]);
+
+  useEffect(() => {
+    if (id) {
+      fetchCustomerData(id);
+    }
+  }, [id, fetchCustomerData]);
 
   const handleMoveToNextStage = async () => {
     if (!customer) return;

@@ -1,6 +1,6 @@
 import DatabaseManager from './index';
 import { v4 as uuidv4 } from 'uuid';
-import { PipelineStatus, InteractionType, ReminderType } from '../types';
+import { PipelineStatus, InteractionType } from '../types';
 
 const sampleCustomers = [
   {
