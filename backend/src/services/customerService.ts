@@ -82,7 +82,7 @@ export class CustomerService {
         customer.next_action_date?.toISOString(),
         customer.created_at.toISOString(),
         customer.updated_at.toISOString()
-      ], function(err) {
+      ], (err) => {
         if (err) {
           reject(err);
         } else {
@@ -127,10 +127,11 @@ export class CustomerService {
         updatedCustomer.phone,
         updatedCustomer.status,
         updatedCustomer.notes,
+        updatedCustomer.next_action,
         updatedCustomer.next_action_date?.toISOString(),
         updatedCustomer.updated_at.toISOString(),
         id
-      ], function(err) {
+      ], (err) => {
         if (err) {
           reject(err);
         } else {

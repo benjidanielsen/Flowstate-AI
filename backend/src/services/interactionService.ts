@@ -59,7 +59,7 @@ export class InteractionService {
         interaction.created_at.toISOString(),
         interaction.scheduled_for?.toISOString(),
         interaction.completed ? 1 : 0
-      ], function(err) {
+      ], (err) => {
         if (err) {
           reject(err);
         } else {
