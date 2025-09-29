@@ -8,6 +8,7 @@ router.get('/upcoming', interactionController.getUpcomingInteractions);
 router.get('/customer/:customerId', interactionController.getInteractionsByCustomer);
 router.post('/', interactionController.createInteraction);
 router.put('/:id', interactionController.updateInteraction);
+router.post('/:id/complete', interactionController.completeInteraction);
 router.delete('/:id', interactionController.deleteInteraction);
 
 export default router;

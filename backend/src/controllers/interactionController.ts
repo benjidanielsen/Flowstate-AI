@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { InteractionService } from '../services/interactionService';
 
 export class InteractionController {
-  private interactionService: InteractionService;
+  private readonly interactionService: InteractionService;
 
   constructor() {
     this.interactionService = new InteractionService();
@@ -65,6 +65,23 @@ export class InteractionController {
       res.status(204).send();
     } catch (error) {
       console.error('Error deleting interaction:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  };
+
+  completeInteraction = async (req: Request, res: Response) => {
+    try {
+      const { id } = req.params;
+      const interaction = await this.interactionService.updateInteraction(id, { completed: true });
+
+      if (!interaction) {
+        return res.status(404).json({ error: 'Interaction not found' });
+      }
+
+      // Optionally log event via eventLogService (already triggered by service.create/update)
+      res.json(interaction);
+    } catch (error) {
+      console.error('Error completing interaction:', error);
       res.status(500).json({ error: 'Internal server error' });
     }
   };

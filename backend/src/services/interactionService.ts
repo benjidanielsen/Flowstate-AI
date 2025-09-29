@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { EventLogService } from './eventLogService';
 
 export class InteractionService {
-  private eventLogService: EventLogService;
+  private readonly eventLogService: EventLogService;
 
   constructor() {
     this.eventLogService = new EventLogService();
