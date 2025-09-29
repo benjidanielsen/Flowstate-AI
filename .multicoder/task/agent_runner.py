@@ -19,7 +19,7 @@ import subprocess
 import json
 import time
 from datetime import datetime, timezone
-from pathlib import Path
+import os
 from typing import Any, Dict, List, cast
 import sys
 
@@ -27,49 +27,52 @@ import sys
 UTC_OFFSET = '+00:00'
 Z_SUFFIX = 'Z'
 
-ROOT = Path(__file__).resolve().parents[2]  # repo root
-TASK_DIR = ROOT / '.multicoder' / 'task'
-SCAN_PY = TASK_DIR / 'scan.py'
-LOG_JSON = TASK_DIR / 'implementation_log.json'
-SCAN_LOG = TASK_DIR / 'scan_last_run.log'
-TEST_LOG = TASK_DIR / 'test_last_run.log'
-NEXT_TASKS = TASK_DIR / 'next_tasks.md'
-EXTRACTED = TASK_DIR / 'extracted_tasks.json'
+ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))  # repo root
+TASK_DIR = os.path.join(ROOT, '.multicoder', 'task')
+SCAN_PY = os.path.join(TASK_DIR, 'scan.py')
+LOG_JSON = os.path.join(TASK_DIR, 'implementation_log.json')
+SCAN_LOG = os.path.join(TASK_DIR, 'scan_last_run.log')
+TEST_LOG = os.path.join(TASK_DIR, 'test_last_run.log')
+NEXT_TASKS = os.path.join(TASK_DIR, 'next_tasks.md')
+EXTRACTED = os.path.join(TASK_DIR, 'extracted_tasks.json')
 
-TASK_DIR.mkdir(parents=True, exist_ok=True)
+os.makedirs(TASK_DIR, exist_ok=True)
 
 def append_log(entry: Dict[str, Any]) -> None:
-    LOG_JSON.parent.mkdir(parents=True, exist_ok=True)
+    os.makedirs(os.path.dirname(LOG_JSON), exist_ok=True)
     data: List[Any] = []
-    if LOG_JSON.exists():
+    if os.path.exists(LOG_JSON):
         try:
-            with LOG_JSON.open('r', encoding='utf8') as f:
+            with open(LOG_JSON, 'r', encoding='utf8') as f:
                 data = json.load(f)
         except Exception:
             # If file corrupt, preserve by renaming
-            backup = LOG_JSON.with_suffix('.corrupt-'+datetime.now(timezone.utc).strftime('%Y%m%d%H%M%S')+'.json')
-            LOG_JSON.rename(backup)
+            backup = LOG_JSON + '.corrupt-' + datetime.now(timezone.utc).strftime('%Y%m%d%H%M%S') + '.json'
+            try:
+                os.replace(LOG_JSON, backup)
+            except Exception:
+                pass
             data = []
     data.append(entry)
-    with LOG_JSON.open('w', encoding='utf8') as f:
+    with open(LOG_JSON, 'w', encoding='utf8') as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
 
 
 def run_scan() -> Dict[str, Any]:
-    if not SCAN_PY.exists():
+    if not os.path.exists(SCAN_PY):
         msg = f'scan.py not found at {SCAN_PY}. Skipping scan.'
-        with SCAN_LOG.open('a', encoding='utf8') as f:
+        with open(SCAN_LOG, 'a', encoding='utf8') as f:
             f.write(msg + '\n')
         return {'ok': False, 'error': msg}
  
-    cmd = [sys.executable, str(SCAN_PY)]
+    cmd = [sys.executable, SCAN_PY]
     start = datetime.now(timezone.utc).isoformat().replace(UTC_OFFSET, Z_SUFFIX)
     try:
-        proc = subprocess.run(cmd, capture_output=True, text=True, cwd=str(ROOT), timeout=60*10)
+        proc = subprocess.run(cmd, capture_output=True, text=True, cwd=ROOT, timeout=60*10)
         out = proc.stdout
         err = proc.stderr
         rc = proc.returncode
-        with SCAN_LOG.open('w', encoding='utf8') as f:
+        with open(SCAN_LOG, 'w', encoding='utf8') as f:
             f.write(f'[{start}] CMD: {cmd}\n')
             f.write('--- STDOUT ---\n')
             f.write(out or '')
@@ -78,28 +81,40 @@ def run_scan() -> Dict[str, Any]:
             f.write('\n')
         return {'ok': rc == 0, 'returncode': rc, 'stdout': out, 'stderr': err}
     except Exception as e:
-        with SCAN_LOG.open('a', encoding='utf8') as f:
+        with open(SCAN_LOG, 'a', encoding='utf8') as f:
             f.write(f'Exception running scan: {e}\n')
         return {'ok': False, 'error': str(e)}
 
 
 def run_backend_tests() -> Dict[str, Any]:
     # Runs `npm run test` in backend; safe and optional
-    backend_dir = ROOT / 'backend'
-    if not backend_dir.exists():
+    backend_dir = os.path.join(ROOT, 'backend')
+    if not os.path.exists(backend_dir):
         msg = 'backend directory not found; skipping tests'
-        with TEST_LOG.open('a', encoding='utf8') as f:
+        with open(TEST_LOG, 'a', encoding='utf8') as f:
             f.write(msg + '\n')
         return {'ok': False, 'error': msg}
  
-    cmd = ['npm', 'run', 'test', '--silent']
+    # Ensure npm is available on PATH; if not, surface a clear message
+    try:
+        import shutil
+        npm_path = shutil.which('npm')
+    except Exception:
+        npm_path = None
+    if not npm_path:
+        msg = 'npm not found; skipping backend tests'
+        with open(TEST_LOG, 'a', encoding='utf8') as f:
+            f.write(msg + '\n')
+        return {'ok': False, 'error': msg}
+
+    cmd = [npm_path, 'run', 'test', '--silent']
     start = datetime.now(timezone.utc).isoformat().replace(UTC_OFFSET, Z_SUFFIX)
     try:
-        proc = subprocess.run(cmd, capture_output=True, text=True, cwd=str(backend_dir), timeout=60*5)
+        proc = subprocess.run(cmd, capture_output=True, text=True, cwd=backend_dir, timeout=60*5)
         out = proc.stdout
         err = proc.stderr
         rc = proc.returncode
-        with TEST_LOG.open('w', encoding='utf8') as f:
+        with open(TEST_LOG, 'w', encoding='utf8') as f:
             f.write(f'[{start}] CMD: {cmd}\n')
             f.write('--- STDOUT ---\n')
             f.write(out or '')
@@ -108,7 +123,7 @@ def run_backend_tests() -> Dict[str, Any]:
             f.write('\n')
         return {'ok': rc == 0, 'returncode': rc, 'stdout': out, 'stderr': err}
     except Exception as e:
-        with TEST_LOG.open('a', encoding='utf8') as f:
+        with open(TEST_LOG, 'a', encoding='utf8') as f:
             f.write(f'Exception running backend tests: {e}\n')
         return {'ok': False, 'error': str(e)}
 
@@ -116,8 +131,8 @@ def run_backend_tests() -> Dict[str, Any]:
 def update_next_tasks_from_extracted() -> bool:
     # Simple heuristic: if extracted_tasks.json exists and next_tasks.md missing or older, copy top N
     try:
-        if EXTRACTED.exists():
-            with EXTRACTED.open('r', encoding='utf8') as f:
+        if os.path.exists(EXTRACTED):
+            with open(EXTRACTED, 'r', encoding='utf8') as f:
                 raw: Any = json.load(f)
             # Ensure we have a list of dict-like items so `.get` is safe
             if not isinstance(raw, list):
@@ -139,7 +154,8 @@ def update_next_tasks_from_extracted() -> bool:
             for i, t in enumerate(data[:10], 1):
                 summary = t.get('summary', '')
                 lines.append(f'{i}. {summary}\n')
-            NEXT_TASKS.write_text('\n'.join(lines), encoding='utf8')
+            with open(NEXT_TASKS, 'w', encoding='utf8') as f:
+                f.write('\n'.join(lines))
             return True
     except Exception:
         # ignore problems reading/parsing extracted tasks
