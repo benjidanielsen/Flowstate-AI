@@ -22,7 +22,9 @@ export class CustomerService {
             ...row,
             created_at: new Date(row.created_at),
             updated_at: new Date(row.updated_at),
-            next_action_date: row.next_action_date ? new Date(row.next_action_date) : undefined
+            next_action_date: row.next_action_date ? new Date(row.next_action_date) : undefined,
+            consent_json: row.consent_json ? JSON.parse(row.consent_json) : undefined,
+            utm_json: row.utm_json ? JSON.parse(row.utm_json) : undefined
           }));
           resolve(customers);
         }
@@ -44,7 +46,9 @@ export class CustomerService {
             ...row,
             created_at: new Date(row.created_at),
             updated_at: new Date(row.updated_at),
-            next_action_date: row.next_action_date ? new Date(row.next_action_date) : undefined
+            next_action_date: row.next_action_date ? new Date(row.next_action_date) : undefined,
+            consent_json: row.consent_json ? JSON.parse(row.consent_json) : undefined,
+            utm_json: row.utm_json ? JSON.parse(row.utm_json) : undefined
           };
           resolve(customer);
         }
@@ -67,8 +71,12 @@ export class CustomerService {
 
     return new Promise((resolve, reject) => {
       const stmt = db.prepare(`
-        INSERT INTO customers (id, name, email, phone, status, notes, next_action, next_action_date, created_at, updated_at)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO customers (
+          id, name, email, phone, status, notes, next_action, next_action_date,
+          created_at, updated_at, source, handle_ig, handle_whatsapp, country, language,
+          consent_json, utm_json
+        )
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `);
 
       stmt.run([
@@ -81,7 +89,14 @@ export class CustomerService {
         customer.next_action,
         customer.next_action_date?.toISOString(),
         customer.created_at.toISOString(),
-        customer.updated_at.toISOString()
+        customer.updated_at.toISOString(),
+        (customerData as any).source || null,
+        (customerData as any).handle_ig || null,
+        (customerData as any).handle_whatsapp || null,
+        (customerData as any).country || null,
+        (customerData as any).language || null,
+        (customerData as any).consent_json ? JSON.stringify((customerData as any).consent_json) : null,
+        (customerData as any).utm_json ? JSON.stringify((customerData as any).utm_json) : null
       ], (err) => {
         if (err) {
           reject(err);
@@ -117,7 +132,9 @@ export class CustomerService {
     return new Promise((resolve, reject) => {
       const stmt = db.prepare(`
         UPDATE customers 
-        SET name = ?, email = ?, phone = ?, status = ?, notes = ?, next_action = ?, next_action_date = ?, updated_at = ?
+        SET name = ?, email = ?, phone = ?, status = ?, notes = ?, next_action = ?, next_action_date = ?, updated_at = ?,
+            source = ?, handle_ig = ?, handle_whatsapp = ?, country = ?, language = ?,
+            consent_json = ?, utm_json = ?
         WHERE id = ?
       `);
 
@@ -130,6 +147,13 @@ export class CustomerService {
         updatedCustomer.next_action,
         updatedCustomer.next_action_date?.toISOString(),
         updatedCustomer.updated_at.toISOString(),
+        (updates as any).source ?? (existingCustomer as any).source ?? null,
+        (updates as any).handle_ig ?? (existingCustomer as any).handle_ig ?? null,
+        (updates as any).handle_whatsapp ?? (existingCustomer as any).handle_whatsapp ?? null,
+        (updates as any).country ?? (existingCustomer as any).country ?? null,
+        (updates as any).language ?? (existingCustomer as any).language ?? null,
+        (updates as any).consent_json ? JSON.stringify((updates as any).consent_json) : (existingCustomer as any).consent_json ? JSON.stringify((existingCustomer as any).consent_json) : null,
+        (updates as any).utm_json ? JSON.stringify((updates as any).utm_json) : (existingCustomer as any).utm_json ? JSON.stringify((existingCustomer as any).utm_json) : null,
         id
       ], (err) => {
         if (err) {

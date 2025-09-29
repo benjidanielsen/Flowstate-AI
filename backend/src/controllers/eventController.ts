@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import Joi from 'joi';
 import { EventLogService } from '../services/eventLogService';
+import { AutomationService } from '../services/automationService';
 
 // Event types per docs (frazer_method_blueprints/schemas/events.json)
 const AllowedEventTypes = [
@@ -40,9 +41,11 @@ const eventSchema = Joi.object({
 
 export class EventController {
   private eventLogService: EventLogService;
+  private automation: AutomationService;
 
   constructor() {
     this.eventLogService = new EventLogService();
+    this.automation = new AutomationService();
   }
 
   createEvent = async (req: Request, res: Response) => {
@@ -60,6 +63,13 @@ export class EventController {
         customer_id,
         rest.user_id
       );
+
+      // Fire automation hooks (best effort)
+      try {
+        await this.automation.handleEvent({ event_name, customer_id });
+      } catch (e) {
+        console.warn('Automation error (non-fatal):', e);
+      }
 
       // Override timestamp if provided
       if (timestamp) {
@@ -112,4 +122,3 @@ export class EventController {
     }
   };
 }
-

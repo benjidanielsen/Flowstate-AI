@@ -9,6 +9,13 @@ export interface Customer {
   notes?: string;
   next_action?: string;
   next_action_date?: Date;
+  source?: string;
+  handle_ig?: string;
+  handle_whatsapp?: string;
+  country?: string;
+  language?: string;
+  consent_json?: any;
+  utm_json?: any;
 }
 
 export enum PipelineStatus {
