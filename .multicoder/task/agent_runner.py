@@ -20,7 +20,7 @@ import json
 import time
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any, Dict, List, cast
 import sys
 
 # Reusable constants for timestamp formatting
@@ -118,15 +118,22 @@ def update_next_tasks_from_extracted() -> bool:
     try:
         if EXTRACTED.exists():
             with EXTRACTED.open('r', encoding='utf8') as f:
-                raw = json.load(f)
+                raw: Any = json.load(f)
             # Ensure we have a list of dict-like items so `.get` is safe
             if not isinstance(raw, list):
                 return False
+            # Cast to a typed list so static checkers know the element type in the loop
+            raw_list = cast(List[Any], raw)
             data: List[Dict[str, Any]] = []
-            for item in raw:
+            for item in raw_list:
                 if isinstance(item, dict):
-                    data.append(item)
+                    # Cast to Dict[Any, Any] so type-checkers know .items() yields (Any, Any)
+                    item_dict = cast(Dict[Any, Any], item)
+                    # Build a new dict with string keys and Any values
+                    converted: Dict[str, Any] = {str(k): v for k, v in item_dict.items()}
+                    data.append(converted)
                 else:
+                    # Ensure a string summary for non-dict items
                     data.append({'summary': str(item)})
             lines = ['# Next tasks (auto-extracted)\n']
             for i, t in enumerate(data[:10], 1):
