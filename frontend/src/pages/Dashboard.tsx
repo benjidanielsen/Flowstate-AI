@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Users, TrendingUp, Calendar, AlertCircle } from 'lucide-react';
 import { customerApi, interactionApi } from '../services/api';
+import { useToast } from '../contexts/ToastContext';
 import { PipelineStats, Interaction, PipelineStatus } from '../types';
 
 const Dashboard: React.FC = () => {
@@ -184,6 +185,7 @@ type CompleteButtonProps = {
 
 const CompleteButton: React.FC<CompleteButtonProps> = ({ interaction, onComplete }) => {
   const [loading, setLoading] = React.useState(false);
+  const { push } = useToast();
 
   const handleComplete = async () => {
     if (loading) return;
@@ -191,10 +193,10 @@ const CompleteButton: React.FC<CompleteButtonProps> = ({ interaction, onComplete
     try {
       await interactionApi.complete(interaction.id);
       onComplete();
-    } catch (err) {
+      push('Interaction completed', 'success');
+    } catch (err: any) {
       console.error('Failed to complete interaction', err);
-      // Optionally: show a toast or UI error
-      // For now, just log and revert in-memory state (no-op because optimistic removed on success)
+      push(err?.message || 'Failed to complete interaction', 'error');
     } finally {
       setLoading(false);
     }
