@@ -15,9 +15,12 @@ Backend gaps identified and addressed:
 - NBA proxy endpoints to Python worker
 - Customer table extended with `source`, `handle_ig`, `handle_whatsapp`, `country`, `language`, `consent_json`, `utm_json`
 
+Frazer Method note
+- The Frazer Brookes method (Talk → Invite → Show → Keep Talking) drives event flows, DMO targets (20 invites/30 follow‑ups), and pipeline transitions.
+- Phase 2 will add a pipeline vocabulary bridge (Recruiting/Sales/Frazer statuses) and enforcement of DMO counters for Dashboard.
+
 Next improvements (not yet implemented):
 - Add consent/utm validation middleware on customer create/update
 - Map pipeline stages across `pipelines.json` and internal `PipelineStatus`
 - Add GDPR endpoints: export/delete customer data
 - Add rate limits and auth for webhooks
-
