@@ -146,7 +146,12 @@ export class CustomerController {
       const counts_by_status = await this.statsService.countsByStatus();
       const dmo = await this.statsService.dmoCounters();
       const extras = await this.statsService.extraCounts();
-      res.json({ counts_by_status, dmo_today: dmo.today, dmo_week: dmo.week, ...extras });
+      const pipeline = String(req.query.pipeline || '').toLowerCase();
+      let counts_by_pipeline: any = undefined;
+      if (['frazer','recruiting','sales'].includes(pipeline)) {
+        counts_by_pipeline = await this.statsService.countsByPipeline(pipeline as any);
+      }
+      res.json({ counts_by_status, counts_by_pipeline, dmo_today: dmo.today, dmo_week: dmo.week, ...extras });
     } catch (error) {
       console.error('Error fetching pipeline stats:', error);
       res.status(500).json({ error: 'Internal server error' });

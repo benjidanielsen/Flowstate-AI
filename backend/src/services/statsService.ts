@@ -1,5 +1,6 @@
 import DatabaseManager from '../database';
 import { PipelineStatus } from '../types';
+import { aggregateCountsByVocabulary, PipelineVocabulary } from './pipelineMapping';
 
 export class StatsService {
   async countsByStatus(): Promise<Record<string, number>> {
@@ -14,6 +15,11 @@ export class StatsService {
       });
     })));
     return result;
+  }
+
+  async countsByPipeline(vocab: PipelineVocabulary) {
+    const canonical = await this.countsByStatus();
+    return aggregateCountsByVocabulary(canonical, vocab);
   }
 
   private dateRange(_daySpan: number) {
