@@ -2,7 +2,8 @@ import { Request, Response } from 'express';
 import { InteractionService } from '../services/interactionService';
 
 export class InteractionController {
-  private interactionService: InteractionService;
+  // make the service readonly since it's only assigned in the constructor
+  private readonly interactionService: InteractionService;
 
   constructor() {
     this.interactionService = new InteractionService();
