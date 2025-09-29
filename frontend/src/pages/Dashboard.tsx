@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Users, TrendingUp, Calendar, AlertCircle } from 'lucide-react';
 import { customerApi, interactionApi } from '../services/api';
+import { useToast } from '../contexts/ToastContext';
 import { PipelineStats, Interaction, PipelineStatus } from '../types';
 
 const Dashboard: React.FC = () => {
@@ -148,8 +149,14 @@ const Dashboard: React.FC = () => {
                     </p>
                     <p className="text-xs text-gray-500">{interaction.content}</p>
                   </div>
-                  <div className="text-xs text-gray-400">
-                    {interaction.scheduled_for && new Date(interaction.scheduled_for).toLocaleDateString()}
+                  <div className="flex items-center space-x-3">
+                    <div className="text-xs text-gray-400">
+                      {interaction.scheduled_for && new Date(interaction.scheduled_for).toLocaleDateString()}
+                    </div>
+                    <CompleteButton
+                      interaction={interaction}
+                      onComplete={() => setUpcomingInteractions((prev) => prev.filter((i) => i.id !== interaction.id))}
+                    />
                   </div>
                 </div>
               ))}
@@ -169,3 +176,39 @@ const Dashboard: React.FC = () => {
 };
 
 export default Dashboard;
+
+// Small local component for completing an interaction
+type CompleteButtonProps = {
+  interaction: Interaction;
+  onComplete: () => void;
+};
+
+const CompleteButton: React.FC<CompleteButtonProps> = ({ interaction, onComplete }) => {
+  const [loading, setLoading] = React.useState(false);
+  const { push } = useToast();
+
+  const handleComplete = async () => {
+    if (loading) return;
+    setLoading(true);
+    try {
+      await interactionApi.complete(interaction.id);
+      onComplete();
+      push('Interaction completed', 'success');
+    } catch (err: any) {
+      console.error('Failed to complete interaction', err);
+      push(err?.message || 'Failed to complete interaction', 'error');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <button
+      onClick={handleComplete}
+      disabled={loading}
+      className={`text-sm px-2 py-1 rounded ${loading ? 'bg-gray-300 text-gray-600' : 'bg-green-500 text-white hover:bg-green-600'}`}
+    >
+      {loading ? 'Completing...' : 'Complete'}
+    </button>
+  );
+};

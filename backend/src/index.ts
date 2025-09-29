@@ -5,11 +5,15 @@ import dotenv from 'dotenv';
 import DatabaseManager from './database';
 import { runMigrations } from './database/migrate';
 import routes from './routes';
+import http from 'http';
 
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3001;
+let serverRef: http.Server | null = null;
+let isShuttingDown = false;
+let shutdownPromise: Promise<void> | null = null;
 
 // Middleware
 app.use(helmet());
@@ -31,40 +35,105 @@ app.use((req: express.Request, res: express.Response) => {
   res.status(404).json({ error: 'Route not found' });
 });
 
-async function startServer() {
+export function createApp() {
+  return app;
+}
+
+export async function startServer() {
   try {
     // Initialize database
     console.log('Connecting to database...');
     await DatabaseManager.getInstance().connect();
-    
+
     // Run migrations
     console.log('Running database migrations...');
     await runMigrations();
-    
+
     // Start server
-    app.listen(PORT, () => {
+    serverRef = app.listen(PORT, () => {
       console.log(`Server is running on port ${PORT}`);
       console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
     });
+    return serverRef;
   } catch (error) {
     console.error('Failed to start server:', error);
-    process.exit(1);
+    // Throw instead of process.exit so tests can handle failures
+    throw error;
   }
 }
 
 // Graceful shutdown
-process.on('SIGTERM', async () => {
-  console.log('SIGTERM received, shutting down gracefully');
-  await DatabaseManager.getInstance().close();
-  process.exit(0);
-});
+// Graceful shutdown helpers (do not call process.exit here so tests can manage lifecycle)
+export async function shutdown() {
+  console.log('Shutting down gracefully');
+  if (shutdownPromise) {
+    return shutdownPromise;
+  }
 
-process.on('SIGINT', async () => {
-  console.log('SIGINT received, shutting down gracefully');
-  await DatabaseManager.getInstance().close();
-  process.exit(0);
-});
+  shutdownPromise = (async () => {
+    if (isShuttingDown) return;
+    isShuttingDown = true;
 
-startServer();
+    // Close HTTP server if running
+    if (serverRef) {
+      await new Promise<void>((resolve, reject) => {
+        let closeTimeout: NodeJS.Timeout | null = null;
+
+        const onClose = (err?: Error) => {
+          if (closeTimeout) {
+            clearTimeout(closeTimeout);
+            closeTimeout = null;
+          }
+          if (err) {
+            console.error('Error closing server:', err);
+            reject(err);
+            return;
+          }
+          serverRef = null;
+          resolve();
+        };
+
+        serverRef!.close(onClose);
+
+        // Safety: force resolve if close hangs (5s)
+        closeTimeout = setTimeout(() => {
+          // Avoid logging after test run completion; use console.warn sparingly.
+          try {
+            /* istanbul ignore next */
+            console.warn('Server close timed out after 5s; continuing with DB close');
+          } catch (e) {
+            // swallow any logging errors
+          }
+          serverRef = null;
+          resolve();
+        }, 5000);
+      });
+    }
+
+    await DatabaseManager.getInstance().close();
+  })();
+
+  return shutdownPromise;
+}
+
+if (require.main === module) {
+  // When run directly, start the server and attach signal handlers that exit the process
+  startServer().catch((err) => {
+    console.error('Fatal error starting server:', err);
+    process.exit(1);
+  });
+
+  process.on('SIGTERM', async () => {
+    console.log('SIGTERM received, shutting down gracefully');
+    await shutdown();
+    process.exit(0);
+  });
+
+  process.on('SIGINT', async () => {
+    console.log('SIGINT received, shutting down gracefully');
+    await shutdown();
+    process.exit(0);
+  });
+}
 
 export default app;
