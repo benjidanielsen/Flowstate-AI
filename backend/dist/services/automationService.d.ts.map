@@ -1,0 +1,1 @@
+{"version":3,"file":"automationService.d.ts","sourceRoot":"","sources":["../../src/services/automationService.ts"],"names":[],"mappings":"AAEA,qBAAa,iBAAiB;IAC5B,OAAO,CAAC,eAAe,CAAyB;IAE1C,WAAW,CAAC,KAAK,EAAE;QAAE,UAAU,EAAE,MAAM,CAAC;QAAC,WAAW,CAAC,EAAE,MAAM,CAAA;KAAE;CAqBtE"}

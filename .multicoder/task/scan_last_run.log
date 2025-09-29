@@ -1,0 +1,10 @@
+﻿python : C:\Users\binya\AppData\Local\Programs\Python\Python313\python.exe: 
+can't open file 'C:\\Users\\binya\\OneDrive\\Music\\Flowstate-AI\\.multicoder
+\\task\\scan.py': [Errno 2] No such file or directory
+At line:4 char:5
++     python .\.multicoder\task\scan.py 2>&1 | Out-File -FilePath .\.mu ...
++     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (C:\Users\binya\...le or directo 
+   ry:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
