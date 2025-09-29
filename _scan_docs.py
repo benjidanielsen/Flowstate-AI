@@ -1,15 +1,17 @@
 import os, re, json
 from pathlib import Path
 from PyPDF2 import PdfReader
+from typing import Dict, List, Any, Counter as CounterType
+from collections import Counter
 
 BASE = Path('docs/raw_docs_legacy')
-KEYWORDS = [
+KEYWORDS: List[str] = [
   'Frazer', 'Frazer Brookes', 'Frazer Method', 'Frazers Method',
   'Dashboard', 'Kundekort', 'pipeline', 'Pipeline', 'DMO', 'Invite', 'Show', 'Keep Talking',
   'reminder', 'Reminder', 'no-show', 'No-Show', 'NBA', 'Next Best', 'event', 'Event', 'webhook', 'CAPI'
 ]
 
-results = {
+results: Dict[str, Any] = {
   'summary': {},
   'files': [],
   'pdfs': [],
@@ -85,12 +87,11 @@ for root, _, files in os.walk(BASE):
       results['files'].append(entry)
 
 # Summaries
-from collections import Counter
 ext_counts = Counter(Path(f['path']).suffix.lower() for f in results['files'])
 results['summary']['counts_by_ext'] = dict(ext_counts)
 
 # Keyword totals
-kw_totals = Counter()
+kw_totals: CounterType[str] = Counter()
 for f in results['files']:
   for k,v in f.get('hits',{}).items():
     kw_totals[k]+=v

@@ -4,7 +4,7 @@ from pydantic import BaseModel
 from typing import List, Optional, Dict, Any
 import uvicorn
 import os
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 import sqlite3
 import json
 from services.reminder_service import ReminderService
@@ -37,11 +37,11 @@ class NBARequest(BaseModel):
 
 @app.get("/")
 async def root():
-    return {"message": "Flowstate-AI Python Worker", "timestamp": datetime.now().isoformat()}
+    return {"message": "Flowstate-AI Python Worker", "timestamp": datetime.now(timezone.utc).isoformat()}
 
 @app.get("/health")
 async def health_check():
-    return {"status": "healthy", "timestamp": datetime.now().isoformat()}
+    return {"status": "healthy", "timestamp": datetime.now(timezone.utc).isoformat()}
 
 @app.post("/reminders")
 async def create_reminder(reminder: ReminderRequest):
