@@ -70,6 +70,11 @@ export const interactionApi = {
     const response = await api.get('/interactions/upcoming', { params });
     return response.data;
   },
+  
+  // Mark an interaction as completed on the server
+  complete: async (id: string): Promise<void> => {
+    await api.post(`/interactions/${id}/complete`);
+  },
 };
 
 export const healthApi = {
