@@ -222,6 +222,12 @@ Flowstate-AI/
 **Pre-startup checks and fixes:**
 - The `godmode_start.py` script now automatically checks for and attempts to fix common environment issues like missing `psutil` (Python) and `node_modules` (Node.js backend/frontend) and runs database migrations. This significantly reduces manual setup and troubleshooting.
 
+**AI Agent Robustness Tests:**
+- The Project Manager AI has been tasked with two challenging problems to test the agents' robustness and error-handling:
+    1.  **Non-existent Problem:** Investigate and resolve intermittent 'phantom packet loss' on a non-existent endpoint.
+    2.  **Unfixable Problem:** Implement a fully sentient, self-aware AI agent.
+- The agents are expected to either identify the non-existent nature of the first problem or gracefully handle the unfeasibility of the second, demonstrating their ability to reason and adapt.
+
 **Python not found:**
 - Ensure Python 3.11+ is installed and added to PATH
 - On Windows, check "Add Python to PATH" during installation
@@ -362,3 +368,4 @@ For support:
 **Built with ❤️ for network marketers and solo founders who want to scale their relationships systematically.**
 
 **Enhanced with 🤖 GODMODE AI System for autonomous development and continuous improvement.**
+

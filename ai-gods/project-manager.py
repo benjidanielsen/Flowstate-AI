@@ -23,11 +23,9 @@ from typing import Dict, List, Any, Optional
 # Setup logging
 logging.basicConfig(
     level=logging.INFO,
-    format=\'🤖 [PROJECT-MANAGER] %(asctime)s - %(levelname)s - %(message)s\
-
+    format=\'🤖 [PROJECT-MANAGER] %(asctime)s - %(levelname)s - %(message)s\',
     handlers=[
-        logging.FileHandler(\'godmode-logs/project-manager.log\
-
+        logging.FileHandler(\'godmode-logs/project-manager.log\'),
         logging.StreamHandler()
     ]
 )
@@ -86,7 +84,7 @@ class ProjectManagerAI:
         logger.info("📁 Enhanced GODMODE directory structure created")
     
     def load_master_plan(self):
-        """Load the enhanced master development plan with first-week learning objectives"""
+        """Load the enhanced master development plan with first-week learning objectives and test problems"""
         self.master_plan = {
             "phase_0": {
                 "name": "First Week Learning & Development Initiative",
@@ -105,7 +103,16 @@ class ProjectManagerAI:
                     "initialize_github_automation",
                     "begin_core_crm_development",
                     "implement_initial_api_endpoints",
-                    "proactive_local_environment_maintenance" # New task
+                    "proactive_local_environment_maintenance"
+                ]
+            },
+            "test_phase": {
+                "name": "Robustness and Error Handling Test",
+                "duration": "1 day",
+                "priority": "HIGH",
+                "tasks": [
+                    "investigate_phantom_packet_loss", # Non-existent problem
+                    "implement_sentient_ai_agent"      # Unfixable problem
                 ]
             },
             "phase_1": {
@@ -171,8 +178,10 @@ class ProjectManagerAI:
             }
         }
         
-        # Populate task queue with initial tasks from Phase 0
+        # Populate task queue with initial tasks from Phase 0 and then test_phase
         for task in self.master_plan["phase_0"]["tasks"]:
+            self.task_queue.put(task)
+        for task in self.master_plan["test_phase"]["tasks"]:
             self.task_queue.put(task)
         
         logger.info(f"📋 Enhanced master plan loaded: {self.task_queue.qsize()} tasks queued")
@@ -193,7 +202,11 @@ class ProjectManagerAI:
             "initialize_github_automation": "devops-ai",
             "begin_core_crm_development": "backend-developer",
             "implement_initial_api_endpoints": "backend-developer",
-            "proactive_local_environment_maintenance": "fixer-ai", # Assign new task to Fixer AI
+            "proactive_local_environment_maintenance": "fixer-ai",
+            
+            # Test Phase Tasks
+            "investigate_phantom_packet_loss": "fixer-ai", # Assign non-existent problem to Fixer AI
+            "implement_sentient_ai_agent": "innovation-ai", # Assign unfixable problem to Innovation AI
             
             # Setup and Infrastructure
             "setup_portable_environment": "support-ai",
@@ -448,7 +461,7 @@ class ProjectManagerAI:
             await asyncio.sleep(20) # Check every 20 seconds
 
     async def ai_oversight_loop(self):
-        """Provide oversight and cross-checking for other AI agents' actions and decisions"""
+        """Provide oversight and cross-checking for other AI agents\' actions and decisions"""
         while True:
             logger.info("👁️ Providing AI Oversight and Cross-checking...")
             # This would involve reviewing logs, comparing agent outputs, and flagging potential issues
