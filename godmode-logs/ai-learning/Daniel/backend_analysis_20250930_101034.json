@@ -1,0 +1,26 @@
+{
+  "api_endpoints": [
+    "backend/src/routes/customers.ts",
+    "backend/src/routes/events.ts",
+    "backend/src/routes/index.ts",
+    "backend/src/routes/interactions.ts",
+    "backend/src/routes/nba.ts",
+    "backend/src/routes/reminders.ts",
+    "backend/src/routes/webhooks.ts"
+  ],
+  "database_models": [
+    "backend/src/controllers/customerController.ts",
+    "backend/src/controllers/eventController.ts",
+    "backend/src/controllers/reminderController.ts"
+  ],
+  "middleware": [
+    "backend/src/index.ts",
+    "backend/src/routes/index.ts"
+  ],
+  "services": [],
+  "utilities": [],
+  "patterns_identified": [
+    "RESTful API structure",
+    "Database modeling"
+  ]
+}

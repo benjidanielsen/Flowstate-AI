@@ -87,7 +87,7 @@ class ProjectManagerAI:
         """Load the enhanced master development plan with first-week learning objectives"""
         self.master_plan = {
             "phase_0": {
-                "name": "First Week Learning Initiative",
+                "name": "First Week Learning & Development Initiative",
                 "duration": "7 days",
                 "priority": "CRITICAL",
                 "tasks": [
@@ -100,7 +100,9 @@ class ProjectManagerAI:
                     "create_comprehensive_system_map",
                     "establish_learning_baselines",
                     "setup_hourly_self_reflection",
-                    "initialize_github_automation"
+                    "initialize_github_automation",
+                    "begin_core_crm_development",
+                    "implement_initial_api_endpoints"
                 ]
             },
             "phase_1": {
@@ -186,6 +188,8 @@ class ProjectManagerAI:
             "establish_learning_baselines": "ai-communication-hub",
             "setup_hourly_self_reflection": "project-manager",
             "initialize_github_automation": "devops-ai",
+            "begin_core_crm_development": "backend-developer",
+            "implement_initial_api_endpoints": "backend-developer",
             
             # Setup and Infrastructure
             "setup_portable_environment": "support-ai",
@@ -262,13 +266,14 @@ class ProjectManagerAI:
         # Start coordination loops
         coordination_tasks = [
             asyncio.create_task(self.task_distribution_loop()),
-            asyncio.create_task(self.progress_monitoring_loop()), # Added this line
+            asyncio.create_task(self.progress_monitoring_loop()),
             asyncio.create_task(self.health_check_loop()),
             asyncio.create_task(self.communication_hub_loop()),
             asyncio.create_task(self.continuous_improvement_loop()),
             asyncio.create_task(self.innovation_monitoring_loop()),
             asyncio.create_task(self.collective_memory_sync_loop()),
-            asyncio.create_task(self.ai_democracy_loop())
+            asyncio.create_task(self.ai_democracy_loop()),
+            asyncio.create_task(self.ai_oversight_loop())
         ]
         
         # Run all coordination tasks concurrently
@@ -279,7 +284,7 @@ class ProjectManagerAI:
         while True:
             try:
                 # This loop will periodically check the status of active_tasks
-                # and send updates to the dashboard. For now, it's a placeholder.
+                # and send updates to the dashboard. For now, it\ s a placeholder.
                 logger.info("📊 Project Manager is monitoring progress...")
                 # In a real scenario, this would iterate through self.active_tasks
                 # and update their progress based on agent reports or internal logic.
@@ -482,6 +487,21 @@ class ProjectManagerAI:
             except Exception as e:
                 logger.error(f"❌ Error in AI democracy loop: {e}")
                 await asyncio.sleep(35)
+
+    async def ai_oversight_loop(self):
+        """Provide oversight and cross-checking for AI agent actions"""
+        while True:
+            try:
+                logger.info("👀 Project Manager performing AI oversight...")
+                # This loop will randomly select 1-2 agents to act as reviewers
+                # for recent commits or major decisions.
+                
+                # For now, we just log the intent.
+                
+                await asyncio.sleep(120) # Perform oversight every 2 minutes
+            except Exception as e:
+                logger.error(f"❌ Error in AI oversight loop: {e}")
+                await asyncio.sleep(120)
 
     def save_system_state(self):
         """Save the current state of the Project Manager and active tasks"""
