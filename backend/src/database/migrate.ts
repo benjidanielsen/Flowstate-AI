@@ -9,7 +9,7 @@ const migrations = [
         name TEXT NOT NULL,
         email TEXT,
         phone TEXT,
-        status TEXT NOT NULL DEFAULT 'Lead',
+        status TEXT NOT NULL DEFAULT 'New Lead',
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         notes TEXT,
@@ -71,6 +71,20 @@ const migrations = [
       ALTER TABLE customers ADD COLUMN utm_json TEXT;
 
       CREATE INDEX IF NOT EXISTS idx_customers_source ON customers(source);
+    `
+  },
+  {
+    version: 3,
+    up: `
+      -- Add prospect_why field for Frazer Method requirement
+      ALTER TABLE customers ADD COLUMN prospect_why TEXT;
+      
+      -- Update existing customers with old status values to new Frazer Method stages
+      UPDATE customers SET status = 'New Lead' WHERE status = 'Lead';
+      UPDATE customers SET status = 'Warming Up' WHERE status = 'Relationship';
+      UPDATE customers SET status = 'Closed - Won' WHERE status = 'SIGNED-UP';
+      
+      CREATE INDEX IF NOT EXISTS idx_customers_prospect_why ON customers(prospect_why);
     `
   }
 ];

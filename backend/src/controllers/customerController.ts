@@ -14,6 +14,7 @@ const customerCreateSchema = Joi.object({
   next_action: Joi.string().optional(),
   next_action_date: Joi.date().iso().optional(),
   source: Joi.string().valid(...SOURCE_ENUM).optional(),
+  prospect_why: Joi.string().optional(), // Frazer Method: Required for Qualified stage
   handle_ig: Joi.string().optional(),
   handle_whatsapp: Joi.string().optional(),
   country: Joi.string().optional(),
@@ -94,6 +95,14 @@ export class CustomerController {
       const { error, value } = customerUpdateSchema.validate(req.body, { abortEarly: false });
       if (error) {
         return res.status(400).json({ error: 'Invalid payload', details: error.details });
+      }
+      
+      // Frazer Method: Enforce prospect_why requirement for Qualified stage
+      if (value.status === PipelineStatus.QUALIFIED && !value.prospect_why) {
+        return res.status(400).json({ 
+          error: 'Prospect WHY is required to move to Qualified stage',
+          frazer_rule: 'Cannot qualify prospect without understanding their core motivation'
+        });
       }
       
       const customer = await this.customerService.updateCustomer(id, value);

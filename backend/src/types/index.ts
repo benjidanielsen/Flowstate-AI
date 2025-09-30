@@ -10,6 +10,7 @@ export interface Customer {
   next_action?: string;
   next_action_date?: Date;
   source?: string;
+  prospect_why?: string; // Frazer Method: Mandatory for Qualified stage
   handle_ig?: string;
   handle_whatsapp?: string;
   country?: string;
@@ -19,13 +20,15 @@ export interface Customer {
 }
 
 export enum PipelineStatus {
-  LEAD = 'Lead',
-  RELATIONSHIP = 'Relationship', 
+  NEW_LEAD = 'New Lead',
+  WARMING_UP = 'Warming Up',
   INVITED = 'Invited',
   QUALIFIED = 'Qualified',
   PRESENTATION_SENT = 'Presentation Sent',
   FOLLOW_UP = 'Follow-up',
-  SIGNED_UP = 'SIGNED-UP'
+  CLOSED_WON = 'Closed - Won',
+  NOT_NOW = 'Not Now',
+  LONG_TERM_NURTURE = 'Long-term Nurture'
 }
 
 export interface Interaction {
