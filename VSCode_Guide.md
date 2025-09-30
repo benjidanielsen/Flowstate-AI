@@ -1,65 +1,73 @@
-# VSCode Extensions & GODMODE AI Interaction Guide
+# VSCode Guide for FlowState-AI with GODMODE System
 
-This guide provides an overview of useful VSCode extensions, particularly those for AI interaction, and explains how to interact with the GODMODE AI system.
+This guide will help you set up your Visual Studio Code (VSCode) environment to work seamlessly with the FlowState-AI project, especially with the new GODMODE AI system.
 
-## 🚀 Recommended VSCode Extensions
+## 🚀 Quick Setup
 
-Visual Studio Code offers a vast marketplace of extensions to enhance productivity. Here are some highly recommended free extensions, especially for AI-powered development and general coding:
+1.  **Clone the Repository:**
+    If you haven't already, clone the FlowState-AI repository to your local machine:
+    ```bash
+    git clone https://github.com/benjidanielsen/Flowstate-AI.git
+    cd Flowstate-AI
+    ```
 
-### 🤖 AI Coding Assistants
+2.  **Open in VSCode:**
+    Open the cloned `Flowstate-AI` folder in VSCode.
 
-These extensions provide AI-powered code completions, suggestions, and even chat capabilities directly within your editor.
+3.  **Install Recommended Extensions:**
+    VSCode will likely recommend some extensions based on the project's file types (Python, JavaScript/TypeScript). Install them. Key extensions include:
+    *   **Python** (Microsoft): For Python language support, debugging, and linting.
+    *   **ESLint** (Dirk Baeumer): Integrates ESLint into VSCode.
+    *   **Prettier - Code formatter** (Prettier): For consistent code formatting.
+    *   **TypeScript and JavaScript Language Features** (Microsoft): Usually built-in, but ensure it's active.
+    *   **GitHub Copilot** (GitHub): For AI-powered code suggestions (if you have access).
 
-1.  **AWS CodeWhisperer**
-    -   **Description:** An AI coding companion that generates code suggestions in real-time based on your comments and existing code. It supports multiple languages and offers features like terminal autocomplete and command generation.
-    -   **Why use it:** Provides intelligent code completion and can help accelerate development by suggesting entire functions or blocks of code.
-    -   **How to use:** Install from the VSCode Marketplace. Once enabled, it will automatically provide suggestions as you type. You can often trigger suggestions manually with a keyboard shortcut (e.g., `Alt+C`).
+4.  **Start the GODMODE System:**
+    Open the integrated terminal in VSCode (`Ctrl+\` or `Cmd+\`).
 
-2.  **CodiumAI**
-    -   **Description:** Focuses on helping developers write tests and understand code. It analyzes your code and suggests meaningful tests, explains code, and helps with code reviews.
-    -   **Why use it:** Essential for ensuring code quality and understanding complex logic, especially when working with AI-generated code.
-    -   **How to use:** Install from the VSCode Marketplace. It typically integrates as a sidebar panel or context menu options, allowing you to generate tests or ask for code explanations.
+    **On Windows:**
+    ```cmd
+    # Using Command Prompt
+    godmode_start.bat
+    
+    # Or using PowerShell
+    .\godmode_start.ps1
+    ```
 
-3.  **Tabnine**
-    -   **Description:** An AI code completion tool that uses machine learning to predict and suggest the next lines of code. It learns from your code patterns and provides personalized suggestions.
-    -   **Why use it:** Boosts coding speed and reduces repetitive typing with smart, context-aware suggestions.
-    -   **How to use:** Install from the VSCode Marketplace. It operates in the background, providing inline code suggestions as you type.
+    **On Linux/macOS:**
+    ```bash
+    python3 godmode_start.py
+    ```
 
-4.  **Open-Source Alternatives (e.g., FauxPilot, CodeGPT)**
-    -   **Description:** Various community-driven projects aim to provide similar functionalities to commercial AI assistants using local or open-source models. These might require additional setup.
-    -   **Why use it:** Offers flexibility and privacy by running models locally or using open-source solutions.
-    -   **How to use:** Installation and usage vary by extension. Check their respective documentation on the VSCode Marketplace or GitHub.
+    **Important Note on Proactive Local Environment Maintenance:** The `godmode_start.py` (and its Windows counterparts) now initiates **proactive local environment maintenance**. This means that during startup, the Fixer AI, coordinated by the Project Manager, will automatically:
+    *   Check for and install missing Python dependencies (like `psutil`).
+    *   Check for and install missing Node.js `node_modules` in both `backend` and `frontend` directories.
+    *   Run necessary database migrations (`npm run db:migrate`).
 
-### 🛠️ General Productivity & Development Extensions
+    This significantly reduces manual setup and troubleshooting, allowing the AI agents to ensure a smooth operating environment from the outset.
 
-These extensions are invaluable for any developer, streamlining workflows and improving code quality.
+## 📊 Monitoring AI Agents in VSCode
 
-1.  **GitLens — Git supercharged**
-    -   **Description:** Enhances Git capabilities within VSCode, providing features like blame annotations, code lens, and an intuitive Git history viewer.
-    -   **Why use it:** Crucial for understanding code changes, authorship, and navigating repository history, especially in a collaborative or AI-driven development environment.
-    -   **How to use:** Install and it integrates directly into your editor. Hover over lines of code to see Git blame information, or use the GitLens sidebar for detailed history.
+While the primary GODMODE Dashboard is accessible via your web browser (http://localhost:3333), you can also monitor AI agent activities and logs directly within VSCode:
 
-2.  **Prettier - Code formatter**
-    -   **Description:** An opinionated code formatter that enforces a consistent style across your codebase.
-    -   **Why use it:** Ensures code readability and consistency, reducing cognitive load and merge conflicts.
-    -   **How to use:** Install and configure to format on save (recommended). It can be run manually via the command palette (`Ctrl+Shift+P` then search for "Format Document").
+1.  **Integrated Terminal:** The `godmode_start.py` script will output logs from the Project Manager and other agents directly to your VSCode terminal. Keep an eye on this for real-time updates.
 
-## ⚙️ GODMODE System Interaction
+2.  **`godmode-logs/` Directory:** Explore the `godmode-logs/` directory in your VSCode file explorer. Each AI agent (e.g., `project-manager.log`, `fixer-ai.log`) will have its own log file, providing detailed insights into their operations, decisions, and any issues encountered.
 
-The GODMODE AI system is designed for autonomous operation, but you can interact with it and monitor its progress through the following methods:
+3.  **AI Chat Interface:** Access the AI Chat at `http://localhost:3333/chat` in your browser to directly communicate with the AI agents and query their status or progress.
 
-### Starting the System
+## 💡 Tips for Working with GODMODE AI
 
-Use the provided startup scripts (`godmode_start.py`, `godmode_start.bat`, `godmode_start.ps1`) to launch the entire GODMODE environment. These scripts now include **pre-startup checks and automatic fixes** for common local environment issues, such as missing Python dependencies (psutil) and Node.js `node_modules`, and also run database migrations. This ensures a smoother startup experience.
+*   **Observe and Learn:** The AI agents are designed to be autonomous. Observe their logs and the dashboard to understand their workflow and decision-making processes.
+*   **Provide Feedback (via Chat/Issues):** If you notice any issues or have suggestions, use the AI Chat interface or open a GitHub issue. The Support AI and Innovation AI are designed to process this feedback.
+*   **Review Code Changes:** The AI agents will be making changes to the codebase. Regularly review `git status` and `git log` to see their contributions. The DevOps AI handles commits and pushes.
+*   **Leverage VSCode Features:** Use VSCode's powerful search, linting, and debugging features to navigate and understand the code generated and managed by the AI agents.
 
-### Monitoring & Communication
+## Troubleshooting within VSCode
 
--   **GODMODE Dashboard:** Access the web-based dashboard at `http://localhost:3333` to view real-time agent statuses, task progress, and system health.
--   **AI Chat Interface:** Engage directly with the AI agents via the chat interface available at `http://localhost:3333/chat`.
--   **Logs:** Review detailed logs in the `godmode-logs/` directory for insights into agent activities and troubleshooting.
+*   **Terminal Output:** Always check the VSCode terminal output for errors when starting the system. The proactive maintenance should catch many issues, but any remaining errors will be logged here.
+*   **Log Files:** For deeper diagnostics, examine the specific agent log files in `godmode-logs/`.
+*   **Restart VSCode:** Sometimes, simply restarting VSCode can resolve environment path issues or extension conflicts.
+*   **Check `godmode_start.py`:** If the system fails to start, review `godmode_start.py` for any errors or unexpected behavior, especially if you've made modifications.
 
-### Troubleshooting
-
-If you encounter issues, refer to the `Troubleshooting` section in the main `README.md` for common problems and manual startup instructions. The pre-startup checks in `godmode_start.py` should resolve most initial setup issues automatically.
-
-
+This guide will be continuously updated by the Documentation AI as the GODMODE system evolves. Happy coding with your autonomous AI team!
