@@ -38,6 +38,8 @@ Before running the system, ensure you have the following installed:
    python3 godmode_start.py
    ```
 
+   **Note:** The `godmode_start.py` script now includes **pre-startup checks and automatic fixes** for common local environment issues, such as missing Python dependencies (psutil) and Node.js `node_modules`, and also runs database migrations. This ensures a smoother startup experience.
+
 3. **Access the system:**
    - **GODMODE Dashboard:** http://localhost:3333
    - **Frontend:** http://localhost:3000
@@ -217,6 +219,9 @@ Flowstate-AI/
 
 ### GODMODE System Issues
 
+**Pre-startup checks and fixes:**
+- The `godmode_start.py` script now automatically checks for and attempts to fix common environment issues like missing `psutil` (Python) and `node_modules` (Node.js backend/frontend) and runs database migrations.
+
 **Python not found:**
 - Ensure Python 3.11+ is installed and added to PATH
 - On Windows, check "Add Python to PATH" during installation
@@ -332,7 +337,7 @@ This project now features both traditional development and AI-driven development
 2. Create a feature branch: `git checkout -b feature-name`
 3. Make your changes and add tests
 4. Run linting and tests: `npm run lint && npm test`
-5. Commit your changes: `git commit -m 'Add feature'`
+5. Commit your changes: `git commit -m \'Add feature\'`
 6. Push to branch: `git push origin feature-name`
 7. Submit a pull request
 
@@ -350,7 +355,7 @@ For support:
 2. Review this README for troubleshooting steps
 3. Use the AI Chat interface at http://localhost:3333/chat
 4. Open an issue on GitHub
-5. Contact [support@flowstate-ai.com](mailto:support@flowstate-ai.com)
+5. Contact [support@flowstate-ai.com](mailto:support@flowstate-ai.com).
 
 ---
 

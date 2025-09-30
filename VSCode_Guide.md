@@ -42,4 +42,24 @@ These extensions are invaluable for any developer, streamlining workflows and im
 2.  **Prettier - Code formatter**
     -   **Description:** An opinionated code formatter that enforces a consistent style across your codebase.
     -   **Why use it:** Ensures code readability and consistency, reducing cognitive load and merge conflicts.
-    -   **How to use:** Install and configure to format on save (recommended). It can be run manually via the command palette (`Ctrl+Shift+P` then search for 
+    -   **How to use:** Install and configure to format on save (recommended). It can be run manually via the command palette (`Ctrl+Shift+P` then search for "Format Document").
+
+## ⚙️ GODMODE System Interaction
+
+The GODMODE AI system is designed for autonomous operation, but you can interact with it and monitor its progress through the following methods:
+
+### Starting the System
+
+Use the provided startup scripts (`godmode_start.py`, `godmode_start.bat`, `godmode_start.ps1`) to launch the entire GODMODE environment. These scripts now include **pre-startup checks and automatic fixes** for common local environment issues, such as missing Python dependencies (psutil) and Node.js `node_modules`, and also run database migrations. This ensures a smoother startup experience.
+
+### Monitoring & Communication
+
+-   **GODMODE Dashboard:** Access the web-based dashboard at `http://localhost:3333` to view real-time agent statuses, task progress, and system health.
+-   **AI Chat Interface:** Engage directly with the AI agents via the chat interface available at `http://localhost:3333/chat`.
+-   **Logs:** Review detailed logs in the `godmode-logs/` directory for insights into agent activities and troubleshooting.
+
+### Troubleshooting
+
+If you encounter issues, refer to the `Troubleshooting` section in the main `README.md` for common problems and manual startup instructions. The pre-startup checks in `godmode_start.py` should resolve most initial setup issues automatically.
+
+
