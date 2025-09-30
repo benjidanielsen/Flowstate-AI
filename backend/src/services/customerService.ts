@@ -64,7 +64,7 @@ export class CustomerService {
     const customer: Customer = {
       id,
       ...customerData,
-      status: customerData.status || PipelineStatus.LEAD,
+      status: customerData.status || PipelineStatus.NEW_LEAD,
       created_at: now,
       updated_at: now
     };
@@ -217,13 +217,13 @@ export class CustomerService {
     }
 
     const stageOrder = [
-      PipelineStatus.LEAD,
-      PipelineStatus.RELATIONSHIP,
+      PipelineStatus.NEW_LEAD,
+      PipelineStatus.WARMING_UP,
       PipelineStatus.INVITED,
       PipelineStatus.QUALIFIED,
       PipelineStatus.PRESENTATION_SENT,
       PipelineStatus.FOLLOW_UP,
-      PipelineStatus.SIGNED_UP
+      PipelineStatus.CLOSED_WON
     ];
 
     const currentIndex = stageOrder.indexOf(customer.status);

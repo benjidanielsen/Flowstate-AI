@@ -3,8 +3,6 @@ import { startServer, shutdown } from '../index';
 import DatabaseManager from '../database';
 
 describe('server lifecycle', () => {
-  let server: any;
-
   afterAll(async () => {
     // Ensure server is shutdown in case of test failures
     try {
@@ -15,7 +13,7 @@ describe('server lifecycle', () => {
   });
 
   test('start and shutdown without open handles', async () => {
-    server = await startServer();
+    await startServer();
 
     // Hit health endpoint
     const res = await request('http://localhost:3001').get('/api/health');

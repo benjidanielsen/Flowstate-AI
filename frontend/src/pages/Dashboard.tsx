@@ -194,9 +194,10 @@ const CompleteButton: React.FC<CompleteButtonProps> = ({ interaction, onComplete
       await interactionApi.complete(interaction.id);
       onComplete();
       push('Interaction completed', 'success');
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Failed to complete interaction', err);
-      push(err?.message || 'Failed to complete interaction', 'error');
+      const errorMessage = err instanceof Error ? err.message : 'Failed to complete interaction';
+      push(errorMessage, 'error');
     } finally {
       setLoading(false);
     }
