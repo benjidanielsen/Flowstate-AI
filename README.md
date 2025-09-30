@@ -220,7 +220,7 @@ Flowstate-AI/
 ### GODMODE System Issues
 
 **Pre-startup checks and fixes:**
-- The `godmode_start.py` script now automatically checks for and attempts to fix common environment issues like missing `psutil` (Python) and `node_modules` (Node.js backend/frontend) and runs database migrations.
+- The `godmode_start.py` script now automatically checks for and attempts to fix common environment issues like missing `psutil` (Python) and `node_modules` (Node.js backend/frontend) and runs database migrations. This significantly reduces manual setup and troubleshooting.
 
 **Python not found:**
 - Ensure Python 3.11+ is installed and added to PATH

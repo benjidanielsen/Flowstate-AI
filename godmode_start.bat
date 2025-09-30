@@ -12,7 +12,7 @@ REM Check if Python is installed
 python --version >nul 2>&1
 if %errorlevel% neq 0 (
     echo ERROR: Python is not installed or not in PATH.
-    echo Please install Python 3.11+ and ensure it's added to PATH.
+    echo Please install Python 3.11+ and ensure it\'s added to PATH.
     pause
     exit /b 1
 )
@@ -26,13 +26,9 @@ if %errorlevel% neq 0 (
     exit /b 1
 )
 
-REM Install psutil if not already installed
-echo Installing Python dependencies...
-pip install psutil
-
-REM Run the Python startup script
+REM Run the Python startup script which includes pre-startup checks and fixes
 echo.
-echo Starting GODMODE AI System...
+echo Starting GODMODE AI System with pre-startup checks and fixes...
 echo.
 python godmode_start.py
 

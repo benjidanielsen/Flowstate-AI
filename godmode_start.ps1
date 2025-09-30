@@ -13,7 +13,7 @@ try {
     Write-Host "Python found: $pythonVersion" -ForegroundColor Green
 } catch {
     Write-Host "ERROR: Python is not installed or not in PATH." -ForegroundColor Red
-    Write-Host "Please install Python 3.11+ and ensure it's added to PATH." -ForegroundColor Yellow
+    Write-Host "Please install Python 3.11+ and ensure it\'s added to PATH." -ForegroundColor Yellow
     Read-Host "Press Enter to exit"
     exit 1
 }
@@ -29,13 +29,9 @@ try {
     exit 1
 }
 
-# Install psutil if not already installed
-Write-Host "Installing Python dependencies..." -ForegroundColor Yellow
-pip install psutil
-
-# Run the Python startup script
+# Run the Python startup script which includes pre-startup checks and fixes
 Write-Host ""
-Write-Host "Starting GODMODE AI System..." -ForegroundColor Green
+Write-Host "Starting GODMODE AI System with pre-startup checks and fixes..." -ForegroundColor Green
 Write-Host ""
 python godmode_start.py
 
