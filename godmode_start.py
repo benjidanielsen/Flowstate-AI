@@ -1,23 +1,27 @@
-
-import os
 import subprocess
 import sys
+import os
 import time
-import signal
-import psutil
 import logging
+import psutil
 from pathlib import Path
+import signal
 
-# Setup logging
+# --- Configuration ---
+LOG_DIR = Path("godmode-logs")
+LOG_DIR.mkdir(exist_ok=True)
+
 logging.basicConfig(
     level=logging.INFO,
     format=\'%(asctime)s - %(levelname)s - %(message)s\',
     handlers=[
-        logging.FileHandler(\'godmode-logs/godmode_start.log\'),
+        logging.FileHandler(LOG_DIR / "godmode_start.log"),
         logging.StreamHandler()
     ]
 )
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("GODMODE_START")
+
+PROJECT_ROOT = Path(__file__).parent
 
 # Define color codes for console output (cross-platform compatible)
 class Colors:
@@ -32,12 +36,14 @@ class Colors:
 
 processes = []
 
-def run_command(name, cmd, cwd=None, shell=False, env=None, check=False):
-    logger.info(f"{Colors.CYAN}Attempting to run {name}: {\' \'.join(cmd) if isinstance(cmd, list) else cmd}{Colors.RESET}")
+# --- Helper Functions ---
+def run_command(name, cmd, cwd=PROJECT_ROOT, shell=False, check=False, capture_output=False):
+    cmd_str = ' '.join(cmd) if isinstance(cmd, list) else cmd
+    logger.info(f"{Colors.CYAN}Attempting to run {name}: {cmd_str} in {cwd}{Colors.RESET}")
     try:
-        process = subprocess.Popen(cmd, cwd=cwd, shell=shell, env=env, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        process = subprocess.Popen(cmd, cwd=cwd, shell=shell, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         if check:
-            stdout, stderr = process.communicate(timeout=60) # Wait for command to complete
+            stdout, stderr = process.communicate(timeout=120) # Increased timeout for npm installs
             if process.returncode != 0:
                 logger.error(f"{Colors.RED}{name} failed with error: {stderr.strip()}{Colors.RESET}")
                 return False
@@ -77,7 +83,7 @@ def cleanup_processes():
     for p_info in processes:
         proc = p_info["process"]
         if proc.poll() is None:  # Process is still running
-            logger.info(f"{Colors.YELLOW}Terminating {p_info[\'name\']} (PID: {proc.pid})...{Colors.RESET}")
+            logger.info(f"{Colors.YELLOW}Terminating {p_info['name']} (PID: {proc.pid})...{Colors.RESET}")
             kill_process_tree(proc.pid)
     logger.info(f"{Colors.GREEN}All processes cleaned up.{Colors.RESET}")
 
@@ -108,7 +114,7 @@ def pre_startup_check_and_fix(project_root):
     if backend_path.exists():
         if not (backend_path / "node_modules").exists():
             logger.warning(f"{Colors.YELLOW}Backend node_modules not found. Installing dependencies...{Colors.RESET}")
-            if not run_command("Backend npm install", ["npm", "install"], cwd=backend_path, shell=True, check=True):
+            if not run_command("Backend npm install", "npm install", cwd=backend_path, shell=True, check=True):
                 logger.error(f"{Colors.RED}Failed to install backend dependencies. Please run \'npm install\' in the backend directory manually.{Colors.RESET}")
                 sys.exit(1)
         else:
@@ -116,7 +122,7 @@ def pre_startup_check_and_fix(project_root):
 
         # Run database migrations
         logger.info(f"{Colors.BLUE}Running backend database migrations...{Colors.RESET}")
-        if not run_command("Backend db:migrate", ["npm", "run", "db:migrate"], cwd=backend_path, shell=True, check=True):
+        if not run_command("Backend db:migrate", "npm run db:migrate", cwd=backend_path, shell=True, check=True):
             logger.error(f"{Colors.RED}Failed to run backend database migrations. Please run \'npm run db:migrate\' in the backend directory manually.{Colors.RESET}")
             sys.exit(1)
     else:
@@ -127,7 +133,7 @@ def pre_startup_check_and_fix(project_root):
     if frontend_path.exists():
         if not (frontend_path / "node_modules").exists():
             logger.warning(f"{Colors.YELLOW}Frontend node_modules not found. Installing dependencies...{Colors.RESET}")
-            if not run_command("Frontend npm install", ["npm", "install"], cwd=frontend_path, shell=True, check=True):
+            if not run_command("Frontend npm install", "npm install", cwd=frontend_path, shell=True, check=True):
                 logger.error(f"{Colors.RED}Failed to install frontend dependencies. Please run \'npm install\' in the frontend directory manually.{Colors.RESET}")
                 sys.exit(1)
         else:
@@ -141,7 +147,7 @@ if __name__ == "__main__":
     project_root = Path(__file__).parent
     os.chdir(project_root) # Ensure we are in the project root
 
-    # Create godmode-logs directory if it doesn\'t exist
+    # Create godmode-logs directory if it doesn't exist
     (project_root / "godmode-logs").mkdir(exist_ok=True)
 
     logger.info(f"{Colors.BLUE}Starting GODMODE AI System...{Colors.RESET}")
@@ -158,14 +164,14 @@ if __name__ == "__main__":
     # 2. Start Node.js Backend
     backend_path = project_root / "backend"
     if backend_path.exists():
-        run_command("Node.js Backend", ["npm", "run", "start"], cwd=backend_path, shell=True)
+        run_command("Node.js Backend", "npm run start", cwd=backend_path, shell=True)
     else:
         logger.error(f"{Colors.RED}Backend directory not found at {backend_path}{Colors.RESET}")
 
     # 3. Start Node.js Frontend
     frontend_path = project_root / "frontend"
     if frontend_path.exists():
-        run_command("Node.js Frontend", ["npm", "run", "dev"], cwd=frontend_path, shell=True)
+        run_command("Node.js Frontend", "npm run dev", cwd=frontend_path, shell=True)
     else:
         logger.error(f"{Colors.RED}Frontend directory not found at {frontend_path}{Colors.RESET}")
 
@@ -206,7 +212,7 @@ if __name__ == "__main__":
             for p_info in list(processes): # Iterate over a copy to allow removal
                 proc = p_info["process"]
                 if proc.poll() is not None: # Process has terminated
-                    logger.warning(f"{Colors.RED}{p_info[\'name\']} (PID: {proc.pid}) has terminated with exit code {proc.returncode}.{Colors.RESET}")
+                    logger.warning(f"{Colors.RED}{p_info['name']} (PID: {proc.pid}) has terminated with exit code {proc.returncode}.{Colors.RESET}")
                     processes.remove(p_info)
             if not processes:
                 logger.warning(f"{Colors.RED}All core GODMODE processes have terminated. Shutting down.{Colors.RESET}")
