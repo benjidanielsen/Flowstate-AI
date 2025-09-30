@@ -15,82 +15,21 @@ NC='\033[0m' # No Color
 
 # ASCII Art Banner
 echo -e "${GREEN}"
-cat << "EOF"
+cat << EOF
  ███████╗██╗      ██████╗ ██╗    ██╗███████╗████████╗ █████╗ ████████╗███████╗       █████╗ ██╗
  ██╔════╝██║     ██╔═══██╗██║    ██║██╔════╝╚══██╔══╝██╔══██╗╚══██╔══╝██╔════╝      ██╔══██╗██║
  █████╗  ██║     ██║   ██║██║ █╗ ██║███████╗   ██║   ███████║   ██║   █████╗  █████╗███████║██║
  ██╔══╝  ██║     ██║   ██║██║███╗██║╚════██║   ██║   ██╔══██║   ██║   ██╔══╝  ╚════╝██╔══██║██║
  ██║     ███████╗╚██████╔╝╚███╔███╔╝███████║   ██║   ██║  ██║   ██║   ███████╗      ██║  ██║██║
  ╚═╝     ╚══════╝ ╚═════╝  ╚══╝╚══╝ ╚══════╝   ╚═╝   ╚═╝  ╚═╝   ╚═╝   ╚══════╝      ╚═╝  ╚═╝╚═╝
-
                            🤖 GODMODE AUTONOMOUS DEVELOPMENT SYSTEM 🤖
                                    ⚡ NO LIMITS • NO SETUP • NO ERRORS ⚡
 EOF
 echo -e "${NC}"
 
 # ============================================================================
-#                           GODMODE SAFETY PROTOCOLS
-# ============================================================================
-
-echo -e "${BLUE}[🛡️] Activating GODMODE Safety Protocols...${NC}"
-
-# Create safety backup
-if [ ! -d "GODMODE-BACKUP" ]; then
-    mkdir -p GODMODE-BACKUP
-    cp -r . GODMODE-BACKUP/ 2>/dev/null || true
-fi
-
-# Check if first run
-if [ ! -f "GODMODE-INITIALIZED.flag" ]; then
-    echo -e "${YELLOW}[🔧] FIRST RUN DETECTED - INITIALIZING GODMODE SYSTEM...${NC}"
-    first_run_setup
-fi
-
-# ============================================================================
 #                           GODMODE FUNCTIONS
 # ============================================================================
-
-first_run_setup() {
-    echo -e "${CYAN}[🔧] GODMODE FIRST RUN SETUP - MAKING EVERYTHING PERFECT...${NC}"
-    
-    # Detect system
-    echo -e "${BLUE}[🔍] Detecting system configuration...${NC}"
-    OS=$(uname -s)
-    ARCH=$(uname -m)
-    echo -e "${GREEN}[💻] Operating System: $OS${NC}"
-    echo -e "${GREEN}[🏗️] Architecture: $ARCH${NC}"
-    
-    # Create necessary directories
-    echo -e "${BLUE}[📁] Creating GODMODE directory structure...${NC}"
-    mkdir -p ai-gods portable-tools godmode-dashboard godmode-tools safety-nets cheat-codes
-    
-    # Setup portable tools
-    echo -e "${BLUE}[⬇️] Setting up portable development tools...${NC}"
-    setup_portable_tools
-    
-    # Setup AI models
-    echo -e "${BLUE}[🧠] Setting up local AI models...${NC}"
-    setup_ai_models
-    
-    # Auto-configure Git
-    echo -e "${BLUE}[🔧] Auto-configuring Git...${NC}"
-    auto_configure_git
-    
-    # Install dependencies
-    echo -e "${BLUE}[📦] Installing all dependencies...${NC}"
-    npm install
-    (cd backend && npm install)
-    (cd frontend && npm install)
-    
-    # Setup database
-    echo -e "${BLUE}[🗄️] Setting up database...${NC}"
-    (cd backend && npm run migrate)
-    
-    # Create initialization flag
-    touch GODMODE-INITIALIZED.flag
-    
-    echo -e "${GREEN}[✅] GODMODE SYSTEM INITIALIZED SUCCESSFULLY!${NC}"
-}
 
 setup_portable_tools() {
     # This would download and setup portable versions of tools
@@ -119,12 +58,52 @@ auto_configure_git() {
     echo -e "${GREEN}[✅] Git configured${NC}"
 }
 
+first_run_setup() {
+    echo -e "${CYAN}[🔧] GODMODE FIRST RUN SETUP - MAKING EVERYTHING PERFECT...${NC}"
+    
+    # Detect system
+    echo -e "${BLUE}[🔍] Detecting system configuration...${NC}"
+    OS=$(uname -s)
+    ARCH=$(uname -m)
+    echo -e "${GREEN}[💻] Operating System: $OS${NC}"
+    echo -e "${GREEN}[🏗️] Architecture: $ARCH${NC}"
+    
+    # Create necessary directories
+    echo -e "${BLUE}[📁] Creating GODMODE directory structure...${NC}"
+    mkdir -p ai-gods portable-tools godmode-dashboard godmode-tools safety-nets cheat-codes godmode-logs
+    
+    # Setup portable tools
+    setup_portable_tools
+    
+    # Setup AI models
+    setup_ai_models
+    
+    # Auto-configure Git
+    auto_configure_git
+    
+    # Install dependencies (already done manually, just ensure directories exist)
+    echo -e "${BLUE}[📦] Ensuring dependencies are installed...${NC}"
+    (cd backend && npm install)
+    (cd frontend && npm install)
+    (cd python-worker && pip install -r requirements.txt)
+    
+    # Setup database
+    echo -e "${BLUE}[🗄️] Setting up database...${NC}"
+    (cd backend && npm run db:migrate)
+    
+    # Create initialization flag
+    touch GODMODE-INITIALIZED.flag
+    
+    echo -e "${GREEN}[✅] GODMODE SYSTEM INITIALIZED SUCCESSFULLY!${NC}"
+}
+
 start_ai_gods() {
     echo -e "${PURPLE}[🤖] Starting AI Gods Development Army...${NC}"
     
     # Kill any existing processes
     pkill -f "python.*ai-gods" 2>/dev/null || true
     pkill -f "node.*dev" 2>/dev/null || true
+    pkill -f "godmode-dashboard" 2>/dev/null || true
     
     # Start AI agents in background
     echo -e "${CYAN}[🤖] Starting Project Manager AI...${NC}"
@@ -268,5 +247,12 @@ set -e
 trap 'echo -e "${RED}[🚨] Error detected - Activating emergency protocols...${NC}"; python3 safety-nets/emergency-recovery.py 2>/dev/null || true' ERR
 
 # Main execution
+# Check if first run
+if [ ! -f "GODMODE-INITIALIZED.flag" ]; then
+    echo -e "${YELLOW}[🔧] FIRST RUN DETECTED - INITIALIZING GODMODE SYSTEM...${NC}"
+    first_run_setup
+fi
+
 start_ai_gods
-command_loop
+#command_loop
+

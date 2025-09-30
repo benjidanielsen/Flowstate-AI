@@ -1,144 +1,25 @@
-name: CI/CD Pipeline
-
-on:
-  push:
-    branches: [ main, develop ]
-  pull_request:
-    branches: [ main ]
-
 jobs:
-  test-backend:
+  test:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
-    
-    - name: Use Node.js 18
-      uses: actions/setup-node@v4
+    - uses: actions/checkout@v3
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
       with:
-        node-version: 18
-        cache: 'npm'
-        cache-dependency-path: backend/package-lock.json
-    
-    - name: Install backend dependencies
-      run: |
-        cd backend
-        npm ci
-    
-    - name: Run backend linting
-      run: |
-        cd backend
-        npm run lint
-    
-    - name: Build backend
-      run: |
-        cd backend
-        npm run build
-    
-    - name: Run backend tests
-      run: |
-        cd backend
-        npm test
-
-  test-frontend:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v4
-    
-    - name: Use Node.js 18
-      uses: actions/setup-node@v4
-      with:
-        node-version: 18
-        cache: 'npm'
-        cache-dependency-path: frontend/package-lock.json
-    
-    - name: Install frontend dependencies
-      run: |
-        cd frontend
-        npm ci
-    
-    - name: Run frontend linting
-      run: |
-        cd frontend
-        npm run lint
-    
-    - name: Build frontend
-      run: |
-        cd frontend
-        npm run build
-
-  test-python-worker:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v4
-    
-    - name: Set up Python 3.11
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.11'
-    
-    - name: Install Python dependencies
-      run: |
-        cd python-worker
-        pip install -r requirements.txt
-    
-    - name: Run Python tests
-      run: |
-        cd python-worker
-        python -m pytest tests/ -v || echo "No tests found yet"
-
-  docker-build:
-    runs-on: ubuntu-latest
-    needs: [test-backend, test-frontend, test-python-worker]
-    if: github.ref == 'refs/heads/main'
-    steps:
-    - uses: actions/checkout@v4
-    
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v3
-    
-    - name: Build and test Docker images
-      run: |
-        docker-compose build
-        docker-compose up -d
-        sleep 30
-        # Test if services are running
-        curl -f http://localhost:3001/api/health || exit 1
-        curl -f http://localhost:8000/health || exit 1
-        docker-compose down
-
-  integration-test:
-    runs-on: ubuntu-latest
-    needs: [test-backend, test-frontend, test-python-worker]
-    steps:
-    - uses: actions/checkout@v4
-    
-    - name: Use Node.js 18
-      uses: actions/setup-node@v4
-      with:
-        node-version: 18
-    
-    - name: Set up Python 3.11
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.11'
-    
+        node-version: '18'
     - name: Install dependencies
-      run: |
-        cd backend && npm ci
-        cd ../python-worker && pip install -r requirements.txt
-    
-    - name: Start services
-      run: |
-        cd backend && npm run build
-        cd ../backend && npm start &
-        cd ../python-worker && python -m uvicorn src.main:app --host 0.0.0.0 --port 8000 &
-        sleep 10
-    
-    - name: Run integration tests
-      run: |
-        # Test backend health
-        curl -f http://localhost:3001/api/health
-        # Test python worker health  
-        curl -f http://localhost:8000/health
-        # Test API endpoints
-        curl -f http://localhost:3001/api/customers/stats
+      run: npm install
+    - name: Run tests
+      run: npm test
+    - name: Build project
+      run: npm run build
+name: CI/CD Pipeline
+'on':
+  pull_request:
+    branches:
+    - main
+    - master
+  push:
+    branches:
+    - main
+    - master

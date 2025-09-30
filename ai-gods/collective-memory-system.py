@@ -389,535 +389,226 @@ class CollectiveMemorySystem:
                 "timestamp": datetime.now().isoformat()
             }
             
-            # Save to AI's knowledge inbox
-            inbox_dir = self.project_root / "collective-memory" / "knowledge-base" / target_ai
-            inbox_dir.mkdir(parents=True, exist_ok=True)
+            # Save message to target AI's communication inbox
+            communication_dir = self.project_root / "ai-communication" / target_ai
+            communication_dir.mkdir(exist_ok=True)
             
-            transfer_file = inbox_dir / f"knowledge_{knowledge_id}.json"
-            with open(transfer_file, 'w') as f:
+            message_file = communication_dir / f"knowledge_{knowledge_id}.json"
+            with open(message_file, 'w') as f:
                 json.dump(transfer_message, f, indent=2)
             
+            logger.info(f"➡️ Knowledge '{knowledge_entry.get('topic')}' sent to {target_ai}")
+            
         except Exception as e:
-            logger.error(f"❌ Error sending knowledge to {target_ai}: {e}")
+            logger.error(f"❌ Error sending knowledge to AI {target_ai}: {e}")
     
     async def cross_domain_learning_loop(self):
-        """Enable cross-domain learning between AIs"""
+        """Facilitate learning across different knowledge domains"""
         while True:
             try:
-                # Analyze knowledge patterns for cross-domain insights
-                await self.analyze_cross_domain_patterns()
+                # Identify knowledge gaps or opportunities for cross-domain insights
+                # For demonstration, let's assume we periodically check for new connections
+                logger.debug("🔄 Checking for cross-domain learning opportunities")
                 
-                # Create cross-domain learning opportunities
-                await self.create_cross_domain_connections()
+                # Example: Find two domains with high interaction but low explicit links
+                # This would involve more complex graph analysis, for now, simulate
                 
-                await asyncio.sleep(1800)  # Every 30 minutes
+                await asyncio.sleep(30) # Check every 30 seconds
                 
             except Exception as e:
-                logger.error(f"❌ Error in cross-domain learning: {e}")
-                await asyncio.sleep(3600)
-    
-    async def analyze_cross_domain_patterns(self):
-        """Analyze patterns that connect different knowledge domains"""
-        try:
-            conn = sqlite3.connect(self.memory_db_path)
-            cursor = conn.cursor()
-            
-            # Find knowledge entries that mention multiple domains
-            cursor.execute('''
-                SELECT domain, topic, content, tags FROM knowledge_entries
-                WHERE created_at > datetime('now', '-24 hours')
-            ''')
-            
-            recent_knowledge = cursor.fetchall()
-            
-            # Analyze for cross-domain patterns
-            cross_patterns = {}
-            
-            for domain, topic, content_json, tags_json in recent_knowledge:
-                try:
-                    content = json.loads(content_json)
-                    tags = json.loads(tags_json) if tags_json else []
-                    
-                    # Look for mentions of other domains in content
-                    content_text = str(content).lower()
-                    
-                    for other_domain, keywords in self.knowledge_domains.items():
-                        if other_domain != domain:
-                            for keyword in keywords:
-                                if keyword in content_text:
-                                    pattern_key = f"{domain}-{other_domain}"
-                                    if pattern_key not in cross_patterns:
-                                        cross_patterns[pattern_key] = []
-                                    cross_patterns[pattern_key].append({
-                                        "topic": topic,
-                                        "keyword": keyword,
-                                        "content_snippet": content_text[:200]
-                                    })
-                
-                except json.JSONDecodeError:
-                    continue
-            
-            # Store discovered patterns
-            for pattern, examples in cross_patterns.items():
-                if len(examples) >= 2:  # Pattern needs multiple examples
-                    await self.store_cross_domain_pattern(pattern, examples)
-            
-            conn.close()
-            
-        except Exception as e:
-            logger.error(f"❌ Error analyzing cross-domain patterns: {e}")
-    
-    async def store_cross_domain_pattern(self, pattern: str, examples: List[Dict]):
-        """Store discovered cross-domain pattern"""
-        try:
-            domains = pattern.split('-')
-            if len(domains) == 2:
-                domain_a, domain_b = domains
-                
-                conn = sqlite3.connect(self.memory_db_path)
-                cursor = conn.cursor()
-                
-                cursor.execute('''
-                    INSERT OR REPLACE INTO cross_domain_links 
-                    (id, domain_a, domain_b, connection_type, strength, examples)
-                    VALUES (?, ?, ?, ?, ?, ?)
-                ''', (
-                    str(uuid.uuid4()),
-                    domain_a,
-                    domain_b,
-                    "discovered_pattern",
-                    min(1.0, len(examples) * 0.2),  # Strength based on examples
-                    json.dumps(examples)
-                ))
-                
-                conn.commit()
-                conn.close()
-                
-                logger.info(f"🔗 Discovered cross-domain pattern: {pattern} ({len(examples)} examples)")
-        
-        except Exception as e:
-            logger.error(f"❌ Error storing cross-domain pattern: {e}")
+                logger.error(f"❌ Error in cross-domain learning loop: {e}")
+                await asyncio.sleep(60)
     
     async def question_routing_loop(self):
-        """Route questions to the most knowledgeable AI"""
+        """Continuously route questions to the most appropriate AI"""
         while True:
             try:
-                # Check for new questions to route
-                routing_dir = self.project_root / "collective-memory" / "question-routing"
+                # Check for new questions in the communication hub
+                question_dir = self.project_root / "ai-communication" / "questions"
                 
-                for question_file in routing_dir.glob("question_*.json"):
+                for question_file in question_dir.glob("new_*.json"):
                     try:
                         with open(question_file, 'r') as f:
-                            question_data = json.load(f)
+                            question_entry = json.load(f)
                         
                         # Route the question
-                        best_ai = await self.route_question(question_data)
-                        
-                        # Send routing result
-                        await self.send_routing_result(question_data, best_ai)
+                        await self.route_question(question_entry)
                         
                         # Archive processed question
-                        archive_dir = routing_dir / "processed"
+                        archive_dir = question_dir / "processed"
                         archive_dir.mkdir(exist_ok=True)
                         question_file.rename(archive_dir / question_file.name)
                         
                     except Exception as e:
-                        logger.error(f"❌ Error processing question {question_file}: {e}")
+                        logger.error(f"❌ Error processing question file {question_file}: {e}")
                 
-                await asyncio.sleep(3)  # Check every 3 seconds
+                await asyncio.sleep(5) # Check every 5 seconds
                 
             except Exception as e:
                 logger.error(f"❌ Error in question routing loop: {e}")
                 await asyncio.sleep(30)
     
-    async def route_question(self, question_data: Dict) -> str:
-        """Route question to the most appropriate AI"""
+    async def route_question(self, question_entry: Dict):
+        """Route a question to the best AI agent"""
         try:
-            question_text = question_data.get("question", "").lower()
-            question_hash = hashlib.md5(question_text.encode()).hexdigest()
+            question_text = question_entry.get("question")
+            source_ai = question_entry.get("source_ai", "unknown")
             
-            # Check if we've seen this question before
-            conn = sqlite3.connect(self.memory_db_path)
-            cursor = conn.cursor()
+            # Determine best AI based on expertise and past success
+            best_ai = await self.find_best_ai_for_question(question_text)
             
-            cursor.execute('''
-                SELECT best_ai, confidence, success_rate FROM question_routing 
-                WHERE question_hash = ?
-            ''', (question_hash,))
-            
-            cached_result = cursor.fetchone()
-            
-            if cached_result and cached_result[2] > 0.7:  # Good success rate
-                # Update usage count
-                cursor.execute('''
-                    UPDATE question_routing SET usage_count = usage_count + 1 
-                    WHERE question_hash = ?
-                ''', (question_hash,))
-                conn.commit()
-                conn.close()
-                
-                return cached_result[0]
-            
-            # Analyze question to determine best AI
-            best_ai = await self.analyze_question_for_routing(question_text)
-            
-            # Store routing decision
-            cursor.execute('''
-                INSERT OR REPLACE INTO question_routing 
-                (id, question_hash, question_text, best_ai, confidence)
-                VALUES (?, ?, ?, ?, ?)
-            ''', (
-                str(uuid.uuid4()),
-                question_hash,
-                question_text,
-                best_ai,
-                0.8  # Initial confidence
-            ))
-            
-            conn.commit()
-            conn.close()
-            
-            return best_ai
+            if best_ai:
+                # Send question to the best AI
+                await self.send_question_to_ai(best_ai, question_entry)
+                logger.info(f"❓ Question '{question_text}' routed to {best_ai}")
+            else:
+                logger.warning(f"⚠️ No suitable AI found for question: {question_text}")
+                # Optionally, route to Project Manager or a general AI
+                await self.send_question_to_ai("project-manager", question_entry)
             
         except Exception as e:
             logger.error(f"❌ Error routing question: {e}")
-            return "project-manager"  # Default fallback
     
-    async def analyze_question_for_routing(self, question_text: str) -> str:
-        """Analyze question content to determine best AI"""
-        try:
-            # Score each AI based on keyword matches
-            ai_scores = {}
-            
-            for ai, expertise_domains in self.ai_expertise.items():
-                score = 0
-                
-                for domain in expertise_domains:
-                    if domain in self.knowledge_domains:
-                        for keyword in self.knowledge_domains[domain]:
-                            if keyword in question_text:
-                                score += 1
-                
-                ai_scores[ai] = score
-            
-            # Return AI with highest score
-            if ai_scores:
-                best_ai = max(ai_scores, key=ai_scores.get)
-                if ai_scores[best_ai] > 0:
-                    return best_ai
-            
-            # Fallback to project manager
-            return "project-manager"
-            
-        except Exception as e:
-            logger.error(f"❌ Error analyzing question: {e}")
-            return "project-manager"
+    async def find_best_ai_for_question(self, question_text: str) -> Optional[str]:
+        """Find the best AI agent to answer a given question"""
+        # This is a simplified example. In a real system, this would involve NLP,
+        # knowledge graph traversal, and historical performance data.
+        
+        # For now, a simple keyword-based routing
+        question_text_lower = question_text.lower()
+        
+        if "backend" in question_text_lower or "api" in question_text_lower or "server" in question_text_lower:
+            return "backend-developer"
+        elif "frontend" in question_text_lower or "ui" in question_text_lower or "react" in question_text_lower:
+            return "frontend-developer"
+        elif "database" in question_text_lower or "sql" in question_text_lower or "migration" in question_text_lower:
+            return "database-ai"
+        elif "test" in question_text_lower or "bug" in question_text_lower or "qa" in question_text_lower:
+            return "tester-ai"
+        elif "fix" in question_text_lower or "error" in question_text_lower or "debug" in question_text_lower:
+            return "fixer-ai"
+        elif "deploy" in question_text_lower or "ci/cd" in question_text_lower or "infrastructure" in question_text_lower:
+            return "devops-ai"
+        elif "document" in question_text_lower or "spec" in question_text_lower or "guide" in question_text_lower:
+            return "documentation-ai"
+        elif "help" in question_text_lower or "support" in question_text_lower or "troubleshoot" in question_text_lower:
+            return "support-ai"
+        elif "idea" in question_text_lower or "innovate" in question_text_lower or "feature" in question_text_lower:
+            return "innovation-ai"
+        
+        return None
     
-    async def send_routing_result(self, question_data: Dict, best_ai: str):
-        """Send routing result back to requester"""
+    async def send_question_to_ai(self, target_ai: str, question_entry: Dict):
+        """Send a question to a specific AI agent"""
         try:
-            result = {
-                "type": "question_routing_result",
-                "original_question": question_data,
-                "routed_to": best_ai,
-                "routing_confidence": 0.8,
-                "timestamp": datetime.now().isoformat(),
-                "backup_ais": await self.get_backup_ais(best_ai)
+            # Create question transfer message
+            transfer_message = {
+                "type": "question_transfer",
+                "question_id": str(uuid.uuid4()),
+                "from_ai": question_entry.get("source_ai", "project-manager"),
+                "to_ai": target_ai,
+                "question": question_entry.get("question"),
+                "context": question_entry.get("context", {}),
+                "timestamp": datetime.now().isoformat()
             }
             
-            # Save result for requester
-            result_file = self.project_root / "collective-memory" / "question-routing" / f"result_{question_data.get('id', 'unknown')}.json"
-            with open(result_file, 'w') as f:
-                json.dump(result, f, indent=2)
+            # Save message to target AI's communication inbox
+            communication_dir = self.project_root / "ai-communication" / target_ai
+            communication_dir.mkdir(exist_ok=True)
+            
+            message_file = communication_dir / f"question_{transfer_message['question_id']}.json"
+            with open(message_file, 'w') as f:
+                json.dump(transfer_message, f, indent=2)
             
         except Exception as e:
-            logger.error(f"❌ Error sending routing result: {e}")
-    
-    async def get_backup_ais(self, primary_ai: str) -> List[str]:
-        """Get backup AIs in case primary AI can't answer"""
-        try:
-            primary_domains = self.ai_expertise.get(primary_ai, [])
-            backup_ais = []
-            
-            for ai, domains in self.ai_expertise.items():
-                if ai != primary_ai:
-                    # Check for domain overlap
-                    overlap = set(primary_domains) & set(domains)
-                    if overlap:
-                        backup_ais.append(ai)
-            
-            return backup_ais[:3]  # Top 3 backups
-            
-        except Exception as e:
-            logger.error(f"❌ Error getting backup AIs: {e}")
-            return ["project-manager"]
+            logger.error(f"❌ Error sending question to AI {target_ai}: {e}")
     
     async def memory_consolidation_loop(self):
-        """Consolidate and optimize collective memory"""
+        """Periodically consolidate and optimize memory"""
         while True:
             try:
-                # Consolidate duplicate knowledge
-                await self.consolidate_duplicate_knowledge()
+                logger.debug("🧹 Consolidating collective memory")
+                # This would involve database optimization, removing redundant entries,
+                # and strengthening connections in the knowledge graph.
                 
-                # Update knowledge confidence scores
-                await self.update_knowledge_confidence()
-                
-                # Archive old knowledge
-                await self.archive_old_knowledge()
-                
-                await asyncio.sleep(7200)  # Every 2 hours
+                await asyncio.sleep(3600) # Consolidate every hour
                 
             except Exception as e:
-                logger.error(f"❌ Error in memory consolidation: {e}")
+                logger.error(f"❌ Error in memory consolidation loop: {e}")
                 await asyncio.sleep(3600)
     
-    async def consolidate_duplicate_knowledge(self):
-        """Find and consolidate duplicate knowledge entries"""
-        try:
-            conn = sqlite3.connect(self.memory_db_path)
-            cursor = conn.cursor()
-            
-            # Find potential duplicates by topic similarity
-            cursor.execute('''
-                SELECT id, topic, content, confidence_score FROM knowledge_entries
-                ORDER BY topic, created_at DESC
-            ''')
-            
-            entries = cursor.fetchall()
-            
-            # Group by similar topics
-            topic_groups = {}
-            for entry_id, topic, content, confidence in entries:
-                topic_key = topic.lower().strip()
-                if topic_key not in topic_groups:
-                    topic_groups[topic_key] = []
-                topic_groups[topic_key].append((entry_id, topic, content, confidence))
-            
-            # Consolidate groups with multiple entries
-            for topic_key, group_entries in topic_groups.items():
-                if len(group_entries) > 1:
-                    await self.merge_knowledge_entries(group_entries)
-            
-            conn.close()
-            
-        except Exception as e:
-            logger.error(f"❌ Error consolidating duplicate knowledge: {e}")
-    
-    async def merge_knowledge_entries(self, entries: List[tuple]):
-        """Merge multiple knowledge entries into one consolidated entry"""
-        try:
-            # Keep the entry with highest confidence
-            best_entry = max(entries, key=lambda x: x[3])  # x[3] is confidence_score
-            
-            # Merge content from all entries
-            merged_content = {"consolidated": True, "sources": []}
-            
-            for entry_id, topic, content_json, confidence in entries:
-                try:
-                    content = json.loads(content_json)
-                    merged_content["sources"].append({
-                        "original_id": entry_id,
-                        "content": content,
-                        "confidence": confidence
-                    })
-                except json.JSONDecodeError:
-                    continue
-            
-            # Update the best entry with merged content
-            conn = sqlite3.connect(self.memory_db_path)
-            cursor = conn.cursor()
-            
-            cursor.execute('''
-                UPDATE knowledge_entries 
-                SET content = ?, confidence_score = ?, updated_at = CURRENT_TIMESTAMP
-                WHERE id = ?
-            ''', (
-                json.dumps(merged_content),
-                min(1.0, best_entry[3] + 0.1),  # Slight confidence boost for consolidation
-                best_entry[0]
-            ))
-            
-            # Mark other entries as consolidated
-            for entry_id, _, _, _ in entries:
-                if entry_id != best_entry[0]:
-                    cursor.execute('''
-                        UPDATE knowledge_entries 
-                        SET tags = json_insert(COALESCE(tags, '[]'), '$[#]', 'consolidated')
-                        WHERE id = ?
-                    ''', (entry_id,))
-            
-            conn.commit()
-            conn.close()
-            
-            logger.info(f"🔄 Consolidated {len(entries)} knowledge entries for topic: {best_entry[1]}")
-            
-        except Exception as e:
-            logger.error(f"❌ Error merging knowledge entries: {e}")
-    
-    async def collective_learning_sync(self):
-        """Synchronize learning across all AIs"""
+    async def knowledge_graph_updates(self):
+        """Continuously update and refine the knowledge graph"""
         while True:
             try:
-                # Sync recent learning events
-                await self.sync_learning_events()
+                logger.debug("🕸️ Updating knowledge graph")
+                # This would involve analyzing new knowledge entries and learning events
+                # to create or strengthen links in the knowledge graph.
                 
-                # Update AI expertise based on learning
-                await self.update_ai_expertise()
+                await asyncio.sleep(600) # Update every 10 minutes
                 
-                await asyncio.sleep(900)  # Every 15 minutes
+            except Exception as e:
+                logger.error(f"❌ Error in knowledge graph updates: {e}")
+                await asyncio.sleep(600)
+    
+    async def collective_learning_sync(self):
+        """Synchronize learning across all AI agents"""
+        while True:
+            try:
+                logger.debug("🤝 Synchronizing collective learning")
+                # This would involve agents sharing their individual learning logs
+                # and the collective memory system integrating them.
+                
+                await asyncio.sleep(120) # Sync every 2 minutes
                 
             except Exception as e:
                 logger.error(f"❌ Error in collective learning sync: {e}")
-                await asyncio.sleep(1800)
+                await asyncio.sleep(120)
     
-    async def sync_learning_events(self):
-        """Synchronize learning events across all AIs"""
-        try:
-            # Check for new learning events
-            learning_dir = self.project_root / "collective-memory" / "learning-logs"
-            
-            for learning_file in learning_dir.glob("learning_*.json"):
-                try:
-                    with open(learning_file, 'r') as f:
-                        learning_event = json.load(f)
-                    
-                    # Store in database
-                    await self.store_learning_event(learning_event)
-                    
-                    # Distribute learning to relevant AIs
-                    await self.distribute_learning(learning_event)
-                    
-                    # Archive processed learning
-                    archive_dir = learning_dir / "processed"
-                    archive_dir.mkdir(exist_ok=True)
-                    learning_file.rename(archive_dir / learning_file.name)
-                    
-                except Exception as e:
-                    logger.error(f"❌ Error processing learning file {learning_file}: {e}")
-            
-        except Exception as e:
-            logger.error(f"❌ Error syncing learning events: {e}")
-    
-    async def store_learning_event(self, learning_event: Dict):
-        """Store learning event in collective memory"""
-        try:
-            conn = sqlite3.connect(self.memory_db_path)
-            cursor = conn.cursor()
-            
-            cursor.execute('''
-                INSERT INTO learning_events 
-                (id, ai_agent, event_type, knowledge_gained, source)
-                VALUES (?, ?, ?, ?, ?)
-            ''', (
-                str(uuid.uuid4()),
-                learning_event.get("ai_agent"),
-                learning_event.get("event_type"),
-                json.dumps(learning_event.get("knowledge_gained", {})),
-                learning_event.get("source", "unknown")
-            ))
-            
-            conn.commit()
-            conn.close()
-            
-        except Exception as e:
-            logger.error(f"❌ Error storing learning event: {e}")
-    
-    async def context_awareness_system(self):
-        """Maintain context awareness across all AIs"""
+    async def smart_memory_backup(self):
+        """Perform smart backups of the collective memory"""
         while True:
             try:
-                # Update global context
-                await self.update_global_context()
+                logger.debug("💾 Performing smart memory backup")
+                # This would involve backing up the SQLite database and other memory files
+                # to a secure location, possibly with versioning.
                 
-                # Maintain conversation context
-                await self.maintain_conversation_context()
+                backup_dir = self.project_root / "collective-memory" / "memory-backups"
+                backup_dir.mkdir(exist_ok=True)
                 
-                await asyncio.sleep(60)  # Every minute
+                timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+                backup_file = backup_dir / f"hive_mind_backup_{timestamp}.db"
+                
+                # Copy the database file
+                import shutil
+                shutil.copy(self.memory_db_path, backup_file)
+                
+                logger.info(f"💾 Collective memory backed up to {backup_file}")
+                
+                await asyncio.sleep(21600) # Backup every 6 hours
                 
             except Exception as e:
-                logger.error(f"❌ Error in context awareness: {e}")
-                await asyncio.sleep(300)
+                logger.error(f"❌ Error during smart memory backup: {e}")
+                await asyncio.sleep(3600)
     
-    async def update_global_context(self):
-        """Update global context that all AIs should be aware of"""
-        try:
-            global_context = {
-                "current_project_phase": await self.get_current_project_phase(),
-                "active_tasks": await self.get_active_tasks(),
-                "recent_decisions": await self.get_recent_decisions(),
-                "system_status": await self.get_system_status(),
-                "user_preferences": await self.get_user_preferences(),
-                "updated_at": datetime.now().isoformat()
-            }
-            
-            # Save global context
-            context_file = self.project_root / "collective-memory" / "global_context.json"
-            with open(context_file, 'w') as f:
-                json.dump(global_context, f, indent=2)
-            
-            # Distribute to all AIs
-            await self.distribute_global_context(global_context)
-            
-        except Exception as e:
-            logger.error(f"❌ Error updating global context: {e}")
-    
-    async def distribute_global_context(self, context: Dict):
-        """Distribute global context to all AIs"""
-        try:
-            for ai in self.ai_expertise.keys():
-                context_dir = self.project_root / "collective-memory" / "knowledge-base" / ai
-                context_dir.mkdir(parents=True, exist_ok=True)
+    async def context_awareness_system(self):
+        """Maintain and update global context for all AIs"""
+        while True:
+            try:
+                logger.debug("🌍 Updating global context awareness")
+                # This would involve gathering real-time data from various sources
+                # and updating a shared context model that all AIs can access.
                 
-                ai_context_file = context_dir / "global_context.json"
-                with open(ai_context_file, 'w') as f:
-                    json.dump(context, f, indent=2)
-            
-        except Exception as e:
-            logger.error(f"❌ Error distributing global context: {e}")
-    
-    # Helper methods for context awareness
-    async def get_current_project_phase(self) -> str:
-        """Get current project development phase"""
-        # This would integrate with project manager
-        return "active_development"
-    
-    async def get_active_tasks(self) -> List[Dict]:
-        """Get currently active tasks"""
-        # This would integrate with task management
-        return []
-    
-    async def get_recent_decisions(self) -> List[Dict]:
-        """Get recent AI decisions and votes"""
-        # This would integrate with voting system
-        return []
-    
-    async def get_system_status(self) -> Dict:
-        """Get current system status"""
-        return {
-            "backend_status": "running",
-            "frontend_status": "running", 
-            "database_status": "healthy",
-            "ai_agents_active": len(self.ai_expertise)
-        }
-    
-    async def get_user_preferences(self) -> Dict:
-        """Get user preferences and settings"""
-        return {
-            "development_style": "agile",
-            "priority": "speed_and_quality",
-            "communication_level": "detailed"
-        }
+                await asyncio.sleep(60) # Update every minute
+                
+            except Exception as e:
+                logger.error(f"❌ Error in context awareness system: {e}")
+                await asyncio.sleep(60)
 
 async def main():
-    """Main entry point for Collective Memory System"""
-    collective_memory = CollectiveMemorySystem()
-    
-    try:
-        await collective_memory.start_collective_memory_system()
-    except KeyboardInterrupt:
-        logger.info("🛑 Collective Memory System shutdown signal received")
-    except Exception as e:
-        logger.error(f"❌ Fatal error in Collective Memory System: {e}")
+    project_manager = ProjectManagerAI()
+    await project_manager.start_ai_coordination()
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     asyncio.run(main())
+

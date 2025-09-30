@@ -1,0 +1,13 @@
+{
+  "type": "best_ai_query",
+  "task": {
+    "id": "phase_1_setup_portable_environment",
+    "phase": "phase_1",
+    "task": "setup_portable_environment",
+    "priority": "HIGH",
+    "assigned_ai": "support-ai",
+    "status": "QUEUED",
+    "created_at": "2025-09-30T09:52:50.419289"
+  },
+  "timestamp": "2025-09-30T09:52:50.635398"
+}

@@ -1,0 +1,13 @@
+{
+  "type": "best_ai_query",
+  "task": {
+    "id": "phase_0_learn_system_architecture_deeply",
+    "phase": "phase_0",
+    "task": "learn_system_architecture_deeply",
+    "priority": "HIGH",
+    "assigned_ai": "innovation-ai",
+    "status": "QUEUED",
+    "created_at": "2025-09-30T10:05:12.505420"
+  },
+  "timestamp": "2025-09-30T10:05:12.758955"
+}

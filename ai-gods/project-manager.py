@@ -84,8 +84,25 @@ class ProjectManagerAI:
         logger.info("📁 Enhanced GODMODE directory structure created")
     
     def load_master_plan(self):
-        """Load the enhanced 24-hour master development plan"""
+        """Load the enhanced master development plan with first-week learning objectives"""
         self.master_plan = {
+            "phase_0": {
+                "name": "First Week Learning Initiative",
+                "duration": "7 days",
+                "priority": "CRITICAL",
+                "tasks": [
+                    "learn_system_architecture_deeply",
+                    "analyze_user_developer_workflows",
+                    "understand_frazer_method_completely",
+                    "map_every_system_component",
+                    "identify_optimization_opportunities",
+                    "study_external_developer_patterns",
+                    "create_comprehensive_system_map",
+                    "establish_learning_baselines",
+                    "setup_hourly_self_reflection",
+                    "initialize_github_automation"
+                ]
+            },
             "phase_1": {
                 "name": "Enhanced Foundation Setup",
                 "duration": "2 hours",
@@ -183,8 +200,20 @@ class ProjectManagerAI:
         logger.info(f"📋 Enhanced master plan loaded: {self.task_queue.qsize()} tasks queued")
     
     def determine_ai_for_task(self, task: str) -> str:
-        """Intelligently assign tasks to appropriate AI agents (enhanced)"""
+        """Intelligently assign tasks to appropriate AI agents (enhanced with learning)"""
         task_assignments = {
+            # First Week Learning Tasks (Phase 0)
+            "learn_system_architecture_deeply": "innovation-ai",
+            "analyze_user_developer_workflows": "backend-developer",
+            "understand_frazer_method_completely": "backend-developer",
+            "map_every_system_component": "collective-memory-system",
+            "identify_optimization_opportunities": "innovation-ai",
+            "study_external_developer_patterns": "frontend-developer",
+            "create_comprehensive_system_map": "collective-memory-system",
+            "establish_learning_baselines": "ai-communication-hub",
+            "setup_hourly_self_reflection": "project-manager",
+            "initialize_github_automation": "devops-ai",
+            
             # Setup and Infrastructure
             "setup_portable_environment": "support-ai",
             "configure_ai_models": "support-ai", 
@@ -953,3 +982,17 @@ async def main():
 
 if __name__ == "__main__":
     asyncio.run(main())
+
+
+    async def progress_monitoring_loop(self):
+        """Monitor the progress of active tasks and update the dashboard."""
+        while True:
+            try:
+                logger.info("📊 Monitoring task progress...")
+                # Here, you would typically fetch updates from agents or task queues
+                # and send them to the dashboard.
+                await asyncio.sleep(10) # Check every 10 seconds
+            except Exception as e:
+                logger.error(f"❌ Error in progress monitoring loop: {e}")
+                await asyncio.sleep(30)
+
