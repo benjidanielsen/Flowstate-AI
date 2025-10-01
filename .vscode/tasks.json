@@ -4,9 +4,9 @@
         {
             "label": "Start Flowstate-AI System (Windows)",
             "type": "shell",
-            "command": "start /B python \"${workspaceFolder}\\MANUS_SYNC_ENGINE_ENHANCED.py\" && start /B gunicorn -w 4 -b 0.0.0.0:3333 \"${workspaceFolder}\\godmode-dashboard\\app_enhanced:app\"",
+            "command": "start /B python \"\MANUS_SYNC_ENGINE_ENHANCED.py\" && start /B gunicorn -w 4 -b 0.0.0.0:3333 \"\godmode-dashboard\app_enhanced:app\"",
             "windows": {
-                "command": "start /B python \"${workspaceFolder}\\MANUS_SYNC_ENGINE_ENHANCED.py\" && start /B gunicorn -w 4 -b 0.0.0.0:3333 \"${workspaceFolder}\\godmode-dashboard\\app_enhanced:app\""
+                "command": "start /B python \"\MANUS_SYNC_ENGINE_ENHANCED.py\" && start /B gunicorn -w 4 -b 0.0.0.0:3333 \"\godmode-dashboard\app_enhanced:app\""
             },
             "group": {
                 "kind": "build",
