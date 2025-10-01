@@ -1,0 +1,570 @@
+{
+  "$schema": "https://modelcontextprotocol.io/schema/mcp-config.json",
+  "description": "Model Context Protocol (MCP) Configuration for Flowstate-AI",
+  "version": "1.0.0",
+  
+  "mcpServers": {
+    
+    "flowstate-backend-stdio": {
+      "comment": "STDIO Connection - Runs the MCP server as a subprocess and communicates via standard input/output",
+      "type": "stdio",
+      "command": "node",
+      "args": [
+        "/absolute/path/to/backend/dist/mcp-server.js"
+      ],
+      "env": {
+        "NODE_ENV": "production",
+        "PORT": "3001",
+        "DATABASE_URL": "./data/flowstate.db",
+        "JWT_SECRET": "your-secret-key-here"
+      },
+      "description": "Flowstate-AI Backend API via STDIO - Provides access to customer management, interactions, events, and NBA recommendations",
+      "capabilities": [
+        "customers",
+        "interactions",
+        "events",
+        "reminders",
+        "nba",
+        "pipeline-management"
+      ]
+    },
+
+    "flowstate-python-worker-stdio": {
+      "comment": "STDIO Connection - Python worker for AI processing",
+      "type": "stdio",
+      "command": "python3",
+      "args": [
+        "/absolute/path/to/python-worker/src/mcp_server.py"
+      ],
+      "env": {
+        "PYTHONPATH": "/absolute/path/to/python-worker",
+        "DATABASE_URL": "./data/flowstate.db",
+        "PORT": "8000"
+      },
+      "description": "Python AI Worker via STDIO - Handles NBA recommendations and reminder processing",
+      "capabilities": [
+        "ai-recommendations",
+        "reminder-processing",
+        "predictive-analytics"
+      ]
+    },
+
+    "flowstate-backend-sse": {
+      "comment": "SSE (Server-Sent Events) Connection - Maintains a persistent HTTP connection with server-sent event stream",
+      "type": "sse",
+      "url": "http://localhost:3001/mcp/sse",
+      "headers": {
+        "Authorization": "Bearer YOUR_API_TOKEN_HERE",
+        "X-API-Key": "your-api-key-here",
+        "Content-Type": "application/json"
+      },
+      "reconnect": {
+        "enabled": true,
+        "maxAttempts": 5,
+        "delay": 1000,
+        "backoffMultiplier": 2
+      },
+      "description": "Flowstate-AI Backend via SSE - Real-time updates for customer events, interactions, and system notifications",
+      "capabilities": [
+        "real-time-events",
+        "customer-updates",
+        "interaction-notifications",
+        "pipeline-changes"
+      ]
+    },
+
+    "flowstate-python-worker-sse": {
+      "comment": "SSE Connection - Python worker with real-time AI updates",
+      "type": "sse",
+      "url": "http://localhost:8000/mcp/sse",
+      "headers": {
+        "Authorization": "Bearer YOUR_PYTHON_API_TOKEN",
+        "X-Service": "flowstate-ai"
+      },
+      "reconnect": {
+        "enabled": true,
+        "maxAttempts": 3,
+        "delay": 2000
+      },
+      "description": "Python AI Worker via SSE - Real-time AI recommendations and reminder updates",
+      "capabilities": [
+        "live-nba-updates",
+        "reminder-notifications",
+        "ai-insights-stream"
+      ]
+    },
+
+    "flowstate-godmode-sse": {
+      "comment": "SSE Connection - GODMODE Dashboard for AI agent monitoring",
+      "type": "sse",
+      "url": "http://localhost:3333/api/mcp/sse",
+      "headers": {
+        "Authorization": "Bearer YOUR_GODMODE_TOKEN",
+        "X-Dashboard": "godmode"
+      },
+      "reconnect": {
+        "enabled": true,
+        "maxAttempts": 10,
+        "delay": 500,
+        "backoffMultiplier": 1.5
+      },
+      "description": "GODMODE Dashboard via SSE - Real-time AI agent status updates and system health monitoring",
+      "capabilities": [
+        "agent-status-updates",
+        "task-progress",
+        "system-health",
+        "ai-chat-stream"
+      ]
+    },
+
+    "flowstate-backend-http": {
+      "comment": "HTTP Connection - Standard REST API calls with request/response pattern",
+      "type": "http",
+      "baseUrl": "http://localhost:3001/api",
+      "endpoints": {
+        "customers": {
+          "list": {
+            "method": "GET",
+            "path": "/customers",
+            "description": "List all customers with optional filtering"
+          },
+          "get": {
+            "method": "GET",
+            "path": "/customers/{id}",
+            "description": "Get a specific customer by ID"
+          },
+          "create": {
+            "method": "POST",
+            "path": "/customers",
+            "description": "Create a new customer"
+          },
+          "update": {
+            "method": "PUT",
+            "path": "/customers/{id}",
+            "description": "Update an existing customer"
+          },
+          "delete": {
+            "method": "DELETE",
+            "path": "/customers/{id}",
+            "description": "Delete a customer"
+          },
+          "nextStage": {
+            "method": "POST",
+            "path": "/customers/{id}/next-stage",
+            "description": "Move customer to next pipeline stage"
+          },
+          "stats": {
+            "method": "GET",
+            "path": "/customers/stats",
+            "description": "Get pipeline statistics"
+          }
+        },
+        "interactions": {
+          "list": {
+            "method": "GET",
+            "path": "/interactions/customer/{customerId}",
+            "description": "Get all interactions for a customer"
+          },
+          "create": {
+            "method": "POST",
+            "path": "/interactions",
+            "description": "Create a new interaction"
+          },
+          "update": {
+            "method": "PUT",
+            "path": "/interactions/{id}",
+            "description": "Update an interaction"
+          },
+          "delete": {
+            "method": "DELETE",
+            "path": "/interactions/{id}",
+            "description": "Delete an interaction"
+          },
+          "upcoming": {
+            "method": "GET",
+            "path": "/interactions/upcoming",
+            "description": "Get upcoming scheduled interactions"
+          }
+        },
+        "events": {
+          "list": {
+            "method": "GET",
+            "path": "/events",
+            "description": "List all events"
+          },
+          "create": {
+            "method": "POST",
+            "path": "/events",
+            "description": "Create a new event"
+          }
+        },
+        "webhooks": {
+          "dm": {
+            "method": "POST",
+            "path": "/hooks/dm",
+            "description": "Webhook for direct message events"
+          },
+          "capi": {
+            "method": "POST",
+            "path": "/hooks/capi/lead",
+            "description": "Webhook for Conversions API lead events"
+          }
+        },
+        "nba": {
+          "get": {
+            "method": "GET",
+            "path": "/nba",
+            "description": "Get Next Best Action recommendations"
+          }
+        },
+        "reminders": {
+          "list": {
+            "method": "GET",
+            "path": "/reminders",
+            "description": "List reminders"
+          },
+          "create": {
+            "method": "POST",
+            "path": "/reminders",
+            "description": "Create a new reminder"
+          }
+        },
+        "health": {
+          "check": {
+            "method": "GET",
+            "path": "/health",
+            "description": "Health check endpoint"
+          }
+        }
+      },
+      "headers": {
+        "Authorization": "Bearer YOUR_JWT_TOKEN_HERE",
+        "Content-Type": "application/json",
+        "X-Client-Version": "1.0.0"
+      },
+      "timeout": 30000,
+      "retries": {
+        "enabled": true,
+        "maxAttempts": 3,
+        "retryableStatusCodes": [
+          408,
+          429,
+          500,
+          502,
+          503,
+          504
+        ],
+        "delay": 1000,
+        "backoffMultiplier": 2
+      },
+      "description": "Flowstate-AI Backend via HTTP - Full REST API access to all CRM features",
+      "capabilities": [
+        "customer-management",
+        "interaction-tracking",
+        "event-logging",
+        "webhook-handling",
+        "nba-recommendations",
+        "reminder-management",
+        "pipeline-analytics"
+      ]
+    },
+
+    "flowstate-python-worker-http": {
+      "comment": "HTTP Connection - Python worker REST API",
+      "type": "http",
+      "baseUrl": "http://localhost:8000",
+      "endpoints": {
+        "nba": {
+          "get": {
+            "method": "GET",
+            "path": "/nba",
+            "description": "Get AI-powered Next Best Action recommendations",
+            "queryParams": {
+              "customer_id": "optional-customer-id",
+              "limit": "10"
+            }
+          }
+        },
+        "reminders": {
+          "create": {
+            "method": "POST",
+            "path": "/reminders",
+            "description": "Create a new reminder"
+          },
+          "getDue": {
+            "method": "GET",
+            "path": "/reminders/due",
+            "description": "Get all due reminders"
+          },
+          "processDue": {
+            "method": "POST",
+            "path": "/reminders/process-due",
+            "description": "Process all due reminders"
+          }
+        },
+        "health": {
+          "check": {
+            "method": "GET",
+            "path": "/health",
+            "description": "Health check for Python worker"
+          }
+        }
+      },
+      "headers": {
+        "Authorization": "Bearer YOUR_PYTHON_WORKER_TOKEN",
+        "Content-Type": "application/json"
+      },
+      "timeout": 60000,
+      "retries": {
+        "enabled": true,
+        "maxAttempts": 2,
+        "delay": 2000
+      },
+      "description": "Python AI Worker via HTTP - AI recommendation and reminder processing service",
+      "capabilities": [
+        "nba-recommendations",
+        "reminder-processing",
+        "ai-analytics"
+      ]
+    },
+
+    "flowstate-godmode-http": {
+      "comment": "HTTP Connection - GODMODE Dashboard API",
+      "type": "http",
+      "baseUrl": "http://localhost:3333/api",
+      "endpoints": {
+        "agents": {
+          "status": {
+            "method": "GET",
+            "path": "/agent_status",
+            "description": "Get status of all AI agents"
+          },
+          "update": {
+            "method": "POST",
+            "path": "/update_agent_status",
+            "description": "Update agent status (used by AI agents)"
+          }
+        },
+        "chat": {
+          "interface": {
+            "method": "GET",
+            "path": "/chat",
+            "description": "AI chat interface endpoint"
+          }
+        }
+      },
+      "headers": {
+        "Authorization": "Bearer YOUR_GODMODE_TOKEN",
+        "Content-Type": "application/json",
+        "X-Agent-Name": "your-agent-name"
+      },
+      "timeout": 30000,
+      "description": "GODMODE Dashboard via HTTP - AI agent monitoring and chat interface",
+      "capabilities": [
+        "agent-monitoring",
+        "status-updates",
+        "ai-chat"
+      ]
+    },
+
+    "production-backend-http": {
+      "comment": "HTTP Connection - Production deployment example with HTTPS",
+      "type": "http",
+      "baseUrl": "https://api.flowstate-ai.com/v1",
+      "endpoints": {
+        "customers": "/customers",
+        "interactions": "/interactions",
+        "events": "/events",
+        "nba": "/nba",
+        "reminders": "/reminders"
+      },
+      "headers": {
+        "Authorization": "Bearer YOUR_PRODUCTION_API_KEY",
+        "Content-Type": "application/json",
+        "X-API-Version": "1.0",
+        "X-Client-ID": "your-client-id"
+      },
+      "timeout": 30000,
+      "retries": {
+        "enabled": true,
+        "maxAttempts": 3,
+        "retryableStatusCodes": [408, 429, 500, 502, 503, 504],
+        "delay": 1000,
+        "backoffMultiplier": 2,
+        "maxDelay": 10000
+      },
+      "rateLimit": {
+        "requestsPerMinute": 60,
+        "burstSize": 10
+      },
+      "description": "Production Flowstate-AI API - Secure HTTPS access with rate limiting",
+      "capabilities": [
+        "all-features",
+        "production-grade",
+        "rate-limited",
+        "secure"
+      ]
+    }
+  },
+
+  "global": {
+    "comment": "Global settings that apply to all MCP connections",
+    "logging": {
+      "enabled": true,
+      "level": "info",
+      "logToFile": true,
+      "logFilePath": "./logs/mcp-client.log",
+      "includeTimestamps": true,
+      "includeRequestBodies": false,
+      "includeResponseBodies": false
+    },
+    "security": {
+      "validateCertificates": true,
+      "allowSelfSignedCerts": false,
+      "tlsMinVersion": "1.2"
+    },
+    "defaults": {
+      "timeout": 30000,
+      "retries": 3,
+      "keepAlive": true,
+      "compression": true
+    }
+  },
+
+  "documentation": {
+    "connectionTypes": {
+      "stdio": {
+        "description": "STDIO (Standard Input/Output) - Runs an MCP server as a subprocess and communicates through stdin/stdout. Best for local development and testing.",
+        "pros": [
+          "Simple setup",
+          "No network configuration needed",
+          "Low latency",
+          "Automatic lifecycle management"
+        ],
+        "cons": [
+          "Single machine only",
+          "Cannot scale horizontally",
+          "Tied to parent process lifecycle"
+        ],
+        "useCases": [
+          "Local development",
+          "CLI tools",
+          "Desktop applications",
+          "Automated scripts"
+        ]
+      },
+      "sse": {
+        "description": "SSE (Server-Sent Events) - Maintains a persistent HTTP connection where the server can push updates to the client in real-time. Best for real-time updates and notifications.",
+        "pros": [
+          "Real-time updates",
+          "Built on HTTP (firewall-friendly)",
+          "Automatic reconnection",
+          "Efficient for one-way streaming"
+        ],
+        "cons": [
+          "One-way communication (server to client)",
+          "Limited by HTTP/1.1 connection limits",
+          "Requires server support"
+        ],
+        "useCases": [
+          "Live dashboards",
+          "Real-time notifications",
+          "Event streams",
+          "Progress monitoring",
+          "Live data feeds"
+        ]
+      },
+      "http": {
+        "description": "HTTP (Hypertext Transfer Protocol) - Traditional request/response pattern using REST APIs. Best for standard web services and APIs.",
+        "pros": [
+          "Universal support",
+          "Well-understood pattern",
+          "Easy to debug",
+          "Stateless",
+          "Cacheable",
+          "Works with any HTTP client"
+        ],
+        "cons": [
+          "No real-time updates (requires polling)",
+          "Higher latency for frequent requests",
+          "More overhead per request"
+        ],
+        "useCases": [
+          "REST APIs",
+          "Web services",
+          "Microservices",
+          "Third-party integrations",
+          "Public APIs",
+          "Production deployments"
+        ]
+      }
+    },
+    "examples": {
+      "stdio": {
+        "description": "Example of starting an MCP server via STDIO",
+        "command": "node /path/to/mcp-server.js",
+        "communication": "Process stdin/stdout streams"
+      },
+      "sse": {
+        "description": "Example of connecting to an SSE endpoint",
+        "url": "http://localhost:3001/mcp/sse",
+        "communication": "EventSource API or equivalent"
+      },
+      "http": {
+        "description": "Example HTTP request",
+        "method": "GET",
+        "url": "http://localhost:3001/api/customers",
+        "headers": {
+          "Authorization": "Bearer token",
+          "Content-Type": "application/json"
+        }
+      }
+    },
+    "placeholders": {
+      "description": "Placeholders you need to replace in this configuration",
+      "required": [
+        "YOUR_API_TOKEN_HERE - Replace with your backend API token",
+        "YOUR_PYTHON_API_TOKEN - Replace with your Python worker API token",
+        "YOUR_GODMODE_TOKEN - Replace with your GODMODE dashboard token",
+        "YOUR_JWT_TOKEN_HERE - Replace with your JWT authentication token",
+        "YOUR_PYTHON_WORKER_TOKEN - Replace with your Python worker authentication token",
+        "YOUR_PRODUCTION_API_KEY - Replace with your production API key",
+        "your-secret-key-here - Replace with your JWT secret key",
+        "your-api-key-here - Replace with your API key",
+        "your-client-id - Replace with your client ID",
+        "your-agent-name - Replace with your AI agent name",
+        "/absolute/path/to/backend/dist/mcp-server.js - Replace with actual path",
+        "/absolute/path/to/python-worker/src/mcp_server.py - Replace with actual path"
+      ],
+      "optional": [
+        "Port numbers (if using non-default ports)",
+        "Database paths",
+        "Log file paths",
+        "Timeout values",
+        "Retry configurations"
+      ]
+    },
+    "setup": {
+      "steps": [
+        "1. Replace all placeholder values with your actual configuration",
+        "2. Update all absolute paths to match your installation",
+        "3. Generate or obtain API tokens for authentication",
+        "4. Configure environment variables for each service",
+        "5. Test each connection type individually",
+        "6. Enable only the connection types you need",
+        "7. Review security settings and adjust for your environment",
+        "8. Set up logging and monitoring",
+        "9. Test error handling and reconnection logic"
+      ],
+      "notes": [
+        "For local development, STDIO is often the simplest option",
+        "For production, use HTTP with HTTPS and proper authentication",
+        "For real-time features, consider SSE for efficient updates",
+        "Always use environment variables for sensitive data",
+        "Test your configuration in a development environment first",
+        "Keep your API tokens secure and rotate them regularly",
+        "Monitor connection health and implement proper error handling"
+      ]
+    }
+  }
+}
