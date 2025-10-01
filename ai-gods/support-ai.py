@@ -12,6 +12,7 @@ import requests
 import os
 import json
 import random
+from base_agent import BaseAgent
 from datetime import datetime
 from pathlib import Path
 
@@ -23,16 +24,9 @@ logger = logging.getLogger('SupportAI')
 
 GODMODE_DASHBOARD_URL = os.getenv('GODMODE_DASHBOARD_URL', 'http://localhost:3333/api/update_agent_status')
 
-class SupportAI:
+class SupportAI(BaseAgent):
     def __init__(self):
-        # Self-assign a human name for personality
-        self.human_names = [
-            "Grace", "Chloe", "Lily", "Zoe", "Nora",
-            "Hannah", "Layla", "Bella", "Maya", "Scarlett",
-            "Victoria", "Aurora", "Eleanor", "Hazel", "Violet"
-        ]
-        self.name = random.choice(self.human_names)
-        self.agent_name = 'support_ai'
+        super().__init__("support_ai", "Support AI")
         self.project_root = Path(__file__).parent.parent
         
         # Learning objectives for the first week
@@ -50,24 +44,12 @@ class SupportAI:
         self.completed_learning = []
         self.support_requests_log = []
         
-        logger.info(f"🤖 Support AI initialized with name: {self.name}")
+        logger.info(f"🤖 {self.agent_human_name} ({self.agent_name}) INITIALIZED")
 
     def update_status(self, status, current_task, progress, task_duration=None):
-        try:
-            payload = {
-                'agent_name': self.agent_name,
-                'agent_human_name': self.name,
-                'status': status,
-                'current_task': current_task,
-                'progress': progress
-            }
-            if task_duration is not None:
-                payload['task_duration'] = task_duration
-            requests.post(GODMODE_DASHBOARD_URL, json=payload)
-        except requests.exceptions.ConnectionError:
-            logger.warning("Could not connect to GODMODE Dashboard. Is it running?")
-        except Exception as e:
-            logger.error(f"Error updating dashboard: {e}")
+        super().update_status(status, current_task, progress)
+        # Additional logic specific to SupportAI if needed
+
 
     def analyze_user_pain_points(self):
         """Analyze user feedback and support requests to identify pain points"""

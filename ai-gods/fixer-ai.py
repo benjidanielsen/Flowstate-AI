@@ -14,6 +14,7 @@ import json
 import random
 import subprocess
 import sys
+from base_agent import BaseAgent
 from datetime import datetime
 from pathlib import Path
 
@@ -21,7 +22,7 @@ logging.basicConfig(
     level=logging.INFO,
     format=\'%(asctime)s - %(name)s - %(levelname)s - %(message)s\',
     handlers=[
-        logging.FileHandler(\'godmode-logs/fixer-ai.log\'),
+        logging.FileHandler(Path(__file__).parent.parent / \'godmode-logs\' / \'fixer-ai.log\'),
         logging.StreamHandler()
     ]
 )
@@ -29,16 +30,9 @@ logger = logging.getLogger(\'FixerAI\')
 
 GODMODE_DASHBOARD_URL = os.getenv(\'GODMODE_DASHBOARD_URL\', \'http://localhost:3333/api/update_agent_status\')
 
-class FixerAI:
+class FixerAI(BaseAgent):
     def __init__(self):
-        # Self-assign a human name for personality
-        self.human_names = [
-            "Leo", "Caleb", "Isaac", "Elias", "Theodore",
-            "Wyatt", "Owen", "Miles", "Ezra", "Asher",
-            "Silas", "Jasper", "Felix", "Arthur", "Oscar"
-        ]
-        self.name = random.choice(self.human_names)
-        self.agent_name = \'fixer_ai\'
+        super().__init__("fixer_ai", "Fixer AI")
         self.project_root = Path(__file__).parent.parent
         
         # Learning objectives for the first week
@@ -57,24 +51,12 @@ class FixerAI:
         self.completed_learning = []
         self.bug_analysis_log = []
         
-        logger.info(f"🤖 Fixer AI initialized with name: {self.name}")
+        logger.info(f"🤖 {self.agent_human_name} ({self.agent_name}) INITIALIZED")
 
     def update_status(self, status, current_task, progress, task_duration=None):
-        try:
-            payload = {
-                \'agent_name\': self.agent_name,
-                \'agent_human_name\': self.name,
-                \'status\': status,
-                \'current_task\': current_task,
-                \'progress\': progress
-            }
-            if task_duration is not None:
-                payload[\'task_duration\'] = task_duration
-            requests.post(GODMODE_DASHBOARD_URL, json=payload)
-        except requests.exceptions.ConnectionError:
-            logger.warning("Could not connect to GODMODE Dashboard. Is it running?")
-        except Exception as e:
-            logger.error(f"Error updating dashboard: {e}")
+        super().update_status(status, current_task, progress)
+        # Additional logic specific to FixerAI if needed
+
 
     def run_command_and_check(self, name, cmd, cwd=None, shell=False, env=None):
         logger.info(f"Attempting to run {name} for local fix: {\' \'.join(cmd) if isinstance(cmd, list) else cmd}")

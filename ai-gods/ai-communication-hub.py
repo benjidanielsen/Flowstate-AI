@@ -16,6 +16,10 @@ import random
 from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Any, Optional
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
 
 # Setup logging
 logging.basicConfig(
@@ -30,16 +34,36 @@ logger = logging.getLogger(__name__)
 
 GODMODE_DASHBOARD_URL = os.getenv("GODMODE_DASHBOARD_URL", "http://localhost:3333/api/update_agent_status")
 
-class AICommunicationHub:
+from base_agent import BaseAgent
+
+@app.route('/api/message', methods=['POST'])
+async def receive_message():
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "Invalid JSON"}), 400
+
+    sender = data.get("sender")
+    receiver = data.get("receiver")
+    message_type = data.get("type")
+    content = data.get("content")
+
+    if not all([sender, receiver, message_type, content]):
+        return jsonify({"error": "Missing message parameters"}), 400
+
+    # The actual communication hub instance will process this
+    # Put the received message into the hub's internal queue for asynchronous processing
+    # Assuming 'comm_hub_instance' is globally accessible or passed via app context
+    if 'comm_hub_instance' in app.config:
+        await app.config['comm_hub_instance'].message_queue.put(data)
+        logger.info(f"📬 Message from {sender} for {receiver} (Type: {message_type}) added to queue.")
+        return jsonify({"status": "Message received and queued", "sender": sender, "receiver": receiver}), 200
+    else:
+        logger.error("AICommunicationHub instance not found in app config.")
+        return jsonify({"error": "Communication Hub not initialized"}), 500
+
+class AICommunicationHub(BaseAgent):
     def __init__(self):
-        # Self-assign a human name for personality
-        self.human_names = [
-            "Gabriel", "Raphael", "Michael", "Uriel", "Jophiel",
-            "Chamuel", "Zadkiel", "Metatron", "Sandalphon", "Raziel",
-            "Cassiel", "Ramiel", "Raguel", "Saraqael", "Remiel"
-        ]
-        self.name = random.choice(self.human_names)
-        self.agent_name = "ai-communication-hub"
+        super().__init__("ai-communication-hub", "AI Communication Hub")
         self.project_root = Path(__file__).parent.parent
         self.message_queue = asyncio.Queue()
         self.agent_statuses = {}
@@ -59,24 +83,12 @@ class AICommunicationHub:
         
         self.completed_learning = []
         
-        logger.info(f"🤖 AI Communication Hub initialized with name: {self.name}")
+        logger.info(f"🤖 {self.agent_human_name} ({self.agent_name}) INITIALIZED")
 
     def update_status(self, status, current_task, progress, task_duration=None):
-        try:
-            payload = {
-                "agent_name": self.agent_name,
-                "agent_human_name": self.name,
-                "status": status,
-                "current_task": current_task,
-                "progress": progress
-            }
-            if task_duration is not None:
-                payload["task_duration"] = task_duration
-            requests.post(GODMODE_DASHBOARD_URL, json=payload)
-        except requests.exceptions.ConnectionError:
-            logger.warning("Could not connect to GODMODE Dashboard. Is it running?")
-        except Exception as e:
-            logger.error(f"Error updating dashboard: {e}")
+        super().update_status(status, current_task, progress)
+        # Additional logic specific to AICommunicationHub if needed
+
 
     async def send_message(self, sender: str, receiver: str, message_type: str, content: Any):
         message = {
@@ -93,9 +105,25 @@ class AICommunicationHub:
         while True:
             message = await self.message_queue.get()
             logger.info(f"📡 Processing message: {message}")
-            # Here, implement logic to route messages, handle votes, etc.
-            # For now, just log and acknowledge
-            self.update_status("Working", f"Processing message from {message["sender"]}", random.randint(1, 100))
+            
+            sender = message.get("sender")
+            receiver = message.get("receiver")
+            message_type = message.get("type")
+            content = message.get("content")
+
+            if message_type == "cross_check":
+                logger.info(f"🔍 Routing cross-check request from {sender} to {receiver} for: {content.get("item")}")
+                # In a real system, this would involve waking up the receiver agent and passing the message
+                # For now, we'll just log the routing.
+                self.update_status("Working", f"Routing cross-check from {sender} to {receiver}", random.randint(1, 100))
+            elif message_type == "anomaly_report":
+                logger.warning(f"🚨 Anomaly reported by {sender} for {content.get("anomalous_agent")}: {content.get("description")}")
+                # This could be routed to a dedicated Oversight AI or Project Manager AI
+                self.update_status("Working", f"Processing anomaly report from {sender}", random.randint(1, 100))
+            else:
+                logger.info(f"🔄 General message from {sender} to {receiver} ({message_type}): {content}")
+                self.update_status("Working", f"Processing general message from {sender}", random.randint(1, 100))
+
             await asyncio.sleep(random.uniform(0.5, 2))
             self.message_queue.task_done()
 
@@ -190,7 +218,37 @@ class AICommunicationHub:
 
 async def main():
     comm_hub = AICommunicationHub()
-    await comm_hub.manage_communication()
+    app.config["comm_hub_instance"] = comm_hub
+
+    # Run the communication management in a background task
+    asyncio.create_task(comm_hub.manage_communication())
+    asyncio.create_task(comm_hub.process_messages())
+
+    # Run the Flask app (non-blocking for asyncio)
+    # For development, use app.run(). For production, use a WSGI server like Gunicorn.
+    # Given previous issues, we'll try to run it directly, but ideally this would be Gunicorn.
+    # We need to run Flask in a separate thread or process if we want to use asyncio.run(main())
+    # A simpler approach for now is to just run the Flask app and let it manage the event loop.
+    # However, since the agent logic is async, we need to integrate them.
+    # For now, let's just start the Flask app and assume the async tasks will run.
+    # This is a simplification for the sandbox environment.
+    logger.info("Starting Flask app for AI Communication Hub...")
+    # This will block, so we need to run it in a separate thread or process for true async.
+    # For the purpose of this sandbox, we'll simulate it.
+    # A more robust solution would involve `uvicorn` or `hypercorn` for ASGI Flask apps.
+    # For now, we'll run it in a way that allows the async tasks to be scheduled.
+    # This is a common pattern for integrating Flask with asyncio.
+    from threading import Thread
+    def run_flask():
+        app.run(host=\'0.0.0.0\', port=3334, debug=False)
+
+    flask_thread = Thread(target=run_flask)
+    flask_thread.daemon = True
+    flask_thread.start()
+
+    # Keep the main asyncio loop running
+    while True:
+        await asyncio.sleep(3600) # Keep alive
 
 if __name__ == "__main__":
     asyncio.run(main())

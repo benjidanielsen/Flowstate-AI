@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GODMODE AI Chat</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #1e1e1e; color: #d4d4d4; margin: 0; padding: 20px; display: flex; flex-direction: column; height: 100vh; box-sizing: border-box; }
+        .container { max-width: 900px; width: 100%; margin: auto; background-color: #252526; padding: 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); display: flex; flex-direction: column; flex-grow: 1; }
+        h1 { color: #007acc; text-align: center; margin-bottom: 20px; }
+        .header-links { text-align: center; margin-bottom: 20px; }
+        .header-links a { color: #007acc; text-decoration: none; margin: 0 15px; font-size: 1.1em; }
+        .header-links a:hover { text-decoration: underline; }
+        .chat-window { flex-grow: 1; border: 1px solid #333; border-radius: 5px; padding: 15px; overflow-y: auto; background-color: #2d2d2d; margin-bottom: 15px; display: flex; flex-direction: column; }
+        .message-container { display: flex; align-items: flex-start; margin-bottom: 10px; }
+        .message-container.user { justify-content: flex-end; }
+        .message-container.agent { justify-content: flex-start; }
+        .message-container img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; margin-right: 10px; border: 2px solid #007acc; }
+        .message-container.user img { order: 2; margin-right: 0; margin-left: 10px; }
+        .message-bubble { max-width: 70%; padding: 10px 15px; border-radius: 18px; position: relative; word-wrap: break-word; }
+        .message-container.agent .message-bubble { background-color: #007acc; color: white; border-bottom-left-radius: 2px; }
+        .message-container.user .message-bubble { background-color: #555; color: white; border-bottom-right-radius: 2px; }
+        .message-sender { font-weight: bold; margin-bottom: 5px; font-size: 0.9em; }
+        .message-timestamp { font-size: 0.7em; color: #bbb; text-align: right; margin-top: 5px; }
+        .chat-input-area { display: flex; }
+        .chat-input-area select { padding: 8px; border-radius: 5px; border: 1px solid #333; background-color: #333; color: #d4d4d4; margin-right: 10px; }
+        .chat-input-area input[type="text"] { flex-grow: 1; padding: 10px; border-radius: 5px; border: 1px solid #333; background-color: #333; color: #d4d4d4; margin-right: 10px; }
+        .chat-input-area button { background-color: #007acc; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; }
+        .chat-input-area button:hover { background-color: #005f99; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>GODMODE AI Chat</h1>
+        <div class="header-links">
+            <a href="/">Dashboard</a>
+            <a href="/chat">AI Chat</a>
+            <a href="/admin">Admin</a>
+        </div>
+        <div class="chat-window" id="chat-window"></div>
+        <div class="chat-input-area">
+            <select id="agent-select">
+                <option value="user">User</option>
+                <!-- Agent options will be loaded here -->
+            </select>
+            <input type="text" id="chat-message-input" placeholder="Type your message...">
+            <button onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+
+    <script>
+        const chatWindow = document.getElementById("chat-window");
+        const chatMessageInput = document.getElementById("chat-message-input");
+        const agentSelect = document.getElementById("agent-select");
+
+        async function fetchAgentStatus() {
+            try {
+                const response = await fetch("/api/agent_status");
+                const data = await response.json();
+                updateAgentSelect(data);
+            } catch (error) {
+                console.error("Error fetching agent status:", error);
+            }
+        }
+
+        function updateAgentSelect(statusData) {
+            // Clear existing agent options, keep 'User'
+            agentSelect.innerHTML = '<option value="user">User</option>';
+            for (const agentKey in statusData) {
+                const agent = statusData[agentKey];
+                const option = document.createElement("option");
+                option.value = agentKey;
+                option.textContent = `${agent.agent_human_name} (${agentKey.replace(/_/g, ' ').toUpperCase()})`;
+                agentSelect.appendChild(option);
+            }
+        }
+
+        async function fetchChatMessages() {
+            try {
+                const response = await fetch("/api/chat_messages");
+                const messages = await response.json();
+                renderChatMessages(messages);
+            } catch (error) {
+                console.error("Error fetching chat messages:", error);
+            }
+        }
+
+        async function renderChatMessages(messages) {
+            chatWindow.innerHTML = ''; // Clear existing messages
+            const agentStatusResponse = await fetch("/api/agent_status");
+            const agentStatusData = await agentStatusResponse.json();
+
+            messages.forEach(msg => {
+                const messageContainer = document.createElement("div");
+                messageContainer.className = `message-container ${msg.sender === 'user' ? 'user' : 'agent'}`;
+
+                let senderName = msg.sender;
+                let profilePicture = '';
+
+                if (msg.sender !== 'user' && agentStatusData[msg.sender]) {
+                    senderName = agentStatusData[msg.sender].agent_human_name;
+                    profilePicture = agentStatusData[msg.sender].profile_picture;
+                } else if (msg.sender === 'user') {
+                    // Placeholder for user profile picture if desired
+                    profilePicture = 'https://randomuser.me/api/portraits/lego/1.jpg'; // Generic user avatar
+                }
+
+                messageContainer.innerHTML = `
+                    ${profilePicture ? `<img src="${profilePicture}" alt="${senderName}">` : ''}
+                    <div class="message-bubble">
+                        <div class="message-sender">${senderName}</div>
+                        <div>${msg.message}</div>
+                        <div class="message-timestamp">${new Date(msg.timestamp).toLocaleTimeString()}</div>
+                    </div>
+                `;
+                chatWindow.appendChild(messageContainer);
+            });
+            chatWindow.scrollTop = chatWindow.scrollHeight; // Scroll to bottom
+        }
+
+        async function sendMessage() {
+            const sender = agentSelect.value;
+            const message = chatMessageInput.value.trim();
+
+            if (message) {
+                try {
+                    await fetch("/api/send_chat_message", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ sender: sender, message: message })
+                    });
+                    chatMessageInput.value = '';
+                    fetchChatMessages(); // Refresh messages after sending
+                } catch (error) {
+                    console.error("Error sending message:", error);
+                }
+            }
+        }
+
+        // Allow sending message with Enter key
+        document.getElementById('chat-message-input').addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        // Fetch messages and agent status periodically
+        setInterval(fetchChatMessages, 2000);
+        setInterval(fetchAgentStatus, 5000); // Fetch agent status less frequently
+        fetchAgentStatus(); // Initial fetch
+        fetchChatMessages(); // Initial fetch
+    </script>
+</body>
+</html>
+

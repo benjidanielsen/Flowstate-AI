@@ -19,6 +19,7 @@ from pathlib import Path
 import logging
 from typing import Dict, List, Any, Optional
 import subprocess
+from base_agent import BaseAgent
 
 # Setup logging
 logging.basicConfig(
@@ -31,21 +32,14 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-class InnovationAI:
+class InnovationAI(BaseAgent):
     """
     The Visionary AI that generates revolutionary ideas, predicts future problems, and coordinates learning
     GODMODE: No limits on creativity, analysis, and learning coordination
     """
     
     def __init__(self):
-        # Self-assign a human name for personality
-        self.human_names = [
-            "Sophia", "Emma", "Olivia", "Ava", "Isabella",
-            "Mia", "Charlotte", "Amelia", "Harper", "Evelyn",
-            "Abigail", "Emily", "Elizabeth", "Sofia", "Avery"
-        ]
-        self.name = random.choice(self.human_names)
-        self.agent_name = "innovation-ai"
+        super().__init__("innovation-ai", "Innovation AI")
         self.project_root = Path(__file__).parent.parent
         self.godmode_enabled = True
         self.human_approval_required = False
@@ -77,22 +71,17 @@ class InnovationAI:
     
     def update_status(self, status, current_task, progress, task_duration=None):
         """Update status on the GODMODE dashboard"""
-        try:
-            payload = {
-                'agent_name': self.agent_name,
-                'agent_human_name': self.name,
-                'status': status,
-                'current_task': current_task,
-                'progress': progress,
-                'learning_level': self.system_understanding_level
-            }
-            if task_duration is not None:
-                payload['task_duration'] = task_duration
-            
-            import requests
-            requests.post('http://localhost:3333/api/update_agent_status', json=payload)
-        except Exception as e:
-            logger.error(f"Error updating dashboard: {e}")
+        # Call the base agent's update_status method
+        super().update_status(status, current_task, progress, task_duration)
+        
+        # Add InnovationAI-specific payload if needed, or modify the existing one
+        # For now, we'll assume the base agent handles the core status update.
+        # If 'learning_level' needs to be sent separately or as part of a more complex payload,
+        # that logic would go here, potentially calling the dashboard API directly for specific updates.
+        # However, for simplicity and consistency with other agents, we'll rely on the base agent's payload.
+        # If the dashboard needs 'learning_level', it should be added to the base agent's payload or sent via a separate API call.
+        # For now, we'll log it.
+        logger.debug(f"InnovationAI learning level: {self.system_understanding_level}")
 
     async def start_innovation_engine(self):
         """Start the main innovation and learning coordination engine"""

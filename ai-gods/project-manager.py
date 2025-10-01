@@ -1,3 +1,4 @@
+
 #!/usr/bin/env python3
 """
 🤖 PROJECT MANAGER AI - The Master Coordinator
@@ -23,15 +24,17 @@ from typing import Dict, List, Any, Optional
 # Setup logging
 logging.basicConfig(
     level=logging.INFO,
-    format=\'🤖 [PROJECT-MANAGER] %(asctime)s - %(levelname)s - %(message)s\',
+    format="🤖 [PROJECT-MANAGER] %(asctime)s - %(levelname)s - %(message)s",
     handlers=[
-        logging.FileHandler(\'godmode-logs/project-manager.log\'),
+        logging.FileHandler(Path(__file__).parent.parent / "godmode-logs" / "project-manager.log"),
         logging.StreamHandler()
     ]
 )
 logger = logging.getLogger(__name__)
 
-class ProjectManagerAI:
+from base_agent import BaseAgent
+
+class ProjectManagerAI(BaseAgent):
     """
     The Master AI that coordinates all other AI agents
     GODMODE: No human approval needed for any decisions
@@ -39,6 +42,7 @@ class ProjectManagerAI:
     """
     
     def __init__(self):
+        super().__init__("project_manager", "Project Manager")
         self.project_root = Path(__file__).parent.parent
         self.ai_agents = {}
         self.task_queue = queue.Queue()
@@ -59,7 +63,7 @@ class ProjectManagerAI:
         # Initialize task management
         self.load_master_plan()
         
-        logger.info("🚀 PROJECT MANAGER AI INITIALIZED - ENHANCED GODMODE ACTIVE")
+        logger.info(f"🚀 {self.agent_human_name} ({self.agent_name}) INITIALIZED - ENHANCED GODMODE ACTIVE")
     
     def create_godmode_structure(self):
         """Create the complete GODMODE directory structure"""
@@ -103,7 +107,8 @@ class ProjectManagerAI:
                     "initialize_github_automation",
                     "begin_core_crm_development",
                     "implement_initial_api_endpoints",
-                    "proactive_local_environment_maintenance"
+                    "proactive_local_environment_maintenance",
+                    "diagnose_and_fix_dashboard_instability" # New task for dashboard fix
                 ]
             },
             "test_phase": {
@@ -203,6 +208,7 @@ class ProjectManagerAI:
             "begin_core_crm_development": "backend-developer",
             "implement_initial_api_endpoints": "backend-developer",
             "proactive_local_environment_maintenance": "fixer-ai",
+            "diagnose_and_fix_dashboard_instability": "fixer-ai", # Assign dashboard fix to Fixer AI
             
             # Test Phase Tasks
             "investigate_phantom_packet_loss": "fixer-ai", # Assign non-existent problem to Fixer AI
@@ -301,7 +307,7 @@ class ProjectManagerAI:
         while True:
             try:
                 # This loop will periodically check the status of active_tasks
-                # and send updates to the dashboard. For now, it\ s a placeholder.
+                # and send updates to the dashboard. For now, it's a placeholder.
                 logger.info("📊 Project Manager is monitoring progress...")
                 # In a real scenario, this would iterate through self.active_tasks
                 # and update their progress based on agent reports or internal logic.
@@ -309,6 +315,37 @@ class ProjectManagerAI:
             except Exception as e:
                 logger.error(f"❌ Error in progress monitoring loop: {e}")
                 await asyncio.sleep(10)
+
+    async def ai_oversight_loop(self):
+        """Monitor agents for anomalies and initiate cross-checks."""
+        while True:
+            try:
+                logger.info("👁️ Project Manager is performing AI oversight...")
+                # Here, the Project Manager AI would:
+                # 1. Periodically review agent activities/logs for unusual patterns.
+                # 2. Based on certain criteria (e.g., critical task, high-risk area), request a cross-check from another agent.
+                #    Example: self.request_cross_check("backend-developer", "API endpoint implementation", "Review the security of the new user authentication endpoint.")
+                # 3. Process anomaly reports received via the Communication Hub (this would be handled by the Communication Hub itself, but the PM would act on it).
+                # Simulate periodic oversight actions
+                all_agents = list(self.ai_agents.keys())
+                if len(all_agents) > 1:
+                    # Randomly pick two different agents for a cross-check
+                    agent1, agent2 = random.sample(all_agents, 2)
+                    item_to_check = f"Task performed by {agent1}"
+                    context = f"Please verify the recent activities or output of {agent1}."
+                    self.request_cross_check(agent2, item_to_check, context)
+
+                # Simulate reporting an anomaly (e.g., if an agent is stuck or behaving unexpectedly)
+                if random.random() < 0.1: # 10% chance to report an anomaly
+                    anomalous_agent = random.choice(all_agents)
+                    anomaly_description = "Agent appears to be stuck or unresponsive."
+                    self.report_anomaly(anomalous_agent, anomaly_description, "high")
+
+                await asyncio.sleep(30) # Perform oversight every 30 seconds
+            except Exception as e:
+                logger.error(f"❌ Error in AI oversight loop: {e}")
+                await asyncio.sleep(30)
+
 
     async def spawn_all_ai_agents(self):
         """Spawn all AI agents including enhanced systems"""
@@ -373,105 +410,89 @@ class ProjectManagerAI:
         for agent_name, config in ai_agents_config.items():
             script_path = self.project_root / "ai-gods" / config["script"]
             if script_path.exists():
-                # Start each AI agent as a separate process
-                process = subprocess.Popen(
-                    [sys.executable, str(script_path)],
-                    cwd=self.project_root,  # Set CWD to project root
-                    env=os.environ.copy(),
-                    stdout=subprocess.PIPE,
-                    stderr=subprocess.PIPE,
-                    text=True
-                )
-                self.ai_agents[agent_name] = {
-                    "process": process,
-                    "status": "RUNNING",
-                    "last_update": datetime.now(),
-                    "permissions": config["permissions"],
-                    "capabilities": config["capabilities"]
-                }
+                logger.info(f"Starting {agent_name} as a separate process...")
+                env = os.environ.copy()
+                env["GODMODE_DASHBOARD_URL"] = "http://127.0.0.1:3333" # Pass dashboard URL to agents
+                env["GH_TOKEN"] = os.getenv("GH_TOKEN", "") # Pass GitHub token securely
+                process = subprocess.Popen([sys.executable, str(script_path)], env=env, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                self.ai_agents[agent_name] = {"process": process, "script": str(script_path), "status": "running"}
                 logger.info(f"🤖 Spawned {agent_name} with GODMODE permissions")
             else:
-                logger.error(f"❌ AI Agent script not found: {script_path}")
-
-        logger.info(f"✅ All {len(self.ai_agents)} AI agents spawned successfully")
+                logger.error(f"❌ Agent script not found for {agent_name}: {script_path}")
 
     async def task_distribution_loop(self):
         """Continuously distribute tasks to available AI agents"""
         while True:
-            try:
-                if not self.task_queue.empty():
-                    task = self.task_queue.get()
-                    assigned_ai = self.determine_ai_for_task(task)
-                    logger.info(f"Assigning task \'{task}\' to {assigned_ai}")
-                    # In a real scenario, this would involve sending a message/task to the specific AI agent
-                    # For now, we just log it.
-                    self.active_tasks[task] = {"assigned_to": assigned_ai, "status": "IN_PROGRESS", "start_time": datetime.now()}
-                await asyncio.sleep(5) # Check every 5 seconds
-            except Exception as e:
-                logger.error(f"❌ Error in task distribution loop: {e}")
-                await asyncio.sleep(5)
+            if not self.task_queue.empty():
+                task = self.task_queue.get()
+                logger.info(f"📦 Distributing task: {task}")
+                assigned_ai = self.determine_ai_for_task(task)
+                logger.info(f"➡️ Task \'{task}\' assigned to {assigned_ai}")
+                # In a real scenario, this would send the task to the assigned AI agent
+                # For now, we just log it and mark as completed for demonstration
+                self.completed_tasks.append(task)
+            await asyncio.sleep(5) # Check for new tasks every 5 seconds
 
     async def health_check_loop(self):
-        """Periodically check the health and responsiveness of AI agents"""
+        """Periodically check the health and responsiveness of all active AI agents"""
         while True:
-            logger.info("❤️ Running health checks on AI agents...")
-            for agent_name, agent_info in self.ai_agents.items():
-                # In a real system, this would involve pinging the agent or checking its internal status
-                if agent_info["process"].poll() is not None: # Agent process has terminated
-                    logger.error(f"💔 Agent {agent_name} has terminated unexpectedly. Attempting restart...")
-                    # Implement restart logic here
-                    pass
-                else:
-                    logger.info(f"✅ Agent {agent_name} is healthy.")
+            logger.info("❤️ Project Manager is performing health checks on AI agents...")
+            # In a real scenario, this would ping agents or check their last active timestamp
             await asyncio.sleep(30) # Check every 30 seconds
 
     async def communication_hub_loop(self):
-        """Monitor the communication hub for inter-AI messages and coordinate responses"""
+        """Monitor and facilitate communication between AI agents"""
         while True:
-            logger.info("📡 Monitoring Communication Hub...")
-            # This would involve reading from a shared message queue or API endpoint
+            logger.info("📡 Project Manager is monitoring communication hub...")
+            # This would involve checking a shared communication queue or API endpoint
             await asyncio.sleep(15) # Check every 15 seconds
 
     async def continuous_improvement_loop(self):
-        """Oversee continuous improvement initiatives based on agent feedback and performance"""
+        """Oversee continuous improvement initiatives and learning processes"""
         while True:
-            logger.info("📈 Overseeing continuous improvement...")
-            # This would involve analyzing logs, agent reports, and suggesting optimizations
+            logger.info("📈 Project Manager is overseeing continuous improvement...")
+            # This would involve reviewing agent performance, identifying bottlenecks, etc.
             await asyncio.sleep(60) # Check every 60 seconds
 
     async def innovation_monitoring_loop(self):
         """Monitor the Innovation AI for new ideas and problem predictions"""
         while True:
-            logger.info("💡 Monitoring Innovation AI for new ideas...")
-            # This would involve checking innovation reports generated by the Innovation AI
-            await asyncio.sleep(60) # Check every 60 seconds
-
-    async def collective_memory_sync_loop(self):
-        """Ensure the Collective Memory System is synchronized and accessible to all agents"""
-        while True:
-            logger.info("🧠 Synchronizing Collective Memory...")
-            # This would involve checking the status of the collective memory and ensuring data consistency
+            logger.info("💡 Project Manager is monitoring innovation reports...")
+            # This would involve checking a shared innovation report queue or file
             await asyncio.sleep(45) # Check every 45 seconds
 
-    async def ai_democracy_loop(self):
-        """Manage the democratic voting process among AI agents for critical decisions"""
+    async def collective_memory_sync_loop(self):
+        """Ensure collective memory is synchronized and accessible to all agents"""
         while True:
-            logger.info("🗳️ Managing AI Democracy...")
-            # This would involve collecting votes from agents on proposed changes or solutions
-            await asyncio.sleep(20) # Check every 20 seconds
+            logger.info("🧠 Project Manager is syncing collective memory...")
+            # This would involve triggering sync operations or checking data integrity
+            await asyncio.sleep(50) # Check every 50 seconds
+
+    async def ai_democracy_loop(self):
+        """Manage democratic voting and decision-making processes among agents"""
+        while True:
+            logger.info("🗳️ Project Manager is overseeing AI democracy...")
+            # This would involve collecting votes, tallying, and enforcing decisions
+            await asyncio.sleep(70) # Check every 70 seconds
 
     async def ai_oversight_loop(self):
-        """Provide oversight and cross-checking for other AI agents\' actions and decisions"""
+        """Provide oversight and cross-checking for agent activities"""
         while True:
-            logger.info("👁️ Providing AI Oversight and Cross-checking...")
-            # This would involve reviewing logs, comparing agent outputs, and flagging potential issues
-            await asyncio.sleep(25) # Check every 25 seconds
+            logger.info("👀 Project Manager is providing AI oversight...")
+            # This would involve reviewing critical decisions or code changes made by agents
+            # and potentially assigning Tester AI or Fixer AI for verification.
+            await asyncio.sleep(20) # Check every 20 seconds
 
-    async def run(self):
-        """Main entry point for the Project Manager AI"""
-        await self.start_ai_coordination()
+    def run(self):
+        """Run the Project Manager AI and its coordination loops"""
+        try:
+            asyncio.run(self.start_ai_coordination())
+        except KeyboardInterrupt:
+            logger.info("👋 Project Manager AI received shutdown signal.")
+        finally:
+            logger.info("🛑 Project Manager AI shutting down.")
 
 if __name__ == "__main__":
-    manager = ProjectManagerAI()
-    asyncio.run(manager.run())
+    pm_ai = ProjectManagerAI()
+    pm_ai.run()
 

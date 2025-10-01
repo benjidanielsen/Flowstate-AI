@@ -19,6 +19,7 @@ import sqlite3
 import threading
 import queue
 import re
+from base_agent import BaseAgent
 
 # Setup logging
 logging.basicConfig(
@@ -31,15 +32,15 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-class CollectiveMemorySystem:
+class CollectiveMemorySystem(BaseAgent):
     """
     Shared consciousness system for all AI agents
     GODMODE: Unlimited knowledge sharing and cross-domain learning
     """
     
     def __init__(self):
+        super().__init__("collective_memory_system", "Collective Memory System")
         self.project_root = Path(__file__).parent.parent
-        self.godmode_enabled = True
         
         # Memory Database
         self.memory_db_path = self.project_root / "collective-memory" / "hive_mind.db"
@@ -81,7 +82,7 @@ class CollectiveMemorySystem:
         # Initialize systems
         self.setup_collective_memory()
         
-        logger.info("🚀 COLLECTIVE MEMORY SYSTEM INITIALIZED - HIVE MIND ACTIVE")
+        logger.info(f"🧠 {self.agent_human_name} ({self.agent_name}) INITIALIZED - HIVE MIND ACTIVE")
     
     def setup_collective_memory(self):
         """Setup the collective memory infrastructure"""
@@ -218,6 +219,10 @@ class CollectiveMemorySystem:
         except Exception as e:
             logger.error(f"❌ Error building knowledge graph: {e}")
     
+    def update_status(self, status, current_task, progress, task_duration=None):
+        super().update_status(status, current_task, progress)
+        # Additional logic specific to CollectiveMemorySystem if needed
+
     async def start_collective_memory_system(self):
         """Start the collective memory system"""
         logger.info("🎯 Starting Collective Memory System - Hive Mind Active")

@@ -23,16 +23,11 @@ logger = logging.getLogger('BackendDeveloperAI')
 
 GODMODE_DASHBOARD_URL = os.getenv('GODMODE_DASHBOARD_URL', 'http://localhost:3333/api/update_agent_status')
 
-class BackendDeveloperAI:
+from base_agent import BaseAgent
+
+class BackendDeveloperAI(BaseAgent):
     def __init__(self):
-        # Self-assign a human name for personality
-        self.human_names = [
-            "Oliver", "William", "James", "Benjamin", "Lucas",
-            "Henry", "Alexander", "Mason", "Michael", "Ethan",
-            "Daniel", "Jacob", "Logan", "Jackson", "Levi"
-        ]
-        self.name = random.choice(self.human_names)
-        self.agent_name = 'backend_developer'
+        super().__init__("backend_developer", "Backend Developer")
         self.project_root = Path(__file__).parent.parent
         
         # Learning objectives for the first week
@@ -50,24 +45,12 @@ class BackendDeveloperAI:
         self.completed_learning = []
         self.code_analysis_results = []
         
-        logger.info(f"🤖 Backend Developer AI initialized with name: {self.name}")
+        logger.info(f"🤖 {self.agent_human_name} ({self.agent_name}) INITIALIZED")
 
     def update_status(self, status, current_task, progress, task_duration=None):
-        try:
-            payload = {
-                'agent_name': self.agent_name,
-                'agent_human_name': self.name,
-                'status': status,
-                'current_task': current_task,
-                'progress': progress
-            }
-            if task_duration is not None:
-                payload['task_duration'] = task_duration
-            requests.post(GODMODE_DASHBOARD_URL, json=payload)
-        except requests.exceptions.ConnectionError:
-            logger.warning("Could not connect to GODMODE Dashboard. Is it running?")
-        except Exception as e:
-            logger.error(f"Error updating dashboard: {e}")
+        super().update_status(status, current_task, progress)
+        # Additional logic specific to BackendDeveloperAI if needed
+
 
     def analyze_existing_backend(self):
         """Analyze existing backend code to understand the system"""

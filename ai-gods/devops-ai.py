@@ -13,6 +13,7 @@ import os
 import subprocess
 import json
 import random
+from base_agent import BaseAgent
 from datetime import datetime
 from pathlib import Path
 
@@ -24,16 +25,9 @@ logger = logging.getLogger('DevOpsAI')
 
 GODMODE_DASHBOARD_URL = os.getenv('GODMODE_DASHBOARD_URL', 'http://localhost:3333/api/update_agent_status')
 
-class DevOpsAI:
+class DevOpsAI(BaseAgent):
     def __init__(self):
-        # Self-assign a human name for personality
-        self.human_names = [
-            "Marcus", "Alexander", "Sebastian", "Christopher", "Benjamin",
-            "Nicholas", "Jonathan", "Michael", "Daniel", "Matthew",
-            "David", "Andrew", "Joshua", "James", "Robert"
-        ]
-        self.name = random.choice(self.human_names)
-        self.agent_name = 'devops_ai'
+        super().__init__("devops_ai", "DevOps AI")
         self.project_root = Path(__file__).parent.parent
         self.github_repo = "benjidanielsen/Flowstate-AI"
         
@@ -52,24 +46,12 @@ class DevOpsAI:
         self.completed_learning = []
         self.github_operations_log = []
         
-        logger.info(f"🤖 DevOps AI initialized with name: {self.name}")
+        logger.info(f"🤖 {self.agent_human_name} ({self.agent_name}) INITIALIZED")
 
     def update_status(self, status, current_task, progress, task_duration=None):
-        try:
-            payload = {
-                'agent_name': self.agent_name,
-                'agent_human_name': self.name,
-                'status': status,
-                'current_task': current_task,
-                'progress': progress
-            }
-            if task_duration is not None:
-                payload['task_duration'] = task_duration
-            requests.post(GODMODE_DASHBOARD_URL, json=payload)
-        except requests.exceptions.ConnectionError:
-            logger.warning("Could not connect to GODMODE Dashboard. Is it running?")
-        except Exception as e:
-            logger.error(f"Error updating dashboard: {e}")
+        super().update_status(status, current_task, progress)
+        # Additional logic specific to DevOpsAI if needed
+
 
     def execute_git_command(self, command, cwd=None):
         """Execute git commands safely"""
