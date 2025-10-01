@@ -13,7 +13,7 @@ LOG_DIR.mkdir(exist_ok=True)
 
 logging.basicConfig(
     level=logging.INFO,
-    format=\'%(asctime)s - %(levelname)s - %(message)s\',
+    format="%(asctime)s - %(levelname)s - %(message)s",
     handlers=[
         logging.FileHandler(LOG_DIR / "godmode_start.log"),
         logging.StreamHandler()
@@ -50,7 +50,7 @@ def run_command(name, cmd, cwd=PROJECT_ROOT, shell=False, check=False, capture_o
             logger.info(f"{Colors.GREEN}{name} completed successfully.{Colors.RESET}")
             return True
         else:
-            processes.append({"name": name, "process": process})
+            processes.append({"name": name, "process": process, "stdout": process.stdout, "stderr": process.stderr})
             logger.info(f"{Colors.GREEN}{name} started successfully with PID: {process.pid}{Colors.RESET}")
             return process
     except subprocess.TimeoutExpired:
@@ -115,7 +115,7 @@ def pre_startup_check_and_fix(project_root):
         if not (backend_path / "node_modules").exists():
             logger.warning(f"{Colors.YELLOW}Backend node_modules not found. Installing dependencies...{Colors.RESET}")
             if not run_command("Backend npm install", "npm install", cwd=backend_path, shell=True, check=True):
-                logger.error(f"{Colors.RED}Failed to install backend dependencies. Please run \'npm install\' in the backend directory manually.{Colors.RESET}")
+                logger.error(f"{Colors.RED}Backend npm install failed. Please check the logs for details.{Colors.RESET}")
                 sys.exit(1)
         else:
             logger.info(f"{Colors.GREEN}Backend node_modules found.{Colors.RESET}")
@@ -123,7 +123,7 @@ def pre_startup_check_and_fix(project_root):
         # Run database migrations
         logger.info(f"{Colors.BLUE}Running backend database migrations...{Colors.RESET}")
         if not run_command("Backend db:migrate", "npm run db:migrate", cwd=backend_path, shell=True, check=True):
-            logger.error(f"{Colors.RED}Failed to run backend database migrations. Please run \'npm run db:migrate\' in the backend directory manually.{Colors.RESET}")
+            logger.error(f"{Colors.RED}Backend db:migrate failed. Please check the logs for details.{Colors.RESET}")
             sys.exit(1)
     else:
         logger.error(f"{Colors.RED}Backend directory not found at {backend_path}. Cannot perform backend checks.{Colors.RESET}")
@@ -223,4 +223,5 @@ if __name__ == "__main__":
     finally:
         cleanup_processes()
         logger.info(f"{Colors.GREEN}GODMODE AI System shutdown complete.{Colors.RESET}")
+
 
