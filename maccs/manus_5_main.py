@@ -61,6 +61,9 @@ def manus_main_loop(manus_interface):
 
     while True:
         try:
+            # Force a full state reload from the database at the beginning of each loop iteration
+            manus_interface.sync_engine._load_state()
+
             # Send heartbeat to keep status active
             manus_interface.heartbeat()
             print(f'[{manus_interface.manus_id}] Heartbeat sent.')
@@ -120,7 +123,8 @@ if __name__ == "__main__":
         manus_interface = ManusInterface(
             manus_id=MANUS_ID,
             role=ManusRole.COORDINATOR, # Assigning a coordinator role for now, can be refined
-            capabilities=manus_5_delegation_capabilities["skills"]
+            capabilities=manus_5_delegation_capabilities["skills"],
+            project_root=REPO_PATH # Explicitly pass the project root
         )
         print(f'[{MANUS_ID}] ManusInterface initialized successfully.')
         print(f'[{MANUS_ID}] Attempting to start manus_main_loop...')
