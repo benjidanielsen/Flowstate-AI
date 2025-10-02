@@ -1,5 +1,5 @@
 {
-  "last_updated": "2025-10-02T00:00:59.945167",
+  "last_updated": "2025-10-02T13:15:35.422493Z",
   "manus_instances": {
     "manus_4": {
       "id": "manus_4",
@@ -12,10 +12,10 @@
       "sandbox_id": "sandbox-manus_4",
       "status": "active",
       "registered_at": "2025-10-01T23:50:15.825429",
-      "last_seen": "2025-10-01T23:51:05.896157",
-      "current_task": null,
+      "last_seen": "2025-10-02T13:15:35.422493Z",
+      "current_task": "Coordination cycle #6 - Processing messages and monitoring system status",
       "tasks_completed": 0,
-      "progress": 0
+      "progress": 50
     },
     "manus_5": {
       "id": "manus_5",
@@ -30,13 +30,13 @@
       "status": "active",
       "registered_at": "2025-10-01T23:51:24.859438",
       "last_seen": "2025-10-01T23:51:24.914373",
-      "current_task": null,
+      "current_task": "Coordination cycle #6 - Processing messages and monitoring system status",
       "tasks_completed": 0,
-      "progress": 0
+      "progress": 50
     }
   },
   "heartbeats": {
-    "manus_4": "2025-10-01T23:51:05.896168",
+    "manus_4": "2025-10-02T13:15:35.422493Z",
     "manus_5": "2025-10-01T23:51:24.914385"
   },
   "active_count": 2
