@@ -96,10 +96,7 @@ describe('FollowUpService', () => {
       const completedReminder = await reminderService.markReminderCompleted(followUpReminder.id);
 
       expect(completedReminder).toBeDefined();
-      if (!completedReminder) {
-        throw new Error("Completed reminder not returned.");
-      }
-      expect(completedReminder.completed).toBe(true);
+      expect(completedReminder?.completed).toBe(true);
     });
   });
 });
