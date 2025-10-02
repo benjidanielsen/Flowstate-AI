@@ -1,7 +1,7 @@
 import request from 'supertest';
 import express, { Express } from 'express';
 import customerRoutes from '../../routes/customers';
-import { pool } from '../../database/db';
+import DatabaseManager from '../../database';
 
 describe('Customers API Integration Tests', () => {
   let app: Express;
@@ -13,7 +13,8 @@ describe('Customers API Integration Tests', () => {
   });
 
   afterAll(async () => {
-    await pool.end();
+    const db = DatabaseManager.getInstance().getDb();
+    db.close();
   });
 
   describe('GET /api/customers', () => {

@@ -1,7 +1,8 @@
 import request from 'supertest';
 import express, { Express } from 'express';
 import qualificationRoutes from '../../routes/qualification';
-import { pool } from '../../database/db';
+import DatabaseManager from '../../database';
+import { v4 as uuidv4 } from 'uuid';
 
 describe('Qualification API Integration Tests', () => {
   let app: Express;
@@ -13,17 +14,30 @@ describe('Qualification API Integration Tests', () => {
     app.use('/api/qualification', qualificationRoutes);
 
     // Create a test customer for qualification
-    const result = await pool.query(
-      'INSERT INTO customers (name, email, status) VALUES ($1, $2, $3) RETURNING id',
-      ['Qualification Test Customer', `qualtest${Date.now()}@example.com`, 'Invited']
-    );
-    testCustomerId = result.rows[0].id;
+    const db = DatabaseManager.getInstance().getDb();
+    testCustomerId = uuidv4();
+    await new Promise((resolve, reject) => {
+      db.run(
+        'INSERT INTO customers (id, name, email, status, created_at, updated_at) VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)',
+        [testCustomerId, 'Qualification Test Customer', `qualtest${Date.now()}@example.com`, 'invited'],
+        (err) => {
+          if (err) reject(err);
+          else resolve(null);
+        }
+      );
+    });
   });
 
   afterAll(async () => {
     // Clean up test customer
-    await pool.query('DELETE FROM customers WHERE id = $1', [testCustomerId]);
-    await pool.end();
+    const db = DatabaseManager.getInstance().getDb();
+    await new Promise((resolve, reject) => {
+      db.run('DELETE FROM customers WHERE id = ?', [testCustomerId], (err) => {
+        if (err) reject(err);
+        else resolve(null);
+      });
+    });
+    db.close();
   });
 
   describe('POST /api/qualification', () => {

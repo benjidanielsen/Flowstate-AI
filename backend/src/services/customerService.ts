@@ -2,12 +2,15 @@ import DatabaseManager from '../database';
 import { Customer, PipelineStatus } from '../types';
 import { v4 as uuidv4 } from 'uuid';
 import { EventLogService } from './eventLogService';
+import { PipelineValidationService } from './pipelineValidationService';
 
 export class CustomerService {
   private eventLogService: EventLogService;
+  private pipelineValidationService: PipelineValidationService;
 
   constructor() {
     this.eventLogService = new EventLogService();
+    this.pipelineValidationService = new PipelineValidationService();
   }
 
   async getAllCustomers(): Promise<Customer[]> {
@@ -216,22 +219,71 @@ export class CustomerService {
       return null;
     }
 
-    const stageOrder = [
-      PipelineStatus.NEW_LEAD,
-      PipelineStatus.WARMING_UP,
-      PipelineStatus.INVITED,
-      PipelineStatus.QUALIFIED,
-      PipelineStatus.PRESENTATION_SENT,
-      PipelineStatus.FOLLOW_UP,
-      PipelineStatus.CLOSED_WON
-    ];
-
-    const currentIndex = stageOrder.indexOf(customer.status);
-    if (currentIndex === -1 || currentIndex === stageOrder.length - 1) {
-      return customer; // Already at final stage or invalid status
+    const nextValidStages = this.pipelineValidationService.getNextValidStages(customer.status);
+    
+    if (nextValidStages.length === 0) {
+      return customer; // Already at final stage or no valid next stages
     }
 
-    const nextStatus = stageOrder[currentIndex + 1];
+    // Get the first valid next stage (main pipeline progression)
+    const nextStatus = nextValidStages[0];
+
+    // Validate the transition
+    const validationResult = await this.pipelineValidationService.validateStageTransition(
+      id,
+      customer.status,
+      nextStatus
+    );
+
+    if (!validationResult.allowed) {
+      throw new Error(validationResult.reason || 'Stage transition not allowed');
+    }
+
+    // Log the transition
+    await this.pipelineValidationService.logStageTransition(id, customer.status, nextStatus);
+
     return this.updateCustomer(id, { status: nextStatus });
+  }
+
+  /**
+   * Move customer to a specific stage with validation
+   */
+  async moveCustomerToStage(id: string, targetStage: PipelineStatus): Promise<Customer | null> {
+    const customer = await this.getCustomerById(id);
+    if (!customer) {
+      return null;
+    }
+
+    // Validate the transition
+    const validationResult = await this.pipelineValidationService.validateStageTransition(
+      id,
+      customer.status,
+      targetStage
+    );
+
+    if (!validationResult.allowed) {
+      throw new Error(validationResult.reason || 'Stage transition not allowed');
+    }
+
+    // Log the transition
+    await this.pipelineValidationService.logStageTransition(id, customer.status, targetStage);
+
+    return this.updateCustomer(id, { status: targetStage });
+  }
+
+  /**
+   * Get stage recommendations for a customer
+   */
+  async getStageRecommendations(id: string): Promise<{
+    recommended_stage: PipelineStatus;
+    confidence: number;
+    reasoning: string[];
+  } | null> {
+    const customer = await this.getCustomerById(id);
+    if (!customer) {
+      return null;
+    }
+
+    return this.pipelineValidationService.getStageRecommendations(id, customer.status);
   }
 }

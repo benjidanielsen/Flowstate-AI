@@ -1,7 +1,8 @@
 import request from 'supertest';
 import express, { Express } from 'express';
 import reminderRoutes from '../../routes/reminders';
-import { pool } from '../../database/db';
+import DatabaseManager from '../../database';
+import { v4 as uuidv4 } from 'uuid';
 
 describe('Reminders API Integration Tests', () => {
   let app: Express;
@@ -13,11 +14,18 @@ describe('Reminders API Integration Tests', () => {
     app.use('/api/reminders', reminderRoutes);
 
     // Create a test customer for reminders
-    const result = await pool.query(
-      'INSERT INTO customers (name, email, status) VALUES ($1, $2, $3) RETURNING id',
-      ['Reminder Test Customer', `remindertest${Date.now()}@example.com`, 'Invited']
-    );
-    testCustomerId = result.rows[0].id;
+    const db = DatabaseManager.getInstance().getDb();
+    testCustomerId = uuidv4();
+    await new Promise((resolve, reject) => {
+      db.run(
+        'INSERT INTO customers (id, name, email, status, created_at, updated_at) VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)',
+        [testCustomerId, 'Reminder Test Customer', `remindertest${Date.now()}@example.com`, 'invited'],
+        (err) => {
+          if (err) reject(err);
+          else resolve(null);
+        }
+      );
+    });
   });
 
   afterAll(async () => {
