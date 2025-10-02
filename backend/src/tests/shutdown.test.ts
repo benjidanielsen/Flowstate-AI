@@ -7,25 +7,20 @@ describe('server lifecycle', () => {
   let app: Express.Application;
   let port: number;
 
-  beforeAll(() => {
-    app = createApp(); // Create the app once for the test suite
-  });
 
-  beforeEach(async () => {
-    // Assign a unique port for each test
+
+  beforeAll(async () => {
+    // Assign a unique port for the test suite
     port = Math.floor(Math.random() * (40000 - 30000 + 1)) + 30000;
     process.env.PORT = port.toString();
 
-    // Ensure server is not running before each test
-    try {
-      await shutdown();
-    } catch (e) {
-      // Ignore errors if server was not running
-    }
+    app = createApp(); // Create the app once for the test suite
+    // Start the server once for the entire test suite
+    server = await startServer();
   });
 
-  afterEach(async () => {
-    // Ensure server is shut down after each test
+  afterAll(async () => {
+    // Shut down the server once after all tests
     try {
       await shutdown();
     } catch (e) {
@@ -34,7 +29,7 @@ describe('server lifecycle', () => {
   });
 
   it('should start and shutdown without open handles', async () => {
-    server = await startServer();
+
     expect(server).toBeDefined();
 
     // Make a request to ensure server is responsive
@@ -49,7 +44,7 @@ describe('server lifecycle', () => {
   });
 
   it('should handle multiple shutdown calls gracefully', async () => {
-    server = await startServer();
+
     expect(server).toBeDefined();
 
     await shutdown();
