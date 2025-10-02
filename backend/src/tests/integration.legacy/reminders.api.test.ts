@@ -30,9 +30,20 @@ describe('Reminders API Integration Tests', () => {
 
   afterAll(async () => {
     // Clean up test customer and related reminders
-    await pool.query('DELETE FROM reminders WHERE customer_id = $1', [testCustomerId]);
-    await pool.query('DELETE FROM customers WHERE id = $1', [testCustomerId]);
-    await pool.end();
+    const db = DatabaseManager.getInstance().getDb();
+    await new Promise((resolve, reject) => {
+      db.run('DELETE FROM reminders WHERE customer_id = ?', [testCustomerId], (err) => {
+        if (err) reject(err);
+        else resolve(null);
+      });
+    });
+    await new Promise((resolve, reject) => {
+      db.run('DELETE FROM customers WHERE id = ?', [testCustomerId], (err) => {
+        if (err) reject(err);
+        else resolve(null);
+      });
+    });
+    db.close();
   });
 
   describe('POST /api/reminders', () => {
