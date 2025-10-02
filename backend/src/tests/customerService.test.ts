@@ -8,6 +8,13 @@ describe('CustomerService', () => {
 
   beforeEach(async () => {
     await DatabaseManager.getInstance().connect();
+    const db = DatabaseManager.getInstance().getDb();
+    await new Promise<void>((resolve, reject) => {
+      db.exec("DROP TABLE IF EXISTS customers; DROP TABLE IF EXISTS interactions; DROP TABLE IF EXISTS reminders; DROP TABLE IF EXISTS event_logs;", (err) => {
+        if (err) reject(err);
+        else resolve();
+      });
+    });
     await runMigrations();
     customerService = new CustomerService();
   });

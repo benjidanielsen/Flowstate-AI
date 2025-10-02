@@ -74,7 +74,7 @@ export class ReminderService {
                 type: row.type,
                 message: row.message,
                 scheduled_for: new Date(row.scheduled_for),
-                completed: Boolean(row.completed),
+                completed: true,
                 created_at: new Date(row.created_at),
               });
             } else {

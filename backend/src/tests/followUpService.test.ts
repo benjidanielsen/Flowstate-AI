@@ -13,6 +13,13 @@ describe('FollowUpService', () => {
 
   beforeEach(async () => {
     await DatabaseManager.getInstance().connect();
+    const db = DatabaseManager.getInstance().getDb();
+    await new Promise<void>((resolve, reject) => {
+      db.exec("DROP TABLE IF EXISTS customers; DROP TABLE IF EXISTS interactions; DROP TABLE IF EXISTS reminders; DROP TABLE IF EXISTS event_logs;", (err) => {
+        if (err) reject(err);
+        else resolve();
+      });
+    });
     await runMigrations();
     followUpService = new FollowUpService();
     customerService = new CustomerService();
@@ -81,12 +88,18 @@ describe('FollowUpService', () => {
       const followUpReminder = reminders.find(r => r.type === ReminderType.FOLLOW_UP);
 
       expect(followUpReminder).toBeDefined();
-      expect(followUpReminder?.completed).toBe(false);
+      if (!followUpReminder) {
+        throw new Error("Follow-up reminder not found.");
+      }
+      expect(followUpReminder.completed).toBe(false);
 
-      const completedReminder = await reminderService.markReminderCompleted(followUpReminder!.id);
+      const completedReminder = await reminderService.markReminderCompleted(followUpReminder.id);
 
       expect(completedReminder).toBeDefined();
-      expect(completedReminder?.completed).toBe(true);
+      if (!completedReminder) {
+        throw new Error("Completed reminder not returned.");
+      }
+      expect(completedReminder.completed).toBe(true);
     });
   });
 });
