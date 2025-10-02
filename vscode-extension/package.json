@@ -1,0 +1,110 @@
+{
+  "name": "flowstate-ai-godmode",
+  "displayName": "FlowState-AI GODMODE",
+  "description": "Autonomous AI-driven development system for FlowState-AI",
+  "version": "1.0.0",
+  "publisher": "flowstate-ai",
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onStartupFinished",
+    "workspaceContains:**/package.json"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "flowstate-ai.startGodmode",
+        "title": "FlowState-AI: Start GODMODE"
+      },
+      {
+        "command": "flowstate-ai.stopGodmode",
+        "title": "FlowState-AI: Stop GODMODE"
+      },
+      {
+        "command": "flowstate-ai.showDashboard",
+        "title": "FlowState-AI: Show Dashboard"
+      },
+      {
+        "command": "flowstate-ai.setupEnvironment",
+        "title": "FlowState-AI: Setup Environment"
+      },
+      {
+        "command": "flowstate-ai.fixEverything",
+        "title": "FlowState-AI: Fix Everything"
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "flowstate-ai-sidebar",
+          "title": "FlowState-AI",
+          "icon": "resources/icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "flowstate-ai-sidebar": [
+        {
+          "id": "flowstate-ai.agentActivity",
+          "name": "AI Agent Activity"
+        },
+        {
+          "id": "flowstate-ai.taskProgress",
+          "name": "Task Progress"
+        },
+        {
+          "id": "flowstate-ai.systemStatus",
+          "name": "System Status"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "FlowState-AI GODMODE",
+      "properties": {
+        "flowstate-ai.backendUrl": {
+          "type": "string",
+          "default": "http://localhost:3001",
+          "description": "URL of the FlowState-AI backend API"
+        },
+        "flowstate-ai.websocketUrl": {
+          "type": "string",
+          "default": "ws://localhost:3001",
+          "description": "WebSocket URL for real-time updates"
+        },
+        "flowstate-ai.autoSetup": {
+          "type": "boolean",
+          "default": true,
+          "description": "Automatically setup environment on project open"
+        },
+        "flowstate-ai.autoFix": {
+          "type": "boolean",
+          "default": false,
+          "description": "Automatically apply fixes without confirmation"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile",
+    "lint": "eslint src --ext ts"
+  },
+  "devDependencies": {
+    "@types/node": "^24.6.2",
+    "@types/vscode": "^1.104.0",
+    "@types/ws": "^8.5.10",
+    "@vscode/vsce": "^3.6.2",
+    "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "axios": "^1.12.2",
+    "ws": "^8.18.3"
+  }
+}
