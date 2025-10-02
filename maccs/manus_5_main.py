@@ -123,8 +123,7 @@ if __name__ == "__main__":
         manus_interface = ManusInterface(
             manus_id=MANUS_ID,
             role=ManusRole.COORDINATOR, # Assigning a coordinator role for now, can be refined
-            capabilities=manus_5_delegation_capabilities["skills"],
-            project_root=REPO_PATH # Explicitly pass the project root
+            capabilities=manus_5_delegation_capabilities["skills"]
         )
         print(f'[{MANUS_ID}] ManusInterface initialized successfully.')
         print(f'[{MANUS_ID}] Attempting to start manus_main_loop...')
