@@ -9,6 +9,7 @@ export interface Customer {
   notes?: string;
   next_action?: string;
   next_action_date?: Date | string;
+  prospect_why?: string;
 }
 
 export enum PipelineStatus {

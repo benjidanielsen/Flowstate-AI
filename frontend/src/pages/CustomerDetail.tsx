@@ -1,9 +1,10 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { ArrowLeft, Edit, Phone, Mail, Calendar, Plus, MessageSquare, ArrowRight } from 'lucide-react';
+import { ArrowLeft, Edit, Phone, Mail, Calendar, Plus, MessageSquare, ArrowRight, CheckCircle } from 'lucide-react';
 import { customerApi, interactionApi } from '../services/api';
 import { Customer, Interaction, PipelineStatus, InteractionType } from '../types';
 import { format } from 'date-fns';
+import QualificationQuestionnaire from '../components/QualificationQuestionnaire';
 
 const CustomerDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -13,6 +14,7 @@ const CustomerDetail: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [editMode, setEditMode] = useState(false);
   const [showAddInteraction, setShowAddInteraction] = useState(false);
+  const [showQualification, setShowQualification] = useState(false);
 
   const fetchCustomerData = useCallback(async (customerId: string) => {
     try {
@@ -196,6 +198,22 @@ const CustomerDetail: React.FC = () => {
             )}
           </div>
 
+          {/* Prospect's WHY (Qualification) */}
+          {customer.prospect_why && (
+            <div className="bg-white rounded-lg shadow p-6 mt-6">
+              <div className="flex items-center space-x-2 mb-4">
+                <CheckCircle size={20} className="text-green-600" />
+                <h2 className="text-xl font-semibold text-gray-900">Prospect's WHY</h2>
+              </div>
+              <div className="p-4 bg-green-50 rounded-lg border border-green-200">
+                <p className="text-sm text-gray-700 whitespace-pre-wrap">{customer.prospect_why}</p>
+              </div>
+              <p className="mt-2 text-xs text-gray-500">
+                Qualified using the Frazer Method
+              </p>
+            </div>
+          )}
+
           {/* Notes */}
           <div className="bg-white rounded-lg shadow p-6 mt-6">
             <h2 className="text-xl font-semibold text-gray-900 mb-4">Notes</h2>
@@ -302,6 +320,15 @@ const CustomerDetail: React.FC = () => {
                 <MessageSquare size={16} />
                 <span>Add Note</span>
               </button>
+              {customer.status === PipelineStatus.INVITED && !customer.prospect_why && (
+                <button
+                  onClick={() => setShowQualification(true)}
+                  className="flex items-center space-x-2 w-full px-3 py-2 text-sm text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors"
+                >
+                  <CheckCircle size={16} />
+                  <span>Qualify Prospect</span>
+                </button>
+              )}
             </div>
           </div>
         </div>
@@ -316,6 +343,18 @@ const CustomerDetail: React.FC = () => {
             setShowAddInteraction(false);
             fetchCustomerData(customer.id);
           }}
+        />
+      )}
+
+      {/* Qualification Questionnaire Modal */}
+      {showQualification && (
+        <QualificationQuestionnaire
+          customer={customer}
+          onComplete={(updatedCustomer) => {
+            setCustomer(updatedCustomer);
+            setShowQualification(false);
+          }}
+          onCancel={() => setShowQualification(false)}
         />
       )}
     </div>
