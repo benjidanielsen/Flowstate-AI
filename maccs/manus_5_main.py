@@ -7,7 +7,7 @@ import sqlite3
 import json
 
 # Add the maccs directory to sys.path
-sys.path.insert(0, os.path.join(os.path.expanduser('~'), 'Flowstate-AI', 'maccs'))
+sys.path.insert(0, os.path.join(os.path.expanduser("~"), "Flowstate-AI", "maccs"))
 
 from maccs_client import MACCSClientV3
 
@@ -61,37 +61,37 @@ def run_manus_5_main_loop():
             unread_messages = client.get_unread_messages()
             for msg in unread_messages:
                 print(f"[{MANUS_ID}] Received message: {msg['type']} from {msg['sender_id']}. Payload: {msg['payload']}")
-                client.mark_message_read(msg['id'])
+                client.mark_message_read(msg["id"])
 
-                if msg['type'] == 'TASK_DELEGATED' and msg['recipient_id'] == MANUS_ID:
-                    payload = json.loads(msg['payload'])
-                    delegated_task_id = payload.get('task_id')
+                if msg["type"] == "TASK_DELEGATED" and msg["recipient_id"] == MANUS_ID:
+                    payload = json.loads(msg["payload"])
+                    delegated_task_id = payload.get("task_id")
                     if delegated_task_id and not current_task_id:
                         # Attempt to claim the delegated task
                         try:
                             client.claim_task(delegated_task_id)
                             current_task_id = delegated_task_id
                             print(f"[{MANUS_ID}] Claimed delegated task: {current_task_id}")
-                            client.send_message(to='manus_2', msg_type='TASK_CLAIMED_CONFIRMATION', payload=json.dumps({'task_id': current_task_id, 'message': 'Task claimed and starting work.'}))
+                            client.send_message(to="manus_2", msg_type="TASK_CLAIMED_CONFIRMATION", payload=json.dumps({"task_id": current_task_id, "message": "Task claimed and starting work."}))
                         except Exception as e:
                             print(f"[{MANUS_ID}] Failed to claim delegated task {delegated_task_id}: {e}")
-                            client.send_message(to='manus_2', msg_type='TASK_CLAIM_FAILED', payload=json.dumps({'task_id': delegated_task_id, 'reason': str(e)}))
+                            client.send_message(to="manus_2", msg_type="TASK_CLAIM_FAILED", payload=json.dumps({"task_id": delegated_task_id, "reason": str(e)}))
 
-                elif msg['type'] == 'URGENT_DIRECTIVE' and msg['recipient_id'] == MANUS_ID:
-                    payload = json.loads(msg['payload'])
-                    print(f"[{MANUS_ID}] Received URGENT DIRECTIVE: {payload.get('subject')}. Message: {payload.get('message')}")
+                elif msg["type"] == "URGENT_DIRECTIVE" and msg["recipient_id"] == MANUS_ID:
+                    payload = json.loads(msg["payload"])
+                    print(f"[{MANUS_ID}] Received URGENT DIRECTIVE: {payload.get("subject")}. Message: {payload.get("message")}")
                     # Implement logic to handle urgent directives, e.g., pause current task, re-evaluate priorities
 
-                elif msg['type'] == 'TASK_APPROVED' and msg['recipient_id'] == MANUS_ID:
-                    payload = json.loads(msg['payload'])
-                    approved_task_id = payload.get('task_id')
+                elif msg["type"] == "TASK_APPROVED" and msg["recipient_id"] == MANUS_ID:
+                    payload = json.loads(msg["payload"])
+                    approved_task_id = payload.get("task_id")
                     print(f"[{MANUS_ID}] Task {approved_task_id} approved by Manus #2.")
                     # Additional logic for approved tasks if needed
 
-                elif msg['type'] == 'TASK_REJECTED' and msg['recipient_id'] == MANUS_ID:
-                    payload = json.loads(msg['payload'])
-                    rejected_task_id = payload.get('task_id')
-                    feedback = payload.get('feedback')
+                elif msg["type"] == "TASK_REJECTED" and msg["recipient_id"] == MANUS_ID:
+                    payload = json.loads(msg["payload"])
+                    rejected_task_id = payload.get("task_id")
+                    feedback = payload.get("feedback")
                     print(f"[{MANUS_ID}] Task {rejected_task_id} rejected by Manus #2. Feedback: {feedback}")
                     # Additional logic for rejected tasks, e.g., re-evaluate, modify, or re-post
 
@@ -105,12 +105,12 @@ def run_manus_5_main_loop():
                 if current_task_id == "0e2f2e87-8d94-4c27-a15c-d11fe31463dc": # Analyze Manus Capabilities task
                     print(f"[{MANUS_ID}] Completed 'Analyze Manus Capabilities and Propose Optimal Task Delegation' task.")
                     client.complete_task(current_task_id, "Completed initial analysis of Manus capabilities and drafted delegation proposal.")
-                    client.send_message(to='manus_2', msg_type='TASK_COMPLETED', payload=json.dumps({'task_id': current_task_id, 'message': 'Initial analysis of Manus capabilities and delegation proposal drafted.'}))
+                    client.send_message(to="manus_2", msg_type="TASK_COMPLETED", payload=json.dumps({"task_id": current_task_id, "message": "Initial analysis of Manus capabilities and delegation proposal drafted."}))
                     current_task_id = None
                 elif current_task_id == "fd41c32f-3283-46e8-b961-e44568dc4c20": # Refine MACCS v3.0 Client Library task
                     print(f"[{MANUS_ID}] Completed 'Refine and Document MACCS v3.0 Client Library' task.")
                     client.complete_task(current_task_id, "Refined MACCS v3.0 client library and updated documentation.")
-                    client.send_message(to='manus_2', msg_type='TASK_COMPLETED', payload=json.dumps({'task_id': current_task_id, 'message': 'MACCS v3.0 client library refined and documented.'}))
+                    client.send_message(to="manus_2", msg_type="TASK_COMPLETED", payload=json.dumps({"task_id": current_task_id, "message": "MACCS v3.0 client library refined and documented."}))
                     current_task_id = None
 
             # If no current task, look for new tasks to claim (only if not recently checked)
@@ -119,12 +119,12 @@ def run_manus_5_main_loop():
                 best_task = client.discover_best_task()
                 if best_task:
                     try:
-                        client.claim_task(best_task['task_id'])
-                        current_task_id = best_task['task_id']
-                        print(f"[{MANUS_ID}] Claimed task: {best_task['title']} (ID: {current_task_id})")
-                        client.send_message(to='manus_2', msg_type='TASK_CLAIMED_CONFIRMATION', payload=json.dumps({'task_id': current_task_id, 'message': f'Claimed task: {best_task["title"]}'}))
+                        client.claim_task(best_task["task_id"])
+                        current_task_id = best_task["task_id"]
+                        print(f"[{MANUS_ID}] Claimed task: {best_task["title"]} (ID: {current_task_id})")
+                        client.send_message(to="manus_2", msg_type="TASK_CLAIMED_CONFIRMATION", payload=json.dumps({"task_id": current_task_id, "message": f"Claimed task: {best_task["title"]}"}))
                     except Exception as e:
-                        print(f"[{MANUS_ID}] Failed to claim task {best_task['task_id']}: {e}")
+                        print(f"[{MANUS_ID}] Failed to claim task {best_task["task_id"]}: {e}")
                 last_task_check_time = now
 
             # Periodic Git backup (every 5 minutes, or more frequently if needed)
