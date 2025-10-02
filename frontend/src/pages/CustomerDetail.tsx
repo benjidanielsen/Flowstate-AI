@@ -86,8 +86,9 @@ const CustomerDetail: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-96">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary-600"></div>
+      <div className="flex items-center justify-center min-h-96" role="status" aria-live="polite" aria-label="Loading customer data">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary-600" aria-hidden="true"></div>
+        <span className="sr-only">Loading customer data...</span>
       </div>
     );
   }
