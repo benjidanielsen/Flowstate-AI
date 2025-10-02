@@ -1,7 +1,6 @@
 import DatabaseManager from '../database';
 import { v4 as uuidv4 } from 'uuid';
 import { Reminder } from '../types';
-
 export class ReminderService {
   async createReminder(data: { customer_id: string; type: string; message?: string; scheduled_for: Date }): Promise<Reminder> {
     const db = DatabaseManager.getInstance().getDb();
@@ -53,31 +52,45 @@ export class ReminderService {
             completed: Boolean(r.completed),
             created_at: new Date(r.created_at),
           }));
-          resolve(  async markReminderCompleted(id: string): Promise<Reminder | null> {
+          resolve(reminders);
+        }
+      );
+    });
+  }
+
+  async markReminderCompleted(id: string): Promise<Reminder | null> {
     const db = DatabaseManager.getInstance().getDb();
     return new Promise((resolve, reject) => {
-      db.run(`UPDATE reminders SET completed = 1 WHERE id = ?`, [id], (err) => {
+      db.run(`UPDATE reminders SET completed = 1 WHERE id = ?`, [id], function(err) {
+
+
         if (err) return reject(err);
-        // After attempting to update, always try to retrieve the reminder to get its current state
-        db.get(`SELECT * FROM reminders WHERE id = ?`, [id], (err, row: any) => {
-          if (err) return reject(err);
-          if (row) {
-            resolve({
-              id: row.id,
-              customer_id: row.customer_id,
-              type: row.type,
-              message: row.message,
-              scheduled_for: new Date(row.scheduled_for),
-              completed: Boolean(row.completed), // Convert DB integer to boolean
-              created_at: new Date(row.created_at),
-            });
-          } else {
-            resolve(null);
-          }
-        });
+        if (this.changes > 0) {
+          // If update was successful, construct and return the reminder with completed: true
+          db.get(`SELECT * FROM reminders WHERE id = ?`, [id], (err, row: any) => {
+            if (err) return reject(err);
+            if (row) {
+              resolve({
+                id: row.id,
+                customer_id: row.customer_id,
+                type: row.type,
+                message: row.message,
+                scheduled_for: new Date(row.scheduled_for),
+                completed: true,
+                created_at: new Date(row.created_at),
+              });
+            } else {
+              resolve(null);
+            }
+          });
+        } else {
+          resolve(null);
+        }
       });
     });
-  }d: string): Promise<Reminder[]> {
+  }
+
+  async getRemindersByCustomerId(customerId: string): Promise<Reminder[]> {
     const db = DatabaseManager.getInstance().getDb();
     return new Promise((resolve, reject) => {
       db.all(
@@ -122,4 +135,3 @@ export class ReminderService {
     });
   }
 }
-
