@@ -1,5 +1,5 @@
 {
-  "last_updated": "2025-10-01T23:45:32.526687",
+  "last_updated": "2025-10-01T23:46:04.973564",
   "manus_instances": {
     "manus_4": {
       "id": "manus_4",
@@ -28,8 +28,8 @@
       ],
       "sandbox_id": "sandbox-manus_5",
       "status": "active",
-      "registered_at": "2025-10-01T23:45:32.347284",
-      "last_seen": "2025-10-01T23:45:32.403100",
+      "registered_at": "2025-10-01T23:46:04.849707",
+      "last_seen": "2025-10-01T23:46:04.903913",
       "current_task": null,
       "tasks_completed": 0,
       "progress": 0
@@ -37,7 +37,7 @@
   },
   "heartbeats": {
     "manus_4": "2025-10-01T23:45:14.738342",
-    "manus_5": "2025-10-01T23:45:32.403116"
+    "manus_5": "2025-10-01T23:46:04.903926"
   },
   "active_count": 2
 }
