@@ -76,8 +76,8 @@ Flowstate-AI is an AI-first, self-improving CRM-OS for network marketers and sol
    # Edit backend/.env with your configuration
    
    # For GitHub Integration, set your GitHub Token
-   export GITHUB_TOKEN="YOUR_GITHUB_TOKEN"
-   # On Windows, use: set GITHUB_TOKEN="YOUR_GITHUB_TOKEN"
+   export GITHUB_TOKEN="<YOUR_GITHUB_TOKEN>" # Replace with your actual GitHub token or personal access token
+   # On Windows, use: set GITHUB_TOKEN="<YOUR_GITHUB_TOKEN>" # Replace with your actual GitHub token or personal access token
    ```
 
 3. **Initialize Database**
