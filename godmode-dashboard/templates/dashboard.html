@@ -3,44 +3,205 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GODMODE AI Dashboard - Enhanced</title>
+    <title>🤖 GODMODE AI Monitor</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
     <style>
-        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: #1a1a1a; color: white; }
-        .header { text-align: center; margin-bottom: 30px; }
-        .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px; }
-        .stat-card { background: #2a2a2a; padding: 20px; border-radius: 10px; text-align: center; }
-        .agents { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
-        .agent-card { background: #2a2a2a; padding: 20px; border-radius: 10px; border-left: 4px solid #4080FF; }
-        .agent-header { display: flex; align-items: center; margin-bottom: 15px; }
-        .agent-icon { font-size: 24px; margin-right: 10px; }
-        .progress-bar { background: #444; height: 20px; border-radius: 10px; overflow: hidden; margin: 10px 0; }
-        .progress-fill { height: 100%; background: linear-gradient(90deg, #4080FF, #57A9FB); transition: width 0.3s; }
-        .status { padding: 5px 10px; border-radius: 15px; font-size: 12px; font-weight: bold; }
-        .status.active { background: #23C343; }
-        .status.inactive { background: #FF4444; }
-        .status.initializing { background: #FBE842; color: #000; }
-        .timestamp { text-align: center; margin-top: 20px; color: #888; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .system-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .ai-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
+        }
+        
+        .ai-card {
+            background: rgba(255,255,255,0.1);
+            border-radius: 15px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .ai-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+        
+        .ai-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .ai-icon {
+            font-size: 2em;
+            margin-right: 15px;
+        }
+        
+        .ai-info h3 {
+            margin-bottom: 5px;
+        }
+        
+        .ai-status {
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+        
+        .status-ACTIVE { background: #23C343; }
+        .status-WORKING { background: #FBE842; color: #333; }
+        .status-COMPLETED { background: #37D4CF; }
+        .status-INITIALIZING { background: #A9AEB8; }
+        .status-ERROR { background: #FF4444; }
+        
+        .ai-task {
+            margin: 15px 0;
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+        
+        .progress-container {
+            margin: 15px 0;
+        }
+        
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            font-size: 0.9em;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4080FF, #57A9FB);
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+        
+        .ai-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+            font-size: 0.8em;
+            opacity: 0.8;
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+        
+        .last-update {
+            text-align: center;
+            margin-top: 30px;
+            opacity: 0.7;
+            font-size: 0.9em;
+        }
+        
+        @media (max-width: 768px) {
+            .ai-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .system-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
     </style>
 </head>
 <body>
     <div class="header">
-        <h1>🚀 GODMODE AI Dashboard - Enhanced</h1>
-        <p>Real-time AI Agent Monitoring with Windows Compatibility</p>
+        <h1>🤖 GODMODE AI MONITOR</h1>
+        <p>Real-time AI Development Army Status</p>
     </div>
     
-    <div class="stats" id="stats">
-        <!-- Stats will be populated by JavaScript -->
+    <div class="system-stats">
+        <div class="stat-card">
+            <div class="stat-value" id="total-ais">0</div>
+            <div>Total AIs</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value" id="active-ais">0</div>
+            <div>Active AIs</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value" id="completed-tasks">0</div>
+            <div>Completed Tasks</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value" id="active-tasks">0</div>
+            <div>Active Tasks</div>
+        </div>
     </div>
     
-    <div class="agents" id="agents">
-        <!-- Agents will be populated by JavaScript -->
+    <div class="ai-grid" id="ai-grid">
+        <!-- AI cards will be populated here -->
     </div>
     
-    <div class="timestamp" id="timestamp">
-        <!-- Timestamp will be updated by JavaScript -->
+    <div class="last-update">
+        Last updated: <span id="last-update">Never</span>
     </div>
-
+    
     <script>
         const socket = io();
         
@@ -49,59 +210,71 @@
         });
         
         function updateDashboard(data) {
-            // Update stats
-            const statsHtml = `
-                <div class="stat-card">
-                    <h3>Total AIs</h3>
-                    <div style="font-size: 24px; color: #4080FF;">${data.system_stats.total_ais}</div>
-                </div>
-                <div class="stat-card">
-                    <h3>Active AIs</h3>
-                    <div style="font-size: 24px; color: #23C343;">${data.system_stats.active_ais}</div>
-                </div>
-                <div class="stat-card">
-                    <h3>Completed Tasks</h3>
-                    <div style="font-size: 24px; color: #FBE842;">${data.system_stats.completed_tasks}</div>
-                </div>
-                <div class="stat-card">
-                    <h3>System Health</h3>
-                    <div style="font-size: 24px; color: ${data.health_status === 'healthy' ? '#23C343' : data.health_status === 'warning' ? '#FBE842' : '#FF4444'};">${data.health_status.toUpperCase()}</div>
-                </div>
-            `;
-            document.getElementById('stats').innerHTML = statsHtml;
+            // Update system stats
+            document.getElementById('total-ais').textContent = data.system_stats.total_ais;
+            document.getElementById('active-ais').textContent = data.system_stats.active_ais;
+            document.getElementById('completed-tasks').textContent = data.system_stats.completed_tasks;
+            document.getElementById('active-tasks').textContent = data.system_stats.active_tasks;
             
-            // Update agents
-            const agentsHtml = data.ai_agents.map(agent => `
-                <div class="agent-card">
-                    <div class="agent-header">
-                        <span class="agent-icon">${agent.icon}</span>
-                        <div>
-                            <h3 style="margin: 0;">${agent.name}</h3>
-                            <span class="status ${agent.status.toLowerCase()}">${agent.status}</span>
-                        </div>
-                    </div>
-                    <div><strong>Current Task:</strong> ${agent.current_task}</div>
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: ${agent.progress}%;"></div>
-                    </div>
-                    <div style="font-size: 12px; color: #888;">
-                        Progress: ${agent.progress}% | Tasks: ${agent.tasks_completed} | Score: ${agent.performance_score.toFixed(1)}
-                    </div>
-                </div>
-            `).join('');
-            document.getElementById('agents').innerHTML = agentsHtml;
+            // Update AI grid
+            const aiGrid = document.getElementById('ai-grid');
+            aiGrid.innerHTML = '';
+            
+            data.ai_status.forEach(ai => {
+                const aiCard = createAICard(ai);
+                aiGrid.appendChild(aiCard);
+            });
             
             // Update timestamp
-            document.getElementById('timestamp').innerHTML = `Last updated: ${new Date(data.timestamp).toLocaleString()}`;
+            const now = new Date();
+            document.getElementById('last-update').textContent = now.toLocaleTimeString();
         }
         
-        // Request initial update
-        socket.emit('request_update');
+        function createAICard(ai) {
+            const card = document.createElement('div');
+            card.className = 'ai-card';
+            if (ai.status === 'ACTIVE') {
+                card.classList.add('pulse');
+            }
+            
+            card.innerHTML = `
+                <div class="ai-header">
+                    <div class="ai-icon">${ai.icon}</div>
+                    <div class="ai-info">
+                        <h3>${ai.name}</h3>
+                        <span class="ai-status status-${ai.status}">${ai.status}</span>
+                    </div>
+                </div>
+                
+                <div class="ai-task">
+                    <strong>Current Task:</strong><br>
+                    ${ai.current_task}
+                </div>
+                
+                <div class="progress-container">
+                    <div class="progress-label">
+                        <span>Progress</span>
+                        <span>${ai.progress}%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${ai.progress}%"></div>
+                    </div>
+                </div>
+                
+                <div class="ai-stats">
+                    <span>Tasks: ${ai.tasks_completed}</span>
+                    <span>Score: ${ai.performance_score}%</span>
+                </div>
+            `;
+            
+            return card;
+        }
         
-        // Auto-refresh every 30 seconds
-        setInterval(() => {
-            socket.emit('request_update');
-        }, 30000);
+        // Initial load
+        fetch('/api/status')
+            .then(response => response.json())
+            .then(data => updateDashboard(data))
+            .catch(error => console.error('Error loading initial data:', error));
     </script>
 </body>
 </html>

@@ -628,4 +628,4 @@ if __name__ == '__main__':
         f.write(template_content)
     
     logger.info("🚀 Starting GODMODE AI Monitoring Dashboard on http://localhost:3333")
-    socketio.run(app, host='0.0.0.0', port=3333, debug=False)
+    socketio.run(app, host='0.0.0.0', port=3333, debug=False, allow_unsafe_werkzeug=True)
