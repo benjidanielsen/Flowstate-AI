@@ -11,6 +11,7 @@ import asyncio
 import json
 import time
 import hashlib
+import random # Added for random.uniform in example usage
 from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Dict, List, Any, Optional
@@ -98,6 +99,10 @@ class ManusSyncEngine:
         self.sync_db = self.project_root / ".manus-sync" / "sync_engine.db"
         self.sync_db.parent.mkdir(exist_ok=True)
         
+        # Use a single connection and a lock for thread safety
+        self._db_connection = sqlite3.connect(self.sync_db, check_same_thread=False)
+        self._db_lock = threading.Lock()
+
         self.manus_instances: Dict[str, ManusInstance] = {}
         self.task_queue: Dict[str, SyncTask] = {}
         self.active_locks: Dict[str, str] = {}  # file -> manus_id
@@ -108,13 +113,22 @@ class ManusSyncEngine:
         self._init_database()
         self._load_state()
     
+    def _execute_query(self, query: str, params: tuple = ()) -> List[Any]:
+        with self._db_lock:
+            cursor = self._db_connection.cursor()
+            try:
+                cursor.execute(query, params)
+                self._db_connection.commit()
+                return cursor.fetchall()
+            except sqlite3.Error as e:
+                print(f"❌ Database error: {e} for query: {query}")
+                self._db_connection.rollback()
+                return []
+
     def _init_database(self):
         """Initialize SQLite database for real-time sync"""
-        conn = sqlite3.connect(self.sync_db)
-        cursor = conn.cursor()
-        
-        # Manus instances table
-        cursor.execute('''
+        print("Initializing database...")
+        self._execute_query(
             CREATE TABLE IF NOT EXISTS manus_instances (
                 id TEXT PRIMARY KEY,
                 role TEXT NOT NULL,
@@ -126,10 +140,9 @@ class ManusSyncEngine:
                 last_heartbeat TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 performance_score REAL DEFAULT 100.0
             )
-        ''')
+        )
         
-        # Tasks table
-        cursor.execute('''
+        self._execute_query(
             CREATE TABLE IF NOT EXISTS sync_tasks (
                 id TEXT PRIMARY KEY,
                 title TEXT NOT NULL,
@@ -144,20 +157,18 @@ class ManusSyncEngine:
                 completed_at TIMESTAMP,
                 files_involved TEXT DEFAULT '[]'
             )
-        ''')
+        )
         
-        # File locks table
-        cursor.execute('''
+        self._execute_query(
             CREATE TABLE IF NOT EXISTS file_locks (
                 file_path TEXT PRIMARY KEY,
                 locked_by TEXT NOT NULL,
                 locked_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 lock_reason TEXT
             )
-        ''')
+        )
         
-        # Communication log
-        cursor.execute('''
+        self._execute_query(
             CREATE TABLE IF NOT EXISTS communication_log (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 from_manus TEXT NOT NULL,
@@ -167,60 +178,59 @@ class ManusSyncEngine:
                 timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 processed BOOLEAN DEFAULT FALSE
             )
-        ''')
-        
-        conn.commit()
-        conn.close()
+        )
+        print("Database initialization complete.")
     
     def _load_state(self):
         """Load current state from database"""
-        conn = sqlite3.connect(self.sync_db)
-        cursor = conn.cursor()
-        
+        print("Loading state from database...")
         # Load Manus instances
-        cursor.execute('SELECT * FROM manus_instances')
-        for row in cursor.fetchall():
-            manus = ManusInstance(
-                id=row[0],
-                role=ManusRole(row[1]),
-                capabilities=json.loads(row[2]),
-                current_task=row[3],
-                status=row[4],
-                progress=row[5],
-                files_claimed=json.loads(row[6]),
-                last_heartbeat=datetime.fromisoformat(row[7]) if row[7] else datetime.now(),
-                performance_score=row[8]
-            )
-            self.manus_instances[manus.id] = manus
+        for row in self._execute_query('SELECT * FROM manus_instances'):
+            try:
+                manus = ManusInstance(
+                    id=row[0],
+                    role=ManusRole(row[1]),
+                    capabilities=json.loads(row[2]),
+                    current_task=row[3],
+                    status=row[4],
+                    progress=row[5],
+                    files_claimed=json.loads(row[6]),
+                    last_heartbeat=datetime.fromisoformat(row[7]) if row[7] else datetime.now(),
+                    performance_score=row[8]
+                )
+                self.manus_instances[manus.id] = manus
+            except Exception as e:
+                print(f"❌ Error loading Manus instance {row[0]}: {e}")
         
         # Load tasks
-        cursor.execute('SELECT * FROM sync_tasks WHERE status != "completed"')
-        for row in cursor.fetchall():
-            task = SyncTask(
-                id=row[0],
-                title=row[1],
-                description=row[2],
-                assigned_to=row[3],
-                priority=TaskPriority(row[4]),
-                status=TaskStatus(row[5]),
-                dependencies=json.loads(row[6]),
-                estimated_duration=row[7],
-                created_at=datetime.fromisoformat(row[8]),
-                started_at=datetime.fromisoformat(row[9]) if row[9] else None,
-                completed_at=datetime.fromisoformat(row[10]) if row[10] else None,
-                files_involved=json.loads(row[11])
-            )
-            self.task_queue[task.id] = task
+        for row in self._execute_query('SELECT * FROM sync_tasks WHERE status != "completed"'):
+            try:
+                task = SyncTask(
+                    id=row[0],
+                    title=row[1],
+                    description=row[2],
+                    assigned_to=row[3],
+                    priority=TaskPriority(row[4]),
+                    status=TaskStatus(row[5]),
+                    dependencies=json.loads(row[6]),
+                    estimated_duration=row[7],
+                    created_at=datetime.fromisoformat(row[8]),
+                    started_at=datetime.fromisoformat(row[9]) if row[9] else None,
+                    completed_at=datetime.fromisoformat(row[10]) if row[10] else None,
+                    files_involved=json.loads(row[11])
+                )
+                self.task_queue[task.id] = task
+            except Exception as e:
+                print(f"❌ Error loading task {row[0]}: {e}")
         
         # Load file locks
-        cursor.execute('SELECT file_path, locked_by FROM file_locks')
-        for row in cursor.fetchall():
+        for row in self._execute_query('SELECT file_path, locked_by FROM file_locks'):
             self.active_locks[row[0]] = row[1]
-        
-        conn.close()
+        print("State loading complete.")
     
     def register_manus(self, manus_id: str, role: ManusRole, capabilities: List[str]) -> bool:
         """Register a new Manus instance"""
+        print(f"Attempting to register Manus {manus_id}...")
         manus = ManusInstance(
             id=manus_id,
             role=role,
@@ -235,14 +245,12 @@ class ManusSyncEngine:
     
     def _save_manus_to_db(self, manus: ManusInstance):
         """Save Manus instance to database"""
-        conn = sqlite3.connect(self.sync_db)
-        cursor = conn.cursor()
-        
-        cursor.execute('''
+        print(f"Saving Manus {manus.id} to DB...")
+        self._execute_query(
             INSERT OR REPLACE INTO manus_instances 
             (id, role, capabilities, current_task, status, progress, files_claimed, last_heartbeat, performance_score)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-        ''', (
+        , (
             manus.id,
             manus.role.value,
             json.dumps(manus.capabilities),
@@ -253,9 +261,7 @@ class ManusSyncEngine:
             manus.last_heartbeat.isoformat(),
             manus.performance_score
         ))
-        
-        conn.commit()
-        conn.close()
+        print(f"Manus {manus.id} saved to DB.")
     
     def create_task(self, title: str, description: str, priority: TaskPriority, 
                    files_involved: List[str] = None, dependencies: List[str] = None,
@@ -281,19 +287,14 @@ class ManusSyncEngine:
         self.task_queue[task_id] = task
         self._save_task_to_db(task)
         
-        print(f"📋 Task '{title}' created and assigned to {assigned_to}")
+        print(f"📋 Task \'{title}\' created and assigned to {assigned_to}")
         return task_id
     
     def _auto_assign_task(self, files_involved: List[str], priority: TaskPriority) -> str:
         """Intelligently assign task to best available Manus"""
         if not self.manus_instances:
+            print("No Manus instances registered for auto-assignment. Assigning to 'unassigned'.")
             return "unassigned"
-        
-        # Score each Manus based on:
-        # 1. Current workload
-        # 2. Capabilities match
-        # 3. Performance score
-        # 4. File conflicts
         
         best_manus = None
         best_score = -1
@@ -311,11 +312,11 @@ class ManusSyncEngine:
             score += workload_score
             
             # Capability match
-            if any(file.endswith('.py') for file in files_involved) and 'python' in manus.capabilities:
+            if any(file.endswith(".py") for file in files_involved) and "python" in manus.capabilities:
                 score += 30
-            if any(file.endswith('.ts') for file in files_involved) and 'typescript' in manus.capabilities:
+            if any(file.endswith(".ts") for file in files_involved) and "typescript" in manus.capabilities:
                 score += 30
-            if any('ai-gods' in file for file in files_involved) and 'ai_systems' in manus.capabilities:
+            if any("ai-gods" in file for file in files_involved) and "ai_systems" in manus.capabilities:
                 score += 40
             
             # Performance factor
@@ -329,19 +330,26 @@ class ManusSyncEngine:
                 best_score = score
                 best_manus = manus_id
         
-        return best_manus or list(self.manus_instances.keys())[0]
+        if best_manus:
+            print(f"Auto-assigned task to {best_manus} with score {best_score}.")
+            return best_manus
+        else:
+            print("Could not find a suitable Manus for auto-assignment. Assigning to first active Manus.")
+            # Fallback to first active Manus if no best_manus found
+            for manus_id, manus in self.manus_instances.items():
+                if manus.status == "ACTIVE":
+                    return manus_id
+            return "unassigned"
     
     def _save_task_to_db(self, task: SyncTask):
         """Save task to database"""
-        conn = sqlite3.connect(self.sync_db)
-        cursor = conn.cursor()
-        
-        cursor.execute('''
+        print(f"Saving task {task.id} to DB...")
+        self._execute_query(
             INSERT OR REPLACE INTO sync_tasks 
             (id, title, description, assigned_to, priority, status, dependencies, 
              estimated_duration, created_at, started_at, completed_at, files_involved)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        ''', (
+        , (
             task.id,
             task.title,
             task.description,
@@ -355,12 +363,11 @@ class ManusSyncEngine:
             task.completed_at.isoformat() if task.completed_at else None,
             json.dumps(task.files_involved)
         ))
-        
-        conn.commit()
-        conn.close()
+        print(f"Task {task.id} saved to DB.")
     
     def claim_files(self, manus_id: str, files: List[str]) -> bool:
         """Claim files for exclusive access"""
+        print(f"Manus {manus_id} attempting to claim files: {files}")
         # Check for conflicts
         conflicts = []
         for file in files:
@@ -381,23 +388,18 @@ class ManusSyncEngine:
             self._save_manus_to_db(self.manus_instances[manus_id])
         
         # Save to database
-        conn = sqlite3.connect(self.sync_db)
-        cursor = conn.cursor()
-        
         for file in files:
-            cursor.execute('''
+            self._execute_query(
                 INSERT OR REPLACE INTO file_locks (file_path, locked_by, lock_reason)
                 VALUES (?, ?, ?)
-            ''', (file, manus_id, f"Claimed by {manus_id}"))
-        
-        conn.commit()
-        conn.close()
+            , (file, manus_id, f"Claimed by {manus_id}"))
         
         print(f"🔒 Files claimed by {manus_id}: {files}")
         return True
     
     def release_files(self, manus_id: str, files: List[str]):
         """Release claimed files"""
+        print(f"Manus {manus_id} attempting to release files: {files}")
         for file in files:
             if file in self.active_locks and self.active_locks[file] == manus_id:
                 del self.active_locks[file]
@@ -410,21 +412,18 @@ class ManusSyncEngine:
             self._save_manus_to_db(self.manus_instances[manus_id])
         
         # Remove from database
-        conn = sqlite3.connect(self.sync_db)
-        cursor = conn.cursor()
-        
         for file in files:
-            cursor.execute('DELETE FROM file_locks WHERE file_path = ? AND locked_by = ?', 
-                         (file, manus_id))
-        
-        conn.commit()
-        conn.close()
+            self._execute_query(
+                DELETE FROM file_locks WHERE file_path = ? AND locked_by = ?
+            , (file, manus_id))
         
         print(f"🔓 Files released by {manus_id}: {files}")
     
     def update_task_progress(self, manus_id: str, task_id: str, progress: int, status: TaskStatus = None):
         """Update task progress in real-time"""
+        print(f"Manus {manus_id} updating task {task_id} progress to {progress}% with status {status}...")
         if task_id not in self.task_queue:
+            print(f"❌ Task {task_id} not found in queue.")
             return False
         
         task = self.task_queue[task_id]
@@ -434,7 +433,7 @@ class ManusSyncEngine:
             return False
         
         # Update progress
-        old_progress = task.status
+        old_status = task.status
         if status:
             task.status = status
         
@@ -452,60 +451,51 @@ class ManusSyncEngine:
         
         self._save_task_to_db(task)
         
-        print(f"📊 Task '{task.title}' progress: {progress}% ({status.value if status else old_progress.value})")
+        print(f"📊 Task \'{task.title}\' progress: {progress}% ({status.value if status else old_status.value})")
         return True
     
     def send_message(self, from_manus: str, to_manus: str, message_type: str, content: Dict[str, Any]):
         """Send real-time message between Manus instances"""
-        conn = sqlite3.connect(self.sync_db)
-        cursor = conn.cursor()
-        
-        cursor.execute('''
+        print(f"Sending message from {from_manus} to {to_manus} (Type: {message_type})...")
+        self._execute_query(
             INSERT INTO communication_log (from_manus, to_manus, message_type, content)
             VALUES (?, ?, ?, ?)
-        ''', (from_manus, to_manus, message_type, json.dumps(content)))
-        
-        conn.commit()
-        conn.close()
-        
-        print(f"💬 Message from {from_manus} to {to_manus}: {message_type}")
+        , (from_manus, to_manus, message_type, json.dumps(content)))
+        print(f"Message from {from_manus} to {to_manus} sent.")
     
-    def get_messages(self, manus_id: str) -> List[Dict[str, Any]]:
-        """Get unprocessed messages for a Manus instance"""
-        conn = sqlite3.connect(self.sync_db)
-        cursor = conn.cursor()
-        
-        cursor.execute('''
-            SELECT id, from_manus, message_type, content, timestamp 
+    def get_messages(self, to_manus: str) -> List[Dict[str, Any]]:
+        """Get messages for this Manus"""
+        print(f"Retrieving messages for {to_manus}...")
+        messages_data = self._execute_query(
+            SELECT id, from_manus, to_manus, message_type, content, timestamp 
             FROM communication_log 
             WHERE to_manus = ? AND processed = FALSE
             ORDER BY timestamp ASC
-        ''', (manus_id,))
+        , (to_manus,))
         
         messages = []
         message_ids = []
-        
-        for row in cursor.fetchall():
+        for row in messages_data:
             messages.append({
-                'id': row[0],
-                'from': row[1],
-                'type': row[2],
-                'content': json.loads(row[3]),
-                'timestamp': row[4]
+                "id": row[0],
+                "from_manus": row[1],
+                "to_manus": row[2],
+                "message_type": row[3],
+                "content": json.loads(row[4]),
+                "timestamp": row[5]
             })
             message_ids.append(row[0])
         
-        # Mark as processed
         if message_ids:
-            cursor.execute(f'''
+            print(f"Marking {len(message_ids)} messages as processed for {to_manus}.")
+            # Mark messages as processed
+            self._execute_query(
                 UPDATE communication_log 
                 SET processed = TRUE 
                 WHERE id IN ({','.join(['?'] * len(message_ids))})
-            ''', message_ids)
+            , message_ids)
         
-        conn.commit()
-        conn.close()
-        
+        print(f"Retrieved {len(messages)} messages for {to_manus}.")
         return messages
     
     def get_dashboard_data(self) -> Dict[str, Any]:
@@ -556,6 +546,7 @@ class ManusSyncEngine:
     def start_sync_engine(self):
         """Start the real-time synchronization engine"""
         if self.running:
+            print("Sync engine already running.")
             return
         
         self.running = True
@@ -566,14 +557,21 @@ class ManusSyncEngine:
     
     def stop_sync_engine(self):
         """Stop the synchronization engine"""
+        if not self.running:
+            print("Sync engine not running.")
+            return
         self.running = False
         if self.sync_thread:
-            self.sync_thread.join()
+            self.sync_thread.join(timeout=5) # Give it some time to finish
+            if self.sync_thread.is_alive():
+                print("⚠️ Sync thread did not terminate gracefully.")
         
+        self._db_connection.close()
         print("🛑 Manus Sync Engine STOPPED")
     
     def _sync_loop(self):
         """Main synchronization loop"""
+        print("Sync loop started.")
         while self.running:
             try:
                 # Update heartbeats
@@ -592,12 +590,15 @@ class ManusSyncEngine:
                 time.sleep(1)
                 
             except Exception as e:
-                print(f"❌ Sync engine error: {e}")
+                print(f"❌ Sync engine error in loop: {e}")
                 time.sleep(5)
+        print("Sync loop terminated.")
     
     def _update_heartbeats(self):
         """Update Manus instance heartbeats"""
-        for manus in self.manus_instances.values():
+        # Load latest state from DB to ensure consistency
+        self._load_state() 
+        for manus in list(self.manus_instances.values()): # Iterate over a copy
             # Mark as inactive if no heartbeat for 5 minutes
             if datetime.now() - manus.last_heartbeat > timedelta(minutes=5):
                 if manus.status == "ACTIVE":
@@ -607,7 +608,9 @@ class ManusSyncEngine:
     
     def _process_task_queue(self):
         """Process pending tasks and auto-start when dependencies are met"""
-        for task in self.task_queue.values():
+        # Load latest state from DB to ensure consistency
+        self._load_state()
+        for task in list(self.task_queue.values()): # Iterate over a copy
             if task.status == TaskStatus.PENDING:
                 # Check if dependencies are completed
                 deps_completed = all(
@@ -631,6 +634,8 @@ class ManusSyncEngine:
     
     def _cleanup_completed_tasks(self):
         """Clean up old completed tasks"""
+        # Load latest state from DB to ensure consistency
+        self._load_state()
         cutoff = datetime.now() - timedelta(hours=24)
         
         completed_tasks = [
@@ -640,11 +645,14 @@ class ManusSyncEngine:
         
         for task_id in completed_tasks:
             del self.task_queue[task_id]
+            self._execute_query("DELETE FROM sync_tasks WHERE id = ?", (task_id,))
     
     def _optimize_assignments(self):
         """Optimize task assignments based on performance"""
+        # Load latest state from DB to ensure consistency
+        self._load_state()
         # Reassign tasks from inactive Manus instances
-        for task in self.task_queue.values():
+        for task in list(self.task_queue.values()): # Iterate over a copy
             if task.status in [TaskStatus.PENDING, TaskStatus.IN_PROGRESS]:
                 assigned_manus = self.manus_instances.get(task.assigned_to)
                 
@@ -656,7 +664,7 @@ class ManusSyncEngine:
                         task.assigned_to = new_assignee
                         self._save_task_to_db(task)
                         
-                        print(f"🔄 Task '{task.title}' reassigned from {old_assignee} to {new_assignee}")
+                        print(f"🔄 Task \'{task.title}\' reassigned from {old_assignee} to {new_assignee}")
 
 # 🚀 MANUS SYNC ENGINE INTERFACE
 class ManusInterface:
@@ -667,32 +675,45 @@ class ManusInterface:
         self.sync_engine = ManusSyncEngine()
         
         # Register with sync engine
+        print(f"[{self.manus_id}] Initializing ManusInterface and registering with Sync Engine...")
         self.sync_engine.register_manus(manus_id, role, capabilities)
         
         # Start sync engine if not running
         if not self.sync_engine.running:
             self.sync_engine.start_sync_engine()
+        print(f"[{self.manus_id}] ManusInterface initialized and Sync Engine ensured running.")
     
     def heartbeat(self):
         """Send heartbeat to maintain active status"""
+        # Ensure local state is up-to-date before updating heartbeat
+        self.sync_engine._load_state()
         if self.manus_id in self.sync_engine.manus_instances:
             self.sync_engine.manus_instances[self.manus_id].last_heartbeat = datetime.now()
             self.sync_engine._save_manus_to_db(self.sync_engine.manus_instances[self.manus_id])
+        else:
+            print(f"⚠️ Manus {self.manus_id} not found in sync engine instances during heartbeat. Re-registering...")
+            # Attempt to re-register if somehow lost
+            # This requires storing role and capabilities in ManusInterface or passing them again
+            # For now, this is a warning, and a full re-init might be needed if this happens often
     
     def get_my_tasks(self) -> List[SyncTask]:
         """Get tasks assigned to this Manus"""
+        self.sync_engine._load_state() # Ensure local state is up-to-date
         return [task for task in self.sync_engine.task_queue.values() 
                 if task.assigned_to == self.manus_id and task.status != TaskStatus.COMPLETED]
     
     def start_task(self, task_id: str) -> bool:
         """Start working on a task"""
+        self.sync_engine._load_state() # Ensure local state is up-to-date
         task = self.sync_engine.task_queue.get(task_id)
         if not task or task.assigned_to != self.manus_id:
+            print(f"❌ Manus {self.manus_id} cannot start task {task_id}: not assigned or not found.")
             return False
         
         # Claim files
         if task.files_involved:
             if not self.sync_engine.claim_files(self.manus_id, task.files_involved):
+                print(f"❌ Manus {self.manus_id} failed to claim files for task {task_id}.")
                 return False
         
         # Update task status
@@ -702,10 +723,12 @@ class ManusInterface:
     
     def update_progress(self, task_id: str, progress: int):
         """Update task progress"""
+        self.sync_engine._load_state() # Ensure local state is up-to-date
         return self.sync_engine.update_task_progress(self.manus_id, task_id, progress)
     
     def complete_task(self, task_id: str):
         """Mark task as completed"""
+        self.sync_engine._load_state() # Ensure local state is up-to-date
         task = self.sync_engine.task_queue.get(task_id)
         if task and task.files_involved:
             self.sync_engine.release_files(self.manus_id, task.files_involved)
@@ -756,3 +779,4 @@ if __name__ == "__main__":
     print("🚀 MANUS SYNC ENGINE READY!")
     print("Multiple Manus instances can now work together at 10x speed!")
     print("Real-time coordination, zero conflicts, maximum efficiency!")
+
