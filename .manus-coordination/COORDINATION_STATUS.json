@@ -1,5 +1,5 @@
 {
-  "last_updated": "2025-10-01T23:44:56.422164",
+  "last_updated": "2025-10-01T23:44:57.368242",
   "manus_instances": {
     "manus_4": {
       "id": "manus_4",
@@ -16,10 +16,28 @@
       "current_task": null,
       "tasks_completed": 0,
       "progress": 0
+    },
+    "manus_5": {
+      "id": "manus_5",
+      "role": "smart_coordination_lead",
+      "capabilities": [
+        "quality_assurance",
+        "architecture",
+        "testing",
+        "bug_fixing"
+      ],
+      "sandbox_id": "sandbox-manus_5",
+      "status": "active",
+      "registered_at": "2025-10-01T23:44:57.250228",
+      "last_seen": "2025-10-01T23:44:57.265467",
+      "current_task": null,
+      "tasks_completed": 0,
+      "progress": 0
     }
   },
   "heartbeats": {
-    "manus_4": "2025-10-01T23:44:24.714839"
+    "manus_4": "2025-10-01T23:44:24.714839",
+    "manus_5": "2025-10-01T23:44:57.265475"
   },
-  "active_count": 1
+  "active_count": 2
 }
