@@ -62,4 +62,7 @@ env/
 
 # Temporary files
 tmp/
-temp/
+temp/# Playwright E2E Test Results
+test-results/
+playwright-report/
+playwright/.cache/
