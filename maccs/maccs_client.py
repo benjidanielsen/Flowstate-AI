@@ -367,7 +367,7 @@ class MACCSClientV3:
                 os.chdir(original_cwd)
                 return True
             except subprocess.CalledProcessError as e:
-                print(f"Git sync failed on attempt {attempt + 1}/{max_retries}: {e.stderr.decode()}")
+                print(f"Git sync failed on attempt {attempt + 1}/{max_retries}: {e.stderr}")
                 os.chdir(original_cwd)
                 time.sleep(random.uniform(1, 5)) # Wait a bit before retrying
             except Exception as e:
