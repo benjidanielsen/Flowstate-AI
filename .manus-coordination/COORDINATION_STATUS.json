@@ -1,6 +1,25 @@
 {
-  "last_updated": "2025-10-01T23:42:56.010333",
-  "manus_instances": {},
-  "heartbeats": {},
-  "active_count": 0
+  "last_updated": "2025-10-01T23:44:24.873468",
+  "manus_instances": {
+    "manus_4": {
+      "id": "manus_4",
+      "role": "communication_lead",
+      "capabilities": [
+        "messaging",
+        "coordination",
+        "testing"
+      ],
+      "sandbox_id": "sandbox-manus_4",
+      "status": "active",
+      "registered_at": "2025-10-01T23:44:24.700912",
+      "last_seen": "2025-10-01T23:44:24.714831",
+      "current_task": null,
+      "tasks_completed": 0,
+      "progress": 0
+    }
+  },
+  "heartbeats": {
+    "manus_4": "2025-10-01T23:44:24.714839"
+  },
+  "active_count": 1
 }
