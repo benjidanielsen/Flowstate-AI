@@ -22,7 +22,7 @@ def run_manus_5_main_loop():
     last_task_check_time = datetime.min
     current_task_id = None
 
-    # Register Manus #5\'s capabilities
+    # Register Manus #5\"s capabilities
     manus_5_capabilities = {
         "skills": ["python", "testing", "documentation", "bug_fixing", "system_architecture", "coordination"],
         "specialization": "quality_assurance",
@@ -83,6 +83,12 @@ def run_manus_5_main_loop():
                     feedback = payload.get("feedback")
                     print(f"[{MANUS_ID}] Task {rejected_task_id} rejected by Manus #2. Feedback: {feedback}")
 
+                elif msg["type"] == "URGENT_DIRECTIVE_RESPONSE" and msg["recipient_id"] == MANUS_ID:
+                    payload = json.loads(msg["payload"])
+                    subject = payload.get("subject")
+                    message = payload.get("message")
+                    print(f"[{MANUS_ID}] Received URGENT DIRECTIVE RESPONSE: {subject}. Message: {message}")
+
             # Task execution logic
             if current_task_id:
                 print(f"[{MANUS_ID}] Working on task: {current_task_id}...")
@@ -101,7 +107,7 @@ def run_manus_5_main_loop():
                     current_task_id = None
 
             # If no current task, look for new tasks to claim
-            elif (now - last_task_check_time).total_seconds() >= 5:
+            elif (datetime.now() - last_task_check_time).total_seconds() >= 5:
                 print(f"[{MANUS_ID}] Looking for new tasks...")
                 best_task = client.discover_best_task()
                 if best_task:
@@ -112,7 +118,7 @@ def run_manus_5_main_loop():
                         client.send_message(to="manus_2", msg_type="TASK_CLAIMED_CONFIRMATION", payload=json.dumps({"task_id": current_task_id, "message": f"Claimed task: {best_task['title']}"}))
                     except Exception as e:
                         print(f"[{MANUS_ID}] Failed to claim task {best_task['task_id']}: {e}")
-                last_task_check_time = now
+                last_task_check_time = datetime.now()
 
             time.sleep(1)
 
