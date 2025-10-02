@@ -237,6 +237,29 @@ class ManusClient:
         except Exception as e:
             print(f"❌ {self.manus_id}: Failed to get status - {e}")
             return None
+
+    def send_command(self, to, command, payload=None):
+        """Send a command to another Manus"""
+        try:
+            response = requests.post(
+                f"{self.api_url}/api/commands/send",
+                json={
+                    'from': self.manus_id,
+                    'to': to,
+                    'command': command,
+                    'payload': payload or {}
+                },
+                timeout=10
+            )
+            if response.status_code == 200:
+                print(f"✅ {self.manus_id}: Command '{command}' sent to {to}")
+                return True
+            else:
+                print(f"❌ {self.manus_id}: Failed to send command '{command}' - {response.text}")
+                return False
+        except Exception as e:
+            print(f"❌ {self.manus_id}: Send command error - {e}")
+            return False
     
     def start_heartbeat_thread(self, interval=30):
         """Start background thread for heartbeat"""
