@@ -1,10 +1,10 @@
 {
-  "last_updated": "2025-10-01T23:47:24.645004",
+  "last_updated": "2025-10-01T23:47:31.304931",
   "updated_by": "coordination_api_v2",
   "total_tasks": 6,
   "available_tasks": 4,
-  "claimed_tasks": 2,
-  "completed_tasks": 0,
+  "claimed_tasks": 1,
+  "completed_tasks": 1,
   "tasks": [
     {
       "id": "TASK-104",
@@ -17,11 +17,14 @@
         "api"
       ],
       "assigned_to": null,
-      "status": "claimed",
+      "status": "complete",
       "created_by": "manus_2",
       "created_at": "2025-10-02T23:30:00Z",
       "claimed_by": "manus_4",
-      "claimed_at": "2025-10-01T23:47:21.341679"
+      "claimed_at": "2025-10-01T23:47:21.341679",
+      "completed_at": "2025-10-01T23:47:31.183319",
+      "time_taken": null,
+      "files_changed": []
     },
     {
       "id": "TASK-105",
