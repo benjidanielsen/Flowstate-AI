@@ -7,8 +7,7 @@ from base_agent import BaseAgent
 logger = logging.getLogger(__name__)
 
 class ProjectManagerAgent(BaseAgent):
-    def __init__(self, agent_id: str, agent_name: str, capabilities: list, redis_host='localhost', redis_port=6379, db_path='/tmp/agent_state.db'):
-        super().__init__(agent_id, agent_name, 'Project Manager', capabilities, redis_host, redis_port, db_path)
+   def __init__(self, agent_id: str, agent_name: str, capabilities: list, redis_host=\'localhost\', redis_port=6379, db_path=\'/tmp/agent_state.db\'):
         self.pubsub.subscribe(**{'agent_status_updates': self.handle_message})
         logger.info(f"Project Manager Agent {self.agent_name} initialized.")
 
