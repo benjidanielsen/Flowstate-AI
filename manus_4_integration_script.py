@@ -77,11 +77,13 @@ if __name__ == "__main__":
     print(f'[{MANUS_ID}] Starting Manus #4 integration script...')
     try:
         print(f'[{MANUS_ID}] Initializing ManusInterface...')
-        # Initialize ManusInterface for Manus #4
+        # Explicitly define the project root for ManusSyncEngine
+        project_root = "/home/ubuntu/Flowstate-AI"
         manus_interface = ManusInterface(
             manus_id=MANUS_ID,
             role=ManusRole.AI_SPECIALIST, # Assigning a role, adjust as needed
-            capabilities=manus_4_capabilities
+            capabilities=manus_4_capabilities,
+            project_root=project_root # Pass the explicit project root
         )
         print(f'[{MANUS_ID}] ManusInterface initialized successfully. Registered with MANUS_SYNC_ENGINE.')
 
