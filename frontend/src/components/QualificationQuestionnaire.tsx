@@ -30,7 +30,7 @@ const QualificationQuestionnaire: React.FC<QualificationQuestionnaireProps> = ({
       setError('');
       const updated = await customerApi.update(customer.id, {
         prospect_why: prospectWhy,
-        status: 'Qualified',
+        status: 'QUALIFIED' as any,
       });
       onComplete(updated);
     } catch (err: unknown) {
