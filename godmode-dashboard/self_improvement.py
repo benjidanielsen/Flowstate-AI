@@ -65,7 +65,8 @@ class SelfImprovementAgent:
             
             if self.monitor.github_integration:
                 issue_title = f"AI {ai_id} Performance Optimization Needed"
-                issue_body = f"The AI agent {ai_id} has shown performance below acceptable thresholds. \n\n**Performance Summary:**\n```json\n{json.dumps(feedback["performance_summary"], indent=2)}\n```\n\n**Suggestions:**\n- Consider optimizing task execution for better performance.\n\nFurther investigation and potential code modifications are recommended."
+                perf_summary = feedback["performance_summary"]
+                issue_body = f"The AI agent {ai_id} has shown performance below acceptable thresholds. \n\n**Performance Summary:**\n```json\n{json.dumps(perf_summary, indent=2)}\n```\n\n**Suggestions:**\n- Consider optimizing task execution for better performance.\n\nFurther investigation and potential code modifications are recommended."
                 
                 self.monitor.github_integration.create_issue(
                     title=issue_title,

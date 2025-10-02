@@ -22,10 +22,6 @@ const RemindersPanel: React.FC<RemindersPanelProps> = ({ customerId, limit = 10 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-  useEffect(() => {
-    fetchReminders();
-  }, [customerId]);
-
   const fetchReminders = async () => {
     try {
       setLoading(true);
@@ -38,12 +34,17 @@ const RemindersPanel: React.FC<RemindersPanelProps> = ({ customerId, limit = 10 
       
       const data = await response.json();
       setReminders(data);
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: unknown) {
+      const error = err as { message?: string };
+      setError(error.message || 'An error occurred');
     } finally {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    fetchReminders();
+  }, [customerId, limit]);
 
   const handleComplete = async (reminderId: string) => {
     try {
@@ -55,8 +56,9 @@ const RemindersPanel: React.FC<RemindersPanelProps> = ({ customerId, limit = 10 
       
       // Refresh reminders
       fetchReminders();
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: unknown) {
+      const error = err as { message?: string };
+      setError(error.message || 'An error occurred');
     }
   };
 

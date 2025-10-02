@@ -27,8 +27,9 @@ class GitHubIntegration:
         }
         response = requests.post(url, headers=self.headers, data=json.dumps(data))
         if response.status_code == 201:
-            logger.info(f"GitHub issue created: {response.json()["html_url"]}")
-            return response.json()
+            response_data = response.json()
+            logger.info(f"GitHub issue created: {response_data['html_url']}")
+            return response_data
         else:
             logger.error(f"Failed to create GitHub issue: {response.status_code} - {response.text}")
             return None
@@ -45,8 +46,9 @@ class GitHubIntegration:
 
         response = requests.patch(url, headers=self.headers, data=json.dumps(data))
         if response.status_code == 200:
-            logger.info(f"GitHub issue {issue_number} updated: {response.json()["html_url"]}")
-            return response.json()
+            response_data = response.json()
+            logger.info(f"GitHub issue {issue_number} updated: {response_data['html_url']}")
+            return response_data
         else:
             logger.error(f"Failed to update GitHub issue {issue_number}: {response.status_code} - {response.text}")
             return None
@@ -62,8 +64,9 @@ class GitHubIntegration:
         }
         response = requests.post(url, headers=self.headers, data=json.dumps(data))
         if response.status_code == 201:
-            logger.info(f"GitHub pull request created: {response.json()["html_url"]}")
-            return response.json()
+            response_data = response.json()
+            logger.info(f"GitHub pull request created: {response_data['html_url']}")
+            return response_data
         else:
             logger.error(f"Failed to create GitHub pull request: {response.status_code} - {response.text}")
             return None

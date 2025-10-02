@@ -366,12 +366,14 @@ class GodmodeMonitorEnhanced:
             # Start monitoring thread
             self.start_monitoring()
             self.self_improvement_agent = SelfImprovementAgent(self)
-        github_token = os.getenv("GITHUB_TOKEN")
-        if github_token:
-            self.github_integration = GitHubIntegration("Flowstate-AI", "Flowstate-AI", github_token) # Assuming repo owner and name are 'Flowstate-AI'
-        else:
-            logger.warning("GITHUB_TOKEN environment variable not set. GitHub integration will be disabled.")
-            self.github_integration = None
+            
+            # Initialize GitHub integration
+            github_token = os.getenv("GITHUB_TOKEN")
+            if github_token:
+                self.github_integration = GitHubIntegration("Flowstate-AI", "Flowstate-AI", github_token) # Assuming repo owner and name are 'Flowstate-AI'
+            else:
+                logger.warning("GITHUB_TOKEN environment variable not set. GitHub integration will be disabled.")
+                self.github_integration = None
             
             logger.info("✅ Monitoring system initialized")
             

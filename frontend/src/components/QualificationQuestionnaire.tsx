@@ -33,8 +33,9 @@ const QualificationQuestionnaire: React.FC<QualificationQuestionnaireProps> = ({
         status: 'Qualified',
       });
       onComplete(updated);
-    } catch (err: any) {
-      setError(err.response?.data?.error || 'Failed to save qualification');
+    } catch (err: unknown) {
+      const error = err as { response?: { data?: { error?: string } } };
+      setError(error.response?.data?.error || 'Failed to save qualification');
     } finally {
       setLoading(false);
     }
@@ -46,9 +47,9 @@ const QualificationQuestionnaire: React.FC<QualificationQuestionnaireProps> = ({
         <h2 className="text-2xl font-bold mb-4">Prospect Qualification - Frazer Method</h2>
         
         <div className="mb-6 p-4 bg-blue-50 rounded-lg">
-          <h3 className="font-semibold text-blue-900 mb-2">The Frazer Method: Prospect's WHY</h3>
+          <h3 className="font-semibold text-blue-900 mb-2">The Frazer Method: Prospect&apos;s WHY</h3>
           <p className="text-sm text-blue-800">
-            Understanding the prospect's core motivation is essential. Ask: "What is driving you to consider this opportunity?"
+            Understanding the prospect&apos;s core motivation is essential. Ask: &quot;What is driving you to consider this opportunity?&quot;
             Listen for their deeper reasons - financial freedom, time with family, personal growth, etc.
           </p>
         </div>
@@ -59,7 +60,7 @@ const QualificationQuestionnaire: React.FC<QualificationQuestionnaireProps> = ({
               Customer: {customer.name}
             </label>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              What is {customer.name.split(' ')[0]}'s WHY? *
+              What is {customer.name.split(' ')[0]}&apos;s WHY? *
             </label>
             <textarea
               value={prospectWhy}
@@ -70,8 +71,8 @@ const QualificationQuestionnaire: React.FC<QualificationQuestionnaireProps> = ({
               required
             />
             <p className="mt-2 text-sm text-gray-600">
-              Examples: "Wants financial freedom to spend more time with kids", "Seeking additional income to pay off debt", 
-              "Looking for personal growth and entrepreneurship"
+              Examples: &quot;Wants financial freedom to spend more time with kids&quot;, &quot;Seeking additional income to pay off debt&quot;, 
+              &quot;Looking for personal growth and entrepreneurship&quot;
             </p>
           </div>
 

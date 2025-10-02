@@ -26,24 +26,24 @@ export const QualificationForm: React.FC = () => {
   });
 
   useEffect(() => {
-    loadCustomer();
-  }, [id]);
-
-  const loadCustomer = async () => {
-    try {
-      const response = await fetch(`http://localhost:3001/api/qualification/${id}`);
-      if (response.ok) {
-        const data = await response.json();
-        setCustomerName(data.name || '');
-        setProspectWhy(data.prospect_why || '');
-        if (data.qualification_data) {
-          setQualificationData({...qualificationData, ...data.qualification_data});
+    const loadCustomer = async () => {
+      try {
+        const response = await fetch(`http://localhost:3001/api/qualification/${id}`);
+        if (response.ok) {
+          const data = await response.json();
+          setCustomerName(data.name || '');
+          setProspectWhy(data.prospect_why || '');
+          if (data.qualification_data) {
+            setQualificationData({...qualificationData, ...data.qualification_data});
         }
       }
     } catch (error) {
       console.error('Error loading customer:', error);
     }
-  };
+    };
+    
+    loadCustomer();
+  }, [id]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -89,7 +89,7 @@ export const QualificationForm: React.FC = () => {
           {/* Prospect's WHY - Most Important */}
           <div className="bg-blue-50 p-4 rounded-lg border-2 border-blue-200">
             <label className="block text-lg font-bold text-blue-900 mb-2">
-              🎯 Prospect's WHY (Required for Qualification)
+              🎯 Prospect&apos;s WHY (Required for Qualification)
             </label>
             <textarea
               value={prospectWhy}
