@@ -1,5 +1,7 @@
 import { Request, Response } from 'express';
-import { db } from '../database';
+import DatabaseManager from '../database';
+
+const dbManager = DatabaseManager.getInstance();
 
 export class QualificationController {
   saveQualification = async (req: Request, res: Response) => {
@@ -10,10 +12,17 @@ export class QualificationController {
     }
     
     try {
-      await db.run(
-        'UPDATE customers SET prospect_why = ?, qualification_data = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?',
-        [prospect_why || '', JSON.stringify(qualification_data || {}), customer_id]
-      );
+      const db = dbManager.getDb();
+      await new Promise((resolve, reject) => {
+        db.run(
+          'UPDATE customers SET prospect_why = ?, qualification_data = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?',
+          [prospect_why || '', JSON.stringify(qualification_data || {}), customer_id],
+          (err) => {
+            if (err) reject(err);
+            else resolve(null);
+          }
+        );
+      });
       
       res.json({ success: true, message: 'Qualification saved successfully' });
     } catch (error) {
@@ -26,10 +35,17 @@ export class QualificationController {
     const { id } = req.params;
     
     try {
-      const customer = await db.get(
-        'SELECT id, name, prospect_why, qualification_data FROM customers WHERE id = ?',
-        [id]
-      );
+      const db = dbManager.getDb();
+      const customer: any = await new Promise((resolve, reject) => {
+        db.get(
+          'SELECT id, name, prospect_why, qualification_data FROM customers WHERE id = ?',
+          [id],
+          (err, row) => {
+            if (err) reject(err);
+            else resolve(row);
+          }
+        );
+      });
       
       if (!customer) {
         return res.status(404).json({ error: 'Customer not found' });

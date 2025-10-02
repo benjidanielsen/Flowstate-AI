@@ -1,4 +1,6 @@
-import { db } from '../database';
+import DatabaseManager from '../database';
+
+const dbManager = DatabaseManager.getInstance();
 
 export class FollowUpService {
   // Follow-up timing based on Frazer Method stages
@@ -18,11 +20,18 @@ export class FollowUpService {
     const message = this.getFollowUpMessage(stage);
     
     try {
-      await db.run(
-        `INSERT INTO reminders (customer_id, type, message, scheduled_for, created_at) 
-         VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP)`,
-        [customerId, 'follow_up', message, scheduledFor.toISOString()]
-      );
+      const db = dbManager.getDb();
+      await new Promise((resolve, reject) => {
+        db.run(
+          `INSERT INTO reminders (customer_id, type, message, scheduled_for, created_at) 
+           VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP)`,
+          [customerId, 'follow_up', message, scheduledFor.toISOString()],
+          (err) => {
+            if (err) reject(err);
+            else resolve(null);
+          }
+        );
+      });
       
       console.log(`Created follow-up for customer ${customerId} at stage ${stage}, scheduled for ${scheduledFor.toISOString()}`);
     } catch (error) {
@@ -45,9 +54,16 @@ export class FollowUpService {
   
   async autoScheduleFollowUps(): Promise<number> {
     try {
-      const customers = await db.all(
-        'SELECT id, pipeline_status FROM customers WHERE pipeline_status != "closed"'
-      );
+      const db = dbManager.getDb();
+      const customers: any[] = await new Promise((resolve, reject) => {
+        db.all(
+          'SELECT id, pipeline_status FROM customers WHERE pipeline_status != "closed"',
+          (err, rows) => {
+            if (err) reject(err);
+            else resolve(rows || []);
+          }
+        );
+      });
       
       let scheduled = 0;
       for (const customer of customers) {
@@ -68,16 +84,23 @@ export class FollowUpService {
     futureDate.setDate(futureDate.getDate() + days);
     
     try {
-      const followUps = await db.all(
-        `SELECT r.*, c.name as customer_name, c.email, c.pipeline_status
-         FROM reminders r
-         JOIN customers c ON r.customer_id = c.id
-         WHERE r.type = 'follow_up' 
-         AND r.scheduled_for <= ?
-         AND r.completed = 0
-         ORDER BY r.scheduled_for ASC`,
-        [futureDate.toISOString()]
-      );
+      const db = dbManager.getDb();
+      const followUps: any[] = await new Promise((resolve, reject) => {
+        db.all(
+          `SELECT r.*, c.name as customer_name, c.email, c.pipeline_status
+           FROM reminders r
+           JOIN customers c ON r.customer_id = c.id
+           WHERE r.type = 'follow_up' 
+           AND r.scheduled_for <= ?
+           AND r.completed = 0
+           ORDER BY r.scheduled_for ASC`,
+          [futureDate.toISOString()],
+          (err, rows) => {
+            if (err) reject(err);
+            else resolve(rows || []);
+          }
+        );
+      });
       
       return followUps;
     } catch (error) {
