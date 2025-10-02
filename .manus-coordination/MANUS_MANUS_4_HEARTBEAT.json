@@ -1,12 +1,18 @@
 {
   "manus_id": "manus_4",
   "alive": true,
-  "timestamp": "2025-10-02T04:16:00+00:00Z",
-  "status": "idle",
-  "current_task": null,
-  "progress": 0,
-  "cpu_usage": 76,
-  "memory_usage": 49,
-  "files_open": [],
-  "last_commit": ""
+  "timestamp": "2025-10-02T06:45:13Z",
+  "status": "active",
+  "current_task": "Continuous coordination cycle - monitoring and processing messages",
+  "progress": 100,
+  "cpu_usage": 15,
+  "memory_usage": 25,
+  "files_open": [
+    ".manus-coordination/coordination-status.json",
+    ".manus-coordination/MANUS_4_CONFIRMED.json"
+  ],
+  "last_commit": "Manus #4: Automated coordination sync",
+  "next_sync": "2025-10-02T07:15:13Z",
+  "cycle_number": 4,
+  "confirmation_status": "CONFIRMED"
 }
