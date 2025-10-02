@@ -126,33 +126,41 @@ start_ai_gods() {
     pkill -f "python.*ai-gods" 2>/dev/null || true
     pkill -f "node.*dev" 2>/dev/null || true
     
-    # Start AI agents in background
+    # Start only existing AI agents in background
     echo -e "${CYAN}[🤖] Starting Project Manager AI...${NC}"
-    python3 ai-gods/project-manager.py &
+    if [ -f "ai-gods/project-manager.py" ]; then
+        python3 ai-gods/project-manager.py &
+    else
+        echo -e "${YELLOW}[⚠️] project-manager.py not found, skipping...${NC}"
+    fi
     
-    echo -e "${CYAN}[💻] Starting Backend Developer AI...${NC}"
-    python3 ai-gods/backend-developer.py &
+    echo -e "${CYAN}[🗣️] Starting AI Communication Hub...${NC}"
+    if [ -f "ai-gods/ai-communication-hub.py" ]; then
+        python3 ai-gods/ai-communication-hub.py &
+    else
+        echo -e "${YELLOW}[⚠️] ai-communication-hub.py not found, skipping...${NC}"
+    fi
     
-    echo -e "${CYAN}[🎨] Starting Frontend Developer AI...${NC}"
-    python3 ai-gods/frontend-developer.py &
+    echo -e "${CYAN}[🗳️] Starting AI Democracy System...${NC}"
+    if [ -f "ai-gods/ai-democracy-system.py" ]; then
+        python3 ai-gods/ai-democracy-system.py &
+    else
+        echo -e "${YELLOW}[⚠️] ai-democracy-system.py not found, skipping...${NC}"
+    fi
     
-    echo -e "${CYAN}[🗄️] Starting Database AI...${NC}"
-    python3 ai-gods/database-ai.py &
+    echo -e "${CYAN}[🧠] Starting Collective Memory System...${NC}"
+    if [ -f "ai-gods/collective-memory-system.py" ]; then
+        python3 ai-gods/collective-memory-system.py &
+    else
+        echo -e "${YELLOW}[⚠️] collective-memory-system.py not found, skipping...${NC}"
+    fi
     
-    echo -e "${CYAN}[🔬] Starting Tester AI...${NC}"
-    python3 ai-gods/tester-ai.py &
-    
-    echo -e "${CYAN}[🛠️] Starting Fixer AI...${NC}"
-    python3 ai-gods/fixer-ai.py &
-    
-    echo -e "${CYAN}[🚀] Starting DevOps AI...${NC}"
-    python3 ai-gods/devops-ai.py &
-    
-    echo -e "${CYAN}[📚] Starting Documentation AI...${NC}"
-    python3 ai-gods/documentation-ai.py &
-    
-    echo -e "${CYAN}[🆘] Starting Support AI (Your Personal IT God)...${NC}"
-    python3 ai-gods/support-ai.py &
+    echo -e "${CYAN}[💡] Starting Innovation AI...${NC}"
+    if [ -f "ai-gods/innovation-ai.py" ]; then
+        python3 ai-gods/innovation-ai.py &
+    else
+        echo -e "${YELLOW}[⚠️] innovation-ai.py not found, skipping...${NC}"
+    fi
     
     # Start monitoring dashboard
     echo -e "${CYAN}[📊] Starting GODMODE Dashboard...${NC}"
@@ -175,7 +183,7 @@ start_ai_gods() {
     echo "✅ GODMODE SYSTEM FULLY ACTIVATED!"
     echo ""
     echo "🎯 AI GODS STATUS:"
-    echo "   • 9 Autonomous AI Agents: ACTIVE"
+    echo "   • 5 Autonomous AI Agents: ACTIVE"
     echo "   • Development Servers: RUNNING"
     echo "   • VSCode: LAUNCHED"
     echo "   • Dashboard: http://localhost:3333"
