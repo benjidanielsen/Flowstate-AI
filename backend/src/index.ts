@@ -10,7 +10,7 @@ import http from 'http';
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 3001;
+
 let serverRef: http.Server | null = null;
 let isShuttingDown = false;
 let shutdownPromise: Promise<void> | null = null;
@@ -50,8 +50,8 @@ export async function startServer() {
     await runMigrations();
 
     // Start server
-    serverRef = app.listen(PORT, () => {
-      console.log(`Server is running on port ${PORT}`);
+    serverRef = app.listen(process.env.PORT || 3001, () => {
+      console.log(`Server is running on port ${process.env.PORT || 3001}`);
       console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
     });
     return serverRef;
@@ -113,6 +113,13 @@ export async function shutdown() {
     await DatabaseManager.getInstance().close();
   })();
 
+  try {
+    await shutdownPromise;
+  } finally {
+    isShuttingDown = false;
+    shutdownPromise = null;
+    serverRef = null; // Ensure serverRef is reset
+  }
   return shutdownPromise;
 }
 

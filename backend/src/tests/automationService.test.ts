@@ -34,46 +34,46 @@ describe('AutomationService', () => {
 
   describe('handleEvent', () => {
     it('should create reminders for VIDEO_SENT event', async () => {
-      const initialReminders: Reminder[] = await reminderService.getDueReminders();
+      const initialReminders: Reminder[] = await reminderService.getRemindersByCustomerId(testCustomerId);
       expect(initialReminders.length).toBe(0);
 
       await automationService.handleEvent({ event_name: 'VIDEO_SENT', customer_id: testCustomerId });
 
-      const newReminders: Reminder[] = await reminderService.getDueReminders();
+      const newReminders: Reminder[] = await reminderService.getRemindersByCustomerId(testCustomerId);
       expect(newReminders.length).toBe(2); // Expecting 2 reminders for VIDEO_SENT
       expect(newReminders.some(r => r.type === 'follow_up_24h')).toBe(true);
       expect(newReminders.some(r => r.type === 'follow_up_48h')).toBe(true);
     });
 
     it('should create reminders for NO_SHOW event', async () => {
-      const initialReminders: Reminder[] = await reminderService.getDueReminders();
+      const initialReminders: Reminder[] = await reminderService.getRemindersByCustomerId(testCustomerId);
       expect(initialReminders.length).toBe(0);
 
       await automationService.handleEvent({ event_name: 'NO_SHOW', customer_id: testCustomerId });
 
-      const newReminders: Reminder[] = await reminderService.getDueReminders();
+      const newReminders: Reminder[] = await reminderService.getRemindersByCustomerId(testCustomerId);
       expect(newReminders.length).toBe(2); // Expecting 2 reminders for NO_SHOW
       expect(newReminders.some(r => r.type === 'follow_up_2h')).toBe(true);
       expect(newReminders.some(r => r.type === 'follow_up_1d')).toBe(true);
     });
 
     it('should not create reminders for unknown events', async () => {
-      const initialReminders: Reminder[] = await reminderService.getDueReminders();
+      const initialReminders: Reminder[] = await reminderService.getRemindersByCustomerId(testCustomerId);
       expect(initialReminders.length).toBe(0);
 
       await automationService.handleEvent({ event_name: 'UNKNOWN_EVENT', customer_id: testCustomerId });
 
-      const newReminders: Reminder[] = await reminderService.getDueReminders();
+      const newReminders: Reminder[] = await reminderService.getRemindersByCustomerId(testCustomerId);
       expect(newReminders.length).toBe(0);
     });
 
     it('should not create reminders if customer_id is missing', async () => {
-      const initialReminders: Reminder[] = await reminderService.getDueReminders();
+      const initialReminders: Reminder[] = await reminderService.getRemindersByCustomerId(testCustomerId);
       expect(initialReminders.length).toBe(0);
 
       await automationService.handleEvent({ event_name: 'VIDEO_SENT' });
 
-      const newReminders: Reminder[] = await reminderService.getDueReminders();
+      const newReminders: Reminder[] = await reminderService.getRemindersByCustomerId(testCustomerId);
       expect(newReminders.length).toBe(0);
     });
   });

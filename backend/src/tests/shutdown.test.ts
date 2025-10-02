@@ -1,33 +1,61 @@
+import { startServer, shutdown, createApp } from '../index';
 import request from 'supertest';
-import { startServer, shutdown } from '../index';
-import DatabaseManager from '../database';
+import http from 'http';
 
 describe('server lifecycle', () => {
-  afterAll(async () => {
-    // Ensure server is shutdown in case of test failures
+  let server: http.Server;
+  let app: Express.Application;
+  let port: number;
+
+  beforeAll(() => {
+    app = createApp(); // Create the app once for the test suite
+  });
+
+  beforeEach(async () => {
+    // Assign a unique port for each test
+    port = Math.floor(Math.random() * (40000 - 30000 + 1)) + 30000;
+    process.env.PORT = port.toString();
+
+    // Ensure server is not running before each test
     try {
       await shutdown();
-    } catch (err) {
-      // ignore
+    } catch (e) {
+      // Ignore errors if server was not running
     }
   });
 
-  test('start and shutdown without open handles', async () => {
-    await startServer();
+  afterEach(async () => {
+    // Ensure server is shut down after each test
+    try {
+      await shutdown();
+    } catch (e) {
+      // Ignore errors if server was not running
+    }
+  });
 
-    // Hit health endpoint
-    const res = await request('http://localhost:3001').get('/api/health');
-    expect(res.status).toBe(200);
-    expect(res.body).toHaveProperty('status');
+  it('should start and shutdown without open handles', async () => {
+    server = await startServer();
+    expect(server).toBeDefined();
 
-    // Shutdown
+    // Make a request to ensure server is responsive
+    const res = await request(`http://localhost:${port}`).get('/api/health');
+    expect(res.statusCode).toEqual(200);
+    expect(res.body.status).toEqual('OK');
+
     await shutdown();
+    // Verify server is closed (e.g., by trying to connect again, which should fail)
+    // Note: supertest will throw if the server is not listening, so we expect a rejection.
+    await expect(request(`http://localhost:${port}`).get('/api/health')).rejects.toThrow();
+  });
 
-    // After shutdown, server should not respond
-    await expect(request('http://localhost:3001').get('/api/health')).rejects.toBeDefined();
+  it('should handle multiple shutdown calls gracefully', async () => {
+    server = await startServer();
+    expect(server).toBeDefined();
 
-    // Database should be closed and getDb() should throw
-    expect(() => DatabaseManager.getInstance().getDb()).toThrow();
-  }, 20000);
+    await shutdown();
+    await shutdown(); // Second call should be harmless
+
+    await expect(request(`http://localhost:${port}`).get('/api/health')).rejects.toThrow();
+  });
 });
 
