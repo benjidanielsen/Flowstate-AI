@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Plus, Search, Filter, ArrowRight } from 'lucide-react';
+import { Plus, Search, Filter, ArrowRight, X } from 'lucide-react';
 import { customerApi } from '../services/api';
 import { Customer, PipelineStatus } from '../types';
+import { useDebounce } from '../hooks/useDebounce';
+import HighlightText from '../components/HighlightText';
 
 const Customers: React.FC = () => {
   const [customers, setCustomers] = useState<Customer[]>([]);
@@ -11,6 +13,9 @@ const Customers: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<PipelineStatus | ''>('');
   const [showCreateModal, setShowCreateModal] = useState(false);
+  
+  // Debounce search term for better performance
+  const debouncedSearchTerm = useDebounce(searchTerm, 300);
 
   useEffect(() => {
     fetchCustomers();
@@ -19,12 +24,15 @@ const Customers: React.FC = () => {
   useEffect(() => {
     let filtered = customers;
 
-    if (searchTerm) {
+    if (debouncedSearchTerm) {
+      const searchLower = debouncedSearchTerm.toLowerCase();
       filtered = filtered.filter(
         (customer) =>
-          customer.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          customer.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          customer.phone?.includes(searchTerm)
+          customer.name.toLowerCase().includes(searchLower) ||
+          customer.email?.toLowerCase().includes(searchLower) ||
+          customer.phone?.includes(debouncedSearchTerm) ||
+          customer.status.toLowerCase().includes(searchLower) ||
+          customer.notes?.toLowerCase().includes(searchLower)
       );
     }
 
@@ -33,7 +41,7 @@ const Customers: React.FC = () => {
     }
 
     setFilteredCustomers(filtered);
-  }, [customers, searchTerm, statusFilter]);
+  }, [customers, debouncedSearchTerm, statusFilter]);
 
   const fetchCustomers = async () => {
     try {
@@ -110,12 +118,28 @@ const Customers: React.FC = () => {
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
               <input
                 type="text"
-                placeholder="Search customers..."
+                placeholder="Search by name, email, phone, status, or notes..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                className="w-full pl-10 pr-10 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                aria-label="Search customers"
               />
+              {searchTerm && (
+                <button
+                  onClick={() => setSearchTerm('')}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                  aria-label="Clear search"
+                >
+                  <X size={20} />
+                </button>
+              )}
             </div>
+            {(searchTerm || statusFilter) && (
+              <p className="text-sm text-gray-600 mt-2">
+                Showing {filteredCustomers.length} of {customers.length} customers
+                {searchTerm && ` matching "${searchTerm}"`}
+              </p>
+            )}
           </div>
           <div className="flex items-center space-x-2">
             <Filter size={20} className="text-gray-400" />
@@ -123,6 +147,7 @@ const Customers: React.FC = () => {
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value as PipelineStatus | '')}
               className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+              aria-label="Filter by status"
             >
               <option value="">All Statuses</option>
               {Object.values(PipelineStatus).map((status) => (
@@ -154,12 +179,20 @@ const Customers: React.FC = () => {
                             to={`/customers/${customer.id}`}
                             className="hover:text-primary-600 transition-colors"
                           >
-                            {customer.name}
+                            <HighlightText text={customer.name} highlight={debouncedSearchTerm} />
                           </Link>
                         </h3>
                         <div className="flex items-center space-x-4 text-sm text-gray-500 mt-1">
-                          {customer.email && <span>{customer.email}</span>}
-                          {customer.phone && <span>{customer.phone}</span>}
+                          {customer.email && (
+                            <span>
+                              <HighlightText text={customer.email} highlight={debouncedSearchTerm} />
+                            </span>
+                          )}
+                          {customer.phone && (
+                            <span>
+                              <HighlightText text={customer.phone} highlight={debouncedSearchTerm} />
+                            </span>
+                          )}
                         </div>
                       </div>
                     </div>
