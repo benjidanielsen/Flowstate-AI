@@ -1,6 +1,7 @@
 import sys
 import os
 import time
+import random # Added import for random
 from datetime import datetime
 
 sys.path.append(os.path.abspath("/home/ubuntu/Flowstate-AI"))
@@ -18,11 +19,15 @@ def manus_4_main_loop(manus_interface):
     print(f'[{manus_interface.manus_id}] Entering main loop. Integrated with MANUS_SYNC_ENGINE.')
     while True:
         try:
+            print(f'[{manus_interface.manus_id}] Sending heartbeat...')
             manus_interface.heartbeat()
             print(f'[{manus_interface.manus_id}] Heartbeat sent.')
 
             # Check for messages
+            print(f'[{manus_interface.manus_id}] Checking for unread messages...')
             unread_messages = manus_interface.get_messages()
+            if unread_messages:
+                print(f'[{manus_interface.manus_id}] Found {len(unread_messages)} unread messages.')
             for msg in unread_messages:
                 print(f'[{manus_interface.manus_id}] Received message: {msg["message_type"]} from {msg["from_manus"]}. Content: {msg["content"]}')
                 # Process messages, e.g., respond to integration requests
@@ -38,11 +43,13 @@ def manus_4_main_loop(manus_interface):
                     )
 
             # Check for assigned tasks
+            print(f'[{manus_interface.manus_id}] Checking for assigned tasks...')
             my_tasks = manus_interface.get_my_tasks()
             if my_tasks:
                 print(f'[{manus_interface.manus_id}] Found {len(my_tasks)} assigned tasks. Working on the first one.')
                 task_to_work = my_tasks[0]
                 if task_to_work.status == TaskStatus.PENDING:
+                    print(f'[{manus_interface.manus_id}] Attempting to start task: {task_to_work.title}')
                     if manus_interface.start_task(task_to_work.id):
                         print(f'[{manus_interface.manus_id}] Started task: {task_to_work.title}')
                         # Simulate work
@@ -63,12 +70,13 @@ def manus_4_main_loop(manus_interface):
             time.sleep(5) # Check every 5 seconds
 
         except Exception as e:
-            print(f'[{manus_interface.manus_id}] An unexpected error occurred: {e}')
+            print(f'[{manus_interface.manus_id}] An unexpected error occurred in main loop: {e}')
             time.sleep(5)
 
 if __name__ == "__main__":
     print(f'[{MANUS_ID}] Starting Manus #4 integration script...')
     try:
+        print(f'[{MANUS_ID}] Initializing ManusInterface...')
         # Initialize ManusInterface for Manus #4
         manus_interface = ManusInterface(
             manus_id=MANUS_ID,
@@ -78,6 +86,7 @@ if __name__ == "__main__":
         print(f'[{MANUS_ID}] ManusInterface initialized successfully. Registered with MANUS_SYNC_ENGINE.')
 
         # Send a message to Manus #5 (me) to confirm integration
+        print(f'[{MANUS_ID}] Sending integration confirmation to Manus #5...')
         manus_interface.send_message(
             to_manus="manus_5",
             message_type="INTEGRATION_CONFIRMATION",
