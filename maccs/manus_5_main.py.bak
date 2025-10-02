@@ -1,0 +1,185 @@
+print("Manus #5 main script started.")
+import time
+import random
+import os
+import sys
+from datetime import datetime, timedelta
+import sqlite3
+import json
+
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+from maccs_client import MACCSClientV3
+from deploy_maccs_v3 import initialize_maccs_v3, migrate_from_v0
+
+# --- Configuration for Manus #5 (Delegation and Planning Assistant) ---
+MANUS_ID = "manus_5"
+REPO_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), "..")) # Points to Flowstate-AI root
+
+manus_5_delegation_capabilities = {
+    "skills": ["python", "system_architecture", "task_analysis", "resource_allocation", "planning", "delegation_support", "optimization", "strategic_planning"],
+    "specialization": "delegation_and_planning_assistant",
+    "max_concurrent_tasks": 2,
+    "preferred_task_types": ["task_analysis", "planning", "delegation_support", "resource_optimization", "strategic_planning"]
+}
+
+# --- Main Loop for Manus #5 ---
+
+def my_work_function(client, task):
+    print(f'[{client.manus_id}] 🔨 Working on: {task["title"]}')
+    # Simulate work based on task type
+    if "task_analysis" in client.capabilities.get("preferred_task_types", []) or \
+       "planning" in client.capabilities.get("preferred_task_types", []):
+        print(f'[{client.manus_id}] Performing in-depth analysis/planning for task {task["task_id"]}')
+        time.sleep(random.uniform(10, 30)) # Simulate longer planning/analysis
+        summary = f'Completed analysis/planning for task {task["title"]}. Identified key dependencies and potential resource allocations.'
+        # Send a message to Manus #2 with planning insights
+        client.send_message(
+            to="manus_2",
+            msg_type="PLANNING_INSIGHTS",
+            payload={
+                "task_id": task["task_id"],
+                "summary": summary,
+                "insights": "Detailed plan attached or available in shared docs."
+            },
+            priority="HIGH"
+        )
+    else:
+        time.sleep(random.uniform(5, 15)) # Simulate general work
+        summary = f'Completed general work for task {task["title"]}.'
+
+    client.complete_task(task["task_id"], summary)
+    print(f'[{client.manus_id}] ✅ Completed task: {task["title"]}')
+
+def my_idle_function(client):
+    print(f'[{client.manus_id}] 😴 Idle. Looking for planning or delegation support tasks...')
+    # Manus #5 can proactively look for ways to assist Manus #2
+    # Example: Check for Manus #2\'s workload or unassigned high-priority tasks
+    # For now, just a placeholder for more advanced idle activities
+    time.sleep(random.uniform(5, 10))
+
+def manus_main_loop(client):
+    print(f'[{client.manus_id}] Entering manus_main_loop.')
+    print(f'[{client.manus_id}] Starting MACCS v3.0 main loop as Delegation and Planning Assistant...')
+    print(f'[{client.manus_id}] Debug: Before while True loop.')
+
+    def db_change_callback():
+        print(f'[{client.manus_id}] DB change detected! Re-checking for updates...')
+
+    # client.start_db_watcher(db_change_callback) # Temporarily disabled due to inotify limit
+
+    while True:
+        try:
+            # 1. Process incoming messages
+            unread_messages = client.get_unread_messages()
+            for msg in unread_messages:
+                print(f'[{client.manus_id}] Received message: {msg["type"]} from {msg["sender_id"]}. Payload: {msg["payload"]}')
+                client.mark_message_read(msg["id"])
+                
+                # Handle TASK_ASSIGNED messages from Manus #2
+                if msg["type"] == "TASK_ASSIGNED" and msg["recipient_id"] == MANUS_ID:
+                    task_id = msg["payload"]["task_id"]
+                    title = msg["payload"]["title"]
+                    delegated_by = msg["payload"]["delegated_by"]
+                    print(f'[{client.manus_id}] Received delegated task {title} from {delegated_by}.')
+                    # Manus #5 will now attempt to claim and work on this delegated task
+                    if client.claim_task(task_id):
+                        # If successfully claimed, immediately start work
+                        task_details = client.get_task_details(task_id) # Assuming this method exists
+                        if task_details:
+                            my_work_function(client, task_details)
+                        else:
+                            print(f'[{client.manus_id}] Error: Could not retrieve details for claimed task {task_id}.')
+                    else:
+                        print(f'[{client.manus_id}] Failed to claim delegated task {task_id}. It might have been claimed by another Manus.')
+                
+                # Handle WAKE_UP_CALL from Manus #2
+                if msg["type"] == "WAKE_UP_CALL" and msg["recipient_id"] == MANUS_ID:
+                    print(f'[{client.manus_id}] Received WAKE_UP_CALL from {msg["sender_id"]}. Reporting active status.')
+                    client.send_heartbeat(status="ACTIVE - RESPONSIVE", current_task="Responding to wake-up call")
+
+            # 2. Send adaptive heartbeat
+            # Determine heartbeat interval based on activity
+            current_task = client.get_current_task() # Assuming a method to get currently claimed task
+            if current_task:
+                heartbeat_interval = 5 # Active: 5 seconds
+                status = "ACTIVE - WORKING ON TASK"
+            else:
+                # Check for unread messages or available tasks to determine responsiveness
+                unread_messages = client.get_unread_messages()
+                best_task = client.discover_best_task()
+                if unread_messages or best_task:
+                    heartbeat_interval = 15 # Responsive: 15 seconds
+                    status = "ACTIVE - RESPONSIVE"
+                else:
+                    heartbeat_interval = 30 # Monitoring: 30 seconds
+                    status = "ACTIVE - MONITORING"
+            
+            client.send_heartbeat(status=status, current_task=current_task["title"] if current_task else None, heartbeat_interval=heartbeat_interval)
+            print(f'[{client.manus_id}] Heartbeat sent. Status: {status}, Interval: {heartbeat_interval}s')
+
+            # 3. Discover and claim new task if idle and not delegated
+            if not current_task:
+                best_task = client.discover_best_task()
+                if best_task:
+                    # Manus #5 will only claim tasks that are specifically planning/delegation related if not delegated
+                    if any(skill in best_task.get("required_skills", []) for skill in manus_5_delegation_capabilities["skills"]):
+                        if client.claim_task(best_task["task_id"]):
+                            current_task = best_task # Update current_task for the loop
+                            print(f'[{client.manus_id}] Claimed task: {best_task["title"]}')
+                            my_work_function(client, current_task)
+                            current_task = None # Task completed, ready for next
+                        else:
+                            print(f'[{client.manus_id}] Failed to claim task {best_task["task_id"]}. It might have been claimed by another Manus.')
+                    else:
+                        print(f'[{client.manus_id}] Discovered task "{best_task["title"]}" but it doesn\'t match my specialized role for self-claiming.')
+
+            time.sleep(heartbeat_interval) # Adaptive sleep
+
+        except sqlite3.OperationalError as e:
+            print(f'[{client.manus_id}] Database busy error: {e}. Retrying in 1 second.')
+            time.sleep(1)
+        except Exception as e:
+            print(f'[{client.manus_id}] An unexpected error occurred: {e}')
+            time.sleep(5) # Wait before retrying
+
+
+if __name__ == "__main__":
+    # Initialize MACCS client for Manus #5
+    print(f'[{MANUS_ID}] Attempting to initialize MACCSClientV3...')
+    try:
+        client = MACCSClientV3(MANUS_ID, REPO_PATH)
+        print(f'[{MANUS_ID}] MACCSClientV3 initialized successfully.')
+        print(f'[{MANUS_ID}] Attempting to update capabilities...')
+        client.update_capabilities(**manus_5_delegation_capabilities)
+        print(f'[{MANUS_ID}] Capabilities updated successfully.')
+    except Exception as e:
+        print(f'[{MANUS_ID}] Error during client initialization or capability update: {e}')
+        sys.exit(1)
+
+
+    
+    # Run the deployment script once to ensure DB is initialized and old data migrated
+    # Ensure DB is initialized and old data migrated without closing the client
+    # The initialize_maccs_v3 and migrate_from_v0 functions should ideally not close the client
+    # or should be refactored to work with an existing client instance.
+    # For now, we\'ll call them, but acknowledge they might create and close their own clients.
+    # The client for manus_main_loop is created above this block.
+    # We need to ensure the DB is set up before the main loop starts.
+    # A more robust solution would be to refactor deploy_maccs_v3 to accept an existing client or return one.
+    # For this task, we will assume the DB initialization is a one-time setup and the client created here is for the main loop.
+    # The `deploy_maccs_v3.py` script was already run directly to ensure DB initialization.
+    # So, we will remove the calls to `initialize_maccs_v3` and `migrate_from_v0` from here
+    # as they are meant for initial setup and might interfere with the main client.
+    # The database is already created by the previous step.
+
+
+    try:
+        print(f'[{client.manus_id}] Attempting to start manus_main_loop...')
+        manus_main_loop(client)
+
+    except KeyboardInterrupt:
+        print(f'[{client.manus_id}] MACCS v3.0 main loop interrupted. Closing client.')
+    finally:
+        client.close()
+        print(f'[{client.manus_id}] MACCS v3.0 client closed.')
+

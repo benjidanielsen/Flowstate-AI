@@ -50,7 +50,7 @@ class MACCSCoordinator:
             with open(filepath, "a") as f:
                 f.write(json.dumps(data) + "\n")
             
-            if self._git_commit_and_push(f"MACCS: {data.get('type', 'message')} from {self.manus_id}"):
+                commit_message = f"MACCS: {data.get('type', 'message')} from {self.manus_id}"
                 return True
             else:
                 time.sleep(random.uniform(1, 3))  # Random backoff on push failure

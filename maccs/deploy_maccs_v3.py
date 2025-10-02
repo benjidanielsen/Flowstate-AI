@@ -1,7 +1,9 @@
+import sys
 import os
 import json
 import sqlite3
 from datetime import datetime
+import sys
 from maccs_client import MACCSClientV3
 
 def initialize_maccs_v3(manus_id, repo_path):

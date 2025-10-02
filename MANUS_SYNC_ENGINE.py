@@ -24,6 +24,7 @@ class ManusRole(Enum):
     QUALITY_ENHANCER = "quality_enhancer"
     AI_SPECIALIST = "ai_specialist"
     COORDINATOR = "coordinator"
+    SYSTEM_PERFECTIONIST = "system_perfectionist"
 
 class TaskPriority(Enum):
     CRITICAL = 1

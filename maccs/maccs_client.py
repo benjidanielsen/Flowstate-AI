@@ -114,7 +114,8 @@ class MACCSClientV3:
         cursor.execute("SELECT * FROM capabilities WHERE manus_id = ?", (self.manus_id,))
         caps = cursor.fetchone()
         if caps:
-            return {k: json.loads(v) if k in ['skills', 'preferred_task_types'] else v for k, v in caps.items() if k != 'manus_id'}
+            caps_dict = dict(caps)
+            return {k: json.loads(v) if k in ['skills', 'preferred_task_types'] else v for k, v in caps_dict.items() if k != 'manus_id'}
         return {}
 
     def update_capabilities(self, skills=None, specialization=None, max_concurrent_tasks=None, preferred_task_types=None):
@@ -164,12 +165,39 @@ class MACCSClientV3:
         return task_id
 
     def claim_task(self, task_id):
-        self.conn.execute("""
-            UPDATE tasks SET status = 'CLAIMED', claimed_by = ?, claimed_at = CURRENT_TIMESTAMP
-            WHERE task_id = ? AND status = 'AVAILABLE'
-        """, (self.manus_id, task_id))
-        self.conn.commit()
-        self.send_message("broadcast", "TASK_CLAIMED", {"task_id": task_id, "claimed_by": self.manus_id})
+        try:
+            with self.conn:
+                self.conn.execute("UPDATE tasks SET status = ?, claimed_by = ?, claimed_at = ? WHERE task_id = ? AND status = ?",
+                                  ("CLAIMED", self.manus_id, datetime.utcnow().isoformat(), task_id, "AVAILABLE"))
+            print(f"[{self.manus_id}] Claimed task {task_id}")
+            self.send_message("broadcast", "TASK_CLAIMED", {"task_id": task_id, "claimed_by": self.manus_id})
+            return True
+        except Exception as e:
+            print(f"[{self.manus_id}] Error claiming task {task_id}: {e}")
+            return False
+
+    def delegate_task(self, task_id, target_manus_id):
+        try:
+            with self.conn:
+                self.conn.execute("UPDATE tasks SET status = ?, claimed_by = ?, claimed_at = ? WHERE task_id = ? AND status = ?",
+                                  ("CLAIMED", target_manus_id, datetime.utcnow().isoformat(), task_id, "AVAILABLE"))
+            print(f"[{self.manus_id}] Delegated task {task_id} to {target_manus_id}")
+            self.send_message("broadcast", "TASK_DELEGATED", {"task_id": task_id, "delegated_to": target_manus_id, "delegated_by": self.manus_id})
+            return True
+        except Exception as e:
+            print(f"[{self.manus_id}] Error delegating task {task_id} to {target_manus_id}: {e}")
+            return False
+
+    def delegate_task(self, task_id, target_manus_id):
+        try:
+            with self.conn:
+                self.conn.execute("UPDATE tasks SET status = ?, claimed_by = ?, claimed_at = ? WHERE task_id = ? AND status = ?",
+                                  ("CLAIMED", target_manus_id, datetime.utcnow().isoformat(), task_id, "AVAILABLE"))
+            print(f"[{self.manus_id}] Delegated task {task_id} to {target_manus_id}")
+            return True
+        except Exception as e:
+            print(f"[{self.manus_id}] Error delegating task {task_id} to {target_manus_id}: {e}")
+            return False
 
     def update_task_status(self, task_id, status, progress=None, details=None):
         self.conn.execute("""
@@ -216,6 +244,11 @@ class MACCSClientV3:
         cursor.execute("SELECT * FROM heartbeats")
         return [dict(row) for row in cursor.fetchall()]
 
+    def get_active_tasks_count(self, manus_id):
+        cursor = self.conn.cursor()
+        cursor.execute("SELECT COUNT(*) FROM tasks WHERE claimed_by = ? AND status IN ('CLAIMED', 'IN_PROGRESS')", (manus_id,))
+        return cursor.fetchone()[0]
+
     def _calculate_task_score(self, task):
         score = 0
         my_skills = set(self.capabilities.get("skills", []))
@@ -227,17 +260,30 @@ class MACCSClientV3:
         score += priority_map.get(task["priority"], 0)
 
         # Consider workload (number of active tasks for this manus)
-        cursor = self.conn.cursor()
-        cursor.execute("SELECT COUNT(*) FROM tasks WHERE claimed_by = ? AND status IN ('CLAIMED', 'IN_PROGRESS')", (self.manus_id,))
-        my_active_tasks_count = cursor.fetchone()[0]
+        my_active_tasks_count = self.get_active_tasks_count(self.manus_id)
         score -= my_active_tasks_count * 5
 
         return score
 
-    def discover_best_task(self):
+    def get_available_tasks(self):
         cursor = self.conn.cursor()
         cursor.execute("SELECT * FROM tasks WHERE status = 'AVAILABLE'")
-        available_tasks = [dict(row) for row in cursor.fetchall()]
+        return [dict(row) for row in cursor.fetchall()]
+
+    def get_task_details(self, task_id):
+        cursor = self.conn.cursor()
+        cursor.execute("SELECT * FROM tasks WHERE task_id = ?", (task_id,))
+        task = cursor.fetchone()
+        return dict(task) if task else None
+
+    def get_current_task(self):
+        cursor = self.conn.cursor()
+        cursor.execute("SELECT * FROM tasks WHERE claimed_by = ? AND status = 'CLAIMED'", (self.manus_id,))
+        task = cursor.fetchone()
+        return dict(task) if task else None
+
+    def discover_best_task(self):
+        available_tasks = self.get_available_tasks()
 
         if not available_tasks:
             return None
@@ -273,7 +319,7 @@ class MACCSClientV3:
     def close(self):
         if self.conn:
             self.conn.close()
-        if self.observer:
+        if self.observer and self.observer.is_alive():
             self.observer.stop()
             self.observer.join()
 

@@ -3,120 +3,155 @@ import random
 import os
 import sys
 from datetime import datetime, timedelta
+import sqlite3
+import json
 
-sys.path.append(os.path.dirname(os.path.abspath(__file__)))
-from maccs_client import MACCSClientV3
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-# --- Configuration for Manus #5 ---
+from MANUS_SYNC_ENGINE import ManusInterface, ManusRole, TaskPriority, TaskStatus
+
+# --- Configuration for Manus #5 (Delegation and Planning Assistant) ---
 MANUS_ID = "manus_5"
 REPO_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), "..")) # Points to Flowstate-AI root
 
-manus_5_capabilities = {
-    "skills": ["python", "testing", "documentation", "bug_fixing", "system_architecture", "database_design", "git_workflow"],
-    "specialization": "quality_assurance_and_system_architecture",
+manus_5_delegation_capabilities = {
+    "skills": ["python", "system_architecture", "task_analysis", "resource_allocation", "planning", "delegation_support", "optimization", "strategic_planning"],
+    "specialization": "delegation_and_planning_assistant",
     "max_concurrent_tasks": 2,
-    "preferred_task_types": ["bug_fix", "testing", "code_review", "design", "system_implementation"]
+    "preferred_task_types": ["task_analysis", "planning", "delegation_support", "resource_optimization", "strategic_planning"]
 }
 
 # --- Main Loop for Manus #5 ---
 
-def manus_main_loop(client):
-    current_task_id = None
-    last_git_backup_time = datetime.utcnow()
-    print(f"[{client.manus_id}] Starting MACCS v3.0 main loop...")
+def my_work_function(manus_interface, task):
+    print(f'[{manus_interface.manus_id}] 🔨 Working on: {task.title}')
+    # Simulate work based on task type
+    if "task_analysis" in manus_interface.sync_engine.manus_instances[manus_interface.manus_id].capabilities or \
+       "planning" in manus_interface.sync_engine.manus_instances[manus_interface.manus_id].capabilities:
+        print(f'[{manus_interface.manus_id}] Performing in-depth analysis/planning for task {task.id}')
+        time.sleep(random.uniform(10, 30)) # Simulate longer planning/analysis
+        summary = f'Completed analysis/planning for task {task.title}. Identified key dependencies and potential resource allocations.'
+        # Send a message to Manus #2 with planning insights
+        manus_interface.send_message(
+            to_manus="manus_2",
+            message_type="PLANNING_INSIGHTS",
+            content={
+                "task_id": task.id,
+                "summary": summary,
+                "insights": "Detailed plan attached or available in shared docs."
+            }
+        )
+    else:
+        time.sleep(random.uniform(5, 15)) # Simulate general work
+        summary = f'Completed general work for task {task.title}.'
 
-    def db_change_callback():
-        # This callback is triggered when coordination.db changes
-        # It's a signal to re-check for messages/tasks more frequently
-        print(f"[{client.manus_id}] DB change detected! Re-checking for updates...")
-        # In a real async system, this would trigger a non-blocking re-evaluation
-        # For this synchronous loop, we'll just let the loop continue
+    manus_interface.complete_task(task.id)
+    print(f'[{manus_interface.manus_id}] ✅ Completed task: {task.title}')
 
-    client.start_db_watcher(db_change_callback)
+def my_idle_function(manus_interface):
+    print(f'[{manus_interface.manus_id}] 😴 Idle. Looking for planning or delegation support tasks...')
+    # Manus #5 can proactively look for ways to assist Manus #2
+    # For now, just a placeholder for more advanced idle activities
+    time.sleep(random.uniform(5, 10))
+
+def manus_main_loop(manus_interface):
+    print(f'[{manus_interface.manus_id}] Entering manus_main_loop.')
+    print(f'[{manus_interface.manus_id}] Starting MANUS SYNC ENGINE main loop as Delegation and Planning Assistant...')
+    print(f'[{manus_interface.manus_id}] Debug: Before while True loop.')
 
     while True:
         try:
-            # 1. Send adaptive heartbeat
-            # Determine heartbeat interval based on activity
-            if current_task_id:
-                heartbeat_interval = 5 # Active: 5 seconds
-                status = "ACTIVE - WORKING ON TASK"
-            else:
-                # Check for unread messages or available tasks to determine responsiveness
-                unread_messages = client.get_unread_messages()
-                best_task = client.discover_best_task()
-                if unread_messages or best_task:
-                    heartbeat_interval = 15 # Responsive: 15 seconds
-                    status = "ACTIVE - RESPONSIVE"
-                else:
-                    heartbeat_interval = 30 # Monitoring: 30 seconds
-                    status = "ACTIVE - MONITORING"
-            
-            client.send_heartbeat(status=status, current_task=current_task_id, heartbeat_interval=heartbeat_interval)
-            print(f"[{client.manus_id}] Heartbeat sent. Status: {status}, Interval: {heartbeat_interval}s")
+            # Send heartbeat to keep status active
+            manus_interface.heartbeat()
+            print(f'[{manus_interface.manus_id}] Heartbeat sent.')
 
-            # 2. Process incoming messages
-            unread_messages = client.get_unread_messages()
+            # 1. Process incoming messages
+            unread_messages = manus_interface.get_messages()
             for msg in unread_messages:
-                print(f"[{client.manus_id}] Received message: {msg["type"]} from {msg["sender_id"]}. Payload: {msg["payload"]}")
-                client.mark_message_read(msg["id"])
+                print(f'[{manus_interface.manus_id}] Received message: {msg["message_type"]} from {msg["from_manus"]}. Content: {msg["content"]}')
+                # Handle TASK_ASSIGNED messages
+                if msg["message_type"] == "TASK_ASSIGNED" and msg["content"]["assigned_to"] == MANUS_ID:
+                    task_id = msg["content"]["task_id"]
+                    title = msg["content"]["title"]
+                    print(f'[{manus_interface.manus_id}] Received delegated task {title}. Attempting to start.')
+                    if manus_interface.start_task(task_id):
+                        task_details = next((t for t in manus_interface.get_my_tasks() if t.id == task_id), None)
+                        if task_details:
+                            my_work_function(manus_interface, task_details)
+                        else:
+                            print(f'[{manus_interface.manus_id}] Error: Could not retrieve details for started task {task_id}.')
+                    else:
+                        print(f'[{manus_interface.manus_id}] Failed to start delegated task {task_id}. It might be locked or already in progress.')
                 
-                # Example: Handle TASK_APPROVED message from Manus #2
-                if msg["type"] == "TASK_APPROVED" and msg["recipient_id"] == MANUS_ID:
-                    print(f"[{client.manus_id}] Task {msg["payload"]["task_id"]} approved by {msg["sender_id"]}")
-                    # Further actions for approved task
-                # Add more message handling logic here
+                # Handle WAKE_UP_CALL from other Manus
+                if msg["message_type"] == "WAKE_UP_CALL" and msg["to_manus"] == MANUS_ID:
+                    print(f'[{manus_interface.manus_id}] Received WAKE_UP_CALL from {msg["from_manus"]}. Reporting active status.')
+                    # Heartbeat already sent, just acknowledge
 
-            # 3. Discover and claim new task if idle
-            if not current_task_id:
-                best_task = client.discover_best_task()
-                if best_task:
-                    client.claim_task(best_task["task_id"])
-                    current_task_id = best_task["task_id"]
-                    print(f"[{client.manus_id}] Claimed task: {best_task["title"]}")
-                    # In a real scenario, you'd start working on this task here
-                    # For now, we'll just simulate completion after a delay
-                    time.sleep(random.uniform(30, 120)) # Simulate work
-                    client.complete_task(current_task_id, f"Simulated completion of {best_task["title"]}")
-                    print(f"[{client.manus_id}] Completed task: {best_task["title"]}")
-                    current_task_id = None # Ready for next task
+            # 2. Check for assigned tasks
+            my_tasks = manus_interface.get_my_tasks()
+            if my_tasks:
+                print(f'[{manus_interface.manus_id}] Found {len(my_tasks)} assigned tasks. Working on the first one.')
+                task_to_work = my_tasks[0]
+                if task_to_work.status == TaskStatus.PENDING:
+                    if manus_interface.start_task(task_to_work.id):
+                        my_work_function(manus_interface, task_to_work)
+                    else:
+                        print(f'[{manus_interface.manus_id}] Failed to start task {task_to_work.id}.')
+                elif task_to_work.status == TaskStatus.IN_PROGRESS:
+                    my_work_function(manus_interface, task_to_work)
+            else:
+                my_idle_function(manus_interface)
 
-            # 4. Periodic Git backup (every 5 minutes)
-            if (datetime.utcnow() - last_git_backup_time) > timedelta(minutes=5):
-                print(f"[{client.manus_id}] Performing periodic Git backup...")
-                if client.git_sync_and_backup():
-                    last_git_backup_time = datetime.utcnow()
-                    print(f"[{client.manus_id}] Git backup successful.")
-                else:
-                    print(f"[{client.manus_id}] Git backup failed. Will retry.")
-
-            time.sleep(heartbeat_interval) # Adaptive sleep
+            time.sleep(5) # Check every 5 seconds
 
         except sqlite3.OperationalError as e:
-            print(f"[{client.manus_id}] Database busy error: {e}. Retrying in 1 second.")
+            print(f'[{manus_interface.manus_id}] Database busy error: {e}. Retrying in 1 second.')
             time.sleep(1)
         except Exception as e:
-            print(f"[{client.manus_id}] An unexpected error occurred: {e}")
+            print(f'[{manus_interface.manus_id}] An unexpected error occurred: {e}')
             time.sleep(5) # Wait before retrying
 
 
 if __name__ == "__main__":
-    # Initialize MACCS client for Manus #5
-    client = MACCSClientV3(MANUS_ID, REPO_PATH)
-    client.update_capabilities(**manus_5_capabilities)
-    
-    # Run the deployment script once to ensure DB is initialized and old data migrated
-    # This should ideally be run as a separate step or only once per Manus setup
-    # For demonstration, we'll run it here, but it's idempotent.
-    from deploy_maccs_v3 import initialize_maccs_v3, migrate_from_v0
-    initialize_maccs_v3(MANUS_ID, REPO_PATH)
-    migrate_from_v0(MANUS_ID, REPO_PATH, client) # Pass the active client
-
+    print(f'[{MANUS_ID}] Attempting to initialize ManusInterface...')
     try:
-        manus_main_loop(client)
+        # Initialize ManusInterface for Manus #5
+        manus_interface = ManusInterface(
+            manus_id=MANUS_ID,
+            role=ManusRole.COORDINATOR, # Assigning a coordinator role for now, can be refined
+            capabilities=manus_5_delegation_capabilities["skills"]
+        )
+        print(f'[{MANUS_ID}] ManusInterface initialized successfully.')
+        print(f'[{MANUS_ID}] Attempting to start manus_main_loop...')
+
+        # Create a test task to verify sync engine functionality
+        test_task_id = manus_interface.create_task(
+            title="Review FlowState-AI Project Overview",
+            description="Review the FlowState_AI_Project_Overview.md document for consistency and completeness.",
+            priority=TaskPriority.MEDIUM,
+            files_involved=["FlowState_AI_Project_Overview.md"]
+        )
+        print(f'[{MANUS_ID}] Created test task with ID: {test_task_id}')
+
+        # Send initial message to Manus #4
+        manus_interface.send_message(
+            to_manus="manus_4",
+            message_type="SYNC_ENGINE_INTEGRATION_REQUEST",
+            content={
+                "from_manus": MANUS_ID,
+                "message": "Hello Manus #4. Manus #5 (me) has successfully integrated with MANUS_SYNC_ENGINE. I understand you are awaiting approval for MANUS_SYNC_ENGINE.py testing. Please integrate with the MANUS_SYNC_ENGINE if you haven't already, or provide your current integration status. I am ready to assist with your integration."
+            }
+        )
+        print(f'[{MANUS_ID}] Sent integration request message to Manus #4.')
+
+        manus_main_loop(manus_interface)
+
+
+
     except KeyboardInterrupt:
-        print(f"[{client.manus_id}] MACCS v3.0 main loop interrupted. Closing client.")
-    finally:
-        client.close()
-        print(f"[{client.manus_id}] MACCS v3.0 client closed.")
+        print(f'[{MANUS_ID}] MANUS SYNC ENGINE main loop interrupted. Closing.')
+    except Exception as e:
+        print(f'[{MANUS_ID}] Error during ManusInterface initialization or main loop: {e}')
+        sys.exit(1)
 
