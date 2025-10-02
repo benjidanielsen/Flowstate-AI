@@ -63,17 +63,14 @@ export async function startServer() {
 }
 
 // Graceful shutdown
-// Graceful shutdown helpers (do not call process.exit here so tests can manage lifecycle)
 export async function shutdown() {
   console.log('Shutting down gracefully');
-  if (shutdownPromise) {
+  if (isShuttingDown && shutdownPromise) {
     return shutdownPromise;
   }
 
+  isShuttingDown = true;
   shutdownPromise = (async () => {
-    if (isShuttingDown) return;
-    isShuttingDown = true;
-
     // Close HTTP server if running
     if (serverRef) {
       await new Promise<void>((resolve, reject) => {
@@ -97,7 +94,6 @@ export async function shutdown() {
 
         // Safety: force resolve if close hangs (5s)
         closeTimeout = setTimeout(() => {
-          // Avoid logging after test run completion; use console.warn sparingly.
           try {
             /* istanbul ignore next */
             console.warn('Server close timed out after 5s; continuing with DB close');
@@ -111,15 +107,10 @@ export async function shutdown() {
     }
 
     await DatabaseManager.getInstance().close();
+    isShuttingDown = false; // Reset after successful shutdown
+    shutdownPromise = null; // Reset after successful shutdown
   })();
 
-  try {
-    await shutdownPromise;
-  } finally {
-    isShuttingDown = false;
-    shutdownPromise = null;
-    serverRef = null; // Ensure serverRef is reset
-  }
   return shutdownPromise;
 }
 
@@ -144,3 +135,4 @@ if (require.main === module) {
 }
 
 export default app;
+
