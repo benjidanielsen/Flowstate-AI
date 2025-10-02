@@ -57,7 +57,7 @@ export class FollowUpService {
       const db = dbManager.getDb();
       const customers: any[] = await new Promise((resolve, reject) => {
         db.all(
-          'SELECT id, pipeline_status FROM customers WHERE pipeline_status != "closed"',
+          'SELECT id, status FROM customers WHERE status != "Closed - Won"',
           (err, rows) => {
             if (err) reject(err);
             else resolve(rows || []);
@@ -67,7 +67,7 @@ export class FollowUpService {
       
       let scheduled = 0;
       for (const customer of customers) {
-        await this.createFollowUp(customer.id, customer.pipeline_status);
+        await this.createFollowUp(customer.id, customer.status);
         scheduled++;
       }
       
@@ -87,7 +87,7 @@ export class FollowUpService {
       const db = dbManager.getDb();
       const followUps: any[] = await new Promise((resolve, reject) => {
         db.all(
-          `SELECT r.*, c.name as customer_name, c.email, c.pipeline_status
+          `SELECT r.*, c.name as customer_name, c.email, c.status
            FROM reminders r
            JOIN customers c ON r.customer_id = c.id
            WHERE r.type = 'follow_up' 

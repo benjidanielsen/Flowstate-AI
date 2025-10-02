@@ -30,3 +30,4 @@ describe('server lifecycle', () => {
     expect(() => DatabaseManager.getInstance().getDb()).toThrow();
   }, 20000);
 });
+

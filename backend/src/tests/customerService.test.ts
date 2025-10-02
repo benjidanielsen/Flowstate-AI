@@ -6,10 +6,14 @@ import { runMigrations } from '../database/migrate';
 describe('CustomerService', () => {
   let customerService: CustomerService;
 
-  beforeAll(async () => {
+  beforeEach(async () => {
     await DatabaseManager.getInstance().connect();
     await runMigrations();
     customerService = new CustomerService();
+  });
+
+  afterEach(async () => {
+    await DatabaseManager.getInstance().close();
   });
 
   describe('createCustomer', () => {

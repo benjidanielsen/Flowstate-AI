@@ -42,13 +42,49 @@ export class ReminderService {
     });
   }
 
-  async completeReminder(id: string) {
+  async markReminderCompleted(id: string): Promise<any> {
     const db = DatabaseManager.getInstance().getDb();
     return new Promise((resolve, reject) => {
       db.run(`UPDATE reminders SET completed = 1 WHERE id = ?`, [id], function(err) {
         if (err) return reject(err);
-        resolve(this.changes > 0);
+        if (this.changes > 0) {
+          db.get(`SELECT * FROM reminders WHERE id = ?`, [id], (err, row) => {
+            if (err) reject(err);
+            else resolve(row);
+          });
+        } else {
+          resolve(null);
+        }
       });
+    });
+  }
+
+  async getRemindersByCustomerId(customerId: string): Promise<any[]> {
+    const db = DatabaseManager.getInstance().getDb();
+    return new Promise((resolve, reject) => {
+      db.all(
+        `SELECT * FROM reminders WHERE customer_id = ? ORDER BY scheduled_for ASC`,
+        [customerId],
+        (err, rows: any[]) => {
+          if (err) return reject(err);
+          const reminders = rows.map(r => ({ ...r, scheduled_for: new Date(r.scheduled_for), created_at: new Date(r.created_at) }));
+          resolve(reminders);
+        }
+      );
+    });
+  }
+
+  async getAllReminders(): Promise<any[]> {
+    const db = DatabaseManager.getInstance().getDb();
+    return new Promise((resolve, reject) => {
+      db.all(
+        `SELECT * FROM reminders ORDER BY scheduled_for ASC`,
+        (err, rows: any[]) => {
+          if (err) return reject(err);
+          const reminders = rows.map(r => ({ ...r, scheduled_for: new Date(r.scheduled_for), created_at: new Date(r.created_at) }));
+          resolve(reminders);
+        }
+      );
     });
   }
 }
