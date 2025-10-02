@@ -235,6 +235,11 @@ class MACCSClientV3:
 
         return score
 
+    def get_all_tasks(self):
+        cursor = self.conn.cursor()
+        cursor.execute("SELECT * FROM tasks")
+        return [dict(row) for row in cursor.fetchall()]
+
     def discover_best_task(self):
         cursor = self.conn.cursor()
         cursor.execute("SELECT * FROM tasks WHERE status = 'AVAILABLE'")
