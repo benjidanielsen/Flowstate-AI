@@ -1,0 +1,13 @@
+{
+  "type": "best_ai_query",
+  "task": {
+    "id": "phase_3_setup_learning_systems",
+    "phase": "phase_3",
+    "task": "setup_learning_systems",
+    "priority": "HIGH",
+    "assigned_ai": "backend-developer",
+    "status": "QUEUED",
+    "created_at": "2025-10-01T23:00:55.190971"
+  },
+  "timestamp": "2025-10-01T23:04:13.521504"
+}

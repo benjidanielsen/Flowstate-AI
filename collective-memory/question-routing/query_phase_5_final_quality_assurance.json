@@ -1,0 +1,13 @@
+{
+  "type": "best_ai_query",
+  "task": {
+    "id": "phase_5_final_quality_assurance",
+    "phase": "phase_5",
+    "task": "final_quality_assurance",
+    "priority": "HIGH",
+    "assigned_ai": "documentation-ai",
+    "status": "QUEUED",
+    "created_at": "2025-10-01T23:00:55.191048"
+  },
+  "timestamp": "2025-10-01T23:06:58.623758"
+}

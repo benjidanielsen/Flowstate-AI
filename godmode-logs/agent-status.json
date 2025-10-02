@@ -1,0 +1,26 @@
+{
+  "timestamp": "2025-10-01T23:00:57.033252",
+  "active_agents": 5,
+  "agents": {
+    "Collective Memory": {
+      "pid": 114208,
+      "status": "STOPPED"
+    },
+    "Communication Hub": {
+      "pid": 114209,
+      "status": "STOPPED"
+    },
+    "AI Democracy": {
+      "pid": 114215,
+      "status": "STOPPED"
+    },
+    "Innovation AI": {
+      "pid": 114217,
+      "status": "RUNNING"
+    },
+    "Project Manager": {
+      "pid": 114224,
+      "status": "RUNNING"
+    }
+  }
+}

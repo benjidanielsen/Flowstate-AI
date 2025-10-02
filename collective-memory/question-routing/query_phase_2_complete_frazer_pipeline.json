@@ -1,0 +1,13 @@
+{
+  "type": "best_ai_query",
+  "task": {
+    "id": "phase_2_complete_frazer_pipeline",
+    "phase": "phase_2",
+    "task": "complete_frazer_pipeline",
+    "priority": "HIGH",
+    "assigned_ai": "backend-developer",
+    "status": "QUEUED",
+    "created_at": "2025-10-01T23:00:55.190914"
+  },
+  "timestamp": "2025-10-01T23:02:23.455020"
+}

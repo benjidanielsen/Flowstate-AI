@@ -30,11 +30,24 @@ Flowstate-AI is an AI-first, self-improving CRM-OS for network marketers and sol
 - **Performance Tracking**: Monitor pipeline effectiveness and conversion metrics
 - **Data-Driven Insights**: Learn from historical data to improve recommendations
 
+### 🤖 AI Agent Self-Improvement
+- **Iterative Feedback Loops**: Agents continuously refine their internal models and decision-making processes.
+- **Self-Evaluation**: Agents assess their own performance against predefined goals, identifying areas for improvement.
+- **Adaptive Learning**: Agents adjust strategies and parameters based on feedback and self-evaluation.
+- **Automated Issue Creation**: Performance issues can automatically trigger GitHub issues for human or AI intervention.
+
+### 🤝 GitHub Coordination for AI Agents
+- **Centralized Task Management**: GitHub Issues serve as the primary mechanism for assigning and tracking tasks for AI agents.
+- **Automated Workflows**: GitHub Actions automate repetitive tasks like testing, deployment, and issue triage.
+- **Transparent Collaboration**: All agent activities, including code changes and task progress, are visible on GitHub.
+- **Version Control**: Git is used for tracking changes to code, documentation, and configurations.
+
 ## Technology Stack
 
 - **Frontend**: React 18 + TypeScript + Tailwind CSS + Vite
 - **Backend**: Node.js + Express + TypeScript + SQLite (dev) / PostgreSQL (prod)
 - **AI Worker**: Python + FastAPI for reminders and NBA processing
+- **Monitoring Dashboard**: Python + Flask + Flask-SocketIO + SQLite
 - **Database**: SQLite for development, PostgreSQL for production
 - **Containerization**: Docker + Docker Compose
 - **CI/CD**: GitHub Actions
@@ -45,6 +58,8 @@ Flowstate-AI is an AI-first, self-improving CRM-OS for network marketers and sol
 - Node.js 18+ 
 - Python 3.11+
 - Docker & Docker Compose (optional)
+- Git
+- GitHub CLI (for GitHub integration features)
 
 ### Option 1: Local Development
 
@@ -59,6 +74,10 @@ Flowstate-AI is an AI-first, self-improving CRM-OS for network marketers and sol
    ```bash
    cp backend/.env.example backend/.env
    # Edit backend/.env with your configuration
+   
+   # For GitHub Integration, set your GitHub Token
+   export GITHUB_TOKEN="YOUR_GITHUB_TOKEN"
+   # On Windows, use: set GITHUB_TOKEN="YOUR_GITHUB_TOKEN"
    ```
 
 3. **Initialize Database**
@@ -82,12 +101,16 @@ Flowstate-AI is an AI-first, self-improving CRM-OS for network marketers and sol
    
    # Terminal 3 - Python Worker
    cd python-worker && python -m uvicorn src.main:app --reload
+   
+   # Terminal 4 - Godmode Monitoring Dashboard (from Flowstate-AI/godmode-dashboard)
+   cd godmode-dashboard && python app_enhanced.py
    ```
 
 5. **Access Application**
    - Frontend: http://localhost:3000
    - Backend API: http://localhost:3001/api
    - Python Worker: http://localhost:8000
+   - Godmode Dashboard: http://localhost:3333
    - API Health: http://localhost:3001/api/health
 
 ### Option 2: Docker Compose
@@ -133,6 +156,11 @@ Flowstate-AI is an AI-first, self-improving CRM-OS for network marketers and sol
 - `GET /reminders/due` - Get due reminders
 - `POST /reminders/process-due` - Process all due reminders
 
+### Godmode Monitoring Dashboard
+- `GET /` - Main dashboard page
+- `GET /api/status` - API endpoint for current status
+- `GET /api/ai/<ai_id>` - Get detailed info for specific AI
+
 ## Project Structure
 
 ```
@@ -154,7 +182,15 @@ Flowstate-AI/
 ├── python-worker/           # AI worker service
 │   ├── src/                 # FastAPI application
 │   └── services/            # NBA and reminder services
+├── godmode-dashboard/       # AI Monitoring Dashboard (Python Flask)
+│   ├── app_enhanced.py      # Main Flask application with SocketIO
+│   ├── database.py          # SQLite database interactions
+│   ├── self_improvement.py  # AI agent self-improvement logic
+│   ├── github_integration.py# GitHub API integration for coordination
+│   ├── static/              # CSS, JS, profile pictures
+│   └── templates/           # HTML templates (dashboard.html)
 ├── .github/workflows/       # CI/CD pipelines
+├── github_integration.py    # GitHub API integration (shared utility)
 └── docker-compose.yml       # Container orchestration
 ```
 
@@ -169,6 +205,7 @@ npm test
 npm run test:frontend
 npm run test:backend
 cd python-worker && python -m pytest
+cd godmode-dashboard && python -m pytest # (if tests are implemented)
 ```
 
 ### Linting
@@ -197,6 +234,7 @@ npm run build:backend
    - Configure PostgreSQL connection
    - Set strong JWT secrets
    - Configure Python worker endpoints
+   - Set `GITHUB_TOKEN` for GitHub integration
 
 2. **Database Migration**
    ```bash
@@ -207,6 +245,10 @@ npm run build:backend
    ```bash
    docker-compose -f docker-compose.yml up -d --profile production
    ```
+
+## Cost-Free Operation and Windows Compatibility
+
+The Flowstate-AI system is designed for cost-free operation, leveraging open-source technologies like Python, Flask, Flask-SocketIO, and SQLite. It is also fully compatible with Windows operating systems, with specific considerations for setup and environment configuration detailed in the `cost_free_windows_compatibility.md` document.
 
 ## Contributing
 
@@ -229,3 +271,4 @@ For support, please open an issue on GitHub or contact [support@flowstate-ai.com
 ---
 
 Built with ❤️ for network marketers and solo founders who want to scale their relationships systematically.
+

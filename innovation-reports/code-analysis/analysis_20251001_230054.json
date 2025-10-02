@@ -1,0 +1,1998 @@
+{
+  "timestamp": "2025-10-01T23:00:54.889113",
+  "total_issues": 246,
+  "issues": [
+    {
+      "type": "future_performance_issue",
+      "severity": "medium",
+      "description": "Nested loops detected in _scan_docs.py - potential O(n\u00b3) complexity",
+      "line": 45,
+      "suggestion": "Consider optimizing with hash maps or database queries",
+      "predicted_impact": "Performance degradation with large datasets (>10k records)"
+    },
+    {
+      "type": "future_performance_issue",
+      "severity": "medium",
+      "description": "Nested loops detected in _scan_docs.py - potential O(n\u00b3) complexity",
+      "line": 46,
+      "suggestion": "Consider optimizing with hash maps or database queries",
+      "predicted_impact": "Performance degradation with large datasets (>10k records)"
+    },
+    {
+      "type": "future_memory_issue",
+      "severity": "low",
+      "description": "List comprehension in MANUS_SYNC_ENGINE.py - potential memory usage",
+      "line": 512,
+      "suggestion": "Consider using generators for large datasets",
+      "predicted_impact": "Memory issues with datasets >100k items"
+    },
+    {
+      "type": "future_memory_issue",
+      "severity": "low",
+      "description": "List comprehension in MANUS_SYNC_ENGINE.py - potential memory usage",
+      "line": 635,
+      "suggestion": "Consider using generators for large datasets",
+      "predicted_impact": "Memory issues with datasets >100k items"
+    },
+    {
+      "type": "future_memory_issue",
+      "severity": "low",
+      "description": "List comprehension in MANUS_SYNC_ENGINE.py - potential memory usage",
+      "line": 683,
+      "suggestion": "Consider using generators for large datasets",
+      "predicted_impact": "Memory issues with datasets >100k items"
+    },
+    {
+      "type": "future_memory_issue",
+      "severity": "low",
+      "description": "List comprehension in MANUS_SYNC_ENGINE.py - potential memory usage",
+      "line": 528,
+      "suggestion": "Consider using generators for large datasets",
+      "predicted_impact": "Memory issues with datasets >100k items"
+    },
+    {
+      "type": "future_memory_issue",
+      "severity": "low",
+      "description": "List comprehension in MANUS_SYNC_ENGINE.py - potential memory usage",
+      "line": 307,
+      "suggestion": "Consider using generators for large datasets",
+      "predicted_impact": "Memory issues with datasets >100k items"
+    },
+    {
+      "type": "future_memory_issue",
+      "severity": "low",
+      "description": "List comprehension in MANUS_SYNC_ENGINE.py - potential memory usage",
+      "line": 545,
+      "suggestion": "Consider using generators for large datasets",
+      "predicted_impact": "Memory issues with datasets >100k items"
+    },
+    {
+      "type": "future_memory_issue",
+      "severity": "low",
+      "description": "List comprehension in MANUS_SYNC_ENGINE.py - potential memory usage",
+      "line": 547,
+      "suggestion": "Consider using generators for large datasets",
+      "predicted_impact": "Memory issues with datasets >100k items"
+    },
+    {
+      "type": "future_memory_issue",
+      "severity": "low",
+      "description": "List comprehension in enhanced_ai_sync_engine.py - potential memory usage",
+      "line": 709,
+      "suggestion": "Consider using generators for large datasets",
+      "predicted_impact": "Memory issues with datasets >100k items"
+    },
+    {
+      "type": "future_memory_issue",
+      "severity": "low",
+      "description": "List comprehension in enhanced_ai_sync_engine.py - potential memory usage",
+      "line": 710,
+      "suggestion": "Consider using generators for large datasets",
+      "predicted_impact": "Memory issues with datasets >100k items"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in enhanced_ai_sync_engine.py",
+      "line": 310,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in enhanced_ai_sync_engine.py",
+      "line": 368,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in enhanced_ai_sync_engine.py",
+      "line": 380,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in enhanced_ai_sync_engine.py",
+      "line": 381,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in enhanced_ai_sync_engine.py",
+      "line": 382,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in enhanced_ai_sync_engine.py",
+      "line": 443,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in enhanced_ai_sync_engine.py",
+      "line": 570,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in enhanced_ai_sync_engine.py",
+      "line": 792,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Hardcoded localhost should be configurable in enhanced_ai_sync_engine.py",
+      "line": 792,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in windows_dashboard_launcher.py",
+      "line": 42,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in windows_dashboard_launcher.py",
+      "line": 565,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in windows_dashboard_launcher.py",
+      "line": 582,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Hardcoded localhost should be configurable in windows_dashboard_launcher.py",
+      "line": 589,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Hardcoded localhost should be configurable in windows_dashboard_launcher.py",
+      "line": 643,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Hardcoded localhost should be configurable in windows_dashboard_launcher.py",
+      "line": 647,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Hardcoded localhost should be configurable in windows_dashboard_launcher.py",
+      "line": 653,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "HTTP should be HTTPS in production in windows_dashboard_launcher.py",
+      "line": 643,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "HTTP should be HTTPS in production in windows_dashboard_launcher.py",
+      "line": 647,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_memory_issue",
+      "severity": "low",
+      "description": "List comprehension in MANUS_SYNC_ENGINE_ENHANCED.py - potential memory usage",
+      "line": 535,
+      "suggestion": "Consider using generators for large datasets",
+      "predicted_impact": "Memory issues with datasets >100k items"
+    },
+    {
+      "type": "future_memory_issue",
+      "severity": "low",
+      "description": "List comprehension in MANUS_SYNC_ENGINE_ENHANCED.py - potential memory usage",
+      "line": 620,
+      "suggestion": "Consider using generators for large datasets",
+      "predicted_impact": "Memory issues with datasets >100k items"
+    },
+    {
+      "type": "future_memory_issue",
+      "severity": "low",
+      "description": "List comprehension in MANUS_SYNC_ENGINE_ENHANCED.py - potential memory usage",
+      "line": 838,
+      "suggestion": "Consider using generators for large datasets",
+      "predicted_impact": "Memory issues with datasets >100k items"
+    },
+    {
+      "type": "future_memory_issue",
+      "severity": "low",
+      "description": "List comprehension in MANUS_SYNC_ENGINE_ENHANCED.py - potential memory usage",
+      "line": 915,
+      "suggestion": "Consider using generators for large datasets",
+      "predicted_impact": "Memory issues with datasets >100k items"
+    },
+    {
+      "type": "future_memory_issue",
+      "severity": "low",
+      "description": "List comprehension in MANUS_SYNC_ENGINE_ENHANCED.py - potential memory usage",
+      "line": 1000,
+      "suggestion": "Consider using generators for large datasets",
+      "predicted_impact": "Memory issues with datasets >100k items"
+    },
+    {
+      "type": "future_memory_issue",
+      "severity": "low",
+      "description": "List comprehension in MANUS_SYNC_ENGINE_ENHANCED.py - potential memory usage",
+      "line": 1137,
+      "suggestion": "Consider using generators for large datasets",
+      "predicted_impact": "Memory issues with datasets >100k items"
+    },
+    {
+      "type": "future_memory_issue",
+      "severity": "low",
+      "description": "List comprehension in MANUS_SYNC_ENGINE_ENHANCED.py - potential memory usage",
+      "line": 1468,
+      "suggestion": "Consider using generators for large datasets",
+      "predicted_impact": "Memory issues with datasets >100k items"
+    },
+    {
+      "type": "future_memory_issue",
+      "severity": "low",
+      "description": "List comprehension in MANUS_SYNC_ENGINE_ENHANCED.py - potential memory usage",
+      "line": 1553,
+      "suggestion": "Consider using generators for large datasets",
+      "predicted_impact": "Memory issues with datasets >100k items"
+    },
+    {
+      "type": "future_memory_issue",
+      "severity": "low",
+      "description": "List comprehension in MANUS_SYNC_ENGINE_ENHANCED.py - potential memory usage",
+      "line": 1699,
+      "suggestion": "Consider using generators for large datasets",
+      "predicted_impact": "Memory issues with datasets >100k items"
+    },
+    {
+      "type": "future_memory_issue",
+      "severity": "low",
+      "description": "List comprehension in MANUS_SYNC_ENGINE_ENHANCED.py - potential memory usage",
+      "line": 1871,
+      "suggestion": "Consider using generators for large datasets",
+      "predicted_impact": "Memory issues with datasets >100k items"
+    },
+    {
+      "type": "future_memory_issue",
+      "severity": "low",
+      "description": "List comprehension in MANUS_SYNC_ENGINE_ENHANCED.py - potential memory usage",
+      "line": 1956,
+      "suggestion": "Consider using generators for large datasets",
+      "predicted_impact": "Memory issues with datasets >100k items"
+    },
+    {
+      "type": "future_memory_issue",
+      "severity": "low",
+      "description": "List comprehension in MANUS_SYNC_ENGINE_ENHANCED.py - potential memory usage",
+      "line": 2102,
+      "suggestion": "Consider using generators for large datasets",
+      "predicted_impact": "Memory issues with datasets >100k items"
+    },
+    {
+      "type": "future_memory_issue",
+      "severity": "low",
+      "description": "List comprehension in MANUS_SYNC_ENGINE_ENHANCED.py - potential memory usage",
+      "line": 2264,
+      "suggestion": "Consider using generators for large datasets",
+      "predicted_impact": "Memory issues with datasets >100k items"
+    },
+    {
+      "type": "future_memory_issue",
+      "severity": "low",
+      "description": "List comprehension in MANUS_SYNC_ENGINE_ENHANCED.py - potential memory usage",
+      "line": 2284,
+      "suggestion": "Consider using generators for large datasets",
+      "predicted_impact": "Memory issues with datasets >100k items"
+    },
+    {
+      "type": "future_memory_issue",
+      "severity": "low",
+      "description": "List comprehension in MANUS_SYNC_ENGINE_ENHANCED.py - potential memory usage",
+      "line": 2192,
+      "suggestion": "Consider using generators for large datasets",
+      "predicted_impact": "Memory issues with datasets >100k items"
+    },
+    {
+      "type": "future_memory_issue",
+      "severity": "low",
+      "description": "List comprehension in MANUS_SYNC_ENGINE_ENHANCED.py - potential memory usage",
+      "line": 2193,
+      "suggestion": "Consider using generators for large datasets",
+      "predicted_impact": "Memory issues with datasets >100k items"
+    },
+    {
+      "type": "future_memory_issue",
+      "severity": "low",
+      "description": "List comprehension in MANUS_SYNC_ENGINE_ENHANCED.py - potential memory usage",
+      "line": 2300,
+      "suggestion": "Consider using generators for large datasets",
+      "predicted_impact": "Memory issues with datasets >100k items"
+    },
+    {
+      "type": "future_memory_issue",
+      "severity": "low",
+      "description": "List comprehension in MANUS_SYNC_ENGINE_ENHANCED.py - potential memory usage",
+      "line": 2302,
+      "suggestion": "Consider using generators for large datasets",
+      "predicted_impact": "Memory issues with datasets >100k items"
+    },
+    {
+      "type": "future_memory_issue",
+      "severity": "low",
+      "description": "List comprehension in MANUS_SYNC_ENGINE_ENHANCED.py - potential memory usage",
+      "line": 2303,
+      "suggestion": "Consider using generators for large datasets",
+      "predicted_impact": "Memory issues with datasets >100k items"
+    },
+    {
+      "type": "future_memory_issue",
+      "severity": "low",
+      "description": "List comprehension in test_windows_compatibility.py - potential memory usage",
+      "line": 569,
+      "suggestion": "Consider using generators for large datasets",
+      "predicted_impact": "Memory issues with datasets >100k items"
+    },
+    {
+      "type": "future_memory_issue",
+      "severity": "low",
+      "description": "List comprehension in test_windows_compatibility.py - potential memory usage",
+      "line": 528,
+      "suggestion": "Consider using generators for large datasets",
+      "predicted_impact": "Memory issues with datasets >100k items"
+    },
+    {
+      "type": "future_memory_issue",
+      "severity": "low",
+      "description": "List comprehension in test_windows_compatibility.py - potential memory usage",
+      "line": 529,
+      "suggestion": "Consider using generators for large datasets",
+      "predicted_impact": "Memory issues with datasets >100k items"
+    },
+    {
+      "type": "future_memory_issue",
+      "severity": "low",
+      "description": "List comprehension in test_windows_compatibility.py - potential memory usage",
+      "line": 530,
+      "suggestion": "Consider using generators for large datasets",
+      "predicted_impact": "Memory issues with datasets >100k items"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in test_windows_compatibility.py",
+      "line": 238,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in test_windows_compatibility.py",
+      "line": 239,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in test_windows_compatibility.py",
+      "line": 242,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Hardcoded localhost should be configurable in test_windows_compatibility.py",
+      "line": 217,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Hardcoded localhost should be configurable in test_windows_compatibility.py",
+      "line": 232,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_memory_issue",
+      "severity": "low",
+      "description": "List comprehension in scan.py - potential memory usage",
+      "line": 42,
+      "suggestion": "Consider using generators for large datasets",
+      "predicted_impact": "Memory issues with datasets >100k items"
+    },
+    {
+      "type": "future_memory_issue",
+      "severity": "low",
+      "description": "List comprehension in nba_service.py - potential memory usage",
+      "line": 248,
+      "suggestion": "Consider using generators for large datasets",
+      "predicted_impact": "Memory issues with datasets >100k items"
+    },
+    {
+      "type": "future_memory_issue",
+      "severity": "low",
+      "description": "List comprehension in nba_service.py - potential memory usage",
+      "line": 317,
+      "suggestion": "Consider using generators for large datasets",
+      "predicted_impact": "Memory issues with datasets >100k items"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in main.py",
+      "line": 108,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_memory_issue",
+      "severity": "low",
+      "description": "List comprehension in project-manager.py - potential memory usage",
+      "line": 590,
+      "suggestion": "Consider using generators for large datasets",
+      "predicted_impact": "Memory issues with datasets >100k items"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in project-manager.py",
+      "line": 522,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in project-manager.py",
+      "line": 526,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in project-manager.py",
+      "line": 580,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in project-manager.py",
+      "line": 645,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in project-manager.py",
+      "line": 813,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in project-manager.py",
+      "line": 817,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_memory_issue",
+      "severity": "low",
+      "description": "List comprehension in innovation-ai.py - potential memory usage",
+      "line": 406,
+      "suggestion": "Consider using generators for large datasets",
+      "predicted_impact": "Memory issues with datasets >100k items"
+    },
+    {
+      "type": "future_memory_issue",
+      "severity": "low",
+      "description": "List comprehension in innovation-ai.py - potential memory usage",
+      "line": 792,
+      "suggestion": "Consider using generators for large datasets",
+      "predicted_impact": "Memory issues with datasets >100k items"
+    },
+    {
+      "type": "future_memory_issue",
+      "severity": "low",
+      "description": "List comprehension in innovation-ai.py - potential memory usage",
+      "line": 797,
+      "suggestion": "Consider using generators for large datasets",
+      "predicted_impact": "Memory issues with datasets >100k items"
+    },
+    {
+      "type": "future_memory_issue",
+      "severity": "low",
+      "description": "List comprehension in innovation-ai.py - potential memory usage",
+      "line": 741,
+      "suggestion": "Consider using generators for large datasets",
+      "predicted_impact": "Memory issues with datasets >100k items"
+    },
+    {
+      "type": "future_memory_issue",
+      "severity": "low",
+      "description": "List comprehension in innovation-ai.py - potential memory usage",
+      "line": 777,
+      "suggestion": "Consider using generators for large datasets",
+      "predicted_impact": "Memory issues with datasets >100k items"
+    },
+    {
+      "type": "future_memory_issue",
+      "severity": "low",
+      "description": "List comprehension in innovation-ai.py - potential memory usage",
+      "line": 695,
+      "suggestion": "Consider using generators for large datasets",
+      "predicted_impact": "Memory issues with datasets >100k items"
+    },
+    {
+      "type": "future_memory_issue",
+      "severity": "low",
+      "description": "List comprehension in innovation-ai.py - potential memory usage",
+      "line": 806,
+      "suggestion": "Consider using generators for large datasets",
+      "predicted_impact": "Memory issues with datasets >100k items"
+    },
+    {
+      "type": "future_memory_issue",
+      "severity": "low",
+      "description": "List comprehension in innovation-ai.py - potential memory usage",
+      "line": 723,
+      "suggestion": "Consider using generators for large datasets",
+      "predicted_impact": "Memory issues with datasets >100k items"
+    },
+    {
+      "type": "future_memory_issue",
+      "severity": "low",
+      "description": "List comprehension in innovation-ai.py - potential memory usage",
+      "line": 727,
+      "suggestion": "Consider using generators for large datasets",
+      "predicted_impact": "Memory issues with datasets >100k items"
+    },
+    {
+      "type": "future_memory_issue",
+      "severity": "low",
+      "description": "List comprehension in innovation-ai.py - potential memory usage",
+      "line": 731,
+      "suggestion": "Consider using generators for large datasets",
+      "predicted_impact": "Memory issues with datasets >100k items"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in innovation-ai.py",
+      "line": 102,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in innovation-ai.py",
+      "line": 107,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in innovation-ai.py",
+      "line": 113,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in innovation-ai.py",
+      "line": 118,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in innovation-ai.py",
+      "line": 150,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in innovation-ai.py",
+      "line": 154,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in innovation-ai.py",
+      "line": 271,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in innovation-ai.py",
+      "line": 437,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in innovation-ai.py",
+      "line": 441,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in innovation-ai.py",
+      "line": 543,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in innovation-ai.py",
+      "line": 543,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in innovation-ai.py",
+      "line": 608,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in innovation-ai.py",
+      "line": 608,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in innovation-ai.py",
+      "line": 690,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in innovation-ai.py",
+      "line": 713,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Hardcoded localhost should be configurable in innovation-ai.py",
+      "line": 228,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Hardcoded localhost should be configurable in innovation-ai.py",
+      "line": 228,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "HTTP should be HTTPS in production in innovation-ai.py",
+      "line": 229,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Hardcoded passwords detected in innovation-ai.py",
+      "line": 230,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_memory_issue",
+      "severity": "low",
+      "description": "List comprehension in ai-communication-hub.py - potential memory usage",
+      "line": 253,
+      "suggestion": "Consider using generators for large datasets",
+      "predicted_impact": "Memory issues with datasets >100k items"
+    },
+    {
+      "type": "future_memory_issue",
+      "severity": "low",
+      "description": "List comprehension in ai-communication-hub.py - potential memory usage",
+      "line": 779,
+      "suggestion": "Consider using generators for large datasets",
+      "predicted_impact": "Memory issues with datasets >100k items"
+    },
+    {
+      "type": "future_memory_issue",
+      "severity": "low",
+      "description": "List comprehension in ai-communication-hub.py - potential memory usage",
+      "line": 784,
+      "suggestion": "Consider using generators for large datasets",
+      "predicted_impact": "Memory issues with datasets >100k items"
+    },
+    {
+      "type": "future_memory_issue",
+      "severity": "low",
+      "description": "List comprehension in ai-communication-hub.py - potential memory usage",
+      "line": 789,
+      "suggestion": "Consider using generators for large datasets",
+      "predicted_impact": "Memory issues with datasets >100k items"
+    },
+    {
+      "type": "future_memory_issue",
+      "severity": "low",
+      "description": "List comprehension in ai-communication-hub.py - potential memory usage",
+      "line": 794,
+      "suggestion": "Consider using generators for large datasets",
+      "predicted_impact": "Memory issues with datasets >100k items"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in ai-communication-hub.py",
+      "line": 213,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in ai-communication-hub.py",
+      "line": 360,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in ai-communication-hub.py",
+      "line": 573,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in ai-communication-hub.py",
+      "line": 577,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in ai-communication-hub.py",
+      "line": 683,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in ai-communication-hub.py",
+      "line": 687,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in ai-communication-hub.py",
+      "line": 742,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in ai-communication-hub.py",
+      "line": 746,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in ai-communication-hub.py",
+      "line": 768,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in ai-communication-hub.py",
+      "line": 772,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_performance_issue",
+      "severity": "medium",
+      "description": "Nested loops detected in collective-memory-system.py - potential O(n\u00b3) complexity",
+      "line": 436,
+      "suggestion": "Consider optimizing with hash maps or database queries",
+      "predicted_impact": "Performance degradation with large datasets (>10k records)"
+    },
+    {
+      "type": "future_performance_issue",
+      "severity": "medium",
+      "description": "Nested loops detected in collective-memory-system.py - potential O(n\u00b3) complexity",
+      "line": 592,
+      "suggestion": "Consider optimizing with hash maps or database queries",
+      "predicted_impact": "Performance degradation with large datasets (>10k records)"
+    },
+    {
+      "type": "future_memory_issue",
+      "severity": "low",
+      "description": "List comprehension in collective-memory-system.py - potential memory usage",
+      "line": 676,
+      "suggestion": "Consider using generators for large datasets",
+      "predicted_impact": "Memory issues with datasets >100k items"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in collective-memory-system.py",
+      "line": 413,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in collective-memory-system.py",
+      "line": 417,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in collective-memory-system.py",
+      "line": 659,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in collective-memory-system.py",
+      "line": 664,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in collective-memory-system.py",
+      "line": 721,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in collective-memory-system.py",
+      "line": 725,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in collective-memory-system.py",
+      "line": 824,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in ai-democracy-system.py",
+      "line": 688,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in ai-democracy-system.py",
+      "line": 778,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in ai-democracy-system.py",
+      "line": 785,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in ai-democracy-system.py",
+      "line": 792,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in ai-democracy-system.py",
+      "line": 799,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in ai-democracy-system.py",
+      "line": 806,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in backend-developer.py",
+      "line": 122,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in backend-developer.py",
+      "line": 126,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in frontend-developer.py",
+      "line": 122,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in frontend-developer.py",
+      "line": 126,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in database-ai.py",
+      "line": 122,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in database-ai.py",
+      "line": 126,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in tester-ai.py",
+      "line": 122,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in tester-ai.py",
+      "line": 126,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in fixer-ai.py",
+      "line": 122,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in fixer-ai.py",
+      "line": 126,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in devops-ai.py",
+      "line": 122,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in devops-ai.py",
+      "line": 126,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in documentation-ai.py",
+      "line": 122,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in documentation-ai.py",
+      "line": 126,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in support-ai.py",
+      "line": 122,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in support-ai.py",
+      "line": 126,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_memory_issue",
+      "severity": "low",
+      "description": "List comprehension in scan.py - potential memory usage",
+      "line": 42,
+      "suggestion": "Consider using generators for large datasets",
+      "predicted_impact": "Memory issues with datasets >100k items"
+    },
+    {
+      "type": "future_memory_issue",
+      "severity": "low",
+      "description": "List comprehension in nba_service.py - potential memory usage",
+      "line": 248,
+      "suggestion": "Consider using generators for large datasets",
+      "predicted_impact": "Memory issues with datasets >100k items"
+    },
+    {
+      "type": "future_memory_issue",
+      "severity": "low",
+      "description": "List comprehension in nba_service.py - potential memory usage",
+      "line": 317,
+      "suggestion": "Consider using generators for large datasets",
+      "predicted_impact": "Memory issues with datasets >100k items"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in main.py",
+      "line": 108,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_memory_issue",
+      "severity": "low",
+      "description": "List comprehension in project-manager.py - potential memory usage",
+      "line": 494,
+      "suggestion": "Consider using generators for large datasets",
+      "predicted_impact": "Memory issues with datasets >100k items"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in project-manager.py",
+      "line": 426,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in project-manager.py",
+      "line": 430,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in project-manager.py",
+      "line": 484,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in project-manager.py",
+      "line": 549,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in project-manager.py",
+      "line": 717,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in project-manager.py",
+      "line": 721,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_memory_issue",
+      "severity": "low",
+      "description": "List comprehension in innovation-ai.py - potential memory usage",
+      "line": 385,
+      "suggestion": "Consider using generators for large datasets",
+      "predicted_impact": "Memory issues with datasets >100k items"
+    },
+    {
+      "type": "future_memory_issue",
+      "severity": "low",
+      "description": "List comprehension in innovation-ai.py - potential memory usage",
+      "line": 771,
+      "suggestion": "Consider using generators for large datasets",
+      "predicted_impact": "Memory issues with datasets >100k items"
+    },
+    {
+      "type": "future_memory_issue",
+      "severity": "low",
+      "description": "List comprehension in innovation-ai.py - potential memory usage",
+      "line": 776,
+      "suggestion": "Consider using generators for large datasets",
+      "predicted_impact": "Memory issues with datasets >100k items"
+    },
+    {
+      "type": "future_memory_issue",
+      "severity": "low",
+      "description": "List comprehension in innovation-ai.py - potential memory usage",
+      "line": 720,
+      "suggestion": "Consider using generators for large datasets",
+      "predicted_impact": "Memory issues with datasets >100k items"
+    },
+    {
+      "type": "future_memory_issue",
+      "severity": "low",
+      "description": "List comprehension in innovation-ai.py - potential memory usage",
+      "line": 756,
+      "suggestion": "Consider using generators for large datasets",
+      "predicted_impact": "Memory issues with datasets >100k items"
+    },
+    {
+      "type": "future_memory_issue",
+      "severity": "low",
+      "description": "List comprehension in innovation-ai.py - potential memory usage",
+      "line": 674,
+      "suggestion": "Consider using generators for large datasets",
+      "predicted_impact": "Memory issues with datasets >100k items"
+    },
+    {
+      "type": "future_memory_issue",
+      "severity": "low",
+      "description": "List comprehension in innovation-ai.py - potential memory usage",
+      "line": 785,
+      "suggestion": "Consider using generators for large datasets",
+      "predicted_impact": "Memory issues with datasets >100k items"
+    },
+    {
+      "type": "future_memory_issue",
+      "severity": "low",
+      "description": "List comprehension in innovation-ai.py - potential memory usage",
+      "line": 702,
+      "suggestion": "Consider using generators for large datasets",
+      "predicted_impact": "Memory issues with datasets >100k items"
+    },
+    {
+      "type": "future_memory_issue",
+      "severity": "low",
+      "description": "List comprehension in innovation-ai.py - potential memory usage",
+      "line": 706,
+      "suggestion": "Consider using generators for large datasets",
+      "predicted_impact": "Memory issues with datasets >100k items"
+    },
+    {
+      "type": "future_memory_issue",
+      "severity": "low",
+      "description": "List comprehension in innovation-ai.py - potential memory usage",
+      "line": 710,
+      "suggestion": "Consider using generators for large datasets",
+      "predicted_impact": "Memory issues with datasets >100k items"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in innovation-ai.py",
+      "line": 129,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in innovation-ai.py",
+      "line": 133,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in innovation-ai.py",
+      "line": 250,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in innovation-ai.py",
+      "line": 416,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in innovation-ai.py",
+      "line": 420,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in innovation-ai.py",
+      "line": 522,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in innovation-ai.py",
+      "line": 522,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in innovation-ai.py",
+      "line": 587,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in innovation-ai.py",
+      "line": 587,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in innovation-ai.py",
+      "line": 669,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in innovation-ai.py",
+      "line": 692,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Hardcoded localhost should be configurable in innovation-ai.py",
+      "line": 207,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Hardcoded localhost should be configurable in innovation-ai.py",
+      "line": 207,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "HTTP should be HTTPS in production in innovation-ai.py",
+      "line": 208,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Hardcoded passwords detected in innovation-ai.py",
+      "line": 209,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_memory_issue",
+      "severity": "low",
+      "description": "List comprehension in ai-communication-hub.py - potential memory usage",
+      "line": 253,
+      "suggestion": "Consider using generators for large datasets",
+      "predicted_impact": "Memory issues with datasets >100k items"
+    },
+    {
+      "type": "future_memory_issue",
+      "severity": "low",
+      "description": "List comprehension in ai-communication-hub.py - potential memory usage",
+      "line": 779,
+      "suggestion": "Consider using generators for large datasets",
+      "predicted_impact": "Memory issues with datasets >100k items"
+    },
+    {
+      "type": "future_memory_issue",
+      "severity": "low",
+      "description": "List comprehension in ai-communication-hub.py - potential memory usage",
+      "line": 784,
+      "suggestion": "Consider using generators for large datasets",
+      "predicted_impact": "Memory issues with datasets >100k items"
+    },
+    {
+      "type": "future_memory_issue",
+      "severity": "low",
+      "description": "List comprehension in ai-communication-hub.py - potential memory usage",
+      "line": 789,
+      "suggestion": "Consider using generators for large datasets",
+      "predicted_impact": "Memory issues with datasets >100k items"
+    },
+    {
+      "type": "future_memory_issue",
+      "severity": "low",
+      "description": "List comprehension in ai-communication-hub.py - potential memory usage",
+      "line": 794,
+      "suggestion": "Consider using generators for large datasets",
+      "predicted_impact": "Memory issues with datasets >100k items"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in ai-communication-hub.py",
+      "line": 213,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in ai-communication-hub.py",
+      "line": 360,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in ai-communication-hub.py",
+      "line": 573,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in ai-communication-hub.py",
+      "line": 577,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in ai-communication-hub.py",
+      "line": 683,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in ai-communication-hub.py",
+      "line": 687,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in ai-communication-hub.py",
+      "line": 742,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in ai-communication-hub.py",
+      "line": 746,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in ai-communication-hub.py",
+      "line": 768,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in ai-communication-hub.py",
+      "line": 772,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_performance_issue",
+      "severity": "medium",
+      "description": "Nested loops detected in collective-memory-system.py - potential O(n\u00b3) complexity",
+      "line": 436,
+      "suggestion": "Consider optimizing with hash maps or database queries",
+      "predicted_impact": "Performance degradation with large datasets (>10k records)"
+    },
+    {
+      "type": "future_performance_issue",
+      "severity": "medium",
+      "description": "Nested loops detected in collective-memory-system.py - potential O(n\u00b3) complexity",
+      "line": 592,
+      "suggestion": "Consider optimizing with hash maps or database queries",
+      "predicted_impact": "Performance degradation with large datasets (>10k records)"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in collective-memory-system.py",
+      "line": 413,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in collective-memory-system.py",
+      "line": 417,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in collective-memory-system.py",
+      "line": 668,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in collective-memory-system.py",
+      "line": 672,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in collective-memory-system.py",
+      "line": 771,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_memory_issue",
+      "severity": "low",
+      "description": "List comprehension in app.py - potential memory usage",
+      "line": 259,
+      "suggestion": "Consider using generators for large datasets",
+      "predicted_impact": "Memory issues with datasets >100k items"
+    },
+    {
+      "type": "future_memory_issue",
+      "severity": "low",
+      "description": "List comprehension in app.py - potential memory usage",
+      "line": 266,
+      "suggestion": "Consider using generators for large datasets",
+      "predicted_impact": "Memory issues with datasets >100k items"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in app.py",
+      "line": 630,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in app.py",
+      "line": 631,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Hardcoded localhost should be configurable in app.py",
+      "line": 630,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "HTTP should be HTTPS in production in app.py",
+      "line": 630,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_memory_issue",
+      "severity": "low",
+      "description": "List comprehension in app_enhanced.py - potential memory usage",
+      "line": 506,
+      "suggestion": "Consider using generators for large datasets",
+      "predicted_impact": "Memory issues with datasets >100k items"
+    },
+    {
+      "type": "future_memory_issue",
+      "severity": "low",
+      "description": "List comprehension in app_enhanced.py - potential memory usage",
+      "line": 513,
+      "suggestion": "Consider using generators for large datasets",
+      "predicted_impact": "Memory issues with datasets >100k items"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in app_enhanced.py",
+      "line": 855,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in app_enhanced.py",
+      "line": 897,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in app_enhanced.py",
+      "line": 903,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Hardcoded localhost should be configurable in app_enhanced.py",
+      "line": 897,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "HTTP should be HTTPS in production in app_enhanced.py",
+      "line": 897,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in boss-dashboard.py",
+      "line": 173,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in boss-dashboard.py",
+      "line": 622,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in boss-dashboard.py",
+      "line": 623,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in boss-dashboard.py",
+      "line": 624,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in boss-dashboard.py",
+      "line": 625,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in boss-dashboard.py",
+      "line": 647,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in boss-dashboard.py",
+      "line": 648,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Hardcoded localhost should be configurable in boss-dashboard.py",
+      "line": 647,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "HTTP should be HTTPS in production in boss-dashboard.py",
+      "line": 647,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_memory_issue",
+      "severity": "low",
+      "description": "List comprehension in realtime_dashboard.py - potential memory usage",
+      "line": 74,
+      "suggestion": "Consider using generators for large datasets",
+      "predicted_impact": "Memory issues with datasets >100k items"
+    },
+    {
+      "type": "future_memory_issue",
+      "severity": "low",
+      "description": "List comprehension in realtime_dashboard.py - potential memory usage",
+      "line": 81,
+      "suggestion": "Consider using generators for large datasets",
+      "predicted_impact": "Memory issues with datasets >100k items"
+    },
+    {
+      "type": "future_memory_issue",
+      "severity": "low",
+      "description": "List comprehension in realtime_dashboard.py - potential memory usage",
+      "line": 112,
+      "suggestion": "Consider using generators for large datasets",
+      "predicted_impact": "Memory issues with datasets >100k items"
+    },
+    {
+      "type": "future_memory_issue",
+      "severity": "low",
+      "description": "List comprehension in realtime_dashboard.py - potential memory usage",
+      "line": 124,
+      "suggestion": "Consider using generators for large datasets",
+      "predicted_impact": "Memory issues with datasets >100k items"
+    },
+    {
+      "type": "future_memory_issue",
+      "severity": "low",
+      "description": "List comprehension in realtime_dashboard.py - potential memory usage",
+      "line": 125,
+      "suggestion": "Consider using generators for large datasets",
+      "predicted_impact": "Memory issues with datasets >100k items"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in realtime_dashboard.py",
+      "line": 94,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in realtime_dashboard.py",
+      "line": 128,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in realtime_dashboard.py",
+      "line": 128,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in realtime_dashboard.py",
+      "line": 138,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Large numbers should be configurable in realtime_dashboard.py",
+      "line": 557,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "Hardcoded localhost should be configurable in realtime_dashboard.py",
+      "line": 557,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_configuration_issue",
+      "severity": "medium",
+      "description": "HTTP should be HTTPS in production in realtime_dashboard.py",
+      "line": 574,
+      "suggestion": "Move to configuration file or environment variables",
+      "predicted_impact": "Deployment and scaling difficulties"
+    },
+    {
+      "type": "future_react_performance",
+      "severity": "medium",
+      "description": "Component in Layout.tsx renders lists without memoization",
+      "suggestion": "Consider React.memo for list components",
+      "predicted_impact": "Performance issues with large lists (>1000 items)"
+    },
+    {
+      "type": "future_react_performance",
+      "severity": "medium",
+      "description": "Component in Toast.tsx renders lists without memoization",
+      "suggestion": "Consider React.memo for list components",
+      "predicted_impact": "Performance issues with large lists (>1000 items)"
+    },
+    {
+      "type": "future_react_performance",
+      "severity": "medium",
+      "description": "Component in CustomerDetail.tsx renders lists without memoization",
+      "suggestion": "Consider React.memo for list components",
+      "predicted_impact": "Performance issues with large lists (>1000 items)"
+    },
+    {
+      "type": "future_react_performance",
+      "severity": "medium",
+      "description": "Component in Customers.tsx renders lists without memoization",
+      "suggestion": "Consider React.memo for list components",
+      "predicted_impact": "Performance issues with large lists (>1000 items)"
+    },
+    {
+      "type": "future_react_performance",
+      "severity": "medium",
+      "description": "Component in Dashboard.tsx renders lists without memoization",
+      "suggestion": "Consider React.memo for list components",
+      "predicted_impact": "Performance issues with large lists (>1000 items)"
+    },
+    {
+      "type": "future_react_performance",
+      "severity": "medium",
+      "description": "Component in Layout.tsx renders lists without memoization",
+      "suggestion": "Consider React.memo for list components",
+      "predicted_impact": "Performance issues with large lists (>1000 items)"
+    },
+    {
+      "type": "future_react_performance",
+      "severity": "medium",
+      "description": "Component in Toast.tsx renders lists without memoization",
+      "suggestion": "Consider React.memo for list components",
+      "predicted_impact": "Performance issues with large lists (>1000 items)"
+    },
+    {
+      "type": "future_react_performance",
+      "severity": "medium",
+      "description": "Component in CustomerDetail.tsx renders lists without memoization",
+      "suggestion": "Consider React.memo for list components",
+      "predicted_impact": "Performance issues with large lists (>1000 items)"
+    },
+    {
+      "type": "future_react_performance",
+      "severity": "medium",
+      "description": "Component in Customers.tsx renders lists without memoization",
+      "suggestion": "Consider React.memo for list components",
+      "predicted_impact": "Performance issues with large lists (>1000 items)"
+    },
+    {
+      "type": "future_react_performance",
+      "severity": "medium",
+      "description": "Component in Dashboard.tsx renders lists without memoization",
+      "suggestion": "Consider React.memo for list components",
+      "predicted_impact": "Performance issues with large lists (>1000 items)"
+    }
+  ],
+  "future_problems": [
+    {
+      "type": "scalability_crisis",
+      "probability": "high",
+      "timeframe": "6-12 months",
+      "description": "Multiple performance bottlenecks detected - system may not scale beyond 10k users",
+      "impact": "critical",
+      "prevention_strategy": "Implement caching layer, database optimization, and async processing",
+      "estimated_cost": "2-4 weeks development time"
+    },
+    {
+      "type": "memory_exhaustion",
+      "probability": "medium",
+      "timeframe": "12-18 months",
+      "description": "Memory usage patterns suggest potential exhaustion with growth",
+      "impact": "high",
+      "prevention_strategy": "Implement memory pooling, garbage collection optimization",
+      "estimated_cost": "1 week optimization work"
+    }
+  ],
+  "analysis_summary": {
+    "total_issues": 246,
+    "by_severity": {
+      "medium": 166,
+      "low": 80
+    },
+    "by_type": {
+      "future_performance_issue": 6,
+      "future_memory_issue": 80,
+      "future_configuration_issue": 150,
+      "future_react_performance": 10
+    },
+    "top_concerns": []
+  }
+}

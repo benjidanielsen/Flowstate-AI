@@ -28,6 +28,8 @@ import psutil
 import signal
 from contextlib import contextmanager
 import uuid
+from self_improvement import SelfImprovementAgent
+from github_integration import GitHubIntegration
 
 # Enhanced logging configuration
 log_dir = Path(__file__).parent / "logs"
@@ -180,6 +182,14 @@ class GodmodeMonitorEnhanced:
         self.monitoring_thread = None
         self.error_count = 0
         self.last_error_time = None
+        self.self_improvement_agent = SelfImprovementAgent(self)
+        github_token = os.getenv("GITHUB_TOKEN")
+        if github_token:
+            self.github_integration = GitHubIntegration("Flowstate-AI", "Flowstate-AI", github_token) # Assuming repo owner and name are 'Flowstate-AI'
+        else:
+            logger.warning("GITHUB_TOKEN environment variable not set. GitHub integration will be disabled.")
+            self.github_integration = None
+
         
         # Initialize the monitoring system
         try:
@@ -355,6 +365,13 @@ class GodmodeMonitorEnhanced:
             
             # Start monitoring thread
             self.start_monitoring()
+            self.self_improvement_agent = SelfImprovementAgent(self)
+        github_token = os.getenv("GITHUB_TOKEN")
+        if github_token:
+            self.github_integration = GitHubIntegration("Flowstate-AI", "Flowstate-AI", github_token) # Assuming repo owner and name are 'Flowstate-AI'
+        else:
+            logger.warning("GITHUB_TOKEN environment variable not set. GitHub integration will be disabled.")
+            self.github_integration = None
             
             logger.info("✅ Monitoring system initialized")
             
@@ -434,6 +451,12 @@ class GodmodeMonitorEnhanced:
                 
                 # Emit updates via SocketIO
                 self._emit_status_update()
+                # Schedule self-improvement cycle to run in the main event loop
+                asyncio.run_coroutine_threadsafe(
+                    self.self_improvement_agent.run_self_improvement_cycle(),
+                    asyncio.get_event_loop()
+                )
+
                 
                 # Log performance metrics
                 self._log_performance_metrics()

@@ -1,0 +1,13 @@
+{
+  "type": "best_ai_query",
+  "task": {
+    "id": "phase_6_launch_preparation",
+    "phase": "phase_6",
+    "task": "launch_preparation",
+    "priority": "HIGH",
+    "assigned_ai": "project-manager",
+    "status": "QUEUED",
+    "created_at": "2025-10-01T23:00:55.191080"
+  },
+  "timestamp": "2025-10-01T23:37:52.385993"
+}

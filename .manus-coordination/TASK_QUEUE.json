@@ -1,0 +1,82 @@
+{
+  "last_updated": "2025-10-02T23:30:00Z",
+  "updated_by": "manus_2",
+  "total_tasks": 6,
+  "available_tasks": 6,
+  "claimed_tasks": 0,
+  "completed_tasks": 11,
+  "tasks": [
+    {
+      "id": "TASK-104",
+      "title": "Calendar Integration",
+      "description": "Integrate Google Calendar API for scheduling follow-ups",
+      "priority": "high",
+      "estimated_time": "40min",
+      "required_capabilities": ["frontend", "api"],
+      "assigned_to": null,
+      "status": "available",
+      "created_by": "manus_2",
+      "created_at": "2025-10-02T23:30:00Z"
+    },
+    {
+      "id": "TASK-105",
+      "title": "Presentation Tracking",
+      "description": "Build system to track presentation outcomes and follow-ups",
+      "priority": "high",
+      "estimated_time": "45min",
+      "required_capabilities": ["backend", "database"],
+      "assigned_to": null,
+      "status": "available",
+      "created_by": "manus_2",
+      "created_at": "2025-10-02T23:30:00Z"
+    },
+    {
+      "id": "TASK-106",
+      "title": "Outcome Logging",
+      "description": "Create comprehensive outcome logging for all customer interactions",
+      "priority": "medium",
+      "estimated_time": "35min",
+      "required_capabilities": ["backend", "frontend"],
+      "assigned_to": null,
+      "status": "available",
+      "created_by": "manus_2",
+      "created_at": "2025-10-02T23:30:00Z"
+    },
+    {
+      "id": "TASK-107",
+      "title": "Email Templates",
+      "description": "Create email templates for each Frazer Method stage",
+      "priority": "medium",
+      "estimated_time": "30min",
+      "required_capabilities": ["frontend", "content"],
+      "assigned_to": null,
+      "status": "available",
+      "created_by": "manus_2",
+      "created_at": "2025-10-02T23:30:00Z"
+    },
+    {
+      "id": "TASK-108",
+      "title": "SMS Integration",
+      "description": "Integrate Twilio for SMS follow-ups and reminders",
+      "priority": "low",
+      "estimated_time": "50min",
+      "required_capabilities": ["backend", "api", "integration"],
+      "assigned_to": null,
+      "status": "available",
+      "created_by": "manus_2",
+      "created_at": "2025-10-02T23:30:00Z"
+    },
+    {
+      "id": "TASK-109",
+      "title": "Analytics Dashboard",
+      "description": "Build analytics dashboard showing conversion rates by stage",
+      "priority": "medium",
+      "estimated_time": "60min",
+      "required_capabilities": ["frontend", "data_visualization"],
+      "assigned_to": null,
+      "status": "available",
+      "created_by": "manus_2",
+      "created_at": "2025-10-02T23:30:00Z"
+    }
+  ]
+}
