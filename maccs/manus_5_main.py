@@ -58,7 +58,7 @@ def manus_main_loop(client):
             # 2. Process incoming messages
             unread_messages = client.get_unread_messages()
             for msg in unread_messages:
-                print(f"[{client.manus_id}] Received message: {msg["type"]} from {msg["sender_id"]}. Payload: {msg["payload"]}")
+                print(f"[{client.manus_id}] Received message: {msg["type"]} from {msg["sender_id"]}. Payload: {msg['payload']}")
                 client.mark_message_read(msg["id"])
                 
                 # Example: Handle TASK_APPROVED message from Manus #2
