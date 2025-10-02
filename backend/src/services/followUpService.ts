@@ -1,4 +1,6 @@
 import DatabaseManager from '../database';
+import { v4 as uuidv4 } from 'uuid';
+import { Reminder } from '../types';
 
 const dbManager = DatabaseManager.getInstance();
 
@@ -12,7 +14,7 @@ export class FollowUpService {
     'closed': 30             // 30 days - Check-in with closed customers
   };
   
-  async createFollowUp(customerId: string, stage: string): Promise<void> {
+  async createFollowUp(customerId: string, stage: string): Promise<Reminder> {
     const days = this.followUpTimes[stage] || 7;
     const scheduledFor = new Date();
     scheduledFor.setDate(scheduledFor.getDate() + days);
@@ -21,14 +23,30 @@ export class FollowUpService {
     
     try {
       const db = dbManager.getDb();
-      await new Promise((resolve, reject) => {
+      return new Promise((resolve, reject) => {
+        const id = uuidv4();
         db.run(
-          `INSERT INTO reminders (customer_id, type, message, scheduled_for, created_at) 
-           VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP)`,
-          [customerId, 'follow_up', message, scheduledFor.toISOString()],
-          (err) => {
-            if (err) reject(err);
-            else resolve(null);
+          `INSERT INTO reminders (id, customer_id, type, message, scheduled_for, created_at) 
+           VALUES (?, ?, ?, ?, ?, CURRENT_TIMESTAMP)`,
+          [id, customerId, 'follow_up', message, scheduledFor.toISOString()],
+          function(err) {
+            if (err) return reject(err);
+            db.get(`SELECT * FROM reminders WHERE id = ?`, [id], (err, row: any) => {
+              if (err) return reject(err);
+              if (row) {
+                resolve({
+                  id: row.id,
+                  customer_id: row.customer_id,
+                  type: row.type,
+                  message: row.message,
+                  scheduled_for: new Date(row.scheduled_for),
+                  completed: Boolean(row.completed),
+                  created_at: new Date(row.created_at),
+                });
+              } else {
+                reject(new Error("Failed to retrieve created reminder."));
+              }
+            });
           }
         );
       });

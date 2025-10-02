@@ -93,6 +93,11 @@ describe('FollowUpService', () => {
       }
       expect(followUpReminder.completed).toBe(false);
 
+      // Ensure followUpReminder.id is not null before passing it to markReminderCompleted
+      if (followUpReminder.id === null || followUpReminder.id === undefined) {
+        throw new Error("Follow-up reminder ID is null or undefined.");
+      }
+
       const completedReminder = await reminderService.markReminderCompleted(followUpReminder.id);
 
       expect(completedReminder).not.toBeNull();
