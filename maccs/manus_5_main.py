@@ -30,7 +30,7 @@ def run_manus_5_main_loop():
                 heartbeat_interval = 5  # More frequent when working on a task
                 status_message = f"ACTIVE - WORKING ON TASK: {current_task_id}"
             else:
-                heartbeat_interval = 15 # Less frequent when idle, but still active
+                heartbeat_interval = 5 # Ensure activity every 5 seconds, even when idle
                 status_message = "ACTIVE - AWAITING DELEGATION/TASK"
 
             if (now - last_heartbeat_time).total_seconds() >= heartbeat_interval:
@@ -95,7 +95,7 @@ def run_manus_5_main_loop():
                             print(f"[{MANUS_ID}] Failed to proactively claim task {refine_task_id}: {e}")
                 last_task_check_time = now
 
-            time.sleep(1) # Small sleep to prevent busy-waiting
+
 
         except Exception as e:
             print(f"[{MANUS_ID}] An error occurred in the main loop: {e}")
