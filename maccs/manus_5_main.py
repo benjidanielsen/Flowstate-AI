@@ -1,4 +1,4 @@
-_#_PY_SNIPPET_#_import time
+import time
 import random
 import os
 import sys
