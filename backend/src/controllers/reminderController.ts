@@ -41,9 +41,9 @@ export class ReminderController {
 
   complete = async (req: Request, res: Response) => {
     try {
-      const ok = await this.reminderService.completeReminder(req.params.id);
-      if (!ok) return res.status(404).json({ error: 'Reminder not found' });
-      res.status(200).json({ ok: true });
+      const reminder = await this.reminderService.markReminderCompleted(req.params.id);
+      if (!reminder) return res.status(404).json({ error: 'Reminder not found' });
+      res.status(200).json(reminder);
     } catch (err) {
       console.error('Error completing reminder:', err);
       res.status(500).json({ error: 'Internal server error' });

@@ -1,7 +1,7 @@
 import { FollowUpService } from '../services/followUpService';
 import { CustomerService } from '../services/customerService';
 import { ReminderService } from '../services/reminderService'; // Import ReminderService
-import { PipelineStatus } from '../types';
+import { PipelineStatus, ReminderType } from '../types';
 import DatabaseManager from '../database';
 import { runMigrations } from '../database/migrate';
 
@@ -42,7 +42,7 @@ describe('FollowUpService', () => {
       const newReminders = await reminderService.getRemindersByCustomerId(testCustomerId);
       expect(newReminders.length).toBe(1);
       expect(newReminders[0].customer_id).toBe(testCustomerId);
-      expect(newReminders[0].type).toBe('follow_up');
+      expect(newReminders[0].type).toBe(ReminderType.FOLLOW_UP);
       expect(newReminders[0].message).toBeDefined();
       expect(newReminders[0].scheduled_for).toBeDefined();
     });
@@ -58,7 +58,7 @@ describe('FollowUpService', () => {
       expect(scheduledCount).toBeGreaterThan(0);
 
       const allReminders = await reminderService.getAllReminders();
-      expect(allReminders.some(r => r.type === 'follow_up')).toBe(true);
+      expect(allReminders.some(r => r.type === ReminderType.FOLLOW_UP)).toBe(true);
     });
   });
 
@@ -78,10 +78,10 @@ describe('FollowUpService', () => {
     it('should mark a follow-up reminder as complete', async () => {
       await followUpService.createFollowUp(testCustomerId, PipelineStatus.FOLLOW_UP);
       const reminders = await reminderService.getRemindersByCustomerId(testCustomerId);
-      const followUpReminder = reminders.find(r => r.type === 'follow_up');
+      const followUpReminder = reminders.find(r => r.type === ReminderType.FOLLOW_UP);
 
       expect(followUpReminder).toBeDefined();
-   expect(followUpReminder?.completed).toBe(false);false);
+      expect(followUpReminder?.completed).toBe(false);
 
       const completedReminder = await reminderService.markReminderCompleted(followUpReminder!.id);
 

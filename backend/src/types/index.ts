@@ -64,7 +64,8 @@ export enum ReminderType {
   FOLLOW_UP_48H = 'follow_up_48h', 
   FOLLOW_UP_2H = 'follow_up_2h',
   FOLLOW_UP_1D = 'follow_up_1d',
-  FOLLOW_UP_7D = 'follow_up_7d'
+  FOLLOW_UP_7D = 'follow_up_7d',
+  FOLLOW_UP = 'follow_up'
 }
 
 export interface EventLog {

@@ -28,16 +28,15 @@ describe('StatsService', () => {
     await DatabaseManager.getInstance().close();
   });
 
-  describe('getPipelineStats', () => {
-    it('should return correct pipeline statistics', async () => {
-      const stats = await statsService.getPipelineStats();
+  describe("countsByStatus", () => {
+    it("should return correct customer counts by pipeline status", async () => {
+      const statusCounts = await statsService.countsByStatus();
 
-      expect(stats).toBeDefined();
-      expect(stats.totalCustomers).toBe(4);
-      expect(stats.statusCounts[PipelineStatus.NEW_LEAD]).toBe(1);
-      expect(stats.statusCounts[PipelineStatus.WARMING_UP]).toBe(2);
-      expect(stats.statusCounts[PipelineStatus.INVITED]).toBe(1);
-      expect(stats.statusCounts[PipelineStatus.PRESENTATION_SENT]).toBe(0);
+      expect(statusCounts).toBeDefined();
+      expect(statusCounts[PipelineStatus.NEW_LEAD]).toBe(1);
+      expect(statusCounts[PipelineStatus.WARMING_UP]).toBe(2);
+      expect(statusCounts[PipelineStatus.INVITED]).toBe(1);
+      expect(statusCounts[PipelineStatus.PRESENTATION_SENT]).toBe(0);
       // Add more assertions for other statuses as needed
     });
   });
