@@ -129,7 +129,7 @@ class ManusSyncEngine:
         """Initialize SQLite database for real-time sync"""
         print("Initializing database...")
         self._execute_query(
-            CREATE TABLE IF NOT EXISTS manus_instances (
+            '''CREATE TABLE IF NOT EXISTS manus_instances (
                 id TEXT PRIMARY KEY,
                 role TEXT NOT NULL,
                 capabilities TEXT NOT NULL,
@@ -139,11 +139,11 @@ class ManusSyncEngine:
                 files_claimed TEXT DEFAULT '[]',
                 last_heartbeat TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 performance_score REAL DEFAULT 100.0
-            )
+            )'''
         )
         
         self._execute_query(
-            CREATE TABLE IF NOT EXISTS sync_tasks (
+            '''CREATE TABLE IF NOT EXISTS sync_tasks (
                 id TEXT PRIMARY KEY,
                 title TEXT NOT NULL,
                 description TEXT NOT NULL,
@@ -156,20 +156,20 @@ class ManusSyncEngine:
                 started_at TIMESTAMP,
                 completed_at TIMESTAMP,
                 files_involved TEXT DEFAULT '[]'
-            )
+            )'''
         )
         
         self._execute_query(
-            CREATE TABLE IF NOT EXISTS file_locks (
+            '''CREATE TABLE IF NOT EXISTS file_locks (
                 file_path TEXT PRIMARY KEY,
                 locked_by TEXT NOT NULL,
                 locked_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 lock_reason TEXT
-            )
+            )'''
         )
         
         self._execute_query(
-            CREATE TABLE IF NOT EXISTS communication_log (
+            '''CREATE TABLE IF NOT EXISTS communication_log (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 from_manus TEXT NOT NULL,
                 to_manus TEXT,
@@ -177,7 +177,7 @@ class ManusSyncEngine:
                 content TEXT NOT NULL,
                 timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 processed BOOLEAN DEFAULT FALSE
-            )
+            )'''
         )
         print("Database initialization complete.")
     
@@ -247,9 +247,9 @@ class ManusSyncEngine:
         """Save Manus instance to database"""
         print(f"Saving Manus {manus.id} to DB...")
         self._execute_query(
-            INSERT OR REPLACE INTO manus_instances 
+            '''INSERT OR REPLACE INTO manus_instances 
             (id, role, capabilities, current_task, status, progress, files_claimed, last_heartbeat, performance_score)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)'''
         , (
             manus.id,
             manus.role.value,
@@ -345,10 +345,10 @@ class ManusSyncEngine:
         """Save task to database"""
         print(f"Saving task {task.id} to DB...")
         self._execute_query(
-            INSERT OR REPLACE INTO sync_tasks 
+            '''INSERT OR REPLACE INTO sync_tasks 
             (id, title, description, assigned_to, priority, status, dependencies, 
              estimated_duration, created_at, started_at, completed_at, files_involved)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'''
         , (
             task.id,
             task.title,
@@ -390,8 +390,8 @@ class ManusSyncEngine:
         # Save to database
         for file in files:
             self._execute_query(
-                INSERT OR REPLACE INTO file_locks (file_path, locked_by, lock_reason)
-                VALUES (?, ?, ?)
+                '''INSERT OR REPLACE INTO file_locks (file_path, locked_by, lock_reason)
+                VALUES (?, ?, ?)'''
             , (file, manus_id, f"Claimed by {manus_id}"))
         
         print(f"🔒 Files claimed by {manus_id}: {files}")
@@ -414,7 +414,7 @@ class ManusSyncEngine:
         # Remove from database
         for file in files:
             self._execute_query(
-                DELETE FROM file_locks WHERE file_path = ? AND locked_by = ?
+                '''DELETE FROM file_locks WHERE file_path = ? AND locked_by = ?'''
             , (file, manus_id))
         
         print(f"🔓 Files released by {manus_id}: {files}")
@@ -458,8 +458,8 @@ class ManusSyncEngine:
         """Send real-time message between Manus instances"""
         print(f"Sending message from {from_manus} to {to_manus} (Type: {message_type})...")
         self._execute_query(
-            INSERT INTO communication_log (from_manus, to_manus, message_type, content)
-            VALUES (?, ?, ?, ?)
+            '''INSERT INTO communication_log (from_manus, to_manus, message_type, content)
+            VALUES (?, ?, ?, ?)'''
         , (from_manus, to_manus, message_type, json.dumps(content)))
         print(f"Message from {from_manus} to {to_manus} sent.")
     
@@ -467,10 +467,10 @@ class ManusSyncEngine:
         """Get messages for this Manus"""
         print(f"Retrieving messages for {to_manus}...")
         messages_data = self._execute_query(
-            SELECT id, from_manus, to_manus, message_type, content, timestamp 
+            '''SELECT id, from_manus, to_manus, message_type, content, timestamp 
             FROM communication_log 
             WHERE to_manus = ? AND processed = FALSE
-            ORDER BY timestamp ASC
+            ORDER BY timestamp ASC'''
         , (to_manus,))
         
         messages = []
@@ -490,9 +490,9 @@ class ManusSyncEngine:
             print(f"Marking {len(message_ids)} messages as processed for {to_manus}.")
             # Mark messages as processed
             self._execute_query(
-                UPDATE communication_log 
+                f'''UPDATE communication_log 
                 SET processed = TRUE 
-                WHERE id IN ({','.join(['?'] * len(message_ids))})
+                WHERE id IN ({','.join(['?'] * len(message_ids))})'''
             , message_ids)
         
         print(f"Retrieved {len(messages)} messages for {to_manus}.")
