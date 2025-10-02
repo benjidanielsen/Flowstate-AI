@@ -125,26 +125,27 @@ def analyze_file_for_problems(file_path: Path) -> List[Dict[str, Any]]:
 
 def generate_solution_proposal(problem: Dict[str, Any]) -> str:
     """Generate a solution proposal for a given problem."""
-    solution = f"**Problem**: {problem['description']} (Severity: {problem['severity']})\n"
-    solution += f"**Location**: {problem['file']}:L{problem['line']}\n"
-    solution += f"**Context**: `{problem['context']}`\n\n"
+    problem_desc = "**Problem**: {} (Severity: {})".format(problem["description"], problem["severity"])
+    problem_location = "**Location**: {}:L{}".format(problem["file"], problem["line"])
+    problem_context = "**Context**: `{}`".format(problem["context"])
+    solution = problem_desc + "\n" + problem_location + "\n" + problem_context + "\n\n"
     
     if problem["type"] == "hardcoded_credentials":
-        solution += "**Proposed Solution**: Replace hardcoded credentials with environment variables or a secure configuration management system. Update the code to retrieve the value using `os.getenv()` or similar secure methods. Ensure the `.env` file is not committed to version control.\n"
+        solution += """**Proposed Solution**: Replace hardcoded credentials with environment variables or a secure configuration management system. Update the code to retrieve the value using `os.getenv()` or similar secure methods. Ensure the `.env` file is not committed to version control.\n"""
     elif problem["type"] == "outdated_dependencies":
-        solution += "**Proposed Solution": Review `package.json` or `requirements.txt` for outdated dependencies. Use `npm outdated` (for Node.js) or `pip list --outdated` (for Python) to identify and update dependencies to their latest stable versions. Implement a dependency scanning tool for continuous monitoring.\n"
+        solution += """**Proposed Solution**: Review 'package.json' or 'requirements.txt' for outdated dependencies. Use 'npm outdated' (for Node.js) or 'pip list --outdated' (for Python) to identify and update dependencies to their latest stable versions. Implement a dependency scanning tool for continuous monitoring.\n"""
     elif problem["type"] == "unhandled_exceptions":
-        solution += "**Proposed Solution": Implement robust `try-except` blocks to gracefully handle potential exceptions. Log errors for debugging and provide user-friendly feedback where appropriate. Consider using a centralized error logging system.\n"
+        solution += """**Proposed Solution**: Implement robust `try-except` blocks to gracefully handle potential exceptions. Log errors for debugging and provide user-friendly feedback where appropriate. Consider using a centralized error logging system.\n"""
     elif problem["type"] == "large_untested_files":
-        solution += "**Proposed Solution": Break down the large file into smaller, more manageable modules or functions. Write comprehensive unit and integration tests for all critical components. Implement code coverage tools to ensure adequate test coverage.\n"
+        solution += """**Proposed Solution**: Break down the large file into smaller, more manageable modules or functions. Write comprehensive unit and integration tests for all critical components. Implement code coverage tools to ensure adequate test coverage.\n"""
     elif problem["type"] == "inefficient_database_queries":
-        solution += "**Proposed Solution": Analyze the database query for performance bottlenecks. Consider adding appropriate database indexes, optimizing `WHERE` clauses, or refactoring the query to retrieve only necessary data. Use an ORM or query builder to construct efficient queries.\n"
+        solution += """**Proposed Solution**: Analyze the database query for performance bottlenecks. Consider adding appropriate database indexes, optimizing `WHERE` clauses, or refactoring the query to retrieve only necessary data. Use an ORM or query builder to construct efficient queries.\n"""
     elif problem["type"] == "missing_documentation":
-        solution += "**Proposed Solution": Add clear and concise docstrings to functions, classes and modules. Ensure that the documentation explains the purpose, arguments, return values, and any side effects of the code. Maintain a `README.md` file for overall project documentation.\n"
+        solution += """**Proposed Solution**: Add clear and concise docstrings to functions, classes and modules. Ensure that the documentation explains the purpose, arguments, return values, and any side effects of the code. Maintain a `README.md` file for overall project documentation.\n"""
     elif problem["type"] == "todo_comments":
-        solution += "**Proposed Solution": Review and address all `TODO` comments. Either implement the suggested changes, create a new task for them, or remove the comment if it\"s no longer relevant. Regularly clean up technical debt indicated by `TODO`s.\n"
+        solution += """**Proposed Solution**: Review and address all `TODO` comments. Either implement the suggested changes, create a new task for them, or remove the comment if it's no longer relevant. Regularly clean up technical debt indicated by `TODO`s.\n"""
     else:
-        solution += "**Proposed Solution": Further investigation is required to determine the best course of action for this problem.\n"
+        solution += """**Proposed Solution**: Further investigation is required to determine the best course of action for this problem.\n"""
         
     return solution
 
@@ -174,9 +175,17 @@ def main():
         
         for problem in all_problems:
             solution_proposal = generate_solution_proposal(problem)
-            report_content += f"| {problem["severity"]} | {problem["type"].replace("_", " ").title()} | {problem["file"]} | {problem["line"]} | {problem["description"]} | {solution_proposal.replace("\n", "<br>")} |\n"
+            report_content += "| {} | {} | {} | {} | {} | {} |\n".format(
+                problem["severity"],
+                problem["type"].replace("_", " ").title(),
+                problem["file"],
+                problem["line"],
+                problem["description"],
+                solution_proposal.replace("\n", "<br>")
+            )
 
-    report_filename = f"problem_report_{datetime.now().strftime("%Y%m%d_%H%M%S")}.md"
+
+    report_filename = "problem_report_{}.md".format(datetime.now().strftime("%Y%m%d_%H%M%S"))
     report_path = REPORT_DIR / report_filename
     report_path.write_text(report_content)
     print(f"✅ Problem identification report generated: {report_path}")
