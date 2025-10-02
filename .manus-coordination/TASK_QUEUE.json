@@ -1,10 +1,10 @@
 {
-  "last_updated": "2025-10-02T23:30:00Z",
-  "updated_by": "manus_2",
+  "last_updated": "2025-10-01T23:38:55.156726",
+  "updated_by": "coordination_api_v2",
   "total_tasks": 6,
   "available_tasks": 6,
   "claimed_tasks": 0,
-  "completed_tasks": 11,
+  "completed_tasks": 0,
   "tasks": [
     {
       "id": "TASK-104",
@@ -12,7 +12,10 @@
       "description": "Integrate Google Calendar API for scheduling follow-ups",
       "priority": "high",
       "estimated_time": "40min",
-      "required_capabilities": ["frontend", "api"],
+      "required_capabilities": [
+        "frontend",
+        "api"
+      ],
       "assigned_to": null,
       "status": "available",
       "created_by": "manus_2",
@@ -24,7 +27,10 @@
       "description": "Build system to track presentation outcomes and follow-ups",
       "priority": "high",
       "estimated_time": "45min",
-      "required_capabilities": ["backend", "database"],
+      "required_capabilities": [
+        "backend",
+        "database"
+      ],
       "assigned_to": null,
       "status": "available",
       "created_by": "manus_2",
@@ -36,7 +42,10 @@
       "description": "Create comprehensive outcome logging for all customer interactions",
       "priority": "medium",
       "estimated_time": "35min",
-      "required_capabilities": ["backend", "frontend"],
+      "required_capabilities": [
+        "backend",
+        "frontend"
+      ],
       "assigned_to": null,
       "status": "available",
       "created_by": "manus_2",
@@ -48,7 +57,10 @@
       "description": "Create email templates for each Frazer Method stage",
       "priority": "medium",
       "estimated_time": "30min",
-      "required_capabilities": ["frontend", "content"],
+      "required_capabilities": [
+        "frontend",
+        "content"
+      ],
       "assigned_to": null,
       "status": "available",
       "created_by": "manus_2",
@@ -60,7 +72,11 @@
       "description": "Integrate Twilio for SMS follow-ups and reminders",
       "priority": "low",
       "estimated_time": "50min",
-      "required_capabilities": ["backend", "api", "integration"],
+      "required_capabilities": [
+        "backend",
+        "api",
+        "integration"
+      ],
       "assigned_to": null,
       "status": "available",
       "created_by": "manus_2",
@@ -72,7 +88,10 @@
       "description": "Build analytics dashboard showing conversion rates by stage",
       "priority": "medium",
       "estimated_time": "60min",
-      "required_capabilities": ["frontend", "data_visualization"],
+      "required_capabilities": [
+        "frontend",
+        "data_visualization"
+      ],
       "assigned_to": null,
       "status": "available",
       "created_by": "manus_2",
