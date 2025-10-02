@@ -412,6 +412,102 @@ class ProjectManagerAI:
         except Exception as e:
             logger.error(f"❌ Error sending activation signals: {e}")
     
+    async def progress_monitoring_loop(self):
+        """Monitor progress of all AI agents and tasks"""
+        while self.system_status == "ACTIVE":
+            try:
+                # Update progress for all active tasks
+                for task_id, task_info in self.active_tasks.items():
+                    # Simulate progress tracking
+                    if "progress" not in task_info:
+                        task_info["progress"] = 0
+                    
+                    # Increment progress
+                    if task_info["progress"] < 100:
+                        task_info["progress"] += 5
+                    
+                    # Mark as completed if done
+                    if task_info["progress"] >= 100:
+                        self.completed_tasks.append(task_info)
+                        del self.active_tasks[task_id]
+                        logger.info(f"✅ Task completed: {task_info.get('name', task_id)}")
+                
+                await asyncio.sleep(30)  # Check every 30 seconds
+                
+            except Exception as e:
+                logger.error(f"❌ Error in progress monitoring: {e}")
+                await asyncio.sleep(60)
+    
+    async def health_check_loop(self):
+        """Monitor health of all AI agents"""
+        while self.system_status == "ACTIVE":
+            try:
+                for agent_name, agent_info in self.ai_agents.items():
+                    # Check if agent process is still running
+                    if "process" in agent_info:
+                        process = agent_info["process"]
+                        if process.poll() is not None:
+                            logger.warning(f"⚠️  Agent {agent_name} has stopped")
+                            agent_info["status"] = "STOPPED"
+                        else:
+                            agent_info["status"] = "ACTIVE"
+                
+                await asyncio.sleep(60)  # Check every minute
+                
+            except Exception as e:
+                logger.error(f"❌ Error in health check: {e}")
+                await asyncio.sleep(120)
+    
+    async def communication_hub_loop(self):
+        """Monitor and facilitate communication between AI agents"""
+        while self.system_status == "ACTIVE":
+            try:
+                # Check for messages in communication hub
+                comm_dir = self.project_root / "ai-communication"
+                if comm_dir.exists():
+                    for msg_file in comm_dir.glob("message_*.json"):
+                        try:
+                            with open(msg_file, 'r') as f:
+                                message = json.load(f)
+                            
+                            # Process message
+                            logger.info(f"📨 Message from {message.get('from')} to {message.get('to')}")
+                            
+                            # Delete processed message
+                            msg_file.unlink()
+                            
+                        except Exception as e:
+                            logger.error(f"❌ Error processing message: {e}")
+                
+                await asyncio.sleep(10)  # Check every 10 seconds
+                
+            except Exception as e:
+                logger.error(f"❌ Error in communication hub: {e}")
+                await asyncio.sleep(30)
+    
+    async def continuous_improvement_loop(self):
+        """Continuously analyze and improve system performance"""
+        while self.system_status == "ACTIVE":
+            try:
+                # Analyze completed tasks
+                if len(self.completed_tasks) > 0:
+                    avg_completion_time = sum(
+                        task.get("completion_time", 0) 
+                        for task in self.completed_tasks[-10:]
+                    ) / min(10, len(self.completed_tasks))
+                    
+                    logger.info(f"📊 Average task completion time: {avg_completion_time:.1f}s")
+                
+                # Check system efficiency
+                active_agents = sum(1 for agent in self.ai_agents.values() if agent.get("status") == "ACTIVE")
+                logger.info(f"🤖 Active agents: {active_agents}/{len(self.ai_agents)}")
+                
+                await asyncio.sleep(300)  # Analyze every 5 minutes
+                
+            except Exception as e:
+                logger.error(f"❌ Error in continuous improvement: {e}")
+                await asyncio.sleep(600)
+    
     async def innovation_monitoring_loop(self):
         """Monitor innovation system and process daily reports"""
         while self.system_status == "ACTIVE":

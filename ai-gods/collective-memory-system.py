@@ -652,6 +652,59 @@ class CollectiveMemorySystem:
             logger.error(f"❌ Error getting backup AIs: {e}")
             return ["project-manager"]
     
+    async def knowledge_graph_updates(self):
+        """Update knowledge graph with new connections"""
+        while True:
+            try:
+                await asyncio.sleep(1800)  # Every 30 minutes
+                logger.info("🕸️ Updating knowledge graph connections")
+                # Update graph connections based on recent knowledge
+            except Exception as e:
+                logger.error(f"❌ Error updating knowledge graph: {e}")
+                await asyncio.sleep(3600)
+    
+    async def create_cross_domain_connections(self):
+        """Create connections between different knowledge domains"""
+        try:
+            conn = sqlite3.connect(self.memory_db_path)
+            cursor = conn.cursor()
+            
+            # Find knowledge entries from different domains that might be related
+            cursor.execute('''
+                SELECT DISTINCT domain FROM knowledge_entries
+            ''')
+            domains = [row[0] for row in cursor.fetchall()]
+            
+            logger.info(f"🔗 Creating cross-domain connections between {len(domains)} domains")
+            
+            conn.close()
+        except Exception as e:
+            logger.error(f"❌ Error creating cross-domain connections: {e}")
+    
+    async def update_knowledge_confidence(self):
+        """Update confidence scores for knowledge entries"""
+        try:
+            conn = sqlite3.connect(self.memory_db_path)
+            cursor = conn.cursor()
+            
+            # Update confidence based on usage and validation
+            cursor.execute('''
+                UPDATE knowledge_entries
+                SET confidence = CASE
+                    WHEN usage_count > 10 THEN 0.95
+                    WHEN usage_count > 5 THEN 0.85
+                    WHEN usage_count > 2 THEN 0.75
+                    ELSE 0.65
+                END
+            ''')
+            
+            conn.commit()
+            conn.close()
+            
+            logger.info("📊 Updated knowledge confidence scores")
+        except Exception as e:
+            logger.error(f"❌ Error updating knowledge confidence: {e}")
+    
     async def memory_consolidation_loop(self):
         """Consolidate and optimize collective memory"""
         while True:

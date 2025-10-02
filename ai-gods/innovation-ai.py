@@ -87,7 +87,6 @@ class InnovationAI:
         innovation_tasks = [
             asyncio.create_task(self.continuous_code_analysis()),
             asyncio.create_task(self.idea_generation_cycle()),
-            asyncio.create_task(self.future_problem_prediction()),
             asyncio.create_task(self.trend_analysis_loop()),
             asyncio.create_task(self.daily_innovation_reports()),
             asyncio.create_task(self.revolutionary_feature_brainstorming())
@@ -95,6 +94,28 @@ class InnovationAI:
         
         # Run all innovation processes concurrently
         await asyncio.gather(*innovation_tasks)
+    
+    async def trend_analysis_loop(self):
+        """Analyze trends in development and innovation"""
+        while True:
+            try:
+                await asyncio.sleep(3600)  # Every hour
+                trends = await self.analyze_innovation_trends()
+                logger.info(f"📈 Trend analysis complete: {len(trends)} trends identified")
+            except Exception as e:
+                logger.error(f"❌ Error in trend analysis: {e}")
+                await asyncio.sleep(1800)
+    
+    async def revolutionary_feature_brainstorming(self):
+        """Generate revolutionary feature ideas"""
+        while True:
+            try:
+                await asyncio.sleep(7200)  # Every 2 hours
+                ideas = await self.generate_breakthrough_ideas()
+                logger.info(f"💡 Generated {len(ideas)} revolutionary ideas")
+            except Exception as e:
+                logger.error(f"❌ Error in feature brainstorming: {e}")
+                await asyncio.sleep(3600)
     
     async def continuous_code_analysis(self):
         """Continuously analyze code for potential future issues"""
