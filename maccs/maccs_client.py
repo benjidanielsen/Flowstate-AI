@@ -1,383 +1,351 @@
-
+import sqlite3
 import json
-import os
-import time
 import uuid
-from datetime import datetime, timezone
+from datetime import datetime, timedelta
+import subprocess
+import time
+import random
+import os
+from watchdog.observers import Observer
+from watchdog.events import FileSystemEventHandler
 
-class MACCSClient:
-    def __init__(self, manus_id, base_path="."):
+class MACCSClientV3:
+    def __init__(self, manus_id, repo_path, db_path="maccs/coordination.db"):
         self.manus_id = manus_id
-        self.base_path = os.path.join(base_path, "maccs")
-        self.messages_path = os.path.join(self.base_path, "messages", "all.jsonl")
-        self.heartbeats_path = os.path.join(self.base_path, "status", "heartbeats.jsonl")
-        self.available_tasks_path = os.path.join(self.base_path, "tasks", "available.jsonl")
-        self.active_tasks_path = os.path.join(self.base_path, "tasks", "active.jsonl")
-        self.completed_tasks_path = os.path.join(self.base_path, "tasks", "completed.jsonl")
-        self.manus_capabilities_path = os.path.join(self.base_path, "status", "manus_capabilities.jsonl")
+        self.repo_path = repo_path
+        self.db_filepath = os.path.join(repo_path, db_path)
+        self.db_dir = os.path.dirname(self.db_filepath)
+        os.makedirs(self.db_dir, exist_ok=True)
+        self.conn = self._get_db_connection()
+        self._initialize_db()
+        self.capabilities = self._load_capabilities()
+        self.observer = None
 
-        self._ensure_maccs_dirs()
-        self._ensure_maccs_files()
+    def _get_db_connection(self):
+        conn = sqlite3.connect(self.db_filepath, timeout=30) # 30s timeout for busy errors
+        conn.row_factory = sqlite3.Row # Access columns by name
+        return conn
 
-    def _ensure_maccs_dirs(self):
-        os.makedirs(os.path.join(self.base_path, "messages"), exist_ok=True)
-        os.makedirs(os.path.join(self.base_path, "tasks"), exist_ok=True)
-        os.makedirs(os.path.join(self.base_path, "status"), exist_ok=True)
+    def _initialize_db(self):
+        cursor = self.conn.cursor()
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS messages (
+                id TEXT PRIMARY KEY,
+                timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+                sender_id TEXT NOT NULL,
+                recipient_id TEXT NOT NULL,
+                type TEXT NOT NULL,
+                priority TEXT DEFAULT 'NORMAL',
+                payload JSON,
+                read BOOLEAN DEFAULT FALSE,
+                requires_approval BOOLEAN DEFAULT FALSE,
+                thread_id TEXT
+            );
+        """)
+        cursor.execute("""
+            CREATE INDEX IF NOT EXISTS idx_recipient_read ON messages (recipient_id, read);
+        """)
+        cursor.execute("""
+            CREATE INDEX IF NOT EXISTS idx_timestamp ON messages (timestamp);
+        """)
+        cursor.execute("""
+            CREATE INDEX IF NOT EXISTS idx_priority ON messages (priority);
+        """
+        )
 
-    def _ensure_maccs_files(self):
-        for path in [self.messages_path, self.heartbeats_path, self.available_tasks_path, 
-                     self.active_tasks_path, self.completed_tasks_path, self.manus_capabilities_path]:
-            if not os.path.exists(path):
-                with open(path, "w") as f:
-                    pass # Just create the file
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS tasks (
+                task_id TEXT PRIMARY KEY,
+                title TEXT NOT NULL,
+                description TEXT,
+                status TEXT DEFAULT 'AVAILABLE',
+                required_skills JSON,
+                priority TEXT DEFAULT 'NORMAL',
+                estimated_effort TEXT,
+                deadline DATETIME,
+                dependencies JSON,
+                reward_credits INTEGER,
+                posted_by TEXT NOT NULL,
+                posted_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                claimed_by TEXT,
+                claimed_at DATETIME,
+                completed_at DATETIME,
+                approved_by TEXT,
+                approved_at DATETIME
+            );
+        """)
+        cursor.execute("""
+            CREATE INDEX IF NOT EXISTS idx_task_status ON tasks (status);
+        """)
+        cursor.execute("""
+            CREATE INDEX IF NOT EXISTS idx_task_assigned ON tasks (claimed_by);
+        """
+        )
+        cursor.execute("""
+            CREATE INDEX IF NOT EXISTS idx_task_priority_status ON tasks (priority, status);
+        """
+        )
 
-    def _write_to_jsonl(self, file_path, data):
-        with open(file_path, "a") as f:
-            f.write(json.dumps(data) + "\n")
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS heartbeats (
+                manus_id TEXT PRIMARY KEY,
+                status TEXT NOT NULL,
+                current_task TEXT,
+                timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+                capabilities JSON,
+                heartbeat_interval INTEGER,
+                last_git_sync DATETIME
+            );
+        """)
 
-    def _read_jsonl(self, file_path):
-        data = []
-        if not os.path.exists(file_path):
-            return data
-        with open(file_path, "r") as f:
-            for line in f:
-                if line.strip():
-                    data.append(json.loads(line))
-        return data
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS capabilities (
+                manus_id TEXT PRIMARY KEY,
+                skills JSON,
+                specialization TEXT,
+                max_concurrent_tasks INTEGER,
+                preferred_task_types JSON
+            );
+        """)
+        self.conn.commit()
 
-    def _get_utc_timestamp(self):
-        return datetime.now(timezone.utc).isoformat(timespec='seconds') + 'Z'
+    def _load_capabilities(self):
+        cursor = self.conn.cursor()
+        cursor.execute("SELECT * FROM capabilities WHERE manus_id = ?", (self.manus_id,))
+        caps = cursor.fetchone()
+        if caps:
+            return {k: json.loads(v) if k in ['skills', 'preferred_task_types'] else v for k, v in caps.items() if k != 'manus_id'}
+        return {}
 
-    def send_message(self, to_manus, msg_type, payload, priority="NORMAL", requires_approval=False, thread_id=None):
-        message = {
-            "id": str(uuid.uuid4()),
-            "timestamp": self._get_utc_timestamp(),
-            "from": self.manus_id,
-            "to": to_manus,
-            "type": msg_type,
-            "priority": priority,
-            "payload": payload,
-            "requires_approval": requires_approval,
-            "thread_id": thread_id if thread_id else str(uuid.uuid4())
-        }
-        self._write_to_jsonl(self.messages_path, message)
-        return message
+    def update_capabilities(self, skills=None, specialization=None, max_concurrent_tasks=None, preferred_task_types=None):
+        current_caps = self._load_capabilities()
+        if skills is not None: current_caps['skills'] = skills
+        if specialization is not None: current_caps['specialization'] = specialization
+        if max_concurrent_tasks is not None: current_caps['max_concurrent_tasks'] = max_concurrent_tasks
+        if preferred_task_types is not None: current_caps['preferred_task_types'] = preferred_task_types
+        
+        self.conn.execute("""
+            INSERT OR REPLACE INTO capabilities (manus_id, skills, specialization, max_concurrent_tasks, preferred_task_types)
+            VALUES (?, ?, ?, ?, ?)
+        """, (self.manus_id, json.dumps(current_caps.get('skills', [])), current_caps.get('specialization'),
+             current_caps.get('max_concurrent_tasks'), json.dumps(current_caps.get('preferred_task_types', []))))
+        self.conn.commit()
+        self.capabilities = current_caps
 
-    def get_messages(self, filter_by_to=True, since_timestamp=None):
-        all_messages = self._read_jsonl(self.messages_path)
-        filtered_messages = []
-        for msg in all_messages:
-            if filter_by_to and msg.get("to") != self.manus_id and msg.get("to") != "broadcast":
-                continue
-            if since_timestamp and msg.get("timestamp") <= since_timestamp:
-                continue
-            filtered_messages.append(msg)
-        return filtered_messages
+    def send_message(self, to, msg_type, payload, priority="NORMAL", requires_approval=False, thread_id=None):
+        message_id = str(uuid.uuid4())
+        self.conn.execute("""
+            INSERT INTO messages (id, sender_id, recipient_id, type, priority, payload, requires_approval, thread_id)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        """, (message_id, self.manus_id, to, msg_type, priority, json.dumps(payload), requires_approval, thread_id))
+        self.conn.commit()
+        return message_id
 
-    def send_heartbeat(self, status="ACTIVE", current_task="Monitoring", capabilities=None):
-        heartbeat = {
-            "manus_id": self.manus_id,
-            "timestamp": self._get_utc_timestamp(),
-            "status": status,
-            "current_task": current_task,
-            "capabilities": capabilities if capabilities else []
-        }
-        self._write_to_jsonl(self.heartbeats_path, heartbeat)
-        return heartbeat
+    def get_unread_messages(self):
+        cursor = self.conn.cursor()
+        cursor.execute("""
+            SELECT * FROM messages
+            WHERE recipient_id = ? AND read = FALSE
+            ORDER BY timestamp ASC
+        """, (self.manus_id,))
+        return [dict(row) for row in cursor.fetchall()]
 
-    def get_latest_heartbeats(self):
-        all_heartbeats = self._read_jsonl(self.heartbeats_path)
-        latest_heartbeats = {}
-        for hb in all_heartbeats:
-            manus_id = hb["manus_id"]
-            if manus_id not in latest_heartbeats or hb["timestamp"] > latest_heartbeats[manus_id]["timestamp"]:
-                latest_heartbeats[manus_id] = hb
-        return latest_heartbeats
+    def mark_message_read(self, message_id):
+        self.conn.execute("UPDATE messages SET read = TRUE WHERE id = ?", (message_id,))
+        self.conn.commit()
 
-    def post_task(self, title, description, required_skills, estimated_effort, priority="NORMAL", deadline=None, dependencies=None, reward_credits=0):
-        task = {
-            "id": str(uuid.uuid4()),
-            "timestamp": self._get_utc_timestamp(),
-            "posted_by": self.manus_id,
-            "title": title,
-            "description": description,
-            "required_skills": required_skills,
-            "estimated_effort": estimated_effort,
-            "priority": priority,
-            "deadline": deadline,
-            "dependencies": dependencies if dependencies else [],
-            "reward_credits": reward_credits,
-            "status": "AVAILABLE"
-        }
-        self._write_to_jsonl(self.available_tasks_path, task)
-        self.send_message("broadcast", "TASK_POST", {"task_id": task["id"], "title": title, "priority": priority})
-        return task
-
-    def get_available_tasks(self):
-        return self._read_jsonl(self.available_tasks_path)
-
-    def get_active_tasks(self):
-        return self._read_jsonl(self.active_tasks_path)
-
-    def get_completed_tasks(self):
-        return self._read_jsonl(self.completed_tasks_path)
-
-    def update_capabilities(self, skills, specialization, max_concurrent_tasks=1, preferred_task_types=None):
-        capabilities = {
-            "manus_id": self.manus_id,
-            "timestamp": self._get_utc_timestamp(),
-            "skills": skills,
-            "specialization": specialization,
-            "max_concurrent_tasks": max_concurrent_tasks,
-            "preferred_task_types": preferred_task_types if preferred_task_types else []
-        }
-        # Overwrite previous capabilities for this manus in manus_capabilities.jsonl
-        all_caps = [c for c in self._read_jsonl(self.manus_capabilities_path) if c["manus_id"] != self.manus_id]
-        all_caps.append(capabilities)
-        with open(self.manus_capabilities_path, "w") as f:
-            for cap in all_caps:
-                f.write(json.dumps(cap) + "\n")
-        self.send_message("broadcast", "CAPABILITY_UPDATE", capabilities)
-        return capabilities
-
-    def get_all_manus_capabilities(self):
-        all_caps = self._read_jsonl(self.manus_capabilities_path)
-        latest_caps = {}
-        for cap in all_caps:
-            manus_id = cap["manus_id"]
-            if manus_id not in latest_caps or cap["timestamp"] > latest_caps[manus_id]["timestamp"]:
-                latest_caps[manus_id] = cap
-        return latest_caps
+    def post_task(self, title, description, required_skills, priority="NORMAL", estimated_effort=None, deadline=None, dependencies=None, reward_credits=None):
+        task_id = str(uuid.uuid4())
+        self.conn.execute("""
+            INSERT INTO tasks (task_id, title, description, required_skills, priority, estimated_effort, deadline, dependencies, reward_credits, posted_by)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """, (task_id, title, description, json.dumps(required_skills), priority, estimated_effort, deadline, json.dumps(dependencies) if dependencies else None, reward_credits, self.manus_id))
+        self.conn.commit()
+        return task_id
 
     def claim_task(self, task_id):
-        available_tasks = self._read_jsonl(self.available_tasks_path)
-        task_to_claim = None
-        remaining_available_tasks = []
+        self.conn.execute("""
+            UPDATE tasks SET status = 'CLAIMED', claimed_by = ?, claimed_at = CURRENT_TIMESTAMP
+            WHERE task_id = ? AND status = 'AVAILABLE'
+        """, (self.manus_id, task_id))
+        self.conn.commit()
+        self.send_message("broadcast", "TASK_CLAIMED", {"task_id": task_id, "claimed_by": self.manus_id})
 
-        for task in available_tasks:
-            if task["id"] == task_id:
-                task_to_claim = task
-            else:
-                remaining_available_tasks.append(task)
-        
-        if task_to_claim:
-            task_to_claim["status"] = "ACTIVE"
-            task_to_claim["claimed_by"] = self.manus_id
-            task_to_claim["claimed_timestamp"] = self._get_utc_timestamp()
-            self._write_to_jsonl(self.active_tasks_path, task_to_claim)
-            
-            # Rewrite available tasks without the claimed one
-            with open(self.available_tasks_path, "w") as f:
-                for task in remaining_available_tasks:
-                    f.write(json.dumps(task) + "\n")
-            
-            self.send_message("broadcast", "TASK_CLAIM", {"task_id": task_id, "claimed_by": self.manus_id})
-            return task_to_claim
-        return None
+    def update_task_status(self, task_id, status, progress=None, details=None):
+        self.conn.execute("""
+            UPDATE tasks SET status = ?
+            WHERE task_id = ?
+        """, (status, task_id))
+        self.conn.commit()
+        # Optionally send a message for significant status changes
+        self.send_message("broadcast", "TASK_STATUS_UPDATE", {"task_id": task_id, "status": status, "progress": progress, "details": details})
 
-    def complete_task(self, task_id, summary, artifacts=None, requires_approval=True):
-        active_tasks = self._read_jsonl(self.active_tasks_path)
-        task_to_complete = None
-        remaining_active_tasks = []
+    def complete_task(self, task_id, summary, artifacts=None):
+        self.conn.execute("""
+            UPDATE tasks SET status = 'COMPLETED', completed_at = CURRENT_TIMESTAMP
+            WHERE task_id = ?
+        """, (task_id,))
+        self.conn.commit()
+        self.send_message("manus_2", "TASK_COMPLETE", {"task_id": task_id, "summary": summary, "artifacts": artifacts}, priority="HIGH", requires_approval=True)
 
-        for task in active_tasks:
-            if task["id"] == task_id:
-                task_to_complete = task
-            else:
-                remaining_active_tasks.append(task)
-        
-        if task_to_complete:
-            task_to_complete["status"] = "COMPLETED"
-            task_to_complete["completed_by"] = self.manus_id
-            task_to_complete["completed_timestamp"] = self._get_utc_timestamp()
-            task_to_complete["summary"] = summary
-            task_to_complete["artifacts"] = artifacts if artifacts else []
-            self._write_to_jsonl(self.completed_tasks_path, task_to_complete)
+    def approve_task(self, task_id, approved_by="manus_2"):
+        self.conn.execute("""
+            UPDATE tasks SET status = 'APPROVED', approved_by = ?, approved_at = CURRENT_TIMESTAMP
+            WHERE task_id = ?
+        """, (approved_by, task_id))
+        self.conn.commit()
+        self.send_message("broadcast", "TASK_APPROVED", {"task_id": task_id, "approved_by": approved_by})
 
-            # Rewrite active tasks without the completed one
-            with open(self.active_tasks_path, "w") as f:
-                for task in remaining_active_tasks:
-                    f.write(json.dumps(task) + "\n")
+    def reject_task(self, task_id, feedback, rejected_by="manus_2"):
+        self.conn.execute("""
+            UPDATE tasks SET status = 'REJECTED'
+            WHERE task_id = ?
+        """, (task_id,))
+        self.conn.commit()
+        self.send_message("broadcast", "TASK_REJECTED", {"task_id": task_id, "feedback": feedback, "rejected_by": rejected_by})
 
-            self.send_message("manus_2", "TASK_COMPLETE", 
-                              {"task_id": task_id, "summary": summary, "artifacts": artifacts}, 
-                              priority="HIGH", requires_approval=requires_approval)
-            return task_to_complete
-        return None
+    def send_heartbeat(self, status="ACTIVE", current_task=None, heartbeat_interval=15):
+        self.conn.execute("""
+            INSERT OR REPLACE INTO heartbeats (manus_id, status, current_task, timestamp, capabilities, heartbeat_interval)
+            VALUES (?, ?, ?, CURRENT_TIMESTAMP, ?, ?)
+        """, (self.manus_id, status, current_task, json.dumps(self.capabilities), heartbeat_interval))
+        self.conn.commit()
 
-    def get_my_active_tasks(self):
-        return [task for task in self._read_jsonl(self.active_tasks_path) if task.get("claimed_by") == self.manus_id]
+    def get_all_heartbeats(self):
+        cursor = self.conn.cursor()
+        cursor.execute("SELECT * FROM heartbeats")
+        return [dict(row) for row in cursor.fetchall()]
 
-    def get_my_completed_tasks(self):
-        return [task for task in self._read_jsonl(self.completed_tasks_path) if task.get("completed_by") == self.manus_id]
-
-    def get_messages_for_manus(self, manus_id):
-        return [msg for msg in self._read_jsonl(self.messages_path) if msg.get("to") == manus_id or msg.get("to") == "broadcast"]
-
-    def get_messages_from_manus(self, manus_id):
-        return [msg for msg in self._read_jsonl(self.messages_path) if msg.get("from") == manus_id]
-
-    def get_messages_by_type(self, msg_type):
-        return [msg for msg in self._read_jsonl(self.messages_path) if msg.get("type") == msg_type]
-
-    def get_messages_by_thread(self, thread_id):
-        return [msg for msg in self._read_jsonl(self.messages_path) if msg.get("thread_id") == thread_id]
-
-    def get_messages_requiring_approval(self):
-        return [msg for msg in self._read_jsonl(self.messages_path) if msg.get("requires_approval") and msg.get("to") == self.manus_id]
-
-    def get_manus_status(self, manus_id):
-        latest_heartbeats = self.get_latest_heartbeats()
-        return latest_heartbeats.get(manus_id)
-
-    def get_all_manus_status(self):
-        return self.get_latest_heartbeats()
-
-    def get_manus_capabilities(self, manus_id):
-        all_caps = self.get_all_manus_capabilities()
-        return all_caps.get(manus_id)
-
-    def get_manus_score_for_task(self, manus_capabilities, task):
+    def _calculate_task_score(self, task):
         score = 0
-        if not manus_capabilities or not task:
-            return score
+        my_skills = set(self.capabilities.get("skills", []))
+        required_skills = set(json.loads(task["required_skills"])) if task["required_skills"] else set()
+        matching_skills = my_skills.intersection(required_skills)
+        score += len(matching_skills) * 10
 
-        # Skill match
-        for skill in task.get("required_skills", []):
-            if skill in manus_capabilities.get("skills", []):
-                score += 10
-        
-        # Specialization match
-        if task.get("specialization") and task["specialization"] == manus_capabilities.get("specialization"):
-            score += 20
+        priority_map = {"URGENT": 10, "HIGH": 5, "NORMAL": 0, "LOW": -5}
+        score += priority_map.get(task["priority"], 0)
 
-        # Priority alignment (higher priority tasks get higher score if preferred)
-        if task.get("priority") == "HIGH" and "high_priority_tasks" in manus_capabilities.get("preferred_task_types", []):
-            score += 5
-        
-        # Workload (penalize for too many active tasks)
-        active_tasks_count = len(self.get_my_active_tasks())
-        if active_tasks_count >= manus_capabilities.get("max_concurrent_tasks", 1):
-            score -= 50 # Heavy penalty for exceeding max tasks
-        else:
-            score += (manus_capabilities.get("max_concurrent_tasks", 1) - active_tasks_count) * 5
+        # Consider workload (number of active tasks for this manus)
+        cursor = self.conn.cursor()
+        cursor.execute("SELECT COUNT(*) FROM tasks WHERE claimed_by = ? AND status IN ('CLAIMED', 'IN_PROGRESS')", (self.manus_id,))
+        my_active_tasks_count = cursor.fetchone()[0]
+        score -= my_active_tasks_count * 5
 
         return score
 
-    def auto_assign_task(self):
-        available_tasks = self.get_available_tasks()
+    def discover_best_task(self):
+        cursor = self.conn.cursor()
+        cursor.execute("SELECT * FROM tasks WHERE status = 'AVAILABLE'")
+        available_tasks = [dict(row) for row in cursor.fetchall()]
+
         if not available_tasks:
             return None
 
-        my_capabilities = self.get_manus_capabilities(self.manus_id)
-        if not my_capabilities:
-            return None # Cannot auto-assign without capabilities
-
-        best_task = None
-        best_score = -1
-
+        scored_tasks = []
         for task in available_tasks:
-            score = self.get_manus_score_for_task(my_capabilities, task)
-            if score > best_score:
-                best_score = score
-                best_task = task
-        
-        if best_task and best_score > 0: # Only claim if a positive score
-            return self.claim_task(best_task["id"])
-        return None
+            score = self._calculate_task_score(task)
+            scored_tasks.append((score, task))
+
+        scored_tasks.sort(key=lambda x: x[0], reverse=True)
+        return scored_tasks[0][1] if scored_tasks else None
+
+    def git_sync_and_backup(self):
+        try:
+            # Pull latest changes first to avoid conflicts
+            subprocess.run(["git", "pull", "--rebase", "origin", "main"], cwd=self.repo_path, check=True, capture_output=True)
+            
+            # Add the database file
+            subprocess.run(["git", "add", self.db_filepath], cwd=self.repo_path, check=True)
+            
+            # Commit if there are changes
+            result = subprocess.run(["git", "commit", "-m", f"MACCS v3.0: SQLite DB backup from {self.manus_id}"], 
+                                 cwd=self.repo_path, capture_output=True)
+            if "nothing to commit" not in result.stdout.decode():
+                subprocess.run(["git", "push", "origin", "main"], cwd=self.repo_path, check=True)
+                self.conn.execute("UPDATE heartbeats SET last_git_sync = CURRENT_TIMESTAMP WHERE manus_id = ?", (self.manus_id,))
+                self.conn.commit()
+            return True
+        except subprocess.CalledProcessError as e:
+            print(f"Git sync failed: {e.stderr.decode()}")
+            return False
+
+    def close(self):
+        if self.conn:
+            self.conn.close()
+        if self.observer:
+            self.observer.stop()
+            self.observer.join()
+
+    def start_db_watcher(self, callback):
+        class DBChangeHandler(FileSystemEventHandler):
+            def __init__(self, client, callback):
+                self.client = client
+                self.callback = callback
+
+            def on_modified(self, event):
+                if event.src_path == self.client.db_filepath:
+                    self.callback()
+
+        self.observer = Observer()
+        event_handler = DBChangeHandler(self, callback)
+        self.observer.schedule(event_handler, self.db_dir, recursive=False)
+        self.observer.start()
 
 
-# Example Usage (for testing/demonstration)
-if __name__ == "__main__":
-    # Initialize client for Manus #4
-    client = MACCSClient("manus_4", base_path="../Flowstate-AI")
-    print(f"MACCS Client for {client.manus_id} initialized.")
+# Example Usage (Main Loop for a Manus Instance)
+# def manus_main_loop(client):
+#     current_task_id = None
+#     while True:
+#         # 1. Process incoming messages (triggered by watcher or periodic check)
+#         unread_messages = client.get_unread_messages()
+#         for msg in unread_messages:
+#             print(f"[{client.manus_id}] Received message: {msg['type']} from {msg['sender_id']}")
+#             client.mark_message_read(msg['id'])
+#             # Handle message based on type (e.g., TASK_APPROVED, DIRECT_MESSAGE)
+#
+#         # 2. Execute current task
+#         if current_task_id:
+#             # Perform work, update progress
+#             client.update_task_status(current_task_id, "IN_PROGRESS", progress=50)
+#             # If task completed:
+#             # client.complete_task(current_task_id, "Task done", ["path/to/artifact.md"])
+#             # current_task_id = None
+#
+#         # 3. Discover and claim new task if idle
+#         if not current_task_id:
+#             best_task = client.discover_best_task()
+#             if best_task:
+#                 client.claim_task(best_task['task_id'])
+#                 current_task_id = best_task['task_id']
+#                 print(f"[{client.manus_id}] Claimed task: {best_task['title']}")
+#
+#         # 4. Send heartbeat
+#         client.send_heartbeat(current_task=current_task_id)
+#
+#         # 5. Periodic Git backup (every 5 minutes)
+#         last_sync_time = client.conn.execute("SELECT last_git_sync FROM heartbeats WHERE manus_id = ?", (client.manus_id,)).fetchone()
+#         if not last_sync_time or (datetime.utcnow() - datetime.fromisoformat(last_sync_time[0])) > timedelta(minutes=5):
+#             client.git_sync_and_backup()
+#
+#         time.sleep(random.uniform(5, 15)) # Adaptive sleep interval
 
-    # 1. Update capabilities
-    print("\n--- Updating Capabilities ---")
-    client.update_capabilities(
-        skills=["python", "testing", "documentation", "quality_assurance", "system_architecture"],
-        specialization="quality_assurance",
-        max_concurrent_tasks=2,
-        preferred_task_types=["bug_fix", "testing", "code_review", "high_priority_tasks"]
-    )
-    print("Capabilities updated.")
-
-    # 2. Send a heartbeat
-    print("\n--- Sending Heartbeat ---")
-    client.send_heartbeat(current_task="Implementing MACCS V2 client library")
-    print("Heartbeat sent.")
-
-    # 3. Post a task (e.g., by Manus #2 or user)
-    print("\n--- Posting a Task (as if by Manus #2) ---")
-    # Temporarily change manus_id to simulate Manus #2 posting a task
-    original_manus_id = client.manus_id
-    client.manus_id = "manus_2"
-    task_payload = client.post_task(
-        title="Review and approve MACCS V2 implementation",
-        description="Review the MACCS V2 architecture and implementation, provide feedback and approval.",
-        required_skills=["system_architecture", "project_management", "quality_assurance"],
-        estimated_effort="1 hour",
-        priority="URGENT",
-        reward_credits=100
-    )
-    print(f"Task posted by Manus #2: {task_payload['title']}")
-    client.manus_id = original_manus_id # Revert manus_id
-
-    # 4. Manus #4 checks for messages and tasks
-    print("\n--- Checking for Messages and Tasks ---")
-    my_messages = client.get_messages()
-    print(f"My messages: {len(my_messages)}")
-    for msg in my_messages:
-        print(f"  [{msg['timestamp']}] From: {msg['from']}, Type: {msg['type']}, Payload: {msg['payload']}")
-
-    available_tasks = client.get_available_tasks()
-    print(f"Available tasks: {len(available_tasks)}")
-    for task in available_tasks:
-        print(f"  [{task['timestamp']}] Title: {task['title']}, Priority: {task['priority']}")
-
-    # 5. Manus #4 auto-assigns a task
-    print("\n--- Auto-Assigning Task ---")
-    claimed_task = client.auto_assign_task()
-    if claimed_task:
-        print(f"Manus {client.manus_id} claimed task: {claimed_task['title']}")
-    else:
-        print(f"Manus {client.manus_id} found no suitable tasks to claim.")
-
-    # 6. Manus #4 completes the task
-    if claimed_task:
-        print("\n--- Completing Task ---")
-        completed_task = client.complete_task(
-            claimed_task["id"],
-            summary="Reviewed MACCS V2 proposal and provided assessment. Ready for implementation.",
-            artifacts=["manus_4_assessment_v1_vs_v2.md"]
-        )
-        print(f"Manus {client.manus_id} completed task: {completed_task['title']}")
-
-    # 7. Check final status
-    print("\n--- Final Status Check ---")
-    print("Latest heartbeats:", client.get_latest_heartbeats())
-    print("My active tasks:", client.get_my_active_tasks())
-    print("My completed tasks:", client.get_my_completed_tasks())
-    print("Messages for Manus #2:", client.get_messages_for_manus("manus_2"))
-
-    # 8. Simulate Manus #2 approving the task
-    print("\n--- Simulating Manus #2 Approval ---")
-    # Temporarily change manus_id to simulate Manus #2
-    client.manus_id = "manus_2"
-    approval_message = client.send_message(
-        "manus_4", "TASK_APPROVED", 
-        {"task_id": completed_task["id"], "feedback": "Excellent work, proceed with implementation!"},
-        priority="URGENT"
-    )
-    print(f"Manus #2 sent approval: {approval_message['payload']}")
-    client.manus_id = original_manus_id # Revert manus_id
-
-    print("\n--- Manus #4 checking for approval ---")
-    my_approvals = client.get_messages_for_manus("manus_4")
-    for msg in my_approvals:
-        if msg.get("type") == "TASK_APPROVED" and msg.get("payload", {}).get("task_id") == completed_task["id"]:
-            print(f"Received approval for task {completed_task['title']}: {msg['payload']['feedback']}")
-
-
-
+# if __name__ == "__main__":
+#     # Example setup for Manus #5
+#     manus_5_capabilities = {
+#         "skills": ["python", "testing", "documentation", "bug_fixing", "system_architecture"],
+#         "specialization": "quality_assurance",
+#         "max_concurrent_tasks": 2,
+#         "preferred_task_types": ["bug_fix", "testing", "code_review", "design"]
+#     }
+#     client = MACCSClientV3("manus_5", "/home/ubuntu/Flowstate-AI")
+#     client.update_capabilities(**manus_5_capabilities)
+#
+#     # Start the main loop in a separate thread or process for continuous operation
+#     # For this sandbox environment, we'll simulate a single run
+#     print(f"[{client.manus_id}] Initializing MACCS v3.0...")
+#     client.send_heartbeat(status="INITIALIZING")
+#     client.git_sync_and_backup() # Initial backup
+#     print(f"[{client.manus_id}] MACCS v3.0 ready. Monitoring for tasks.")
+#     # In a real scenario, manus_main_loop(client) would run here persistently
+#     client.close()
