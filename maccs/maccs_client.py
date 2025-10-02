@@ -114,7 +114,8 @@ class MACCSClientV3:
         cursor.execute("SELECT * FROM capabilities WHERE manus_id = ?", (self.manus_id,))
         caps = cursor.fetchone()
         if caps:
-            return {k: json.loads(v) if k in ['skills', 'preferred_task_types'] else v for k, v in caps.items() if k != 'manus_id'}
+            caps_dict = dict(caps)
+            return {k: json.loads(v) if k in ['skills', 'preferred_task_types'] and v is not None else v for k, v in caps_dict.items() if k != 'manus_id'}
         return {}
 
     def update_capabilities(self, skills=None, specialization=None, max_concurrent_tasks=None, preferred_task_types=None):
