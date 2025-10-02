@@ -1,5 +1,5 @@
 {
-  "last_updated": "2025-10-01T23:44:57.368242",
+  "last_updated": "2025-10-01T23:45:32.526687",
   "manus_instances": {
     "manus_4": {
       "id": "manus_4",
@@ -12,7 +12,7 @@
       "sandbox_id": "sandbox-manus_4",
       "status": "active",
       "registered_at": "2025-10-01T23:44:24.700912",
-      "last_seen": "2025-10-01T23:44:24.714831",
+      "last_seen": "2025-10-01T23:45:14.738330",
       "current_task": null,
       "tasks_completed": 0,
       "progress": 0
@@ -28,16 +28,16 @@
       ],
       "sandbox_id": "sandbox-manus_5",
       "status": "active",
-      "registered_at": "2025-10-01T23:44:57.250228",
-      "last_seen": "2025-10-01T23:44:57.265467",
+      "registered_at": "2025-10-01T23:45:32.347284",
+      "last_seen": "2025-10-01T23:45:32.403100",
       "current_task": null,
       "tasks_completed": 0,
       "progress": 0
     }
   },
   "heartbeats": {
-    "manus_4": "2025-10-01T23:44:24.714839",
-    "manus_5": "2025-10-01T23:44:57.265475"
+    "manus_4": "2025-10-01T23:45:14.738342",
+    "manus_5": "2025-10-01T23:45:32.403116"
   },
   "active_count": 2
 }
