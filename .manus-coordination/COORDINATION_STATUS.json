@@ -1,5 +1,5 @@
 {
-  "last_updated": "2025-10-01T23:47:31.305223",
+  "last_updated": "2025-10-01T23:47:34.830157",
   "manus_instances": {
     "manus_4": {
       "id": "manus_4",
@@ -30,8 +30,8 @@
       "status": "active",
       "registered_at": "2025-10-01T23:46:04.849707",
       "last_seen": "2025-10-01T23:46:59.959161",
-      "current_task": "TASK-105",
-      "tasks_completed": 0,
+      "current_task": null,
+      "tasks_completed": 1,
       "progress": 0
     }
   },
