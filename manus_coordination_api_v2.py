@@ -25,6 +25,7 @@ task_assignments = {}
 heartbeats = {}
 messages = []
 commands = {}
+pending_approvals = []  # Queue of actions requiring approval
 
 COORD_DIR = Path("/home/ubuntu/Flowstate-AI/.manus-coordination")
 GITHUB_REPO = "benjidanielsen/Flowstate-AI"
@@ -82,7 +83,7 @@ def git_push(message="Update coordination files"):
         print(f"❌ Git push failed: {e}")
         return False
 
-def sync_with_github():
+def sync_with_github(skip_approval=False):
     """Sync coordination state with GitHub"""
     # Pull latest
     git_pull()
@@ -90,8 +91,34 @@ def sync_with_github():
     # Save current state to files
     save_state_to_files()
     
-    # Push updates
-    git_push("Update Manus coordination state")
+    # Push updates (only if approved or approval skipped)
+    if skip_approval:
+        git_push("Update Manus coordination state")
+    else:
+        print("⚠️  GitHub push requires approval")
+
+def request_approval(action_type, description, manus_id, data=None):
+    """Request approval for an action"""
+    approval_request = {
+        'id': f"APPROVAL-{len(pending_approvals) + 1}",
+        'action_type': action_type,
+        'description': description,
+        'requested_by': manus_id,
+        'requested_at': datetime.now().isoformat(),
+        'status': 'pending',
+        'data': data or {}
+    }
+    pending_approvals.append(approval_request)
+    
+    # Save approval request to file
+    approval_file = COORD_DIR / f"{approval_request['id']}.json"
+    approval_file.write_text(json.dumps(approval_request, indent=2))
+    
+    # Broadcast approval request
+    socketio.emit('approval_requested', approval_request)
+    
+    print(f"📋 Approval requested: {approval_request['id']} - {description}")
+    return approval_request['id']
 
 def save_state_to_files():
     """Save in-memory state to coordination files"""
@@ -187,8 +214,13 @@ def register_manus():
     # Broadcast to all connected clients
     socketio.emit('manus_registered', manus_instances[manus_id])
     
-    # Sync with GitHub
-    threading.Thread(target=sync_with_github, daemon=True).start()
+    # Request approval for GitHub sync
+    request_approval(
+        'github_sync',
+        f'Manus {manus_id} registration',
+        manus_id,
+        {'event': 'register', 'manus_id': manus_id}
+    )
     
     print(f"✅ Manus {manus_id} registered (sandbox: {sandbox_id})")
     
@@ -288,8 +320,13 @@ def claim_task():
                 'manus_id': manus_id
             })
             
-            # Sync with GitHub
-            threading.Thread(target=sync_with_github, daemon=True).start()
+            # Request approval for GitHub sync
+            request_approval(
+                'github_sync',
+                f'Task {task_id} claimed by {manus_id}',
+                manus_id,
+                {'event': 'task_claim', 'task_id': task_id}
+            )
             
             print(f"✅ Task {task_id} claimed by {manus_id}")
             
@@ -338,8 +375,13 @@ def complete_task():
                 'time_taken': time_taken
             })
             
-            # Sync with GitHub
-            threading.Thread(target=sync_with_github, daemon=True).start()
+            # Request approval for GitHub sync
+            request_approval(
+                'github_sync',
+                f'Task {task_id} completed by {manus_id}',
+                manus_id,
+                {'event': 'task_complete', 'task_id': task_id, 'files_changed': files_changed}
+            )
             
             print(f"✅ Task {task_id} completed by {manus_id} in {time_taken}")
             
@@ -374,8 +416,13 @@ def add_task():
     # Broadcast new task
     socketio.emit('task_added', task)
     
-    # Sync with GitHub
-    threading.Thread(target=sync_with_github, daemon=True).start()
+    # Request approval for GitHub sync
+    request_approval(
+        'github_sync',
+        f'New task added: {task["title"]}',
+        data.get('created_by', 'coordinator'),
+        {'event': 'task_add', 'task_id': task['id']}
+    )
     
     print(f"✅ Task {task['id']} added: {task['title']}")
     
@@ -394,6 +441,11 @@ def get_status():
             'available': len([t for t in available_tasks if t['status'] == 'available']),
             'claimed': len([t for t in available_tasks if t['status'] == 'claimed']),
             'complete': len([t for t in available_tasks if t['status'] == 'complete'])
+        },
+        'approvals': {
+            'pending': len([a for a in pending_approvals if a['status'] == 'pending']),
+            'approved': len([a for a in pending_approvals if a['status'] == 'approved']),
+            'rejected': len([a for a in pending_approvals if a['status'] == 'rejected'])
         },
         'heartbeats': heartbeats,
         'active_manus': len([m for m in manus_instances.values() if m.get('status') == 'active']),
@@ -448,8 +500,13 @@ def send_message():
     # Broadcast via WebSocket
     socketio.emit('message_received', message)
     
-    # Sync with GitHub
-    threading.Thread(target=sync_with_github, daemon=True).start()
+    # Request approval for GitHub sync
+    request_approval(
+        'github_sync',
+        f'Message from {message["from"]} to {message["to"]}',
+        message['from'],
+        {'event': 'message_send', 'message_id': message['id']}
+    )
     
     print(f"✅ Message sent from {message['from']} to {message['to']}")
     
@@ -512,12 +569,126 @@ def send_command():
 
 @app.route('/api/sync', methods=['POST'])
 def manual_sync():
-    """Manually trigger GitHub sync"""
-    sync_with_github()
+    """Manually trigger GitHub sync (requires approval)"""
+    data = request.json or {}
+    approved = data.get('approved', False)
+    
+    if approved:
+        sync_with_github(skip_approval=True)
+        return jsonify({
+            'success': True,
+            'message': 'Synced with GitHub',
+            'timestamp': datetime.now().isoformat()
+        })
+    else:
+        # Request approval for manual sync
+        manus_id = data.get('manus_id', 'unknown')
+        approval_id = request_approval(
+            'github_sync',
+            'Manual GitHub sync requested',
+            manus_id,
+            {'event': 'manual_sync'}
+        )
+        return jsonify({
+            'success': True,
+            'message': 'Approval requested for GitHub sync',
+            'approval_id': approval_id,
+            'timestamp': datetime.now().isoformat()
+        })
+
+@app.route('/api/approvals', methods=['GET'])
+def get_approvals():
+    """Get pending approval requests"""
+    status_filter = request.args.get('status', 'pending')
+    
+    filtered = [a for a in pending_approvals if a['status'] == status_filter] if status_filter else pending_approvals
+    
+    return jsonify({
+        'approvals': filtered,
+        'count': len(filtered),
+        'pending_count': len([a for a in pending_approvals if a['status'] == 'pending'])
+    })
+
+@app.route('/api/approvals/<approval_id>/approve', methods=['POST'])
+def approve_action(approval_id):
+    """Approve a pending action (Manus #2 or authorized approver only)"""
+    data = request.json
+    approver = data.get('approver', 'unknown')
+    
+    # Find the approval request
+    approval = None
+    for a in pending_approvals:
+        if a['id'] == approval_id:
+            approval = a
+            break
+    
+    if not approval:
+        return jsonify({'success': False, 'error': 'Approval request not found'}), 404
+    
+    if approval['status'] != 'pending':
+        return jsonify({'success': False, 'error': 'Approval already processed'}), 400
+    
+    # Mark as approved
+    approval['status'] = 'approved'
+    approval['approved_by'] = approver
+    approval['approved_at'] = datetime.now().isoformat()
+    
+    # Update approval file
+    approval_file = COORD_DIR / f"{approval_id}.json"
+    approval_file.write_text(json.dumps(approval, indent=2))
+    
+    # Execute the approved action
+    if approval['action_type'] == 'github_sync':
+        threading.Thread(target=sync_with_github, args=(True,), daemon=True).start()
+    
+    # Broadcast approval
+    socketio.emit('approval_granted', approval)
+    
+    print(f"✅ Approval granted: {approval_id} by {approver}")
+    
     return jsonify({
         'success': True,
-        'message': 'Synced with GitHub',
-        'timestamp': datetime.now().isoformat()
+        'approval': approval
+    })
+
+@app.route('/api/approvals/<approval_id>/reject', methods=['POST'])
+def reject_action(approval_id):
+    """Reject a pending action"""
+    data = request.json
+    approver = data.get('approver', 'unknown')
+    reason = data.get('reason', 'No reason provided')
+    
+    # Find the approval request
+    approval = None
+    for a in pending_approvals:
+        if a['id'] == approval_id:
+            approval = a
+            break
+    
+    if not approval:
+        return jsonify({'success': False, 'error': 'Approval request not found'}), 404
+    
+    if approval['status'] != 'pending':
+        return jsonify({'success': False, 'error': 'Approval already processed'}), 400
+    
+    # Mark as rejected
+    approval['status'] = 'rejected'
+    approval['rejected_by'] = approver
+    approval['rejected_at'] = datetime.now().isoformat()
+    approval['rejection_reason'] = reason
+    
+    # Update approval file
+    approval_file = COORD_DIR / f"{approval_id}.json"
+    approval_file.write_text(json.dumps(approval, indent=2))
+    
+    # Broadcast rejection
+    socketio.emit('approval_rejected', approval)
+    
+    print(f"❌ Approval rejected: {approval_id} by {approver} - {reason}")
+    
+    return jsonify({
+        'success': True,
+        'approval': approval
     })
 
 # ============================================================================
@@ -567,7 +738,7 @@ def check_stale_instances():
                 print(f"❌ Error checking stale instance {manus_id}: {e}")
 
 def periodic_github_sync():
-    """Periodically sync with GitHub"""
+    """Periodically sync with GitHub (pull only, push requires approval)"""
     while True:
         time.sleep(120)  # Sync every 2 minutes
         try:
@@ -577,13 +748,11 @@ def periodic_github_sync():
             # Reload state from files (in case other Manus updated)
             load_state_from_files()
             
-            # Save current state
+            # Save current state to files locally
             save_state_to_files()
             
-            # Push updates
-            git_push("Periodic coordination sync")
-            
-            print("✅ Periodic GitHub sync completed")
+            # Note: Push requires explicit approval via API
+            print("✅ Periodic GitHub pull and state save completed")
         except Exception as e:
             print(f"❌ Periodic sync failed: {e}")
 
