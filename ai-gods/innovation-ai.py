@@ -10,6 +10,7 @@ import asyncio
 import json
 import time
 import os
+import platform
 import ast
 import re
 from datetime import datetime, timedelta
@@ -20,11 +21,18 @@ from typing import Dict, List, Any, Optional
 import subprocess
 
 # Setup logging
+
+# Ensure UTF-8 encoding for stdout on Windows to support emoji logging
+if platform.system() == 'Windows':
+    import codecs
+    sys.stdout = codecs.getwriter('utf-8')(sys.stdout.detach())
+    sys.stderr = codecs.getwriter('utf-8')(sys.stderr.detach())
+
 logging.basicConfig(
     level=logging.INFO,
     format='🧠 [INNOVATION-AI] %(asctime)s - %(levelname)s - %(message)s',
     handlers=[
-        logging.FileHandler('godmode-logs/innovation-ai.log'),
+        logging.FileHandler('godmode-logs/innovation-ai.log', encoding='utf-8'),
         logging.StreamHandler()
     ]
 )

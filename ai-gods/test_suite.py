@@ -9,6 +9,7 @@
 import asyncio
 import json
 import logging
+import platform
 import os
 import sys
 import time
@@ -24,11 +25,18 @@ sys.path.insert(0, str(Path(__file__).parent))
 LOG_LEVEL = os.getenv('LOG_LEVEL', 'INFO')
 
 # Setup logging
+
+# Ensure UTF-8 encoding for stdout on Windows to support emoji logging
+if platform.system() == 'Windows':
+    import codecs
+    sys.stdout = codecs.getwriter('utf-8')(sys.stdout.detach())
+    sys.stderr = codecs.getwriter('utf-8')(sys.stderr.detach())
+
 logging.basicConfig(
     level=getattr(logging, LOG_LEVEL),
     format='🧪 [TEST] %(asctime)s - %(levelname)s - %(message)s',
     handlers=[
-        logging.FileHandler('godmode-logs/test-suite.log'),
+        logging.FileHandler('godmode-logs/test-suite.log', encoding='utf-8'),
         logging.StreamHandler()
     ]
 )

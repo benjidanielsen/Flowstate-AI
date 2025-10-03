@@ -9,6 +9,7 @@
 import asyncio
 import json
 import logging
+import platform
 import os
 import sqlite3
 from dataclasses import dataclass, field
@@ -25,11 +26,18 @@ HEARTBEAT_INTERVAL = int(os.getenv('HEARTBEAT_INTERVAL', 30))  # seconds
 HEARTBEAT_TIMEOUT = int(os.getenv('HEARTBEAT_TIMEOUT', 300))  # 5 minutes
 
 # Setup logging
+
+# Ensure UTF-8 encoding for stdout on Windows to support emoji logging
+if platform.system() == 'Windows':
+    import codecs
+    sys.stdout = codecs.getwriter('utf-8')(sys.stdout.detach())
+    sys.stderr = codecs.getwriter('utf-8')(sys.stderr.detach())
+
 logging.basicConfig(
     level=getattr(logging, LOG_LEVEL),
     format='🌐 [MACCS-v3] %(asctime)s - %(levelname)s - %(message)s',
     handlers=[
-        logging.FileHandler('godmode-logs/maccs-v3.log'),
+        logging.FileHandler('godmode-logs/maccs-v3.log', encoding='utf-8'),
         logging.StreamHandler()
     ]
 )

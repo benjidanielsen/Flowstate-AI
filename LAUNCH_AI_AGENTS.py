@@ -10,8 +10,15 @@ import sys
 import time
 import os
 import logging
+import platform
 from pathlib import Path
 from datetime import datetime
+
+# Ensure UTF-8 encoding for stdout on Windows to support emoji logging
+if platform.system() == 'Windows':
+    import codecs
+    sys.stdout = codecs.getwriter('utf-8')(sys.stdout.detach())
+    sys.stderr = codecs.getwriter('utf-8')(sys.stderr.detach())
 
 # Setup logging
 log_dir = Path(__file__).parent / "godmode-logs"
@@ -21,7 +28,7 @@ logging.basicConfig(
     level=logging.INFO,
     format='🚀 [AI-LAUNCHER] %(asctime)s - %(message)s',
     handlers=[
-        logging.FileHandler(log_dir / 'ai-launcher.log'),
+        logging.FileHandler(log_dir / 'ai-launcher.log', encoding='utf-8'),
         logging.StreamHandler()
     ]
 )

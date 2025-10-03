@@ -9,6 +9,7 @@
 import asyncio
 import json
 import logging
+import platform
 import os
 import sqlite3
 import time
@@ -23,11 +24,18 @@ DB_PATH = os.getenv('TUNER_DB_PATH', 'godmode-logs/performance_tuner.db')
 TUNING_INTERVAL = int(os.getenv('TUNING_INTERVAL', '300'))  # 5 minutes
 
 # Setup logging
+
+# Ensure UTF-8 encoding for stdout on Windows to support emoji logging
+if platform.system() == 'Windows':
+    import codecs
+    sys.stdout = codecs.getwriter('utf-8')(sys.stdout.detach())
+    sys.stderr = codecs.getwriter('utf-8')(sys.stderr.detach())
+
 logging.basicConfig(
     level=getattr(logging, LOG_LEVEL),
     format='🎯 [TUNER] %(asctime)s - %(levelname)s - %(message)s',
     handlers=[
-        logging.FileHandler('godmode-logs/ai-performance-tuner.log'),
+        logging.FileHandler('godmode-logs/ai-performance-tuner.log', encoding='utf-8'),
         logging.StreamHandler()
     ]
 )

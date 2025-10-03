@@ -8,16 +8,24 @@
 
 import asyncio
 import logging
+import platform
 import json
 from datetime import datetime
 from pathlib import Path
 
 # Setup logging
+
+# Ensure UTF-8 encoding for stdout on Windows to support emoji logging
+if platform.system() == 'Windows':
+    import codecs
+    sys.stdout = codecs.getwriter('utf-8')(sys.stdout.detach())
+    sys.stderr = codecs.getwriter('utf-8')(sys.stderr.detach())
+
 logging.basicConfig(
     level=logging.INFO,
     format='🤖 [FRONTEND-DEVELOPER] %(asctime)s - %(levelname)s - %(message)s',
     handlers=[
-        logging.FileHandler(f'godmode-logs/frontend-developer.log'),
+        logging.FileHandler(f'godmode-logs/frontend-developer.log', encoding='utf-8'),
         logging.StreamHandler()
     ]
 )

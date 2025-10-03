@@ -31,6 +31,12 @@ import uuid
 from self_improvement import SelfImprovementAgent
 from github_integration import GitHubIntegration
 
+# Ensure UTF-8 encoding for stdout on Windows to support emoji logging
+if platform.system() == 'Windows':
+    import codecs
+    sys.stdout = codecs.getwriter('utf-8')(sys.stdout.detach())
+    sys.stderr = codecs.getwriter('utf-8')(sys.stderr.detach())
+
 # Enhanced logging configuration
 log_dir = Path(__file__).parent / "logs"
 log_dir.mkdir(exist_ok=True)
@@ -39,7 +45,7 @@ logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     handlers=[
-        logging.FileHandler(log_dir / 'dashboard.log'),
+        logging.FileHandler(log_dir / 'dashboard.log', encoding='utf-8'),
         logging.StreamHandler(sys.stdout)
     ]
 )
