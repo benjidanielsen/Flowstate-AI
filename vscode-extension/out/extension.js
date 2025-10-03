@@ -152,6 +152,6 @@ function isFlowStateAIProject() {
     const path = require('path');
     const rootPath = workspaceFolders[0].uri.fsPath;
     return fs.existsSync(path.join(rootPath, 'ai-gods')) &&
-        fs.existsSync(path.join(rootPath, 'GODMODE_AI_AGENT_PLAN.md'));
+        fs.existsSync(path.join(rootPath, 'docs', 'godmode', 'GODMODE_AI_AGENT_PLAN.md'));
 }
 //# sourceMappingURL=extension.js.map

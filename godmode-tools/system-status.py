@@ -22,13 +22,12 @@ class SystemStatus:
         print("=" * 60)
         
         process_patterns = {
-            "Project Manager": "python.*project-manager.py",
-            "AI Communication Hub": "python.*ai-communication-hub.py",
-            "AI Democracy": "python.*ai-democracy-system.py",
+            "Project Manager": "python.*project_manager_enhanced.py",
+            "AI Communication Hub": "python.*communication_hub_enhanced.py",
+            "Autonomous Development": "python.*autonomous_development.py",
             "Collective Memory": "python.*collective-memory-system.py",
             "Innovation AI": "python.*innovation-ai.py",
             "GODMODE Dashboard": "python.*godmode-dashboard",
-            "Sync Engine": "python.*MANUS_SYNC_ENGINE",
             "Backend API": "node.*backend",
             "Frontend Dev": "node.*frontend"
         }
@@ -99,8 +98,8 @@ class SystemStatus:
         
         databases = [
             ("Main CRM", self.project_root / "backend" / "data" / "flowstate.db"),
-            ("Sync Engine", self.project_root / ".manus-sync" / "sync_engine.db"),
-            ("MACCS Coordination", self.project_root / "maccs" / "coordination.db")
+            ("Project Manager", self.project_root / "godmode-state.db"),
+            ("Collective Memory", self.project_root / "collective-memory" / "knowledge.db")
         ]
         
         for name, db_path in databases:
@@ -199,61 +198,51 @@ class SystemStatus:
         
         print()
     
-    def check_manus_coordination(self):
-        """Check MACCS v3.0 coordination status"""
-        print("🤝 Manus Coordination (MACCS v3.0):")
+    def check_godmode_brain(self):
+        """Show GODMODE Brain launch sequence status."""
+        print("🧠 GODMODE Brain Status:")
         print("=" * 60)
-        
-        try:
-            maccs_db = self.project_root / "maccs" / "coordination.db"
-            if maccs_db.exists():
-                conn = sqlite3.connect(str(maccs_db))
-                cursor = conn.cursor()
-                
-                # Get active Manus instances
-                cursor.execute("""
-                    SELECT manus_id, status, current_task, last_update
-                    FROM heartbeats
-                    ORDER BY last_update DESC
-                """)
-                
-                instances = cursor.fetchall()
-                if instances:
-                    active_count = 0
-                    for manus_id, status, current_task, last_update in instances:
-                        # Check if heartbeat is recent (within 5 minutes)
-                        try:
-                            last_update_dt = datetime.fromisoformat(last_update.replace('Z', '+00:00'))
-                            time_diff = datetime.now(last_update_dt.tzinfo) - last_update_dt
-                            is_active = time_diff.total_seconds() < 300  # 5 minutes
-                            
-                            if is_active:
-                                active_count += 1
-                                status_icon = "✅"
-                            else:
-                                status_icon = "⏰"
-                            
-                            # Truncate task description
-                            task_short = current_task[:40] + "..." if len(current_task) > 40 else current_task
-                            print(f"  {status_icon} {manus_id:<12} {status:<15} {task_short}")
-                        except:
-                            print(f"  ⚠️  {manus_id:<12} {status:<15} (timestamp parse error)")
-                    
-                    print(f"\n  📊 Active: {active_count}/{len(instances)} Manus instances")
-                else:
-                    print("  ⚪ No Manus instances registered yet")
-                
-                # Get task count
-                cursor.execute("SELECT COUNT(*) FROM tasks")
-                task_count = cursor.fetchone()[0]
-                print(f"  📋 Tasks in queue: {task_count}")
-                
-                conn.close()
-            else:
-                print("  ⚪ MACCS database not initialized yet")
-        except Exception as e:
-            print(f"  ⚠️  Could not check Manus coordination: {e}")
-        
+
+        status_path = self.project_root / "collective-memory" / "project_status.json"
+        plan_path = self.project_root / "collective-memory" / "godmode_brain_plan.json"
+
+        if status_path.exists():
+            try:
+                with status_path.open("r", encoding="utf-8") as handle:
+                    status = json.load(handle)
+
+                print(f"  📍 Current phase: {status.get('current_phase', 'unknown')}")
+                completed = status.get('completed_phases', [])
+                if completed:
+                    print(f"  ✅ Completed phases: {', '.join(completed)}")
+                next_milestone = status.get('next_milestone')
+                if next_milestone:
+                    print(f"  ⏭️  Next milestone ETA: {next_milestone}")
+                notes = status.get('notes')
+                if notes:
+                    print(f"  📝 Notes: {notes}")
+            except Exception as exc:
+                print(f"  ⚠️  Could not read status ledger: {exc}")
+        else:
+            print("  ⚪ Status ledger missing (run godmode_brain.py to initialise)")
+
+        if plan_path.exists():
+            try:
+                with plan_path.open("r", encoding="utf-8") as handle:
+                    plan = json.load(handle)
+
+                print(f"  📚 Plan version: {plan.get('version')}")
+                phases = plan.get('phases', [])
+                for phase in phases:
+                    title = phase.get('title', phase.get('key', 'phase'))
+                    key = phase.get('key')
+                    timebox = phase.get('timebox_hours', 0)
+                    print(f"    • {key}: {title} ({timebox}h)")
+            except Exception as exc:
+                print(f"  ⚠️  Could not read roadmap: {exc}")
+        else:
+            print("  ⚪ Roadmap JSON missing (regenerate with godmode_brain.py)")
+
         print()
     
     def check_resource_usage(self):
@@ -325,7 +314,7 @@ class SystemStatus:
         self.get_running_processes()
         self.check_port_status()
         self.check_database_status()
-        self.check_manus_coordination()
+        self.check_godmode_brain()
         self.check_git_status()
         self.check_resource_usage()
         self.show_quick_actions()
