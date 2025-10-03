@@ -38,12 +38,18 @@ import queue
 import concurrent.futures
 from contextlib import contextmanager
 
+# Ensure UTF-8 encoding for stdout on Windows to support emoji logging
+if platform.system() == 'Windows':
+    import codecs
+    sys.stdout = codecs.getwriter('utf-8')(sys.stdout.detach())
+    sys.stderr = codecs.getwriter('utf-8')(sys.stderr.detach())
+
 # Configure logging with enhanced formatting
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     handlers=[
-        logging.FileHandler('manus_sync_engine.log'),
+        logging.FileHandler('manus_sync_engine.log', encoding='utf-8'),
         logging.StreamHandler(sys.stdout)
     ]
 )

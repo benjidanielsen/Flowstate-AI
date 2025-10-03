@@ -6,6 +6,7 @@
 """
 
 import os
+import platform
 import sys
 import json
 import logging
@@ -17,11 +18,18 @@ from typing import Dict, List, Any, Optional, Tuple
 import ast
 import re
 
+
+# Ensure UTF-8 encoding for stdout on Windows to support emoji logging
+if platform.system() == 'Windows':
+    import codecs
+    sys.stdout = codecs.getwriter('utf-8')(sys.stdout.detach())
+    sys.stderr = codecs.getwriter('utf-8')(sys.stderr.detach())
+
 logging.basicConfig(
     level=logging.INFO,
     format='🚀 [AUTONOMOUS-DEV] %(asctime)s - %(levelname)s - %(message)s',
     handlers=[
-        logging.FileHandler('godmode-logs/autonomous-development.log'),
+        logging.FileHandler('godmode-logs/autonomous-development.log', encoding='utf-8'),
         logging.StreamHandler()
     ]
 )

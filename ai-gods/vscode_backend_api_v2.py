@@ -6,8 +6,10 @@ Features: Enhanced error handling, better performance, real-time updates
 """
 
 import asyncio
+import sys
 import json
 import logging
+import platform
 import os
 import sqlite3
 from datetime import datetime
@@ -26,11 +28,18 @@ API_PORT = int(os.getenv('API_PORT', 3001))
 LOG_LEVEL = os.getenv('LOG_LEVEL', 'INFO')
 
 # Configure logging
+
+# Ensure UTF-8 encoding for stdout on Windows to support emoji logging
+if platform.system() == 'Windows':
+    import codecs
+    sys.stdout = codecs.getwriter('utf-8')(sys.stdout.detach())
+    sys.stderr = codecs.getwriter('utf-8')(sys.stderr.detach())
+
 logging.basicConfig(
     level=getattr(logging, LOG_LEVEL),
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     handlers=[
-        logging.FileHandler('godmode-logs/vscode-backend-api-v2.log'),
+        logging.FileHandler('godmode-logs/vscode-backend-api-v2.log', encoding='utf-8'),
         logging.StreamHandler()
     ]
 )

@@ -6,8 +6,10 @@
 """
 
 import asyncio
+import sys
 import json
 import logging
+import platform
 import redis
 import sqlite3
 from datetime import datetime, timedelta
@@ -18,11 +20,18 @@ from dataclasses import dataclass, asdict
 import threading
 import queue
 
+
+# Ensure UTF-8 encoding for stdout on Windows to support emoji logging
+if platform.system() == 'Windows':
+    import codecs
+    sys.stdout = codecs.getwriter('utf-8')(sys.stdout.detach())
+    sys.stderr = codecs.getwriter('utf-8')(sys.stderr.detach())
+
 logging.basicConfig(
     level=logging.INFO,
     format='🧠 [COMM-HUB] %(asctime)s - %(levelname)s - %(message)s',
     handlers=[
-        logging.FileHandler('godmode-logs/communication-hub-enhanced.log'),
+        logging.FileHandler('godmode-logs/communication-hub-enhanced.log', encoding='utf-8'),
         logging.StreamHandler()
     ]
 )

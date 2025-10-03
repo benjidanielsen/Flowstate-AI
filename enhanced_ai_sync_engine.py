@@ -148,6 +148,12 @@ class EnhancedManusSyncEngine:
     
     def _setup_logging(self):
         """Setup comprehensive logging with Windows compatibility"""
+        # Ensure UTF-8 encoding for stdout on Windows to support emoji logging
+        if self.is_windows:
+            import codecs
+            sys.stdout = codecs.getwriter('utf-8')(sys.stdout.detach())
+            sys.stderr = codecs.getwriter('utf-8')(sys.stderr.detach())
+        
         log_dir = self.project_root / "logs"
         log_dir.mkdir(exist_ok=True)
         

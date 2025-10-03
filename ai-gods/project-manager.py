@@ -11,6 +11,7 @@ import json
 import time
 import subprocess
 import os
+import platform
 import sys
 from datetime import datetime, timedelta
 from pathlib import Path
@@ -21,11 +22,18 @@ import requests
 from typing import Dict, List, Any, Optional
 
 # Setup logging
+
+# Ensure UTF-8 encoding for stdout on Windows to support emoji logging
+if platform.system() == 'Windows':
+    import codecs
+    sys.stdout = codecs.getwriter('utf-8')(sys.stdout.detach())
+    sys.stderr = codecs.getwriter('utf-8')(sys.stderr.detach())
+
 logging.basicConfig(
     level=logging.INFO,
     format='🤖 [PROJECT-MANAGER] %(asctime)s - %(levelname)s - %(message)s',
     handlers=[
-        logging.FileHandler('godmode-logs/project-manager.log'),
+        logging.FileHandler('godmode-logs/project-manager.log', encoding='utf-8'),
         logging.StreamHandler()
     ]
 )
@@ -708,7 +716,7 @@ logging.basicConfig(
     level=logging.INFO,
     format='🤖 [{agent_name.upper()}] %(asctime)s - %(levelname)s - %(message)s',
     handlers=[
-        logging.FileHandler(f'godmode-logs/{agent_name}.log'),
+        logging.FileHandler(f'godmode-logs/{agent_name}.log', encoding='utf-8'),
         logging.StreamHandler()
     ]
 )

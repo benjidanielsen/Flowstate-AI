@@ -64,6 +64,12 @@ class WindowsDashboard:
     
     def _setup_logging(self):
         """Setup Windows-compatible logging"""
+        # Ensure UTF-8 encoding for stdout on Windows to support emoji logging
+        if platform.system() == 'Windows':
+            import codecs
+            sys.stdout = codecs.getwriter('utf-8')(sys.stdout.detach())
+            sys.stderr = codecs.getwriter('utf-8')(sys.stderr.detach())
+        
         log_dir = Path("logs")
         log_dir.mkdir(exist_ok=True)
         

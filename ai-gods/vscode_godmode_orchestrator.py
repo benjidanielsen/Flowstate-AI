@@ -10,18 +10,25 @@ import json
 import logging
 import signal
 import sys
+import platform
 from datetime import datetime
 from typing import Dict, List
 
 from vscode_agent_integration import VSCodeAgentIntegration
 from vscode_self_correction import VSCodeSelfCorrectionSystem
 
+# Ensure UTF-8 encoding for stdout on Windows to support emoji logging
+if platform.system() == 'Windows':
+    import codecs
+    sys.stdout = codecs.getwriter('utf-8')(sys.stdout.detach())
+    sys.stderr = codecs.getwriter('utf-8')(sys.stderr.detach())
+
 # Configure logging
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     handlers=[
-        logging.FileHandler('godmode-logs/vscode_godmode.log'),
+        logging.FileHandler('godmode-logs/vscode_godmode.log', encoding='utf-8'),
         logging.StreamHandler()
     ]
 )

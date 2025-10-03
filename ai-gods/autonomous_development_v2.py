@@ -7,9 +7,11 @@
 """
 
 import asyncio
+import sys
 import ast
 import json
 import logging
+import platform
 import os
 import re
 import subprocess
@@ -24,11 +26,18 @@ from typing import Dict, List, Any, Optional, Tuple, Set
 LOG_LEVEL = os.getenv('LOG_LEVEL', 'INFO')
 
 # Setup logging
+
+# Ensure UTF-8 encoding for stdout on Windows to support emoji logging
+if platform.system() == 'Windows':
+    import codecs
+    sys.stdout = codecs.getwriter('utf-8')(sys.stdout.detach())
+    sys.stderr = codecs.getwriter('utf-8')(sys.stderr.detach())
+
 logging.basicConfig(
     level=getattr(logging, LOG_LEVEL),
     format='🚀 [AUTO-DEV-v2] %(asctime)s - %(levelname)s - %(message)s',
     handlers=[
-        logging.FileHandler('godmode-logs/autonomous-development-v2.log'),
+        logging.FileHandler('godmode-logs/autonomous-development-v2.log', encoding='utf-8'),
         logging.StreamHandler()
     ]
 )
