@@ -2,6 +2,48 @@
 
 Flowstate-AI is an AI-first, self-improving CRM-OS for network marketers and solo founders. It enforces the Frazer Method with a strict pipeline, automates follow-ups, tracks no-show and inactivity, and surfaces Next Best Actions (NBA). Built with React/Tailwind + Node/TypeScript and a Python AI worker, it learns from logs to get smarter with each iteration.
 
+## 🚀 GODMODE Brain Launch Sequence
+
+The "FlowState-AI GODMODE - Ultimate Autonomous AI Development System" now
+ships with a single source of truth for bringing the platform online:
+
+- **Roadmap:** `docs/GODMODE_BRAIN_ROADMAP.md` distills the four historical
+  GODMODE planning docs into a nine-hour, three-phase playbook.
+- **Checklist:** `docs/launch/FINAL_LAUNCH_CHECKLIST.md` turns the roadmap into
+  claimable deliverables, readiness gates, and fast links for the launch team.
+- **Automation:** `ai-gods/godmode_brain.py` keeps the roadmap JSON
+  (`collective-memory/godmode_brain_plan.json`) and project status ledger in
+  sync so autonomous agents or humans can execute the sequence instantly.
+- **Validation:** `docs/launch/SYSTEM_VALIDATION.md` pairs with the
+  one-command scripts in `scripts/unix` and `scripts/windows` to certify the
+  stack before each launch milestone.
+- **Command Board:** `AUTONOMOUS_WORK_LOG.md` contains the mandatory
+  claim/complete task board. Update it before starting any task and include the
+  deliverables once finished.
+
+Advance phases or review progress with:
+
+```bash
+python ai-gods/godmode_brain.py --show-plan
+python ai-gods/godmode_brain.py --set-phase phase_2_crm_delivery --mark-complete phase_1_ai_brain
+```
+
+This replaces the legacy Manus coordination stack; the best ideas from MACCS
+now live inside the GODMODE Brain principles.
+
+## Repository Layout
+
+- `ai-gods/` – Automation brain, project manager, and resilience helpers.
+- `backend/`, `frontend/`, `python-worker/` – Core FlowState-AI services.
+- `docs/godmode/` – Canonical GODMODE knowledge base and historical plans.
+- `docs/operations/` – Runbooks, status reports, and coordination rules.
+- `docs/launch/` – Final launch checklist and nine-hour execution aides.
+- `docs/windows/` – Pilot setup instructions and packaging guides for Windows.
+- `docs/integrations/` – VS Code integration research and setup notes.
+- `docs/reference/` – Architecture, API, and quick-start guides.
+- `scripts/windows/`, `scripts/unix/` – Platform-specific launch scripts.
+- `archive/` – Task history and packaged assets kept for reference only.
+
 ## Features
 
 ### 🎯 Frazer Pipeline Method

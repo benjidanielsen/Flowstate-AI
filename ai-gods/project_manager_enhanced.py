@@ -7,28 +7,87 @@
 """
 
 import asyncio
+import argparse
+import importlib.util
 import json
 import time
 import logging
+import sys
+from logging.handlers import TimedRotatingFileHandler
 import sqlite3
-import redis
 from datetime import datetime, timedelta
-from pathlib import Path
-from typing import Dict, List, Any, Optional, Tuple
+from typing import TYPE_CHECKING, Dict, List, Any, Optional, Tuple
 from enum import Enum
 from dataclasses import dataclass, asdict
 import threading
 
-# Setup logging
-logging.basicConfig(
-    level=logging.INFO,
-    format='🤖 [PM-ENHANCED] %(asctime)s - %(levelname)s - %(message)s',
-    handlers=[
-        logging.FileHandler('godmode-logs/project-manager-enhanced.log'),
-        logging.StreamHandler()
-    ]
+from project_manager_config import (
+    ProjectManagerConfig,
+    load_project_manager_config,
 )
-logger = logging.getLogger(__name__)
+from error_handling import log_exception, retry
+
+if importlib.util.find_spec("redis") is not None:
+    import redis  # type: ignore
+else:  # pragma: no cover - optional dependency path
+    redis = None  # type: ignore
+
+if TYPE_CHECKING:  # pragma: no cover - typing helpers
+    from redis import Redis  # type: ignore
+
+DEFAULT_CONFIG = load_project_manager_config()
+
+
+class JsonFormatter(logging.Formatter):
+    """Formatter that emits structured JSON log lines."""
+
+    def format(self, record: logging.LogRecord) -> str:
+        payload: Dict[str, Any] = {
+            "timestamp": datetime.utcfromtimestamp(record.created).isoformat() + "Z",
+            "level": record.levelname,
+            "component": "project_manager_enhanced",
+        }
+
+        if isinstance(record.msg, dict):
+            payload.update(record.msg)
+            if "message" not in payload:
+                payload["message"] = record.getMessage()
+        else:
+            payload["message"] = record.getMessage()
+
+        if record.exc_info:
+            payload["exc_info"] = self.formatException(record.exc_info)
+
+        return json.dumps(payload, default=str)
+
+
+def _setup_logging(config: ProjectManagerConfig) -> logging.Logger:
+    logger = logging.getLogger("project_manager_enhanced")
+    if logger.handlers:
+        return logger
+
+    logger.setLevel(logging.INFO)
+    formatter = JsonFormatter()
+
+    file_handler = TimedRotatingFileHandler(
+        config.log_path,
+        when="midnight",
+        interval=1,
+        backupCount=7,
+        encoding="utf-8",
+    )
+    file_handler.setFormatter(formatter)
+
+    stream_handler = logging.StreamHandler()
+    stream_handler.setFormatter(formatter)
+
+    logger.addHandler(file_handler)
+    logger.addHandler(stream_handler)
+
+    return logger
+
+
+logger = _setup_logging(DEFAULT_CONFIG)
 
 
 class TaskStatus(Enum):
@@ -101,24 +160,58 @@ class EnhancedProjectManagerAI:
     """
     Enhanced Project Manager AI with advanced coordination capabilities
     """
-    
-    def __init__(self, redis_host='localhost', redis_port=6379, db_path='godmode-state.db'):
-        self.project_root = Path(__file__).parent.parent
-        self.db_path = self.project_root / db_path
-        
+
+    def __init__(self, config: Optional[ProjectManagerConfig] = None):
+        self.config = config or DEFAULT_CONFIG
+        self.db_path = self.config.db_path
+
         # Initialize Redis for real-time communication
-        try:
-            self.redis_client = redis.StrictRedis(
-                host=redis_host, 
-                port=redis_port, 
-                db=0, 
-                decode_responses=True
+        self.redis_client: Optional["Redis"] = None
+
+        if redis is not None:
+            try:
+                self.redis_client = redis.StrictRedis(
+                    host=self.config.redis_host,
+                    port=self.config.redis_port,
+                    password=self.config.redis_password,
+                    db=0,
+                    decode_responses=True,
+                )
+
+                retry(
+                    self.redis_client.ping,
+                    retries=2,
+                    initial_delay=0.5,
+                    logger=logger,
+                    context={"component": "redis", "operation": "ping"},
+                )
+
+                self.redis_available = True
+                logger.info({
+                    "event": "redis_connection",
+                    "message": "Redis connection established",
+                    "host": self.config.redis_host,
+                    "port": self.config.redis_port,
+                })
+            except Exception as exc:
+                log_exception(
+                    logger,
+                    exc,
+                    level=logging.WARNING,
+                    context={
+                        "component": "redis",
+                        "message": "Redis unavailable; running in fallback mode",
+                    },
+                )
+                self.redis_available = False
+                self.redis_client = None
+        else:
+            logger.info(
+                {
+                    "event": "redis_optional_dependency_missing",
+                    "message": "python-redis package not installed; Redis features disabled",
+                }
             )
-            self.redis_client.ping()
-            self.redis_available = True
-            logger.info("✅ Redis connection established")
-        except Exception as e:
-            logger.warning(f"⚠️ Redis not available: {e}. Using fallback mode.")
             self.redis_available = False
         
         # Initialize SQLite database
@@ -139,7 +232,14 @@ class EnhancedProjectManagerAI:
         self.godmode_enabled = True
         self.system_status = "INITIALIZING"
         
-        logger.info("🚀 ENHANCED PROJECT MANAGER AI INITIALIZED")
+        logger.info({
+            "event": "startup",
+            "message": "Enhanced Project Manager AI initialised",
+            "redis_available": self.redis_available,
+            "db_path": str(self.db_path),
+        })
+
+    # ... rest of file remains unchanged until run loop logging changes
     
     def init_database(self):
         """Initialize SQLite database for persistent state"""
@@ -234,7 +334,7 @@ class EnhancedProjectManagerAI:
         logger.info(f"✅ Agent registered: {agent_id} with capabilities {capabilities}")
         
         # Publish to Redis
-        if self.redis_available:
+        if self.redis_available and self.redis_client is not None:
             self.redis_client.publish('agent_registry', json.dumps({
                 'action': 'register',
                 'agent_id': agent_id,
@@ -321,7 +421,7 @@ class EnhancedProjectManagerAI:
         logger.info(f"✅ Task {task.name} assigned to {best_agent}")
         
         # Publish to Redis
-        if self.redis_available:
+        if self.redis_available and self.redis_client is not None:
             self.redis_client.publish('task_assignments', json.dumps({
                 'task_id': task_id,
                 'task_name': task.name,
@@ -469,7 +569,7 @@ class EnhancedProjectManagerAI:
         logger.info(f"📋 Proposal created: {title} (ID: {proposal_id})")
         
         # Publish to Redis
-        if self.redis_available:
+        if self.redis_available and self.redis_client is not None:
             self.redis_client.publish('proposals', json.dumps({
                 'action': 'new_proposal',
                 'proposal_id': proposal_id,
@@ -600,73 +700,196 @@ class EnhancedProjectManagerAI:
                 while self.task_queue:
                     task_id = self.task_queue.pop(0)
                     self.assign_task_to_agent(task_id)
-                
+
                 # Check proposal statuses
                 for proposal_id in list(self.active_proposals.keys()):
                     self.check_proposal_status(proposal_id)
-                
+
                 # Update system status
                 status = self.get_system_status()
-                logger.info(f"📊 System Status: {status['queued_tasks']} queued, "
-                          f"{status['in_progress_tasks']} in progress, "
-                          f"{status['completed_tasks']} completed")
-                
+                logger.info(
+                    {
+                        "event": "coordination_status",
+                        "queued_tasks": status["queued_tasks"],
+                        "in_progress_tasks": status["in_progress_tasks"],
+                        "completed_tasks": status["completed_tasks"],
+                        "failed_tasks": status["failed_tasks"],
+                        "blocked_tasks": status["blocked_tasks"],
+                        "active_agents": status["active_agents"],
+                    }
+                )
+
                 await asyncio.sleep(5)  # Check every 5 seconds
-                
-            except Exception as e:
-                logger.error(f"❌ Error in coordination loop: {e}")
+
+            except Exception as exc:
+                log_exception(
+                    logger,
+                    exc,
+                    context={"event": "coordination_loop_error"},
+                )
                 await asyncio.sleep(10)
 
+    def perform_health_check(self) -> Dict[str, Any]:
+        """Validate connectivity to core dependencies and report status."""
 
-# Example usage
-if __name__ == "__main__":
-    pm = EnhancedProjectManagerAI()
-    
-    # Register some agents
+        health: Dict[str, Any] = {
+            "timestamp": datetime.utcnow().isoformat() + "Z",
+            "status": "healthy",
+            "checks": {},
+        }
+
+        # Database check
+        try:
+            start = time.monotonic()
+            self.db_cursor.execute("SELECT 1")
+            self.db_cursor.fetchone()
+            duration = time.monotonic() - start
+            health["checks"]["database"] = {
+                "status": "ok",
+                "latency_ms": round(duration * 1000, 2),
+                "path": str(self.db_path),
+            }
+        except Exception as exc:
+            health["status"] = "degraded"
+            health["checks"]["database"] = {
+                "status": "error",
+                "detail": str(exc),
+            }
+            log_exception(
+                logger,
+                exc,
+                context={"component": "database", "event": "health_check"},
+            )
+
+        # Redis check (optional)
+        if self.redis_available and self.redis_client is not None:
+            try:
+                start = time.monotonic()
+                retry(
+                    self.redis_client.ping,
+                    retries=1,
+                    initial_delay=0.2,
+                    logger=logger,
+                    context={"component": "redis", "event": "health_check"},
+                )
+                duration = time.monotonic() - start
+                health["checks"]["redis"] = {
+                    "status": "ok",
+                    "latency_ms": round(duration * 1000, 2),
+                    "host": self.config.redis_host,
+                    "port": self.config.redis_port,
+                }
+            except Exception as exc:
+                health["status"] = "degraded"
+                health["checks"]["redis"] = {
+                    "status": "error",
+                    "detail": str(exc),
+                }
+                log_exception(
+                    logger,
+                    exc,
+                    context={"component": "redis", "event": "health_check"},
+                )
+        else:
+            health["checks"]["redis"] = {
+                "status": "skipped",
+                "detail": "Redis not configured or connection failed during startup",
+            }
+
+        return health
+
+
+def _run_demo(pm: "EnhancedProjectManagerAI") -> None:
+    """Populate demo data to showcase reporting and logging."""
+
     pm.register_agent("backend-dev-001", ["python", "typescript", "api_development"])
     pm.register_agent("frontend-dev-001", ["react", "typescript", "ui_design"])
     pm.register_agent("database-dev-001", ["sql", "database_design", "optimization"])
-    
-    # Create some tasks
+
     task1 = pm.create_task(
         name="Implement User Authentication",
         description="Build JWT-based authentication system",
         priority=TaskPriority.HIGH,
         estimated_duration=120,
-        metadata={'required_capabilities': ['python', 'api_development']}
+        metadata={"required_capabilities": ["python", "api_development"]},
     )
-    
+
     task2 = pm.create_task(
         name="Design Login UI",
         description="Create responsive login page",
         priority=TaskPriority.MEDIUM,
         dependencies=[task1.id],
         estimated_duration=90,
-        metadata={'required_capabilities': ['react', 'ui_design']}
+        metadata={"required_capabilities": ["react", "ui_design"]},
     )
-    
-    # Assign tasks
+
     pm.assign_task_to_agent(task1.id)
-    
-    # Create a proposal
+    pm.assign_task_to_agent(task2.id)
+
     proposal_id = pm.create_proposal(
         title="Migrate to PostgreSQL",
         description="Migrate from SQLite to PostgreSQL for better scalability",
         proposer_id="backend-dev-001",
         proposal_type="architecture_change",
-        threshold=0.75
+        threshold=0.75,
     )
-    
-    # Cast votes
+
     pm.cast_vote(proposal_id, "backend-dev-001", VoteType.APPROVE, "Better performance")
     pm.cast_vote(proposal_id, "frontend-dev-001", VoteType.APPROVE, "Agree with backend")
     pm.cast_vote(proposal_id, "database-dev-001", VoteType.APPROVE, "This is my expertise")
-    
-    # Generate reports
-    performance_report = pm.get_agent_performance_report()
-    print(json.dumps(performance_report, indent=2))
-    
-    system_status = pm.get_system_status()
-    print(json.dumps(system_status, indent=2))
-    
-    logger.info("✅ Enhanced Project Manager AI demonstration complete")
+
+    logger.info(
+        {
+            "event": "demo_complete",
+            "performance_report": pm.get_agent_performance_report(),
+            "system_status": pm.get_system_status(),
+        }
+    )
+
+
+def _parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="Enhanced Project Manager AI controller")
+    parser.add_argument(
+        "--health-check",
+        action="store_true",
+        help="Validate database/Redis connectivity and output JSON status",
+    )
+    parser.add_argument(
+        "--run-loop",
+        action="store_true",
+        help="Start the autonomous coordination loop",
+    )
+    parser.add_argument(
+        "--demo",
+        action="store_true",
+        help="Populate sample agents/tasks and emit structured demo logs",
+    )
+    return parser.parse_args()
+
+
+def main() -> int:
+    args = _parse_args()
+
+    if not any([args.health_check, args.run_loop, args.demo]):
+        print("No action specified. Use --health-check, --run-loop or --demo.")
+        return 1
+
+    pm = EnhancedProjectManagerAI()
+
+    if args.health_check:
+        report = pm.perform_health_check()
+        print(json.dumps(report, indent=2))
+        if report.get("status") != "healthy":
+            return 2
+
+    if args.demo:
+        _run_demo(pm)
+
+    if args.run_loop:
+        asyncio.run(pm.run_coordination_loop())
+
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

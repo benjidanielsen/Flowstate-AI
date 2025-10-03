@@ -83,8 +83,8 @@ class EmergencyRecovery:
         
         db_paths = [
             self.project_root / "backend" / "data" / "flowstate.db",
-            self.project_root / ".manus-sync" / "sync_engine.db",
-            self.project_root / "maccs" / "coordination.db"
+            self.project_root / "godmode-state.db",
+            self.project_root / "collective-memory" / "knowledge.db"
         ]
         
         for db_path in db_paths:
