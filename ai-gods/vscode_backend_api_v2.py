@@ -6,6 +6,7 @@ Features: Enhanced error handling, better performance, real-time updates
 """
 
 import asyncio
+import sys
 import json
 import logging
 import platform

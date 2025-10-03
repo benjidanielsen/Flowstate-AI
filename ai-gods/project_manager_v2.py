@@ -7,6 +7,7 @@
 """
 
 import asyncio
+import sys
 import json
 import logging
 import platform
