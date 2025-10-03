@@ -459,12 +459,17 @@ class GodmodeMonitorEnhanced:
                 
                 # Emit updates via SocketIO
                 self._emit_status_update()
-                # Schedule self-improvement cycle to run in the main event loop
-                asyncio.run_coroutine_threadsafe(
-                    self.self_improvement_agent.run_self_improvement_cycle(),
-                    asyncio.get_event_loop()
-                )
-
+                
+                # Run self-improvement cycle in a separate thread with its own event loop
+                try:
+                    loop = asyncio.new_event_loop()
+                    asyncio.set_event_loop(loop)
+                    loop.run_until_complete(
+                        self.self_improvement_agent.run_self_improvement_cycle()
+                    )
+                    loop.close()
+                except Exception as e:
+                    logger.debug(f"Self-improvement cycle skipped: {e}")
                 
                 # Log performance metrics
                 self._log_performance_metrics()
@@ -647,10 +652,15 @@ class GodmodeMonitorEnhanced:
     def get_dashboard_data(self) -> Dict[str, Any]:
         """Get comprehensive dashboard data"""
         try:
+            # Create a copy of system_stats with datetime converted to string
+            system_stats = self.system_stats.copy()
+            if 'system_uptime' in system_stats and isinstance(system_stats['system_uptime'], datetime):
+                system_stats['system_uptime'] = system_stats['system_uptime'].isoformat()
+            
             return {
                 'timestamp': datetime.now().isoformat(),
                 'ai_agents': list(self.ai_status.values()),
-                'system_stats': self.system_stats,
+                'system_stats': system_stats,
                 'platform_info': {
                     'system': platform.system(),
                     'version': platform.version(),
@@ -753,7 +763,7 @@ def static_files(filename):
 
 # SocketIO Events
 @socketio.on('connect')
-def handle_connect():
+def handle_connect(auth=None):
     """Handle client connection"""
     try:
         logger.info(f"🔌 Client connected: {request.sid}")
