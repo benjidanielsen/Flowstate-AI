@@ -84,6 +84,14 @@ now live inside the GODMODE Brain principles.
 - **Transparent Collaboration**: All agent activities, including code changes and task progress, are visible on GitHub.
 - **Version Control**: Git is used for tracking changes to code, documentation, and configurations.
 
+### 🤖 Autonomous Project Steward
+- **Continuous Improvement**: Autonomous system that continuously improves the repository without user intervention
+- **DISCOVER → PLAN → EXECUTE Loop**: Automated discovery of issues, prioritization, and fixes
+- **Safety Rules**: Built-in safety checks prevent destructive operations, secret leaks, and resource abuse
+- **Progress Tracking**: All changes documented in PROGRESS.md with rationale and impact
+- **Smart Prioritization**: Tasks ranked by Impact ↑, Effort ↓, Risk ↓, Time ↓
+- **Default Backlog**: Always has work to do - formatting, linting, testing, docs, dependencies
+
 ## Technology Stack
 
 - **Frontend**: React 18 + TypeScript + Tailwind CSS + Vite
@@ -154,6 +162,18 @@ now live inside the GODMODE Brain principles.
    - Python Worker: http://localhost:8000
    - Godmode Dashboard: http://localhost:3333
    - API Health: http://localhost:3001/api/health
+
+6. **Optional: Start Autonomous Steward**
+   ```bash
+   # For continuous autonomous improvements
+   ./START_AUTONOMOUS_STEWARD.sh
+   
+   # On Windows:
+   START_AUTONOMOUS_STEWARD.bat
+   
+   # Monitor progress:
+   tail -f PROGRESS.md
+   ```
 
 ### Option 2: Docker Compose
 
