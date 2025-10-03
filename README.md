@@ -217,6 +217,10 @@ npm run lint
 npm run lint:fix
 ```
 
+### GODMODE / AI Agent Stack
+
+Refer to [docs/GODMODE_SETUP.md](docs/GODMODE_SETUP.md) for installing Python dependencies and launching the GODMODE dashboard + project manager with oversight.
+
 ### Building
 ```bash
 # Build all services

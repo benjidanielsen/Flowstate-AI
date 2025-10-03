@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Bell, Check, Clock, User } from 'lucide-react';
 
 interface Reminder {
@@ -22,7 +22,7 @@ const RemindersPanel: React.FC<RemindersPanelProps> = ({ customerId, limit = 10 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-  const fetchReminders = async () => {
+  const fetchReminders = useCallback(async () => {
     try {
       setLoading(true);
       const url = customerId 
@@ -40,11 +40,11 @@ const RemindersPanel: React.FC<RemindersPanelProps> = ({ customerId, limit = 10 
     } finally {
       setLoading(false);
     }
-  };
+  }, [customerId, limit]);
 
   useEffect(() => {
     fetchReminders();
-  }, [customerId, limit]);
+  }, [fetchReminders]);
 
   const handleComplete = async (reminderId: string) => {
     try {

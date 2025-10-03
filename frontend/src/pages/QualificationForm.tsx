@@ -34,7 +34,7 @@ export const QualificationForm: React.FC = () => {
           setCustomerName(data.name || '');
           setProspectWhy(data.prospect_why || '');
           if (data.qualification_data) {
-            setQualificationData({...qualificationData, ...data.qualification_data});
+            setQualificationData((prev) => ({ ...prev, ...data.qualification_data }));
         }
       }
     } catch (error) {

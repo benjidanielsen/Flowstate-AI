@@ -1,41 +1,47 @@
-version: '3.8'
+version: "3.9"
 
 services:
-  frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-    ports:
-      - "3000:3000"
+  memory:
+    build: ./memory
+    env_file: .env
     environment:
-      - NODE_ENV=development
+      - EMBED_MODEL=${EMBED_MODEL}
+      - OLLAMA_HOST=${OLLAMA_HOST}
     volumes:
-      - ./frontend:/app
-      - /app/node_modules
-    depends_on:
-      - backend
+      - memdata:/data
+    ports:
+      - "8080:8080"
     networks:
       - flowstate-network
 
-  backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
-    ports:
-      - "3001:3001"
+  sweagent:
+    build: ./tools/sweagent
+    env_file: .env
     environment:
-      - NODE_ENV=development
-      - PORT=3001
-      - DATABASE_URL=./data/flowstate.db
-      - DATABASE_TYPE=sqlite
-      - JWT_SECRET=your-super-secret-jwt-key-change-in-production
-      - PYTHON_WORKER_URL=http://python-worker:8000
+      - REPO_DIR=/workspace
+      - DEFAULT_BRANCH=${DEFAULT_BRANCH}
+      - TEST_COMMAND=${TEST_COMMAND}
+      - GITHUB_TOKEN=${GITHUB_TOKEN}
+      - GITHUB_REPO_OWNER=${GITHUB_REPO_OWNER}
+      - GITHUB_REPO_NAME=${GITHUB_REPO_NAME}
     volumes:
-      - ./backend:/app
-      - ./data:/app/data
-      - /app/node_modules
+      - ./:/workspace
+    ports:
+      - "8086:8086"
+    networks:
+      - flowstate-network
+
+  orchestrator:
+    build: ./orchestrator
+    env_file: .env
     depends_on:
-      - python-worker
+      - memory
+      - sweagent
+    volumes:
+      - ./:/workspace
+    command: ["python", "-u", "main.py"]
+    ports:
+      - "8088:8088"
     networks:
       - flowstate-network
 
@@ -43,14 +49,70 @@ services:
     build:
       context: ./python-worker
       dockerfile: Dockerfile
-    ports:
-      - "8000:8000"
+    env_file: .env
     environment:
-      - PORT=8000
-      - DATABASE_URL=./data/flowstate.db
+      - PORT=${PORT}
+      - DATABASE_URL=${DATABASE_URL}
     volumes:
       - ./python-worker:/app
       - ./data:/app/data
+    ports:
+      - ":8000"
+    networks:
+      - flowstate-network
+
+  godmode_dashboard:
+    build: ./godmode-dashboard
+    env_file: .env
+    environment:
+      - GODMODE_ADMIN_USERNAME=${GODMODE_ADMIN_USERNAME}
+      - GODMODE_ADMIN_PASSWORD=${GODMODE_ADMIN_PASSWORD}
+      - PAUSE_FILE=${PAUSE_FILE}
+    volumes:
+      - ./godmode-dashboard:/app
+      - ./godmode-logs:/app/logs
+    ports:
+      - "3333:3333"
+    networks:
+      - flowstate-network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    env_file: .env
+    environment:
+      - NODE_ENV=${NODE_ENV}
+      - PORT=${PORT}
+      - DATABASE_URL=${DATABASE_URL}
+      - DATABASE_TYPE=${DATABASE_TYPE}
+      - JWT_SECRET=${JWT_SECRET}
+      - PYTHON_WORKER_URL=${PYTHON_WORKER_URL}
+    volumes:
+      - ./backend:/app
+      - ./data:/app/data
+      - /app/node_modules
+    depends_on:
+      - python-worker
+    ports:
+      - ":3001"
+    networks:
+      - flowstate-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    env_file: .env
+    environment:
+      - NODE_ENV=${NODE_ENV}
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+    ports:
+      - ":3000"
     networks:
       - flowstate-network
 
@@ -71,6 +133,7 @@ services:
       - production
 
 volumes:
+  memdata:
   postgres_data:
 
 networks:

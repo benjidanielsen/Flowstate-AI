@@ -1,0 +1,9 @@
+﻿Flask>=2.3
+Flask-Cors>=4.0
+Flask-SocketIO>=5.3
+eventlet>=0.33
+requests>=2.31
+numpy>=1.26
+aiosqlite>=0.19
+aioredis>=2.0
+redis>=4.6

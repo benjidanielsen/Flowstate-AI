@@ -1,36 +1,11 @@
-{
-    "version": "2.0.0",
-    "tasks": [
-        {
-            "label": "Start Flowstate-AI System (Windows)",
-            "type": "shell",
-            "command": "start /B python \"\MANUS_SYNC_ENGINE_ENHANCED.py\" && start /B gunicorn -w 4 -b 0.0.0.0:3333 \"\godmode-dashboard\app_enhanced:app\"",
-            "windows": {
-                "command": "start /B python \"\MANUS_SYNC_ENGINE_ENHANCED.py\" && start /B gunicorn -w 4 -b 0.0.0.0:3333 \"\godmode-dashboard\app_enhanced:app\""
-            },
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            },
-            "presentation": {
-                "reveal": "always",
-                "panel": "new"
-            },
-            "problemMatcher": []
-        },
-        {
-            "label": "Stop Flowstate-AI System (Windows)",
-            "type": "shell",
-            "command": "taskkill /IM python.exe /F || true && taskkill /IM gunicorn.exe /F || true",
-            "windows": {
-                "command": "taskkill /IM python.exe /F || true && taskkill /IM gunicorn.exe /F || true"
-            },
-            "group": "none",
-            "presentation": {
-                "reveal": "always",
-                "panel": "new"
-            },
-            "problemMatcher": []
-        }
-    ]
+﻿{
+  "version": "2.0.0",
+  "tasks": [
+    {"label": "GODMODE: Up", "type": "shell", "command": "make up"},
+    {"label": "GODMODE: Down", "type": "shell", "command": "make down"},
+    {"label": "GODMODE: Logs", "type": "shell", "command": "make logs"},
+    {"label": "GODMODE: Seed Memory", "type": "shell", "command": "make seed"},
+    {"label": "GODMODE: Pause", "type": "shell", "command": "make pause"},
+    {"label": "GODMODE: Resume", "type": "shell", "command": "make resume"}
+  ]
 }

@@ -1,0 +1,6 @@
+﻿Flask>=2.3
+Flask-SocketIO>=5.3
+eventlet>=0.33
+psutil>=5.9
+aiofiles>=23.2
+requests>=2.31

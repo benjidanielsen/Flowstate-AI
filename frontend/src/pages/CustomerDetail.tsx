@@ -199,12 +199,12 @@ const CustomerDetail: React.FC = () => {
             )}
           </div>
 
-          {/* Prospect's WHY (Qualification) */}
+          {/* Prospect&apos;s WHY (Qualification) */}
           {customer.prospect_why && (
             <div className="bg-white rounded-lg shadow p-6 mt-6">
               <div className="flex items-center space-x-2 mb-4">
                 <CheckCircle size={20} className="text-green-600" />
-                <h2 className="text-xl font-semibold text-gray-900">Prospect's WHY</h2>
+                <h2 className="text-xl font-semibold text-gray-900">Prospect&apos;s WHY</h2>
               </div>
               <div className="p-4 bg-green-50 rounded-lg border border-green-200">
                 <p className="text-sm text-gray-700 whitespace-pre-wrap">{customer.prospect_why}</p>
