@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 """
 🧪 GODMODE 10x10 TEST RUNNER
 ⚡ Executes 10 iterations of 10 test runs each (100 total)
@@ -39,7 +39,7 @@ class TestRunner:
     
     def __init__(self):
         self.project_root = Path(__file__).parent.parent
-        self.test_script = self.project_root / "ai-gods" / "test_suite_comprehensive.py"
+        self.test_script = self.project_root / "ai_gods" / "test_suite_comprehensive.py"
         self.results = []
         self.errors_found = []
         self.improvements_identified = []
@@ -294,3 +294,4 @@ def main():
 if __name__ == '__main__':
     exit_code = main()
     sys.exit(exit_code)
+

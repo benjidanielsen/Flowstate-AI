@@ -1,11 +1,11 @@
-import json
+﻿import json
 import sys
 import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-MODULE_DIR = REPO_ROOT / "ai-gods"
+MODULE_DIR = REPO_ROOT / "ai_gods"
 if str(MODULE_DIR) not in sys.path:
     sys.path.insert(0, str(MODULE_DIR))
 
@@ -44,3 +44,4 @@ class GodmodeBrainTestCase(unittest.TestCase):
 
 if __name__ == "__main__":  # pragma: no cover
     unittest.main()
+

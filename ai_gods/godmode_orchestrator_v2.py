@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 """
 🎯 GODMODE ORCHESTRATOR v2.0 - Master Coordination System
 ⚡ Ultimate autonomous development authority
@@ -73,28 +73,28 @@ class GODMODEOrchestratorV2:
         self.components = {
             "backend_api": {
                 "type": "python",
-                "script": "ai-gods/vscode_backend_api_v2.py",
+                "script": "ai_gods/vscode_backend_api_v2.py",
                 "name": "VSCode Backend API",
                 "critical": True,
                 "restart_on_failure": True,
             },
             "project_manager": {
                 "type": "python",
-                "script": "ai-gods/project_manager_v2.py",
+                "script": "ai_gods/project_manager_v2.py",
                 "name": "Project Manager AI",
                 "critical": True,
                 "restart_on_failure": True,
             },
             "communication_hub": {
                 "type": "python",
-                "script": "ai-gods/communication_hub_v2.py",
+                "script": "ai_gods/communication_hub_v2.py",
                 "name": "Communication Hub",
                 "critical": True,
                 "restart_on_failure": True,
             },
             "autonomous_dev": {
                 "type": "python",
-                "script": "ai-gods/autonomous_development_v2.py",
+                "script": "ai_gods/autonomous_development_v2.py",
                 "name": "Autonomous Development",
                 "critical": False,
                 "restart_on_failure": True,
@@ -396,3 +396,4 @@ if __name__ == "__main__":
 
     # Run
     asyncio.run(main())
+

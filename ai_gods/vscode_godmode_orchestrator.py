@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 """
 VSCode GODMODE Orchestrator
 Master orchestrator for the self-making VSCode system
@@ -212,7 +212,7 @@ class VSCodeGODMODEOrchestrator:
         logger.info(f"🔧 Attempting to fix agent: {agent_id}")
         
         # Send restart command
-        self.vscode.send_terminal_command(f'python3 ai-gods/{agent_id}.py')
+        self.vscode.send_terminal_command(f'python3 ai_gods/{agent_id}.py')
         
         # Wait for restart
         await asyncio.sleep(5)
@@ -258,3 +258,4 @@ async def main():
 
 if __name__ == '__main__':
     asyncio.run(main())
+

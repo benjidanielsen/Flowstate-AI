@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 """
 Emergency Recovery for FlowState-AI GODMODE
 Handles system crashes, hung processes, and error recovery
@@ -20,7 +20,7 @@ class EmergencyRecovery:
         print("📋 Checking for hanging processes...")
         
         processes_to_kill = [
-            "python.*ai-gods",
+            "python.*ai_gods",
             "python.*godmode-dashboard",
             "python.*MANUS_SYNC_ENGINE",
             "node.*dev",
@@ -205,3 +205,4 @@ def main():
 
 if __name__ == "__main__":
     sys.exit(main())
+

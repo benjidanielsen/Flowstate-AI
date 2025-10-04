@@ -1,1 +1,2 @@
-# This file makes the ai-gods directory a Python package.
+﻿# This file makes the ai_gods directory a Python package.
+

@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 """
 🤖 PROJECT MANAGER AI - The Master Coordinator
 ⚡ GODMODE: Unlimited autonomous development authority
@@ -340,7 +340,7 @@ class ProjectManagerAI:
                 
                 # Spawn the AI agent process
                 process = await asyncio.create_subprocess_exec(
-                    sys.executable, f"ai-gods/{config['script']}",
+                    sys.executable, f"ai_gods/{config['script']}",
                     stdout=asyncio.subprocess.PIPE,
                     stderr=asyncio.subprocess.PIPE,
                     cwd=self.project_root
@@ -681,7 +681,7 @@ class ProjectManagerAI:
     
     async def create_ai_agent_script(self, agent_name: str, config: Dict):
         """Create AI agent script if it doesn't exist (enhanced version)"""
-        script_path = self.project_root / "ai-gods" / config["script"]
+        script_path = self.project_root / "ai_gods" / config["script"]
         
         # Skip if script already exists (for our custom scripts)
         if script_path.exists():
@@ -1049,3 +1049,4 @@ async def main():
 
 if __name__ == "__main__":
     asyncio.run(main())
+

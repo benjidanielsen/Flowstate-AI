@@ -1,11 +1,11 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 """Enhanced Manus Sync Engine launcher.
 
 This wrapper ensures the GODMODE orchestrator v2 boots cleanly on Windows by
 creating required directories, wiring logging, and delegating to the
 `GODMODEOrchestratorV2` runtime.  It keeps backwards compatibility with legacy
 startup scripts that still invoke `MANUS_SYNC_ENGINE_ENHANCED.py` while the
-modern orchestration logic lives in `ai-gods/godmode_orchestrator_v2.py`.
+modern orchestration logic lives in `ai_gods/godmode_orchestrator_v2.py`.
 """
 
 from __future__ import annotations
@@ -28,7 +28,7 @@ def _prepare_environment() -> None:
     log_dir = project_root / "godmode-logs"
     log_dir.mkdir(exist_ok=True)
 
-    ai_gods_dir = project_root / "ai-gods"
+    ai_gods_dir = project_root / "ai_gods"
     if str(ai_gods_dir) not in sys.path:
         sys.path.insert(0, str(ai_gods_dir))
 
@@ -60,3 +60,4 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+

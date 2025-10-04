@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 """
 🚀 AUTONOMOUS AI AGENT LAUNCHER
 Starts all AI agents for 24/7 autonomous development
@@ -32,7 +32,7 @@ class AIAgentLauncher:
     
     def __init__(self):
         self.project_root = Path(__file__).parent
-        self.ai_gods_dir = self.project_root / "ai-gods"
+        self.ai_gods_dir = self.project_root / "ai_gods"
         self.processes = {}
         self.python_cmd = self.get_python_command()
         
@@ -245,3 +245,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

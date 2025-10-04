@@ -1,4 +1,4 @@
-import redis
+﻿import redis
 from redis.client import PubSub
 import json
 import logging
@@ -7,7 +7,7 @@ from datetime import datetime
 import threading
 import time
 from typing import List, Dict, Any, Optional, Callable
-from ai-gods.godmode_config import is_full_autonomy_enabled
+from ai_gods.godmode_config import is_full_autonomy_enabled
 import subprocess
 
 # Configure logging
@@ -349,3 +349,5 @@ if __name__ == "__main__":
     test_agent.stop()
 
     logger.info("Example finished.")
+
+

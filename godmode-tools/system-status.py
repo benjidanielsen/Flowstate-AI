@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 """
 System Status Monitor for FlowState-AI GODMODE
 Provides real-time status of all system components
@@ -296,7 +296,7 @@ class SystemStatus:
         print("⚡ Quick Actions:")
         print("=" * 60)
         print("  • Start system:    ./GODMODE-START.sh")
-        print("  • Stop all:        pkill -f 'python.*ai-gods|node.*dev'")
+        print("  • Stop all:        pkill -f 'python.*ai_gods|node.*dev'")
         print("  • View logs:       tail -f godmode-dashboard/logs/*.log")
         print("  • Emergency fix:   python3 safety-nets/emergency-recovery.py")
         print("  • Update code:     git pull origin main")
@@ -330,3 +330,4 @@ def main():
 
 if __name__ == "__main__":
     sys.exit(main())
+
