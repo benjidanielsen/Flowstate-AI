@@ -1,0 +1,14 @@
+﻿{
+    "editor.formatOnSave":  true,
+    "editor.codeActionsOnSave":  {
+                                     "source.fixAll":  true,
+                                     "source.organizeImports":  true
+                                 },
+    "files.autoSave":  "afterDelay",
+    "files.autoSaveDelay":  700,
+    "git.enableSmartCommit":  true,
+    "git.confirmSync":  false,
+    "git.autofetch":  true,
+    "explorer.confirmDelete":  false,
+    "explorer.confirmDragAndDrop":  false
+}

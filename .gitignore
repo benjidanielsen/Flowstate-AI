@@ -69,3 +69,4 @@ playwright/.cache/
 .vscode/* 
 !.vscode/settings.json 
 !.vscode/extensions.json
+!.vscode/
