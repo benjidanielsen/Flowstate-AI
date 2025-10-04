@@ -66,3 +66,6 @@ temp/# Playwright E2E Test Results
 test-results/
 playwright-report/
 playwright/.cache/
+.vscode/* 
+!.vscode/settings.json 
+!.vscode/extensions.json
