@@ -54,6 +54,15 @@ services:
     networks:
       - flowstate-network
 
+  redis:
+    image: "redis:alpine"
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - flowstate-network
+
   postgres:
     image: postgres:15
     environment:
@@ -72,6 +81,7 @@ services:
 
 volumes:
   postgres_data:
+  redis_data:
 
 networks:
   flowstate-network:

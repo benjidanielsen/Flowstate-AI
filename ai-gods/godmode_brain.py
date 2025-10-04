@@ -15,7 +15,7 @@ import json
 from dataclasses import dataclass, field, asdict
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional
 
 from project_manager_config import ProjectManagerConfig, load_project_manager_config
 
@@ -67,8 +67,16 @@ class GodmodeBrain:
         status_path: Optional[Path] = None,
     ) -> None:
         self.config = config or load_project_manager_config()
-        self.plan_path = Path(plan_path) if plan_path else Path("collective-memory/godmode_brain_plan.json")
-        self.status_path = Path(status_path) if status_path else Path("collective-memory/project_status.json")
+        self.plan_path = (
+            Path(plan_path)
+            if plan_path
+            else Path("collective-memory/godmode_brain_plan.json")
+        )
+        self.status_path = (
+            Path(status_path)
+            if status_path
+            else Path("collective-memory/project_status.json")
+        )
         self.plan_path.parent.mkdir(parents=True, exist_ok=True)
         self.status_path.parent.mkdir(parents=True, exist_ok=True)
         self.plan = self._load_or_create_plan()
@@ -100,6 +108,32 @@ class GodmodeBrain:
                     "operational heartbeat."
                 ),
                 steps=[
+                    PhaseStep(
+                        key="setup_vscode_environment",
+                        name="Setup VS Code Environment",
+                        summary="Ensure all required VS Code extensions are installed and the environment is correctly configured.",
+                        owner="VSCodeAgent",
+                        duration_minutes=10,
+                        deliverables=["A fully configured VS Code environment"],
+                    ),
+                    PhaseStep(
+                        key="autofix_workspace",
+                        name="Run Autofix on Entire Workspace",
+                        summary="Trigger the new autofixer agent to perform a full scan and repair cycle on the entire codebase to establish a clean baseline.",
+                        owner="FixerAI",
+                        duration_minutes=30,
+                        deliverables=["A clean and error-free codebase baseline"],
+                        dependencies=["setup_vscode_environment"],
+                    ),
+                    PhaseStep(
+                        key="consolidate_pm",
+                        name="Consolidate Project Management",
+                        summary="Merge the legacy project management scripts into a unified project manager agent.",
+                        owner="ProjectManagerAgent",
+                        duration_minutes=60,
+                        deliverables=["A single, authoritative project manager agent"],
+                        dependencies=["autofix_workspace"],
+                    ),
                     PhaseStep(
                         key="p1_s1",
                         name="Unify coordination stack",
@@ -142,6 +176,17 @@ class GodmodeBrain:
                             "Godmode brain roadmap published",
                             "Updated work log + status JSON",
                         ],
+                    ),
+                    PhaseStep(
+                        key="commit_and_push_plan",
+                        name="Commit and Push Plan",
+                        summary="Commit the generated GODMODE plan to the repository and push it to the remote.",
+                        owner="GitAgent",
+                        duration_minutes=5,
+                        deliverables=[
+                            "The GODMODE plan committed and pushed to the remote repository"
+                        ],
+                        dependencies=["p1_s3"],
                     ),
                 ],
             ),
@@ -294,19 +339,29 @@ class GodmodeBrain:
         notes: Optional[str] = None,
     ) -> Dict[str, object]:
         completed_phases = completed_phases or []
-        current_phase = current_phase or completed_phases[-1] if completed_phases else self.plan["phases"][0]["key"]
+        current_phase = (
+            current_phase or completed_phases[-1]
+            if completed_phases
+            else self.plan["phases"][0]["key"]
+        )
         phase_order = [phase["key"] for phase in self.plan["phases"]]
 
         status_payload = {
             "current_phase": current_phase,
             "completed_phases": completed_phases,
             "phase_order": phase_order,
-            "timeboxes_hours": {phase["key"]: phase["timebox_hours"] for phase in self.plan["phases"]},
-            "system_status": "READY_FOR_EXECUTION" if not completed_phases else "IN_PROGRESS",
+            "timeboxes_hours": {
+                phase["key"]: phase["timebox_hours"] for phase in self.plan["phases"]
+            },
+            "system_status": (
+                "READY_FOR_EXECUTION" if not completed_phases else "IN_PROGRESS"
+            ),
             "ai_agents_active": 11,
             "notes": notes or "",
             "updated_at": datetime.utcnow().replace(microsecond=0).isoformat() + "Z",
-            "next_milestone": self._compute_next_milestone(current_phase, completed_phases, phase_order),
+            "next_milestone": self._compute_next_milestone(
+                current_phase, completed_phases, phase_order
+            ),
         }
 
         with self.status_path.open("w", encoding="utf-8") as handle:
@@ -339,15 +394,108 @@ class GodmodeBrain:
     def list_phase_keys(self) -> List[str]:
         return [phase["key"] for phase in self.plan["phases"]]
 
+    def get_master_plan(self, goal: str) -> List[Dict[str, Any]]:
+        return [
+            {
+                "task_id": "autofix_001",
+                "description": "Initial System-Wide Autofix",
+                "agent": "ProjectManagerAgent",
+                "action": "autofix_request",
+                "dependencies": [],
+                "priority": "critical",
+            },
+            {
+                "task_id": "task_001",
+                "description": f"Deconstruct the goal: '{goal}'",
+                "agent": "ProjectManagerAgent",
+                "dependencies": ["autofix_001"],
+                "priority": "high",
+            },
+            {
+                "task_id": "task_002",
+                "description": "Develop a detailed, step-by-step execution plan",
+                "agent": "ProjectManagerAgent",
+                "dependencies": ["task_001"],
+                "priority": "high",
+            },
+            {
+                "task_id": "task_003",
+                "description": "Execute the plan, delegating tasks to specialized agents",
+                "agent": "ProjectManagerAgent",
+                "dependencies": ["task_002"],
+                "priority": "medium",
+            },
+            {
+                "task_id": "task_004",
+                "description": "Continuously monitor progress and adapt the plan",
+                "agent": "ProjectManagerAgent",
+                "dependencies": ["task_003"],
+                "priority": "medium",
+            },
+            {
+                "task_id": "task_005",
+                "description": "Final integration, testing, and validation",
+                "agent": "ProjectManagerAgent",
+                "dependencies": ["task_004"],
+                "priority": "high",
+            },
+            {
+                "task_id": "self_improve_001",
+                "description": "Continuously look for opportunities to improve the system",
+                "agent": "InnovationAI",
+                "action": "proactive_self_improvement",
+                "dependencies": ["task_005"],
+                "priority": "low",
+                "is_recurring": True,
+            },
+        ]
+
+    def execute_plan(self, plan: List[Dict[str, Any]]):
+        for task in plan:
+            task_id = task["task_id"]
+            description = task["description"]
+            agent = task["agent"]
+            action = task.get("action", "execute_task")
+            dependencies = task.get("dependencies", [])
+            priority = task.get("priority", "normal")
+            is_recurring = task.get("is_recurring", False)
+
+            # Here you would integrate with the actual task execution logic,
+            # for example, sending the task to the specified agent for execution.
+            print(
+                f"Executing {action} for {description} (Task ID: {task_id}) "
+                f"with dependencies: {dependencies}"
+            )
+
+            if is_recurring:
+                print(
+                    f"Task {task_id} is recurring. It will reappear in the backlog after completion."
+                )
+
     # ------------------------------------------------------------------
     # CLI interface
     # ------------------------------------------------------------------
     def cli(self, args: Optional[List[str]] = None) -> None:
         parser = argparse.ArgumentParser(description="GODMODE Brain control interface")
-        parser.add_argument("--show-plan", action="store_true", help="Print the consolidated launch roadmap")
-        parser.add_argument("--set-phase", choices=self.list_phase_keys(), help="Update the current phase")
-        parser.add_argument("--mark-complete", nargs="*", choices=self.list_phase_keys(), help="Mark phases as completed")
-        parser.add_argument("--notes", help="Optional status note to persist with the update")
+        parser.add_argument(
+            "--show-plan",
+            action="store_true",
+            help="Print the consolidated launch roadmap",
+        )
+        parser.add_argument(
+            "--set-phase",
+            choices=self.list_phase_keys(),
+            help="Update the current phase",
+        )
+        parser.add_argument(
+            "--mark-complete",
+            nargs="*",
+            choices=self.list_phase_keys(),
+            help="Mark phases as completed",
+        )
+        parser.add_argument(
+            "--notes", help="Optional status note to persist with the update"
+        )
         parsed = parser.parse_args(args=args)
 
         if parsed.show_plan:

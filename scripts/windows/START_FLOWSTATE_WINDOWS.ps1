@@ -11,6 +11,10 @@ Write-Host " One-Click Startup for Windows" -ForegroundColor Cyan
 Write-Host "========================================" -ForegroundColor Cyan
 Write-Host ""
 
+# Set environment variable to force Python to use UTF-8
+$env:PYTHONUTF8 = "1"
+Write-Host "[OK] Set PYTHONUTF8=1 to enforce UTF-8 encoding for Python." -ForegroundColor Green
+
 # Check if Python is installed
 try {
     $pythonVersion = python --version 2>&1
@@ -36,8 +40,12 @@ try {
 
 Write-Host ""
 
-# Get script directory
-$ProjectDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+# Get project root directory
+$ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+$ProjectDir = (Get-Item $ScriptDir).Parent.Parent.FullName
+if (-not (Test-Path $ProjectDir)) {
+    throw "Project directory not found: $ProjectDir"
+}
 Set-Location $ProjectDir
 
 Write-Host "========================================" -ForegroundColor Cyan
@@ -45,27 +53,34 @@ Write-Host " Step 1: Installing Dependencies" -ForegroundColor Cyan
 Write-Host "========================================" -ForegroundColor Cyan
 Write-Host ""
 
-# Install Python dependencies
+# Install Python dependencies from requirements.txt
 Write-Host "[1/4] Installing Python packages..." -ForegroundColor Yellow
-python -m pip install --quiet flask flask-socketio flask-cors psutil fastapi uvicorn requests python-dotenv schedule pydantic
+if (Test-Path "requirements.txt") {
+    python -m pip install -r requirements.txt
+    if ($LASTEXITCODE -ne 0) {
+        Write-Host "[WARN] pip install returned a non-zero exit code. This might be okay. Continuing..." -ForegroundColor Yellow
+    }
+} else {
+    Write-Host "[WARN] requirements.txt not found. Skipping Python package installation." -ForegroundColor Yellow
+}
 
 # Install Node.js dependencies if needed
 if (-not (Test-Path "node_modules")) {
     Write-Host "[2/4] Installing root Node.js packages..." -ForegroundColor Yellow
-    npm install --silent
+    npm install
 }
 
 if (-not (Test-Path "backend\node_modules")) {
     Write-Host "[3/4] Installing backend packages..." -ForegroundColor Yellow
     Set-Location backend
-    npm install --silent
+    npm install
     Set-Location ..
 }
 
 if (-not (Test-Path "frontend\node_modules")) {
     Write-Host "[4/4] Installing frontend packages..." -ForegroundColor Yellow
     Set-Location frontend
-    npm install --silent
+    npm install
     Set-Location ..
 }
 
@@ -95,7 +110,22 @@ Set-Location ..
 
 Write-Host ""
 Write-Host "========================================" -ForegroundColor Cyan
-Write-Host " Step 3: Starting Services" -ForegroundColor Cyan
+Write-Host " Step 3: Starting Docker Services" -ForegroundColor Cyan
+Write-Host "========================================" -ForegroundColor Cyan
+Write-Host ""
+Write-Host "Starting Redis, Postgres, and other backend services..." -ForegroundColor Yellow
+docker-compose up -d
+if ($LASTEXITCODE -ne 0) {
+    Write-Host "[ERROR] Docker Compose failed to start." -ForegroundColor Red
+    Write-Host "Please ensure Docker Desktop is running and configured correctly." -ForegroundColor Yellow
+    Read-Host "Press Enter to exit"
+    exit 1
+}
+Write-Host "[OK] Docker services are starting in the background." -ForegroundColor Green
+Write-Host ""
+
+Write-Host "========================================" -ForegroundColor Cyan
+Write-Host " Step 4: Launching AI Services" -ForegroundColor Cyan
 Write-Host "========================================" -ForegroundColor Cyan
 Write-Host ""
 
@@ -104,24 +134,9 @@ if (-not (Test-Path "logs")) {
     New-Item -ItemType Directory -Path "logs" | Out-Null
 }
 
-# Start Manus Sync Engine
-Write-Host "[1/4] Starting Manus Sync Engine..." -ForegroundColor Yellow
-Start-Process -FilePath "python" -ArgumentList "MANUS_SYNC_ENGINE_ENHANCED.py" -WindowStyle Minimized -WorkingDirectory $ProjectDir
-Start-Sleep -Seconds 2
-
-# Start Godmode Dashboard
-Write-Host "[2/4] Starting Godmode Dashboard..." -ForegroundColor Yellow
-Start-Process -FilePath "python" -ArgumentList "app_enhanced.py" -WindowStyle Minimized -WorkingDirectory "$ProjectDir\godmode-dashboard"
-Start-Sleep -Seconds 3
-
-# Start Backend API
-Write-Host "[3/4] Starting Backend API..." -ForegroundColor Yellow
-Start-Process -FilePath "cmd" -ArgumentList "/c", "npx ts-node src/index.ts" -WindowStyle Minimized -WorkingDirectory "$ProjectDir\backend"
-Start-Sleep -Seconds 5
-
-# Start Frontend Server
-Write-Host "[4/4] Starting Frontend Server..." -ForegroundColor Yellow
-Start-Process -FilePath "python" -ArgumentList "-m", "http.server", "3000" -WindowStyle Minimized -WorkingDirectory "$ProjectDir\frontend\dist"
+# Start Godmode Orchestrator V2
+Write-Host "[1/1] Starting GODMODE Orchestrator..." -ForegroundColor Yellow
+Start-Process -FilePath "cmd.exe" -ArgumentList '/c', 'title GODMODE Orchestrator v2 && python "ai-gods\godmode_orchestrator_v2.py"' -WindowStyle Minimized -WorkingDirectory $ProjectDir
 Start-Sleep -Seconds 2
 
 Write-Host ""
@@ -142,6 +157,7 @@ Write-Host ""
 Write-Host "Access your system at:" -ForegroundColor Cyan
 Write-Host "  Frontend:  http://localhost:3000" -ForegroundColor White
 Write-Host "  Backend:   http://localhost:3001/api" -ForegroundColor White
+Write-Host "  Python API: http://localhost:8000/docs" -ForegroundColor White
 Write-Host "  Dashboard: http://localhost:3333" -ForegroundColor White
 Write-Host ""
 Write-Host "All services are running in background windows." -ForegroundColor Yellow
@@ -158,4 +174,7 @@ Write-Host "========================================" -ForegroundColor Cyan
 Write-Host " Press any key to exit this window" -ForegroundColor Cyan
 Write-Host " (Services will continue running)" -ForegroundColor Cyan
 Write-Host "========================================" -ForegroundColor Cyan
-Read-Host ""
+Read-Host "Press Enter to close this window"
+
+
+

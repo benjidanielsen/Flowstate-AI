@@ -1,939 +1,309 @@
 #!/usr/bin/env python3
 """
-📊 GODMODE AI MONITORING DASHBOARD - ENHANCED VERSION
-⚡ Real-time AI activity monitor with Windows compatibility
-🎯 Shows what each AI is doing with visual progress indicators
-🔄 Updates every 2 seconds with live status
-🪟 Full Windows/Linux/macOS compatibility
-🛡️ Robust error handling and recovery
+📊 GODMODE AI MONITORING DASHBOARD - v2.0 "THE BIG PICTURE"
+⚡ Real-time AI activity and Project Manager Log
 """
 
-from flask import Flask, render_template, jsonify, request, send_from_directory
-from flask_socketio import SocketIO, emit
 import json
 import time
 import threading
 import platform
 import sys
 import traceback
-from datetime import datetime, timedelta
+from datetime import datetime
 from pathlib import Path
 import logging
 import os
-import sqlite3
-from typing import Dict, List, Any, Optional
-import asyncio
-import glob
-import psutil
-import signal
-from contextlib import contextmanager
-import uuid
-from self_improvement import SelfImprovementAgent
-from github_integration import GitHubIntegration
+from typing import Dict, List, Any
+from collections import deque
 
-# Enhanced logging configuration
-log_dir = Path(__file__).parent / "logs"
-log_dir.mkdir(exist_ok=True)
+from flask import Flask, render_template, jsonify, request
+from flask_socketio import SocketIO
+import psutil
+
+# --- Basic Configuration ---
+LOG_DIR = Path(__file__).parent / "logs"
+LOG_DIR.mkdir(exist_ok=True)
 
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     handlers=[
-        logging.FileHandler(log_dir / 'dashboard.log'),
+        logging.FileHandler(LOG_DIR / 'dashboard_v2.log'),
         logging.StreamHandler(sys.stdout)
     ]
 )
 logger = logging.getLogger(__name__)
 
-# Flask app configuration
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'godmode-dashboard-enhanced-secret'
-app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0  # Disable caching for development
+app.config['SECRET_KEY'] = 'godmode-dashboard-v2-secret'
+socketio = SocketIO(app, cors_allowed_origins="*", async_mode='threading')
 
-# Enhanced SocketIO configuration
-socketio = SocketIO(
-    app, 
-    cors_allowed_origins="*",
-    logger=False,  # Disable SocketIO logging to reduce noise
-    engineio_logger=False,
-    ping_timeout=60,
-    ping_interval=25
-)
+# --- In-Memory Data Store ---
+# Using deque for a capped-size, thread-safe list of log entries
+project_manager_log = deque(maxlen=100)
 
-class GodmodeMonitorEnhanced:
-    """
-    Enhanced Real-time AI monitoring system
-    Tracks all AI agents and their current activities with robust error handling
-    """
-    
-    def __init__(self):
-        self.project_root = Path(__file__).parent.parent
-        self.dashboard_dir = Path(__file__).parent
-        self.static_dir = self.dashboard_dir / "static"
-        self.templates_dir = self.dashboard_dir / "templates"
-        self.db_path = self.dashboard_dir / "dashboard.db"
-        
-        # Create necessary directories
-        self._create_directories()
-        
-        # Initialize data structures
-        self.ai_status = {}
-        self.task_history = []
-        self.system_stats = {
-            "total_ais": 0,
-            "active_ais": 0,
-            "completed_tasks": 0,
-            "active_tasks": 0,
-            "system_uptime": datetime.now(),
-            "errors_count": 0,
-            "recovery_count": 0
+# --- Core Application Logic ---
+
+def get_system_stats():
+    """Gathers basic system statistics."""
+    return {
+        "cpu_usage": psutil.cpu_percent(),
+        "memory_usage": psutil.virtual_memory().percent,
+        "timestamp": datetime.now().isoformat()
+    }
+
+def get_ai_agent_status():
+    """Placeholder for AI agent status. In a real scenario, this would poll other services."""
+    # This is mock data for demonstration purposes.
+    # In the future, this will be fed by the actual AI agents.
+    return [
+        {"name": "Proactive Problem Solver", "status": "Idle", "task": "Monitoring system health..."},
+        {"name": "AI Performance Tuner", "status": "Idle", "task": "Awaiting analysis tasks..."},
+        {"name": "Godmode Orchestrator", "status": "Active", "task": "Coordinating system overhaul."},
+    ]
+
+def broadcast_update():
+    """Broadcasts a full update of system status to all clients."""
+    with app.app_context():
+        data = {
+            "system_stats": get_system_stats(),
+            "ai_agents": get_ai_agent_status(),
+            "log_entries": list(project_manager_log)
         }
-        
-        # Enhanced AI Agent definitions with profile pictures
-        self.ai_agents = {
-            "project-manager": {
-                "name": "Project Manager", 
-                "icon": "🤖", 
-                "color": "#4080FF",
-                "profile_pic": "/static/profile_pictures/project_manager.png",
-                "description": "Coordinates all AI agents and manages project workflow"
-            },
-            "backend-developer": {
-                "name": "Backend Developer", 
-                "icon": "💻", 
-                "color": "#57A9FB",
-                "profile_pic": "/static/profile_pictures/backend_developer.png",
-                "description": "Develops server-side logic and API endpoints"
-            },
-            "frontend-developer": {
-                "name": "Frontend Developer", 
-                "icon": "🎨", 
-                "color": "#37D4CF",
-                "profile_pic": "/static/profile_pictures/frontend_developer.png",
-                "description": "Creates user interfaces and client-side functionality"
-            },
-            "database-ai": {
-                "name": "Database AI", 
-                "icon": "🗄️", 
-                "color": "#23C343",
-                "profile_pic": "/static/profile_pictures/database_ai.png",
-                "description": "Manages database operations and optimizations"
-            },
-            "tester-ai": {
-                "name": "Tester AI", 
-                "icon": "🔬", 
-                "color": "#FBE842",
-                "profile_pic": "/static/profile_pictures/tester_ai.png",
-                "description": "Performs quality assurance and automated testing"
-            },
-            "fixer-ai": {
-                "name": "Fixer AI", 
-                "icon": "🛠️", 
-                "color": "#FF9A2E",
-                "profile_pic": "/static/profile_pictures/fixer_ai.png",
-                "description": "Identifies and resolves bugs and issues"
-            },
-            "devops-ai": {
-                "name": "DevOps AI", 
-                "icon": "🚀", 
-                "color": "#A9AEB8",
-                "profile_pic": "/static/profile_pictures/devops_ai.png",
-                "description": "Handles deployment and infrastructure management"
-            },
-            "documentation-ai": {
-                "name": "Documentation AI", 
-                "icon": "📚", 
-                "color": "#4080FF",
-                "profile_pic": "/static/profile_pictures/documentation_ai.png",
-                "description": "Creates and maintains project documentation"
-            },
-            "support-ai": {
-                "name": "Support AI", 
-                "icon": "🆘", 
-                "color": "#57A9FB",
-                "profile_pic": "/static/profile_pictures/support_ai.png",
-                "description": "Provides user support and troubleshooting"
-            },
-            "innovation-ai": {
-                "name": "Innovation AI", 
-                "icon": "💡", 
-                "color": "#37D4CF",
-                "profile_pic": "/static/profile_pictures/innovation_ai.png",
-                "description": "Generates new ideas and breakthrough solutions"
-            },
-            "ai-communication-hub": {
-                "name": "Communication Hub", 
-                "icon": "📡", 
-                "color": "#23C343",
-                "profile_pic": "/static/profile_pictures/communication_hub.png",
-                "description": "Facilitates communication between AI agents"
-            },
-            "collective-memory-system": {
-                "name": "Collective Memory", 
-                "icon": "🧠", 
-                "color": "#FBE842",
-                "profile_pic": "/static/profile_pictures/collective_memory.png",
-                "description": "Stores and retrieves shared knowledge and experiences"
-            }
-        }
-        
-        # System monitoring
-        self.monitoring_active = False
-        self.monitoring_thread = None
-        self.error_count = 0
-        self.last_error_time = None
-        self.self_improvement_agent = SelfImprovementAgent(self)
-        github_token = os.getenv("GITHUB_TOKEN")
-        if github_token:
-            self.github_integration = GitHubIntegration("Flowstate-AI", "Flowstate-AI", github_token) # Assuming repo owner and name are 'Flowstate-AI'
-        else:
-            logger.warning("GITHUB_TOKEN environment variable not set. GitHub integration will be disabled.")
-            self.github_integration = None
+        socketio.emit('full_update', data)
 
-        
-        # Initialize the monitoring system
-        try:
-            self._init_database()
-            self.initialize_monitoring()
-            logger.info("✅ GodmodeMonitorEnhanced initialized successfully")
-        except Exception as e:
-            logger.error(f"❌ Failed to initialize monitor: {e}")
-            self._handle_initialization_error(e)
-    
-    def _create_directories(self):
-        """Create necessary directories with proper error handling"""
-        try:
-            directories = [
-                self.static_dir,
-                self.static_dir / "css",
-                self.static_dir / "js", 
-                self.static_dir / "profile_pictures",
-                self.templates_dir,
-                self.dashboard_dir / "logs"
-            ]
-            
-            for directory in directories:
-                directory.mkdir(parents=True, exist_ok=True)
-                
-            # Set permissions (Unix-like systems only)
-            if platform.system() != 'Windows':
-                for directory in directories:
-                    os.chmod(directory, 0o755)
-                    
-            logger.info("✅ Dashboard directories created successfully")
-            
-        except Exception as e:
-            logger.error(f"❌ Failed to create directories: {e}")
-            raise
-    
-    def _init_database(self):
-        """Initialize SQLite database for dashboard data"""
-        try:
-            conn = sqlite3.connect(self.db_path, timeout=30.0)
-            conn.execute("PRAGMA journal_mode=WAL")
-            conn.execute("PRAGMA synchronous=NORMAL")
-            cursor = conn.cursor()
-            
-            # AI status table
-            cursor.execute('''
-                CREATE TABLE IF NOT EXISTS ai_status (
-                    id TEXT PRIMARY KEY,
-                    name TEXT NOT NULL,
-                    status TEXT DEFAULT 'INITIALIZING',
-                    current_task TEXT,
-                    progress INTEGER DEFAULT 0,
-                    last_update TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                    tasks_completed INTEGER DEFAULT 0,
-                    performance_score REAL DEFAULT 100.0,
-                    error_count INTEGER DEFAULT 0,
-                    uptime_start TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                )
-            ''')
-            
-            # Task history table
-            cursor.execute('''
-                CREATE TABLE IF NOT EXISTS task_history (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    ai_id TEXT NOT NULL,
-                    task_name TEXT NOT NULL,
-                    status TEXT NOT NULL,
-                    started_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                    completed_at TIMESTAMP,
-                    duration_seconds INTEGER,
-                    success BOOLEAN DEFAULT TRUE
-                )
-            ''')
-            
-            # System events table
-            cursor.execute('''
-                CREATE TABLE IF NOT EXISTS system_events (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    event_type TEXT NOT NULL,
-                    description TEXT NOT NULL,
-                    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                    severity TEXT DEFAULT 'INFO',
-                    resolved BOOLEAN DEFAULT FALSE
-                )
-            ''')
-            
-            # Performance metrics table
-            cursor.execute('''
-                CREATE TABLE IF NOT EXISTS performance_metrics (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    metric_name TEXT NOT NULL,
-                    metric_value REAL NOT NULL,
-                    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                    additional_data TEXT DEFAULT '{}'
-                )
-            ''')
-            
-            conn.commit()
-            conn.close()
-            
-            logger.info("✅ Dashboard database initialized")
-            
-        except Exception as e:
-            logger.error(f"❌ Database initialization failed: {e}")
-            raise
-    
-    @contextmanager
-    def _get_db_connection(self):
-        """Context manager for database connections"""
-        conn = None
-        try:
-            conn = sqlite3.connect(self.db_path, timeout=30.0)
-            conn.execute("PRAGMA journal_mode=WAL")
-            yield conn
-        except Exception as e:
-            if conn:
-                conn.rollback()
-            logger.error(f"❌ Database error: {e}")
-            raise
-        finally:
-            if conn:
-                conn.close()
-    
-    def _handle_initialization_error(self, error: Exception):
-        """Handle initialization errors gracefully"""
-        logger.error(f"🚨 Initialization error: {error}")
-        logger.error(f"Traceback: {traceback.format_exc()}")
-        
-        # Try to continue with minimal functionality
-        self.ai_status = {}
-        for ai_id, ai_info in self.ai_agents.items():
-            self.ai_status[ai_id] = {
-                "id": ai_id,
-                "name": ai_info["name"],
-                "icon": ai_info["icon"],
-                "color": ai_info["color"],
-                "status": "ERROR",
-                "current_task": f"Initialization failed: {str(error)[:100]}",
-                "progress": 0,
-                "last_update": datetime.now().isoformat(),
-                "tasks_completed": 0,
-                "uptime": datetime.now(),
-                "performance_score": 0,
-                "current_activity": "System recovery needed"
-            }
-    
-    def initialize_monitoring(self):
-        """Initialize the monitoring system with error recovery"""
-        try:
-            # Initialize AI status
-            for ai_id, ai_info in self.ai_agents.items():
-                self.ai_status[ai_id] = {
-                    "id": ai_id,
-                    "name": ai_info["name"],
-                    "icon": ai_info["icon"],
-                    "color": ai_info["color"],
-                    "profile_pic": ai_info["profile_pic"],
-                    "description": ai_info["description"],
-                    "status": "INITIALIZING",
-                    "current_task": "Starting up...",
-                    "progress": 0,
-                    "last_update": datetime.now().isoformat(),
-                    "tasks_completed": 0,
-                    "uptime": datetime.now(),
-                    "performance_score": 100,
-                    "current_activity": "Initializing systems",
-                    "error_count": 0,
-                    "last_heartbeat": datetime.now().isoformat()
-                }
-            
-            # Save initial status to database
-            self._save_ai_status_to_db()
-            
-            # Start monitoring thread
-            self.start_monitoring()
-            self.self_improvement_agent = SelfImprovementAgent(self)
-            
-            # Initialize GitHub integration
-            github_token = os.getenv("GITHUB_TOKEN")
-            if github_token:
-                self.github_integration = GitHubIntegration("Flowstate-AI", "Flowstate-AI", github_token) # Assuming repo owner and name are 'Flowstate-AI'
-            else:
-                logger.warning("GITHUB_TOKEN environment variable not set. GitHub integration will be disabled.")
-                self.github_integration = None
-            
-            logger.info("✅ Monitoring system initialized")
-            
-        except Exception as e:
-            logger.error(f"❌ Failed to initialize monitoring: {e}")
-            self._handle_initialization_error(e)
-    
-    def _save_ai_status_to_db(self):
-        """Save AI status to database"""
-        try:
-            with self._get_db_connection() as conn:
-                cursor = conn.cursor()
-                
-                for ai_id, status in self.ai_status.items():
-                    cursor.execute('''
-                        INSERT OR REPLACE INTO ai_status 
-                        (id, name, status, current_task, progress, last_update, 
-                         tasks_completed, performance_score, error_count)
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-                    ''', (
-                        ai_id,
-                        status["name"],
-                        status["status"],
-                        status["current_task"],
-                        status["progress"],
-                        status["last_update"],
-                        status["tasks_completed"],
-                        status["performance_score"],
-                        status.get("error_count", 0)
-                    ))
-                
-                conn.commit()
-                
-        except Exception as e:
-            logger.error(f"❌ Failed to save AI status to database: {e}")
-    
-    def start_monitoring(self):
-        """Start the monitoring thread"""
-        if self.monitoring_active:
-            return
-        
-        try:
-            self.monitoring_active = True
-            self.monitoring_thread = threading.Thread(
-                target=self._monitoring_loop, 
-                daemon=True, 
-                name="DashboardMonitor"
-            )
-            self.monitoring_thread.start()
-            logger.info("🔄 Dashboard monitoring started")
-            
-        except Exception as e:
-            logger.error(f"❌ Failed to start monitoring: {e}")
-            self.monitoring_active = False
-    
-    def stop_monitoring(self):
-        """Stop the monitoring thread"""
-        self.monitoring_active = False
-        if self.monitoring_thread and self.monitoring_thread.is_alive():
-            self.monitoring_thread.join(timeout=5.0)
-        logger.info("🛑 Dashboard monitoring stopped")
-    
-    def _monitoring_loop(self):
-        """Main monitoring loop with error recovery"""
-        logger.info("🔄 Monitoring loop started")
-        
-        while self.monitoring_active:
-            try:
-                # Update AI status
-                self._update_ai_status()
-                
-                # Update system stats
-                self._update_system_stats()
-                
-                # Check for heartbeats
-                self._check_heartbeats()
-                
-                # Emit updates via SocketIO
-                self._emit_status_update()
-                # Schedule self-improvement cycle to run in the main event loop
-                asyncio.run_coroutine_threadsafe(
-                    self.self_improvement_agent.run_self_improvement_cycle(),
-                    asyncio.get_event_loop()
-                )
+# --- Background Task ---
 
-                
-                # Log performance metrics
-                self._log_performance_metrics()
-                
-                # Sleep for 2 seconds
-                time.sleep(2)
-                
-            except Exception as e:
-                self.error_count += 1
-                self.last_error_time = datetime.now()
-                logger.error(f"❌ Monitoring loop error: {e}")
-                
-                # Log error to database
-                self._log_system_event("MONITORING_ERROR", str(e), "ERROR")
-                
-                # Sleep longer on error
-                time.sleep(10)
-                
-                # Attempt recovery if too many errors
-                if self.error_count > 10:
-                    self._attempt_recovery()
-    
-    def _update_ai_status(self):
-        """Update AI status with simulated or real data"""
+def background_monitor():
+    """Continuously broadcasts updates in the background."""
+    while True:
         try:
-            current_time = datetime.now()
-            
-            for ai_id, status in self.ai_status.items():
-                # Simulate AI activity if no real data
-                if status["status"] == "INITIALIZING":
-                    # Gradually initialize AIs
-                    if current_time.second % 10 == 0:
-                        status["status"] = "ACTIVE"
-                        status["current_task"] = "Ready for tasks"
-                        status["progress"] = 0
-                        status["current_activity"] = "Waiting for assignments"
-                
-                elif status["status"] == "ACTIVE":
-                    # Simulate occasional task updates
-                    if current_time.second % 30 == 0:
-                        tasks = [
-                            "Processing data",
-                            "Analyzing requirements", 
-                            "Generating code",
-                            "Running tests",
-                            "Optimizing performance",
-                            "Updating documentation"
-                        ]
-                        status["current_task"] = f"{tasks[current_time.second % len(tasks)]}"
-                        status["progress"] = min(100, status["progress"] + 10)
-                        
-                        if status["progress"] >= 100:
-                            status["tasks_completed"] += 1
-                            status["progress"] = 0
-                
-                # Update timestamps
-                status["last_update"] = current_time.isoformat()
-                status["last_heartbeat"] = current_time.isoformat()
-            
-            # Save to database periodically
-            if current_time.second % 30 == 0:
-                self._save_ai_status_to_db()
-                
+            broadcast_update()
         except Exception as e:
-            logger.error(f"❌ Failed to update AI status: {e}")
-    
-    def _update_system_stats(self):
-        """Update system statistics"""
-        try:
-            active_ais = len([ai for ai in self.ai_status.values() if ai["status"] == "ACTIVE"])
-            total_tasks = sum(ai["tasks_completed"] for ai in self.ai_status.values())
-            
-            self.system_stats.update({
-                "total_ais": len(self.ai_status),
-                "active_ais": active_ais,
-                "completed_tasks": total_tasks,
-                "active_tasks": len([ai for ai in self.ai_status.values() if ai["progress"] > 0]),
-                "errors_count": self.error_count,
-                "uptime": str(datetime.now() - self.system_stats["system_uptime"])
-            })
-            
-        except Exception as e:
-            logger.error(f"❌ Failed to update system stats: {e}")
-    
-    def _check_heartbeats(self):
-        """Check for stale AI heartbeats"""
-        try:
-            current_time = datetime.now()
-            
-            for ai_id, status in self.ai_status.items():
-                last_heartbeat = datetime.fromisoformat(status["last_heartbeat"])
-                
-                # Mark as inactive if no heartbeat for 5 minutes
-                if current_time - last_heartbeat > timedelta(minutes=5):
-                    if status["status"] == "ACTIVE":
-                        status["status"] = "INACTIVE"
-                        status["current_task"] = "No heartbeat received"
-                        status["current_activity"] = "Connection lost"
-                        logger.warning(f"⚠️ AI {ai_id} marked as INACTIVE (no heartbeat)")
-                        
-        except Exception as e:
-            logger.error(f"❌ Failed to check heartbeats: {e}")
-    
-    def _emit_status_update(self):
-        """Emit status update via SocketIO"""
-        try:
-            dashboard_data = self.get_dashboard_data()
-            socketio.emit('status_update', dashboard_data)
-            
-        except Exception as e:
-            logger.error(f"❌ Failed to emit status update: {e}")
-    
-    def _log_performance_metrics(self):
-        """Log performance metrics to database"""
-        try:
-            if datetime.now().second % 60 == 0:  # Log every minute
-                with self._get_db_connection() as conn:
-                    cursor = conn.cursor()
-                    
-                    # System metrics
-                    cpu_percent = psutil.cpu_percent()
-                    memory_percent = psutil.virtual_memory().percent
-                    
-                    metrics = [
-                        ("cpu_usage", cpu_percent),
-                        ("memory_usage", memory_percent),
-                        ("active_ais", self.system_stats["active_ais"]),
-                        ("completed_tasks", self.system_stats["completed_tasks"]),
-                        ("error_count", self.error_count)
-                    ]
-                    
-                    for metric_name, metric_value in metrics:
-                        cursor.execute('''
-                            INSERT INTO performance_metrics (metric_name, metric_value)
-                            VALUES (?, ?)
-                        ''', (metric_name, metric_value))
-                    
-                    conn.commit()
-                    
-        except Exception as e:
-            logger.error(f"❌ Failed to log performance metrics: {e}")
-    
-    def _log_system_event(self, event_type: str, description: str, severity: str = "INFO"):
-        """Log system event to database"""
-        try:
-            with self._get_db_connection() as conn:
-                cursor = conn.cursor()
-                cursor.execute('''
-                    INSERT INTO system_events (event_type, description, severity)
-                    VALUES (?, ?, ?)
-                ''', (event_type, description, severity))
-                conn.commit()
-                
-        except Exception as e:
-            logger.error(f"❌ Failed to log system event: {e}")
-    
-    def _attempt_recovery(self):
-        """Attempt system recovery"""
-        logger.info("🔄 Attempting dashboard recovery...")
-        
-        try:
-            # Reset error count
-            self.error_count = 0
-            
-            # Reset AI status
-            for ai_id, status in self.ai_status.items():
-                if status["status"] in ["ERROR", "INACTIVE"]:
-                    status["status"] = "INITIALIZING"
-                    status["current_task"] = "Recovering..."
-                    status["progress"] = 0
-            
-            # Log recovery attempt
-            self._log_system_event("RECOVERY_ATTEMPT", "Dashboard recovery initiated", "INFO")
-            
-            logger.info("✅ Dashboard recovery completed")
-            
-        except Exception as e:
-            logger.error(f"❌ Recovery failed: {e}")
-    
-    def get_dashboard_data(self) -> Dict[str, Any]:
-        """Get comprehensive dashboard data"""
-        try:
-            return {
-                'timestamp': datetime.now().isoformat(),
-                'ai_agents': list(self.ai_status.values()),
-                'system_stats': self.system_stats,
-                'platform_info': {
-                    'system': platform.system(),
-                    'version': platform.version(),
-                    'python_version': sys.version,
-                    'cpu_count': psutil.cpu_count(),
-                    'memory_total': psutil.virtual_memory().total
-                },
-                'health_status': 'healthy' if self.error_count < 5 else 'warning' if self.error_count < 20 else 'critical'
-            }
-            
-        except Exception as e:
-            logger.error(f"❌ Failed to get dashboard data: {e}")
-            return {
-                'timestamp': datetime.now().isoformat(),
-                'error': str(e),
-                'health_status': 'error'
-            }
-    
-    def receive_heartbeat(self, ai_id: str, task_info: Dict[str, Any] = None):
-        """Receive heartbeat from AI agent"""
-        try:
-            if ai_id in self.ai_status:
-                self.ai_status[ai_id]["last_heartbeat"] = datetime.now().isoformat()
-                self.ai_status[ai_id]["status"] = "ACTIVE"
-                
-                if task_info:
-                    self.ai_status[ai_id].update(task_info)
-                
-                logger.debug(f"💓 Heartbeat received from {ai_id}")
-                return True
-            else:
-                logger.warning(f"⚠️ Heartbeat from unknown AI: {ai_id}")
-                return False
-                
-        except Exception as e:
-            logger.error(f"❌ Failed to process heartbeat from {ai_id}: {e}")
-            return False
+            logger.error(f"Error in background monitor: {e}")
+        socketio.sleep(5) # Broadcast every 5 seconds
 
-# Initialize the enhanced monitor
-monitor = GodmodeMonitorEnhanced()
+# --- Flask & SocketIO Routes ---
 
-# Flask Routes
 @app.route('/')
-def dashboard():
-    """Main dashboard page"""
-    try:
-        return render_template('dashboard.html')
-    except Exception as e:
-        logger.error(f"❌ Dashboard route error: {e}")
-        return f"Dashboard Error: {e}", 500
+def index():
+    """Serves the main dashboard page."""
+    return render_template('dashboard.html')
 
-@app.route('/api/status')
-def api_status():
-    """API endpoint for dashboard status"""
-    try:
-        return jsonify(monitor.get_dashboard_data())
-    except Exception as e:
-        logger.error(f"❌ API status error: {e}")
-        return jsonify({'error': str(e)}), 500
+@app.route('/log', methods=['POST'])
+def receive_log():
+    """API endpoint for the Project Manager (or other AIs) to post log entries."""
+    data = request.json
+    if not data or 'entry' not in data:
+        return jsonify({"status": "error", "message": "Invalid log entry format"}), 400
+    
+    log_entry = {
+        "timestamp": datetime.now().strftime('%H:%M:%S'),
+        "entry": data['entry']
+    }
+    
+    # Add to our log and broadcast it
+    project_manager_log.appendleft(log_entry)
+    socketio.emit('new_log_entry', log_entry)
+    
+    return jsonify({"status": "success"}), 200
 
-@app.route('/api/agent_status')
-def api_agent_status():
-    """API endpoint for agent status"""
-    try:
-        return jsonify({
-            'agents': list(monitor.ai_status.values()),
-            'timestamp': datetime.now().isoformat()
-        })
-    except Exception as e:
-        logger.error(f"❌ API agent status error: {e}")
-        return jsonify({'error': str(e)}), 500
-
-@app.route('/api/heartbeat', methods=['POST'])
-def api_heartbeat():
-    """API endpoint for receiving heartbeats"""
-    try:
-        data = request.get_json()
-        ai_id = data.get('ai_id')
-        task_info = data.get('task_info', {})
-        
-        success = monitor.receive_heartbeat(ai_id, task_info)
-        
-        return jsonify({
-            'success': success,
-            'timestamp': datetime.now().isoformat()
-        })
-        
-    except Exception as e:
-        logger.error(f"❌ API heartbeat error: {e}")
-        return jsonify({'error': str(e)}), 500
-
-@app.route('/static/<path:filename>')
-def static_files(filename):
-    """Serve static files with error handling"""
-    try:
-        return send_from_directory(monitor.static_dir, filename)
-    except Exception as e:
-        logger.error(f"❌ Static file error: {e}")
-        return "File not found", 404
-
-# SocketIO Events
 @socketio.on('connect')
 def handle_connect():
-    """Handle client connection"""
-    try:
-        logger.info(f"🔌 Client connected: {request.sid}")
-        emit('status_update', monitor.get_dashboard_data())
-    except Exception as e:
-        logger.error(f"❌ SocketIO connect error: {e}")
+    """Handles a new client connection."""
+    logger.info("Client connected. Sending initial state.")
+    # Send a full update to the newly connected client
+    broadcast_update()
 
-@socketio.on('disconnect')
-def handle_disconnect():
-    """Handle client disconnection"""
-    try:
-        logger.info(f"🔌 Client disconnected: {request.sid}")
-    except Exception as e:
-        logger.error(f"❌ SocketIO disconnect error: {e}")
+# --- HTML Template ---
+# For simplicity, the HTML is embedded here. In a larger app, this would be in a separate file.
 
-@socketio.on('request_update')
-def handle_request_update():
-    """Handle manual update request"""
-    try:
-        emit('status_update', monitor.get_dashboard_data())
-    except Exception as e:
-        logger.error(f"❌ SocketIO update request error: {e}")
-
-# Create basic HTML template if it doesn't exist
-def create_basic_template():
-    """Create a basic HTML template for the dashboard"""
-    template_content = '''<!DOCTYPE html>
+DASHBOARD_TEMPLATE = """
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GODMODE AI Dashboard - Enhanced</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <title>GODMODE Dashboard v2</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: #1a1a1a; color: white; }
-        .header { text-align: center; margin-bottom: 30px; }
-        .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px; }
-        .stat-card { background: #2a2a2a; padding: 20px; border-radius: 10px; text-align: center; }
-        .agents { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
-        .agent-card { background: #2a2a2a; padding: 20px; border-radius: 10px; border-left: 4px solid #4080FF; }
-        .agent-header { display: flex; align-items: center; margin-bottom: 15px; }
-        .agent-icon { font-size: 24px; margin-right: 10px; }
-        .progress-bar { background: #444; height: 20px; border-radius: 10px; overflow: hidden; margin: 10px 0; }
-        .progress-fill { height: 100%; background: linear-gradient(90deg, #4080FF, #57A9FB); transition: width 0.3s; }
-        .status { padding: 5px 10px; border-radius: 15px; font-size: 12px; font-weight: bold; }
-        .status.active { background: #23C343; }
-        .status.inactive { background: #FF4444; }
-        .status.initializing { background: #FBE842; color: #000; }
-        .timestamp { text-align: center; margin-top: 20px; color: #888; }
+        :root {
+            --bg-color: #1a1a1a;
+            --primary-color: #2a2a2a;
+            --secondary-color: #3a3a3a;
+            --font-color: #e0e0e0;
+            --accent-color: #00aaff;
+            --green: #28a745;
+            --yellow: #ffc107;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--font-color);
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr;
+            gap: 20px;
+            max-width: 1600px;
+            margin: auto;
+        }
+        .header {
+            grid-column: 1 / -1;
+            text-align: center;
+            border-bottom: 1px solid var(--secondary-color);
+            padding-bottom: 10px;
+            margin-bottom: 10px;
+        }
+        h1, h2 {
+            margin: 0;
+            color: var(--accent-color);
+        }
+        .card {
+            background-color: var(--primary-color);
+            border-radius: 8px;
+            padding: 20px;
+            border: 1px solid var(--secondary-color);
+        }
+        .log-container {
+            height: 70vh;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+        .log-entry {
+            background-color: var(--secondary-color);
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-left: 3px solid var(--accent-color);
+            animation: fadeIn 0.5s ease;
+        }
+        .log-entry .timestamp {
+            font-weight: bold;
+            color: var(--yellow);
+            margin-right: 10px;
+        }
+        .agent-status .agent {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid var(--secondary-color);
+        }
+        .agent-status .agent:last-child {
+            border-bottom: none;
+        }
+        .agent-status .status {
+            font-weight: bold;
+        }
+        .agent-status .status.Active { color: var(--green); }
+        .agent-status .status.Idle { color: var(--yellow); }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
     </style>
 </head>
 <body>
     <div class="header">
-        <h1>🚀 GODMODE AI Dashboard - Enhanced</h1>
-        <p>Real-time AI Agent Monitoring with Windows Compatibility</p>
-    </div>
-    
-    <div class="stats" id="stats">
-        <!-- Stats will be populated by JavaScript -->
-    </div>
-    
-    <div class="agents" id="agents">
-        <!-- Agents will be populated by JavaScript -->
-    </div>
-    
-    <div class="timestamp" id="timestamp">
-        <!-- Timestamp will be updated by JavaScript -->
+        <h1>GODMODE Dashboard v2.0</h1>
+        <p>Live System Monitoring & Project Manager Log</p>
     </div>
 
+    <div class="container">
+        <div class="card">
+            <h2>AI Agent Status</h2>
+            <div id="agent-status-container" class="agent-status">
+                <!-- Agent statuses will be injected here -->
+            </div>
+        </div>
+        <div class="card">
+            <h2>Project Manager's Live Log</h2>
+            <div id="log-container" class="log-container">
+                <!-- Log entries will be injected here -->
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
     <script>
         const socket = io();
-        
-        socket.on('status_update', function(data) {
-            updateDashboard(data);
+
+        socket.on('connect', () => {
+            console.log('Connected to dashboard server.');
         });
-        
-        function updateDashboard(data) {
-            // Update stats
-            const statsHtml = `
-                <div class="stat-card">
-                    <h3>Total AIs</h3>
-                    <div style="font-size: 24px; color: #4080FF;">${data.system_stats.total_ais}</div>
-                </div>
-                <div class="stat-card">
-                    <h3>Active AIs</h3>
-                    <div style="font-size: 24px; color: #23C343;">${data.system_stats.active_ais}</div>
-                </div>
-                <div class="stat-card">
-                    <h3>Completed Tasks</h3>
-                    <div style="font-size: 24px; color: #FBE842;">${data.system_stats.completed_tasks}</div>
-                </div>
-                <div class="stat-card">
-                    <h3>System Health</h3>
-                    <div style="font-size: 24px; color: ${data.health_status === 'healthy' ? '#23C343' : data.health_status === 'warning' ? '#FBE842' : '#FF4444'};">${data.health_status.toUpperCase()}</div>
-                </div>
-            `;
-            document.getElementById('stats').innerHTML = statsHtml;
-            
-            // Update agents
-            const agentsHtml = data.ai_agents.map(agent => `
-                <div class="agent-card">
-                    <div class="agent-header">
-                        <span class="agent-icon">${agent.icon}</span>
-                        <div>
-                            <h3 style="margin: 0;">${agent.name}</h3>
-                            <span class="status ${agent.status.toLowerCase()}">${agent.status}</span>
-                        </div>
+
+        socket.on('full_update', (data) => {
+            console.log('Received full update:', data);
+            updateAgents(data.ai_agents);
+            updateLogs(data.log_entries);
+        });
+
+        socket.on('new_log_entry', (logEntry) => {
+            console.log('New log entry:', logEntry);
+            addLogEntry(logEntry, true);
+        });
+
+        function updateAgents(agents) {
+            const container = document.getElementById('agent-status-container');
+            container.innerHTML = agents.map(agent => `
+                <div class="agent">
+                    <div>
+                        <strong>${agent.name}</strong>
+                        <p style="margin: 5px 0 0; font-size: 0.9em; color: #aaa;">Task: ${agent.task}</p>
                     </div>
-                    <div><strong>Current Task:</strong> ${agent.current_task}</div>
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: ${agent.progress}%;"></div>
-                    </div>
-                    <div style="font-size: 12px; color: #888;">
-                        Progress: ${agent.progress}% | Tasks: ${agent.tasks_completed} | Score: ${agent.performance_score.toFixed(1)}
-                    </div>
+                    <span class="status ${agent.status}">${agent.status}</span>
                 </div>
             `).join('');
-            document.getElementById('agents').innerHTML = agentsHtml;
-            
-            // Update timestamp
-            document.getElementById('timestamp').innerHTML = `Last updated: ${new Date(data.timestamp).toLocaleString()}`;
         }
-        
-        // Request initial update
-        socket.emit('request_update');
-        
-        // Auto-refresh every 30 seconds
-        setInterval(() => {
-            socket.emit('request_update');
-        }, 30000);
+
+        function updateLogs(logEntries) {
+            const container = document.getElementById('log-container');
+            container.innerHTML = ''; // Clear existing logs
+            logEntries.forEach(entry => addLogEntry(entry, false));
+        }
+
+        function addLogEntry(logEntry, fromTop) {
+            const container = document.getElementById('log-container');
+            const entryDiv = document.createElement('div');
+            entryDiv.className = 'log-entry';
+            entryDiv.innerHTML = `<span class="timestamp">[${logEntry.timestamp}]</span>${logEntry.entry}`;
+            
+            if (fromTop) {
+                container.prepend(entryDiv);
+            } else {
+                container.appendChild(entryDiv);
+            }
+        }
     </script>
 </body>
-</html>'''
-    
-    template_path = monitor.templates_dir / "dashboard.html"
-    try:
-        template_path.write_text(template_content)
-        logger.info("✅ Basic dashboard template created")
-    except Exception as e:
-        logger.error(f"❌ Failed to create template: {e}")
+</html>
+""";
 
-# Error handlers
-@app.errorhandler(404)
-def not_found(error):
-    return jsonify({'error': 'Not found'}), 404
+# --- Main Execution ---
 
-@app.errorhandler(500)
-def internal_error(error):
-    logger.error(f"❌ Internal server error: {error}")
-    return jsonify({'error': 'Internal server error'}), 500
-
-# Graceful shutdown
-def signal_handler(sig, frame):
-    logger.info("🛑 Shutting down dashboard...")
-    monitor.stop_monitoring()
-    sys.exit(0)
-
-if platform.system() != 'Windows':
-    signal.signal(signal.SIGINT, signal_handler)
-    signal.signal(signal.SIGTERM, signal_handler)
-
-# Main execution
 if __name__ == '__main__':
-    try:
-        # Create basic template if it doesn't exist
-        if not (monitor.templates_dir / "dashboard.html").exists():
-            create_basic_template()
-        
-        logger.info("🚀 Starting GODMODE Dashboard Enhanced...")
-        logger.info(f"🪟 Platform: {platform.system()}")
-        logger.info(f"🐍 Python: {sys.version}")
-        logger.info(f"📊 Dashboard will be available at http://localhost:3333")
-        
-        # Run the Flask app with SocketIO
-        socketio.run(
-            app,
-            host='0.0.0.0',
-            port=3333,
-            debug=False,  # Disable debug in production
-            use_reloader=False,  # Disable reloader to prevent issues
-            log_output=False  # Reduce log noise
-        )
-        
-    except Exception as e:
-        logger.error(f"❌ Failed to start dashboard: {e}")
-        logger.error(f"Traceback: {traceback.format_exc()}")
-        sys.exit(1)
-    finally:
-        monitor.stop_monitoring()
+    # Create templates directory and the dashboard file if they don't exist
+    templates_dir = Path(__file__).parent / "templates"
+    templates_dir.mkdir(exist_ok=True)
+    dashboard_file = templates_dir / "dashboard.html"
+    if not dashboard_file.exists():
+        logger.info("Dashboard template not found, creating it.")
+        dashboard_file.write_text(DASHBOARD_TEMPLATE)
+
+    # Start the background thread for monitoring
+    socketio.start_background_task(target=background_monitor)
+    
+    logger.info("🚀 Starting GODMODE Dashboard v2.0...")
+    logger.info(f"🔗 Access it at http://localhost:3333")
+    
+    # Run the Flask app with SocketIO
+    socketio.run(
+        app,
+        host='0.0.0.0',
+        port=3333,
+        debug=False,
+        use_reloader=False
+    )

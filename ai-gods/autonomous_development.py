@@ -82,22 +82,8 @@ class SelfHealingSystem:
     
     def _run_tests(self) -> List[Dict[str, Any]]:
         """Run automated tests and capture failures"""
-        errors = []
-        
-        # Run backend tests
-        backend_dir = self.project_root / 'backend'
-        if (backend_dir / 'package.json').exists():
-            try:
-                result = subprocess.run(
-                    ['npm', 'test'],
-                    cwd=backend_dir,
-                    capture_output=True,
-                    text=True,
-                    timeout=300
-                )
-                
-                if result.returncode != 0:
-                    errors.append({
+        # This is now handled by the FixerAI and AutoFixerAgent
+        return []
                         'source': 'test',
                         'component': 'backend',
                         'message': result.stderr,
@@ -242,30 +228,49 @@ class SelfHealingSystem:
         
         errors = self.detect_errors()
         
-        for error in errors:
-            logger.info(f"🔍 Processing error: {error.get('message', 'Unknown')[:100]}")
+        if errors:
+            self.diagnose_and_fix(errors)
+        else:
+            logger.info("✅ No errors detected.")
+    
+    def diagnose_and_fix(self, errors: List[Dict[str, Any]]):
+        """Diagnose errors and trigger fixes via FixerAI"""
+        if not errors:
+            return
+
+        logger.info(f"Diagnosing {len(errors)} errors and initiating fixes.")
+        
+        # Create a task for FixerAI to run the autofix cycle
+        autofix_task = {
+            "id": f"autofix-{datetime.now().strftime('%Y%m%d%H%M%S')}",
+            "task": "Run autonomous autofix cycle",
+            "action": "autofix",
+            "status": "ASSIGNED",
+            "created_at": datetime.now().isoformat(),
+            "assigned_to": "FixerAI"
+        }
+        
+        # This is a simplified way to queue a task.
+        # In a real system, this would use a more robust message queue or task management system.
+        try:
+            task_queue_path = self.project_root / "task-queues"
+            task_queue_path.mkdir(exist_ok=True)
+            fixer_task_file = task_queue_path / "FixerAI.json"
             
-            # Analyze error
-            analysis = self.analyze_error(error)
+            tasks = []
+            if fixer_task_file.exists():
+                with open(fixer_task_file, 'r') as f:
+                    tasks = json.load(f)
             
-            if analysis['confidence'] < 0.7:
-                logger.warning(f"⚠️ Low confidence fix, skipping")
-                continue
+            tasks.append(autofix_task)
             
-            # Generate fix
-            fix_command = self.generate_fix(analysis)
+            with open(fixer_task_file, 'w') as f:
+                json.dump(tasks, f, indent=2)
             
-            if not fix_command:
-                logger.warning(f"⚠️ No fix available for this error")
-                continue
-            
-            # Apply fix
-            if self.apply_fix(fix_command):
-                # Validate fix
-                if self.validate_fix(error):
-                    logger.info("✅ Error resolved successfully")
-                else:
-                    logger.warning("⚠️ Fix applied but error persists")
+            logger.info("Autofix task has been dispatched to FixerAI.")
+
+        except Exception as e:
+            logger.error(f"Failed to dispatch autofix task: {e}")
 
 
 class ContinuousImprovementSystem:

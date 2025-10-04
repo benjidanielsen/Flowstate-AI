@@ -1,34 +1,105 @@
 {
     "version": "2.0.0",
     "tasks": [
+        // ****************************************************************** //
+        //                      CODE QUALITY & SCANNING                       //
+        // ****************************************************************** //
         {
-            "label": "Start Flowstate-AI System (Windows)",
-            "type": "shell",
-            "command": "start /B python \"\MANUS_SYNC_ENGINE_ENHANCED.py\" && start /B gunicorn -w 4 -b 0.0.0.0:3333 \"\godmode-dashboard\app_enhanced:app\"",
+            "label": "Fix Code Style Issues",
+            "type": "npm",
+            "script": "format",
+            "detail": "Runs the 'format' script from package.json (e.g., prettier --write .)",
+            "group": "none",
+            "problemMatcher": []
+        },
+        {
+            "label": "Scan for Issues",
+            "type": "npm",
+            "script": "lint",
+            "detail": "Runs the 'lint' script from package.json (e.g., eslint .)",
+            "group": "test",
+            "problemMatcher": []
+        },
+        // ****************************************************************** //
+        //                      APPLICATION LIFECYCLE                         //
+        // ****************************************************************** //
+        {
+            "label": "Start Flowstate-AI System",
+            "dependsOn": [
+                "Fix Code Style Issues",
+                "Scan for Issues"
+            ],
+            "dependsOrder": "sequence",
             "windows": {
-                "command": "start /B python \"\MANUS_SYNC_ENGINE_ENHANCED.py\" && start /B gunicorn -w 4 -b 0.0.0.0:3333 \"\godmode-dashboard\app_enhanced:app\""
+                "command": "powershell",
+                "args": [
+                    "-NoProfile",
+                    "-ExecutionPolicy",
+                    "Bypass",
+                    "-File",
+                    "${workspaceFolder}\\scripts\\windows\\START_FLOWSTATE_WINDOWS.ps1"
+                ]
+            },
+            "linux": {
+                "command": "sh",
+                "args": [
+                    "${workspaceFolder}/scripts/linux/START_FLOWSTATE_LINUX.sh"
+                ]
+            },
+            "osx": {
+                "command": "sh",
+                "args": [
+                    "${workspaceFolder}/scripts/macos/START_FLOWSTATE_MACOS.sh"
+                ]
             },
             "group": {
                 "kind": "build",
                 "isDefault": true
             },
-            "presentation": {
-                "reveal": "always",
-                "panel": "new"
+            "runOptions": {
+                "runOn": "folderOpen"
             },
             "problemMatcher": []
         },
         {
-            "label": "Stop Flowstate-AI System (Windows)",
-            "type": "shell",
-            "command": "taskkill /IM python.exe /F || true && taskkill /IM gunicorn.exe /F || true",
+            "label": "Stop Flowstate-AI System",
+            "type": "process",
+            "command": "echo 'Stopping...'",
             "windows": {
-                "command": "taskkill /IM python.exe /F || true && taskkill /IM gunicorn.exe /F || true"
+                "command": "powershell",
+                "args": [
+                    "-NoProfile",
+                    "-ExecutionPolicy",
+                    "Bypass",
+                    "-File",
+                    "${workspaceFolder}\\scripts\\windows\\STOP_FLOWSTATE_WINDOWS.ps1"
+                ]
+            },
+            "linux": {
+                "command": "sh",
+                "args": [
+                    "${workspaceFolder}/scripts/linux/STOP_FLOWSTATE_LINUX.sh"
+                ]
+            },
+            "osx": {
+                "command": "sh",
+                "args": [
+                    "${workspaceFolder}/scripts/macos/STOP_FLOWSTATE_MACOS.sh"
+                ]
             },
             "group": "none",
-            "presentation": {
-                "reveal": "always",
-                "panel": "new"
+            "problemMatcher": []
+        },
+        {
+            "label": "Restart Flowstate-AI System",
+            "dependsOn": [
+                "Stop Flowstate-AI System",
+                "Start Flowstate-AI System"
+            ],
+            "dependsOrder": "sequence",
+            "group": {
+                "kind": "test",
+                "isDefault": true
             },
             "problemMatcher": []
         }
