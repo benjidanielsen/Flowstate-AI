@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Customer } from '../types';
+import { Customer, PipelineStatus } from '../types';
 import { customerApi } from '../services/api';
 
 interface QualificationQuestionnaireProps {
@@ -30,7 +30,7 @@ const QualificationQuestionnaire: React.FC<QualificationQuestionnaireProps> = ({
       setError('');
       const updated = await customerApi.update(customer.id, {
         prospect_why: prospectWhy,
-        status: 'QUALIFIED' as any,
+        status: PipelineStatus.QUALIFIED,
       });
       onComplete(updated);
     } catch (err: unknown) {
