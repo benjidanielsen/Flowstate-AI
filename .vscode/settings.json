@@ -21,6 +21,6 @@
                    ],
     "python.terminal.activateEnvironment":  true,
     "terminal.integrated.env.windows":  {
-
+                                            "BRAIN_STATUS_JSON":  "C:\\Flowstate Project\\Flowstate-AI\\collective-memory\\project_status.json"
                                         }
 }
