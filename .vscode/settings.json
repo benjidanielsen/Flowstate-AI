@@ -1,8 +1,8 @@
 ﻿{
     "editor.formatOnSave":  true,
     "editor.codeActionsOnSave":  {
-                                     "source.fixAll":  true,
-                                     "source.organizeImports":  true
+                                     "source.fixAll":  "explicit",
+                                     "source.organizeImports":  "explicit"
                                  },
     "files.autoSave":  "afterDelay",
     "files.autoSaveDelay":  700,
@@ -10,5 +10,14 @@
     "git.confirmSync":  false,
     "git.autofetch":  true,
     "explorer.confirmDelete":  false,
-    "explorer.confirmDragAndDrop":  false
+    "explorer.confirmDragAndDrop":  false,
+    "python.defaultInterpreterPath":  ".\\\\.venv\\\\Scripts\\\\python.exe",
+    "isort.interpreter":  [
+                              ".\\\\.venv\\\\Scripts\\\\python.exe"
+                          ],
+    "isort.args":  [
+                       "--profile",
+                       "black"
+                   ],
+    "python.terminal.activateEnvironment":  true
 }
