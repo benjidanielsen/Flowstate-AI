@@ -1,8 +1,16 @@
+﻿# ========================================
+# FlowState-AI One-Click Startup (Windows)
 # ========================================
-# FlowState-AI One-Click Startup (PowerShell)
-# ========================================
-# This script starts all FlowState-AI components with one click
-# Run this in PowerShell: .\START_FLOWSTATE_WINDOWS.ps1
+# Run from anywhere:
+#   powershell -ExecutionPolicy Bypass -File .\scripts\windows\START_FLOWSTATE_WINDOWS.ps1
+# Optional overrides:
+#   ... -ApiPort 3011 -FrontendPort 3010 -PythonApiPort 8010
+
+param(
+  [int]$ApiPort = 0,        # VSCode Backend API (ai_gods.vscode_backend_api_v2)  default: 3001/3011/3021
+  [int]$FrontendPort = 0,   # godmode-frontend server (if applicable)            default: 3000/3010/3020
+  [int]$PythonApiPort = 0   # python-worker FastAPI/uvicorn (if it supports it)  default: 8000/8010/8020
+)
 
 Write-Host ""
 Write-Host "========================================" -ForegroundColor Cyan
@@ -11,170 +19,150 @@ Write-Host " One-Click Startup for Windows" -ForegroundColor Cyan
 Write-Host "========================================" -ForegroundColor Cyan
 Write-Host ""
 
-# Set environment variable to force Python to use UTF-8
+# ---------- Encoding fixes (emoji-safe logs) ----------
 $env:PYTHONUTF8 = "1"
-Write-Host "[OK] Set PYTHONUTF8=1 to enforce UTF-8 encoding for Python." -ForegroundColor Green
+$env:PYTHONIOENCODING = "utf-8"
+try { [Console]::OutputEncoding = [System.Text.Encoding]::UTF8 } catch {}
 
-# Check if Python is installed
-try {
-    $pythonVersion = python --version 2>&1
-    Write-Host "[OK] Python found: $pythonVersion" -ForegroundColor Green
-} catch {
-    Write-Host "[ERROR] Python is not installed or not in PATH" -ForegroundColor Red
-    Write-Host "Please install Python 3.11+ from https://www.python.org/downloads/" -ForegroundColor Yellow
-    Write-Host "Make sure to check 'Add Python to PATH' during installation" -ForegroundColor Yellow
-    Read-Host "Press Enter to exit"
-    exit 1
+Write-Host "[OK] UTF-8 console + Python I/O set." -ForegroundColor Green
+
+# ---------- Helpers ----------
+function Test-PortFree([int]$Port) {
+  try {
+    $listeners = [System.Net.NetworkInformation.IPGlobalProperties]::GetIPGlobalProperties().GetActiveTcpListeners()
+    return -not ($listeners | Where-Object { $_.Port -eq $Port })
+  } catch { return $true }
 }
 
-# Check if Node.js is installed
-try {
-    $nodeVersion = node --version 2>&1
-    Write-Host "[OK] Node.js found: $nodeVersion" -ForegroundColor Green
-} catch {
-    Write-Host "[ERROR] Node.js is not installed or not in PATH" -ForegroundColor Red
-    Write-Host "Please install Node.js LTS from https://nodejs.org/" -ForegroundColor Yellow
-    Read-Host "Press Enter to exit"
-    exit 1
+function Choose-Port([int]$Preferred, [int[]]$Fallbacks) {
+  if ($Preferred -gt 0 -and (Test-PortFree $Preferred)) { return $Preferred }
+  $candidates = @()
+  if ($Preferred -gt 0) { $candidates += $Preferred }
+  $candidates += $Fallbacks
+  foreach ($p in $candidates) { if (Test-PortFree $p) { return $p } }
+  return $candidates[-1]
 }
 
-Write-Host ""
+# ---------- Tool checks ----------
+function Assert-Cli($name, $probe, $helpUrl) {
+  try { & $probe | Out-Null; Write-Host "[OK] $name found." -ForegroundColor Green }
+  catch {
+    Write-Host "[ERROR] $name is not installed or not in PATH." -ForegroundColor Red
+    if ($helpUrl) { Write-Host "Please install: $helpUrl" -ForegroundColor Yellow }
+    Read-Host "Press Enter to exit"
+    exit 1
+  }
+}
 
-# Get project root directory
-$ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
-$ProjectDir = (Get-Item $ScriptDir).Parent.Parent.FullName
-if (-not (Test-Path $ProjectDir)) {
-    throw "Project directory not found: $ProjectDir"
+Assert-Cli "Python" { python --version 2>&1 } "https://www.python.org/downloads/"
+Assert-Cli "Node.js" { node --version 2>&1 }  "https://nodejs.org/"
+
+# ---------- Locate repo root ----------
+$here = Split-Path -Parent $MyInvocation.MyCommand.Path
+$maybeRoot = Resolve-Path (Join-Path $here "..\..") -ErrorAction SilentlyContinue
+if ($maybeRoot -and (Test-Path (Join-Path $maybeRoot "ai_gods"))) {
+  $ProjectDir = $maybeRoot
+} elseif (Test-Path (Join-Path $here "ai_gods")) {
+  $ProjectDir = $here
+} else {
+  $ProjectDir = (Get-Location).Path
 }
 Set-Location $ProjectDir
+Write-Host "[OK] Project root: $ProjectDir" -ForegroundColor Green
 
-Write-Host "========================================" -ForegroundColor Cyan
-Write-Host " Step 1: Installing Dependencies" -ForegroundColor Cyan
-Write-Host "========================================" -ForegroundColor Cyan
+# ---------- Activate venv if present ----------
+$venv = Join-Path $ProjectDir ".\.venv\Scripts\Activate.ps1"
+if (Test-Path $venv) { & $venv; Write-Host "[OK] Virtual environment activated." -ForegroundColor Green }
+else { Write-Host "[WARN] .venv not found (continuing with system Python)" -ForegroundColor Yellow }
+
+# ---------- Choose safe ports ----------
+$apiPortChosen       = Choose-Port $ApiPort        @(3001, 3011, 3021)
+$frontPortChosen     = Choose-Port $FrontendPort   @(3000, 3010, 3020)
+$pythonApiPortChosen = Choose-Port $PythonApiPort  @(8000, 8010, 8020)
+
+$env:API_PORT          = "$apiPortChosen"         # Used by ai_gods.vscode_backend_api_v2
+$env:BACKEND_API_PORT  = "$apiPortChosen"         # Some code reads this; harmless if ignored
+$env:PORT              = "$frontPortChosen"       # Common Node/Vite port var
+$env:PYTHON_API_PORT   = "$pythonApiPortChosen"   # If python-worker honors it
+
+# Make python-worker imports resolve (services/*)
+$pwSrc = Join-Path $ProjectDir "python-worker\src"
+if (Test-Path $pwSrc) { $env:PYTHONPATH = $pwSrc; Write-Host "[OK] PYTHONPATH set for python-worker: $env:PYTHONPATH" -ForegroundColor Green }
+
+Write-Host ""
+Write-Host "Selected ports:" -ForegroundColor Cyan
+Write-Host ("  VSCode Backend API : http://localhost:{0}" -f $env:API_PORT)
+Write-Host ("  Frontend (if used) : http://localhost:{0}" -f $env:PORT)
+Write-Host ("  Python API (if used): http://localhost:{0}" -f $env:PYTHON_API_PORT)
 Write-Host ""
 
-# Install Python dependencies from requirements.txt
-Write-Host "[1/4] Installing Python packages..." -ForegroundColor Yellow
+# ---------- Dependencies ----------
+Write-Host "========================================" -ForegroundColor Cyan
+Write-Host " Installing Dependencies" -ForegroundColor Cyan
+Write-Host "========================================" -ForegroundColor Cyan
+
 if (Test-Path "requirements.txt") {
-    python -m pip install -r requirements.txt
-    if ($LASTEXITCODE -ne 0) {
-        Write-Host "[WARN] pip install returned a non-zero exit code. This might be okay. Continuing..." -ForegroundColor Yellow
-    }
+  Write-Host "[1/3] pip install -r requirements.txt" -ForegroundColor Yellow
+  python -m pip install -r requirements.txt
+}
+
+if (Test-Path "python-worker\requirements.txt") {
+  Write-Host "[2/3] pip install -r python-worker\requirements.txt" -ForegroundColor Yellow
+  python -m pip install -r python-worker\requirements.txt
+}
+
+if (Test-Path "godmode-frontend\package.json") {
+  if (-not (Test-Path "godmode-frontend\node_modules")) {
+    Write-Host "[3/3] npm ci (godmode-frontend)" -ForegroundColor Yellow
+    pushd godmode-frontend; npm ci; popd
+  } else {
+    Write-Host "[OK] godmode-frontend deps already installed." -ForegroundColor Green
+  }
+}
+
+# Optional classic frontend build
+if (Test-Path "frontend\package.json") {
+  Write-Host ""; Write-Host "Building classic frontend (if not built)..." -ForegroundColor Yellow
+  pushd frontend
+  if (-not (Test-Path "dist")) { npm run build } else { Write-Host "[OK] Frontend already built" -ForegroundColor Green }
+  popd
+}
+
+# ---------- Docker services (guarded) ----------
+if (Test-Path "docker-compose.yml") {
+  Write-Host ""; Write-Host "Starting Docker services (Redis/Postgres/etc.)..." -ForegroundColor Yellow
+  docker-compose up -d
+  if ($LASTEXITCODE -ne 0) {
+    Write-Host "[WARN] docker-compose returned a non-zero exit code. Ensure Docker Desktop is running." -ForegroundColor Yellow
+  } else {
+    Write-Host "[OK] Docker services started (detached)." -ForegroundColor Green
+  }
 } else {
-    Write-Host "[WARN] requirements.txt not found. Skipping Python package installation." -ForegroundColor Yellow
+  Write-Host "[INFO] docker-compose.yml not found. Skipping Docker startup." -ForegroundColor Yellow
 }
 
-# Install Node.js dependencies if needed
-if (-not (Test-Path "node_modules")) {
-    Write-Host "[2/4] Installing root Node.js packages..." -ForegroundColor Yellow
-    npm install
-}
+# ---------- Launch Orchestrator (manages all components) ----------
+Write-Host ""; Write-Host "Starting GODMODE Orchestrator v2..." -ForegroundColor Green
 
-if (-not (Test-Path "backend\node_modules")) {
-    Write-Host "[3/4] Installing backend packages..." -ForegroundColor Yellow
-    Set-Location backend
-    npm install
-    Set-Location ..
-}
+Start-Process -FilePath "cmd.exe" `
+  -ArgumentList '/k', 'title GODMODE Orchestrator v2 && python -m ai_gods.godmode_orchestrator_v2' `
+  -WorkingDirectory $ProjectDir `
+  -WindowStyle Minimized
 
-if (-not (Test-Path "frontend\node_modules")) {
-    Write-Host "[4/4] Installing frontend packages..." -ForegroundColor Yellow
-    Set-Location frontend
-    npm install
-    Set-Location ..
-}
-
-Write-Host ""
-Write-Host "[OK] All dependencies installed!" -ForegroundColor Green
-Write-Host ""
-
-Write-Host "========================================" -ForegroundColor Cyan
-Write-Host " Step 2: Building Frontend" -ForegroundColor Cyan
-Write-Host "========================================" -ForegroundColor Cyan
-Write-Host ""
-
-Set-Location frontend
-if (-not (Test-Path "dist")) {
-    Write-Host "Building frontend for production..." -ForegroundColor Yellow
-    npm run build
-    if ($LASTEXITCODE -ne 0) {
-        Write-Host "[ERROR] Frontend build failed" -ForegroundColor Red
-        Set-Location ..
-        Read-Host "Press Enter to exit"
-        exit 1
-    }
-} else {
-    Write-Host "[OK] Frontend already built" -ForegroundColor Green
-}
-Set-Location ..
-
-Write-Host ""
-Write-Host "========================================" -ForegroundColor Cyan
-Write-Host " Step 3: Starting Docker Services" -ForegroundColor Cyan
-Write-Host "========================================" -ForegroundColor Cyan
-Write-Host ""
-Write-Host "Starting Redis, Postgres, and other backend services..." -ForegroundColor Yellow
-docker-compose up -d
-if ($LASTEXITCODE -ne 0) {
-    Write-Host "[ERROR] Docker Compose failed to start." -ForegroundColor Red
-    Write-Host "Please ensure Docker Desktop is running and configured correctly." -ForegroundColor Yellow
-    Read-Host "Press Enter to exit"
-    exit 1
-}
-Write-Host "[OK] Docker services are starting in the background." -ForegroundColor Green
-Write-Host ""
-
-Write-Host "========================================" -ForegroundColor Cyan
-Write-Host " Step 4: Launching AI Services" -ForegroundColor Cyan
-Write-Host "========================================" -ForegroundColor Cyan
-Write-Host ""
-
-# Create logs directory
-if (-not (Test-Path "logs")) {
-    New-Item -ItemType Directory -Path "logs" | Out-Null
-}
-
-# Start Godmode Orchestrator V2
-Write-Host "[1/1] Starting GODMODE Orchestrator..." -ForegroundColor Yellow
-Start-Process -FilePath "cmd.exe" -ArgumentList '/c', 'title GODMODE Orchestrator v2 && python "ai-gods\godmode_orchestrator_v2.py"' -WindowStyle Minimized -WorkingDirectory $ProjectDir
 Start-Sleep -Seconds 2
 
+# ---------- Final output ----------
 Write-Host ""
-Write-Host "========================================" -ForegroundColor Cyan
-Write-Host " FlowState-AI is Starting Up!" -ForegroundColor Cyan
-Write-Host "========================================" -ForegroundColor Cyan
-Write-Host ""
-Write-Host "Please wait 10-15 seconds for all services to initialize..." -ForegroundColor Yellow
-Write-Host ""
-Start-Sleep -Seconds 10
-
 Write-Host "========================================" -ForegroundColor Green
-Write-Host " System Ready!" -ForegroundColor Green
+Write-Host " System is starting up..." -ForegroundColor Green
 Write-Host "========================================" -ForegroundColor Green
 Write-Host ""
-Write-Host "Your FlowState-AI CRM is now running!" -ForegroundColor Green
+Write-Host "Give it ~10–20 seconds to settle. Then try:" -ForegroundColor Yellow
+Write-Host ("  Frontend (if used) : http://localhost:{0}" -f $env:PORT)
+Write-Host ("  Backend API (VSCode): http://localhost:{0}" -f $env:API_PORT)
+Write-Host ("  Python API (if used): http://localhost:{0}/docs" -f $env:PYTHON_API_PORT)
+Write-Host "  Dashboard (if started by orchestrator): http://localhost:3333"
 Write-Host ""
-Write-Host "Access your system at:" -ForegroundColor Cyan
-Write-Host "  Frontend:  http://localhost:3000" -ForegroundColor White
-Write-Host "  Backend:   http://localhost:3001/api" -ForegroundColor White
-Write-Host "  Python API: http://localhost:8000/docs" -ForegroundColor White
-Write-Host "  Dashboard: http://localhost:3333" -ForegroundColor White
+Write-Host "All services run in background windows. To stop, close that window, or use your STOP script." -ForegroundColor Cyan
 Write-Host ""
-Write-Host "All services are running in background windows." -ForegroundColor Yellow
-Write-Host "To stop services, close those windows or run STOP_FLOWSTATE_WINDOWS.ps1" -ForegroundColor Yellow
-Write-Host ""
-Write-Host "Opening dashboard in your browser..." -ForegroundColor Cyan
-Write-Host ""
-
-# Open the dashboard in default browser
-Start-Process "http://localhost:3333"
-
-Write-Host ""
-Write-Host "========================================" -ForegroundColor Cyan
-Write-Host " Press any key to exit this window" -ForegroundColor Cyan
-Write-Host " (Services will continue running)" -ForegroundColor Cyan
-Write-Host "========================================" -ForegroundColor Cyan
-Read-Host "Press Enter to close this window"
-
-
-
+Read-Host "Press Enter to close this launcher (services keep running)"
