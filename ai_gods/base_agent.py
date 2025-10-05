@@ -1,14 +1,16 @@
-﻿import redis
-from redis.client import PubSub
-import json
+﻿import json
 import logging
 import sqlite3
-from datetime import datetime
+import subprocess
 import threading
 import time
-from typing import List, Dict, Any, Optional, Callable
+from datetime import datetime
+from typing import Any, Callable, Dict, List, Optional
+
+import redis
+from redis.client import PubSub
+
 from ai_gods.godmode_config import is_full_autonomy_enabled
-import subprocess
 
 # Configure logging
 logging.basicConfig(
