@@ -1,4 +1,5 @@
-﻿import json
+﻿import os
+import json
 import logging
 import sqlite3
 import subprocess
@@ -111,6 +112,7 @@ class BaseAgent:
             )
 
     def _initialize_db(self):
+        os.makedirs(os.path.dirname(self.db_path) or ".", exist_ok=True)
         self.db_connection = sqlite3.connect(self.db_path, check_same_thread=False)
         self.db_cursor = self.db_connection.cursor()
         self.db_cursor.execute(
@@ -351,5 +353,7 @@ if __name__ == "__main__":
     test_agent.stop()
 
     logger.info("Example finished.")
+
+
 
 
