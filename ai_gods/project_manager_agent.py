@@ -1,8 +1,8 @@
-import json
+﻿import json
 import logging
 import time
 from datetime import datetime
-from base_agent import BaseAgent
+from ai_gods.base_agent import BaseAgent
 from typing import List, Dict, Any
 from ai_gods.godmode_config import is_full_autonomy_enabled
 
@@ -191,3 +191,4 @@ if __name__ == "__main__":
     pm_agent.stop()
     dev_agent.stop()
     logger.info("Project Manager Agent example finished.")
+
