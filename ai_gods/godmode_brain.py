@@ -1,4 +1,4 @@
-"""GODMODE Brain orchestrator.
+﻿"""GODMODE Brain orchestrator.
 
 This module coordinates the three-hour launch sequence for the FlowState-AI
 GODMODE initiative.  It consolidates the historical GODMODE planning documents
@@ -17,7 +17,7 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-from project_manager_config import ProjectManagerConfig, load_project_manager_config
+from ai_gods.project_manager_config import ProjectManagerConfig, load_project_manager_config
 
 
 @dataclass
@@ -514,3 +514,5 @@ def main() -> None:
 
 if __name__ == "__main__":  # pragma: no cover - CLI entry point
     main()
+
+ 
