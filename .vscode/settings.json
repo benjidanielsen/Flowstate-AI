@@ -19,5 +19,8 @@
                        "--profile",
                        "black"
                    ],
-    "python.terminal.activateEnvironment":  true
+    "python.terminal.activateEnvironment":  true,
+    "terminal.integrated.env.windows":  {
+
+                                        }
 }
