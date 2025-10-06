@@ -208,9 +208,24 @@ Respond in JSON format:
             logger.error(f"❌ Git operation failed: {e}")
             return False
     
+    def log_activity(self, action_type: str, description: str, details: str = ""):
+        """Log activity to the activity log"""
+        try:
+            conn = sqlite3.connect(self.db_path)
+            cursor = conn.cursor()
+            cursor.execute('''
+                INSERT INTO activity_log (agent_name, action_type, description, details)
+                VALUES (?, ?, ?, ?)
+            ''', ('Autonomous AI Developer', action_type, description, details))
+            conn.commit()
+            conn.close()
+        except Exception as e:
+            logger.warning(f"⚠️  Could not log activity: {e}")
+    
     def execute_task(self, task):
         """Execute a task using AI"""
         logger.info(f"🚀 Executing task #{task['id']}: {task['title']}")
+        self.log_activity('task_started', f"Started: {task['title']}", f"Task #{task['id']}: {task['description']}")
         
         self.mark_task_in_progress(task['id'])
         self.update_heartbeat(f"Working on: {task['title']}")
@@ -218,25 +233,31 @@ Respond in JSON format:
         try:
             # Generate code using AI
             logger.info("🤖 Generating code with AI...")
+            self.log_activity('ai_generation', f"Generating code for: {task['title']}", "Using AI to create implementation")
             result = self.generate_code_with_ai(task['title'], task['description'])
             
             if not result:
                 self.fail_task(task['id'], "AI code generation failed")
+                self.log_activity('task_failed', f"Failed: {task['title']}", "AI code generation failed")
                 return False
             
             # Write the generated code
             logger.info(f"📝 Writing file: {result['file_path']}")
+            self.log_activity('file_created', f"Created: {result['file_path']}", f"For task: {task['title']}")
             if not self.write_file(result['file_path'], result['content']):
                 self.fail_task(task['id'], "Failed to write file")
+                self.log_activity('task_failed', f"Failed: {task['title']}", "Could not write file")
                 return False
             
             # Commit and push
             commit_message = f"AI: {task['title']}\n\n{result['explanation']}"
             logger.info("📤 Committing to GitHub...")
+            self.log_activity('git_commit', f"Committed: {task['title']}", f"File: {result['file_path']}")
             self.commit_and_push(commit_message)
             
             # Mark task as completed
             self.complete_task(task['id'], result['explanation'])
+            self.log_activity('task_completed', f"Completed: {task['title']}", result['explanation'])
             
             logger.info(f"✅ Task #{task['id']} completed successfully!")
             return True
@@ -244,6 +265,7 @@ Respond in JSON format:
         except Exception as e:
             logger.error(f"❌ Task execution failed: {e}")
             self.fail_task(task['id'], str(e))
+            self.log_activity('task_failed', f"Failed: {task['title']}", str(e))
             return False
     
     def run(self):
