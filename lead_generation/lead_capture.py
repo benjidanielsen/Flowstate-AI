@@ -1,56 +1,122 @@
-from flask import Blueprint, request, jsonify
-from flask_sqlalchemy import SQLAlchemy
 import re
+import json
+import requests
+from typing import Dict, Optional
 
-lead_capture_bp = Blueprint('lead_capture', __name__)
-db = SQLAlchemy()
+class LeadCapture:
+    """Automated lead capture with form validation and multi-source integration."""
 
-class Lead(db.Model):
-    __tablename__ = 'leads'
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False)
-    email = db.Column(db.String(120), unique=True, nullable=False)
-    phone = db.Column(db.String(20), nullable=True)
-    company = db.Column(db.String(100), nullable=True)
+    EMAIL_REGEX = re.compile(r"^[\w\.-]+@[\w\.-]+\.\w+$")
+    PHONE_REGEX = re.compile(r"^\+?\d{7,15}$")
 
-    def __repr__(self):
-        return f'<Lead {self.email}>'
+    def __init__(self, sources_config: Dict[str, Dict]):
+        """
+        Initialize with sources configuration.
 
-# Simple email regex for validation
-EMAIL_REGEX = re.compile(r"^[\w\.-]+@[\w\.-]+\.\w{2,4}$")
+        sources_config example:
+        {
+            "crm_api": {
+                "url": "https://crm.example.com/api/leads",
+                "api_key": "your_api_key_here"
+            },
+            "email_marketing": {
+                "url": "https://emailmarketing.example.com/api/subscribers",
+                "token": "your_token_here"
+            }
+        }
+        """
+        self.sources_config = sources_config
 
-@lead_capture_bp.route('/capture', methods=['POST'])
-def capture_lead():
-    data = request.json
+    def validate_lead(self, lead_data: Dict[str, str]) -> Optional[str]:
+        """
+        Validate lead data.
+        Required fields: name, email
+        Optional validation: phone
 
-    # Basic form validation
-    name = data.get('name')
-    email = data.get('email')
-    phone = data.get('phone')
-    company = data.get('company')
+        Returns None if valid, else error message string.
+        """
+        if 'name' not in lead_data or not lead_data['name'].strip():
+            return "Name is required."
 
-    errors = {}
+        email = lead_data.get('email', '').strip()
+        if not email:
+            return "Email is required."
+        if not self.EMAIL_REGEX.match(email):
+            return "Invalid email format."
 
-    if not name or not name.strip():
-        errors['name'] = 'Name is required.'
+        phone = lead_data.get('phone', '').strip()
+        if phone and not self.PHONE_REGEX.match(phone):
+            return "Invalid phone number format."
 
-    if not email or not EMAIL_REGEX.match(email):
-        errors['email'] = 'Valid email is required.'
+        return None
 
-    if phone and not re.match(r'^\+?[0-9\-\s]{7,15}$', phone):
-        errors['phone'] = 'Phone number format is invalid.'
+    def capture_lead(self, lead_data: Dict[str, str]) -> Dict[str, str]:
+        """
+        Validates and submits lead data to all configured sources.
 
-    if errors:
-        return jsonify({'success': False, 'errors': errors}), 400
+        Returns dict with keys:
+          - success: bool
+          - errors: List[str]
+        """
+        errors = []
 
-    # Check if email already exists
-    existing_lead = Lead.query.filter_by(email=email).first()
-    if existing_lead:
-        return jsonify({'success': False, 'errors': {'email': 'Email already captured.'}}), 400
+        validation_error = self.validate_lead(lead_data)
+        if validation_error:
+            return {"success": False, "errors": [validation_error]}
 
-    # Save lead to database
-    new_lead = Lead(name=name.strip(), email=email.strip(), phone=phone.strip() if phone else None, company=company.strip() if company else None)
-    db.session.add(new_lead)
-    db.session.commit()
+        for source, config in self.sources_config.items():
+            try:
+                if source == 'crm_api':
+                    self._submit_to_crm(lead_data, config)
+                elif source == 'email_marketing':
+                    self._submit_to_email_marketing(lead_data, config)
+                else:
+                    errors.append(f"Unknown source: {source}")
+            except Exception as e:
+                errors.append(f"Failed to submit to {source}: {str(e)}")
 
-    return jsonify({'success': True, 'message': 'Lead captured successfully.'}), 201
+        success = len(errors) == 0
+        return {"success": success, "errors": errors}
+
+    def _submit_to_crm(self, lead_data: Dict[str, str], config: Dict):
+        headers = {
+            'Authorization': f"Bearer {config.get('api_key')}",
+            'Content-Type': 'application/json'
+        }
+        payload = {
+            'name': lead_data['name'],
+            'email': lead_data['email'],
+            'phone': lead_data.get('phone', '')
+        }
+        response = requests.post(config['url'], headers=headers, data=json.dumps(payload), timeout=10)
+        if response.status_code != 201:
+            raise Exception(f"CRM API returned status {response.status_code}")
+
+    def _submit_to_email_marketing(self, lead_data: Dict[str, str], config: Dict):
+        headers = {
+            'Authorization': f"Token {config.get('token')}",
+            'Content-Type': 'application/json'
+        }
+        payload = {
+            'email': lead_data['email'],
+            'name': lead_data['name']
+        }
+        response = requests.post(config['url'], headers=headers, data=json.dumps(payload), timeout=10)
+        if response.status_code != 200 and response.status_code != 201:
+            raise Exception(f"Email marketing API returned status {response.status_code}")
+
+
+# Example usage:
+# sources = {
+#     'crm_api': {
+#         'url': 'https://crm.example.com/api/leads',
+#         'api_key': 'secret_api_key'
+#     },
+#     'email_marketing': {
+#         'url': 'https://emailmarketing.example.com/api/subscribers',
+#         'token': 'secret_token'
+#     }
+# }
+# lead_capture = LeadCapture(sources)
+# result = lead_capture.capture_lead({"name": "John Doe", "email": "john@example.com", "phone": "+1234567890"})
+# print(result)
