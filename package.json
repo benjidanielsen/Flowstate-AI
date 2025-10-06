@@ -35,5 +35,8 @@
   "workspaces": [
     "frontend",
     "backend"
-  ]
+  ],
+  "dependencies": {
+    "named": "^1.0.2"
+  }
 }

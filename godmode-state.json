@@ -1,7 +1,8 @@
-﻿{
-    "ports":  {
-                  "PYTHON_API_PORT":  8000,
-                  "FRONTEND_PORT":  3000,
-                  "API_PORT":  3001
-              }
+{
+  "ports": {
+    "PYTHON_API_PORT": 8000,
+    "API_PORT": 3001,
+    "FRONTEND_PORT": 3000,
+    "REDIS_PORT": 6379
+  }
 }

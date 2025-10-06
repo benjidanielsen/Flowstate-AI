@@ -1,0 +1,38 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+aiofiles = "*"
+aiosqlite = "*"
+asyncio = "*"
+beautifulsoup4 = "*"
+fastapi = "*"
+flask-cors = "*"
+flask-socketio = "*"
+gitpython = "*"
+gunicorn = "*"
+matplotlib = "*"
+numpy = "*"
+pandas = "*"
+playwright = "*"
+psutil = "*"
+pydantic = "*"
+pytest = "*"
+python-dotenv = "*"
+requests = "*"
+schedule = "*"
+watchdog = "*"
+websockets = "*"
+aioredis = "==1.3.1"
+redis = "*"
+uvicorn = "*"
+httpx = "*"
+flask = "*"
+openai = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.11"

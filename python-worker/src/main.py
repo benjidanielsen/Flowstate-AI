@@ -8,10 +8,9 @@ from typing import Any, Dict, List, Optional
 import uvicorn
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
-from services.nba_service import NBAService
-from services.reminder_service import ReminderService
+import httpx
 
+BACKEND_API_URL = os.getenv("BACKEND_API_URL", "http://localhost:3001")
 from ai_gods.logging_config import setup_logging
 
 app = FastAPI(title="Flowstate-AI Worker", version="1.0.0")
@@ -24,10 +23,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-# Initialize services
-reminder_service = ReminderService()
-nba_service = NBAService()
 
 # Setup logging
 logger = setup_logging(__name__, "python-worker.log")
@@ -62,12 +57,15 @@ async def health_check():
 async def create_reminder(reminder: ReminderRequest):
     """Create a new reminder"""
     try:
-        result = await reminder_service.create_reminder(
-            customer_id=reminder.customer_id,
-            reminder_type=reminder.type,
-            message=reminder.message,
-            scheduled_for=reminder.scheduled_for,
-        )
+        async with httpx.AsyncClient() as client:
+            response = await client.post(f"{BACKEND_API_URL}/reminders", json={
+                "customer_id": reminder.customer_id,
+                "type": reminder.type,
+                "message": reminder.message,
+                "scheduled_for": reminder.scheduled_for.isoformat()
+            })
+            response.raise_for_status()
+            result = response.json()
         return result
     except Exception as e:
         logger.error(f"Error creating reminder: {e}")
@@ -78,7 +76,10 @@ async def create_reminder(reminder: ReminderRequest):
 async def get_due_reminders():
     """Get all reminders that are due"""
     try:
-        return await reminder_service.get_due_reminders()
+        async with httpx.AsyncClient() as client:
+            response = await client.get(f"{BACKEND_API_URL}/reminders/due")
+            response.raise_for_status()
+            return response.json()
     except Exception as e:
         logger.error(f"Error fetching due reminders: {e}")
         raise HTTPException(status_code=500, detail=str(e))
@@ -88,10 +89,13 @@ async def get_due_reminders():
 async def complete_reminder(reminder_id: str):
     """Mark a reminder as complete"""
     try:
-        result = await reminder_service.complete_reminder(reminder_id)
-        if not result:
-            raise HTTPException(status_code=404, detail="Reminder not found")
-        return result
+        async with httpx.AsyncClient() as client:
+            response = await client.post(f"{BACKEND_API_URL}/reminders/{reminder_id}/complete")
+            response.raise_for_status()
+            result = response.json()
+            if not result:
+                raise HTTPException(status_code=404, detail="Reminder not found")
+            return result
     except HTTPException:
         raise
     except Exception as e:
@@ -103,7 +107,10 @@ async def complete_reminder(reminder_id: str):
 async def process_due_reminders():
     """Process all due reminders and create follow-up actions"""
     try:
-        results = await reminder_service.process_due_reminders()
+        async with httpx.AsyncClient() as client:
+            response = await client.post(f"{BACKEND_API_URL}/reminders/process-due")
+            response.raise_for_status()
+            results = response.json()
         return {"processed": len(results), "results": results}
     except Exception as e:
         logger.error(f"Error processing due reminders: {e}")
@@ -114,9 +121,13 @@ async def process_due_reminders():
 async def get_next_best_actions(customer_id: Optional[str] = None, limit: int = 10):
     """Get Next Best Actions (NBA) recommendations"""
     try:
-        return await nba_service.get_recommendations(
-            customer_id=customer_id, limit=limit
-        )
+        async with httpx.AsyncClient() as client:
+            params = {"limit": limit}
+            if customer_id:
+                params["customer_id"] = customer_id
+            response = await client.get(f"{BACKEND_API_URL}/nba", params=params)
+            response.raise_for_status()
+            return response.json()
     except Exception as e:
         logger.error(f"Error fetching NBA recommendations: {e}")
         raise HTTPException(status_code=500, detail=str(e))
@@ -126,7 +137,10 @@ async def get_next_best_actions(customer_id: Optional[str] = None, limit: int = 
 async def analyze_customer_data():
     """Analyze customer data and generate NBA recommendations"""
     try:
-        results = await nba_service.analyze_and_generate_recommendations()
+        async with httpx.AsyncClient() as client:
+            response = await client.post(f"{BACKEND_API_URL}/nba/analyze")
+            response.raise_for_status()
+            results = response.json()
         return {"analyzed": len(results), "recommendations": results}
     except Exception as e:
         logger.error(f"Error analyzing customer data: {e}")

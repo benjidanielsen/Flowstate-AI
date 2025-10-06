@@ -1,10 +1,7 @@
-﻿"""
 """
 🎯 GODMODE ORCHESTRATOR v2.0 - Master Coordination System
 ⚡ Ultimate autonomous development authority
 🚀 Mission: Coordinate all AI agents and systems for seamless autonomous operation
-🧠 Features: Multi-agent coordination, health monitoring, auto-recovery
-"""
 🧠 Features: Multi-agent coordination, health monitoring, auto-recovery
 """
 
