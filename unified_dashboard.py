@@ -67,6 +67,14 @@ try:
 except Exception as e:
     print(f"⚠️  Warning: Could not register enhanced dashboard API: {e}")
 
+# Import and register CRM analytics API
+try:
+    from crm_analytics_api import crm_analytics_bp
+    app.register_blueprint(crm_analytics_bp)
+    print("✅ CRM Analytics API registered successfully")
+except Exception as e:
+    print(f"⚠️  Warning: Could not register CRM analytics API: {e}")
+
 # Import and register error handlers
 try:
     from error_handlers import register_error_handlers

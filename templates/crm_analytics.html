@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRM Analytics - Flowstate AI</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        header {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+        }
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .metric-card {
+            background: rgba(255,255,255,0.15);
+            padding: 25px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .metric-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        .metric-card h3 {
+            font-size: 0.9em;
+            opacity: 0.8;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .metric-card .value {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .metric-card .change {
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+        .change.positive { color: #4ade80; }
+        .change.negative { color: #f87171; }
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .chart-card {
+            background: rgba(255,255,255,0.15);
+            padding: 25px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+        .chart-card h2 {
+            font-size: 1.3em;
+            margin-bottom: 20px;
+        }
+        .chart-container {
+            position: relative;
+            height: 300px;
+        }
+        .table-card {
+            background: rgba(255,255,255,0.15);
+            padding: 25px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            margin-bottom: 30px;
+        }
+        .table-card h2 {
+            font-size: 1.3em;
+            margin-bottom: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        th {
+            font-weight: 600;
+            opacity: 0.9;
+        }
+        .btn {
+            background: rgba(255,255,255,0.2);
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background 0.3s;
+        }
+        .btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+        .loading {
+            text-align: center;
+            padding: 50px;
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📊 CRM Analytics Dashboard</h1>
+            <p>Comprehensive insights into your sales pipeline and customer relationships</p>
+        </header>
+
+        <div id="loading" class="loading">Loading analytics data...</div>
+
+        <div id="content" style="display: none;">
+            <!-- Key Metrics -->
+            <div class="metrics-grid" id="metricsGrid"></div>
+
+            <!-- Charts -->
+            <div class="charts-grid">
+                <div class="chart-card">
+                    <h2>Pipeline Value Over Time</h2>
+                    <div class="chart-container">
+                        <canvas id="timeSeriesChart"></canvas>
+                    </div>
+                </div>
+                <div class="chart-card">
+                    <h2>Deals by Stage</h2>
+                    <div class="chart-container">
+                        <canvas id="dealStageChart"></canvas>
+                    </div>
+                </div>
+                <div class="chart-card">
+                    <h2>Contacts by Lifecycle Stage</h2>
+                    <div class="chart-container">
+                        <canvas id="contactStageChart"></canvas>
+                    </div>
+                </div>
+                <div class="chart-card">
+                    <h2>Conversion Funnel</h2>
+                    <div class="chart-container">
+                        <canvas id="conversionChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Top Contacts Table -->
+            <div class="table-card">
+                <h2>Top Contacts by Deal Value</h2>
+                <table id="topContactsTable">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Company</th>
+                            <th>Lifecycle Stage</th>
+                            <th>Total Deal Value</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+
+            <!-- Top Deals Table -->
+            <div class="table-card">
+                <h2>Top Deals by Value</h2>
+                <table id="topDealsTable">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Stage</th>
+                            <th>Status</th>
+                            <th>Amount</th>
+                            <th>Close Date</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Fetch analytics data
+        async function loadAnalytics() {
+            try {
+                const response = await fetch('/api/crm/analytics/dashboard');
+                const data = await response.json();
+                
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('content').style.display = 'block';
+                
+                renderMetrics(data.metrics, data.activity);
+                renderTimeSeriesChart(data.time_series);
+                renderDealStageChart(data.metrics.deals.by_stage);
+                renderContactStageChart(data.metrics.contacts.by_lifecycle_stage);
+                renderConversionChart(data.metrics.contacts.conversion_rates);
+                renderTopContactsTable(data.top_contacts);
+                renderTopDealsTable(data.top_deals);
+            } catch (error) {
+                console.error('Error loading analytics:', error);
+                document.getElementById('loading').textContent = 'Error loading analytics data. Please try again.';
+            }
+        }
+
+        function renderMetrics(metrics, activity) {
+            const metricsGrid = document.getElementById('metricsGrid');
+            const metricsData = [
+                { title: 'Total Contacts', value: metrics.contacts.total, change: `+${activity.new_contacts} this week` },
+                { title: 'Total Deals', value: metrics.deals.total, change: `+${activity.new_deals} this week` },
+                { title: 'Pipeline Value', value: `$${metrics.deals.total_value.toLocaleString()}`, change: `$${metrics.deals.open_value.toLocaleString()} open` },
+                { title: 'Win Rate', value: `${metrics.deals.win_rate}%`, change: `${activity.won_deals} won this week` },
+                { title: 'Avg Deal Size', value: `$${metrics.deals.avg_deal_size.toLocaleString()}`, change: `Won: $${metrics.deals.avg_won_deal_size.toLocaleString()}` },
+                { title: 'Lead → MQL', value: `${metrics.contacts.conversion_rates.lead_to_mql}%`, change: 'Conversion rate' }
+            ];
+
+            metricsGrid.innerHTML = metricsData.map(metric => `
+                <div class="metric-card">
+                    <h3>${metric.title}</h3>
+                    <div class="value">${metric.value}</div>
+                    <div class="change">${metric.change}</div>
+                </div>
+            `).join('');
+        }
+
+        function renderTimeSeriesChart(timeSeriesData) {
+            const ctx = document.getElementById('timeSeriesChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: timeSeriesData.data.map(d => d.date),
+                    datasets: [{
+                        label: 'Deal Value',
+                        data: timeSeriesData.data.map(d => d.deal_value),
+                        borderColor: 'rgb(75, 192, 192)',
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: { beginAtZero: true }
+                    }
+                }
+            });
+        }
+
+        function renderDealStageChart(dealsByStage) {
+            const ctx = document.getElementById('dealStageChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(dealsByStage),
+                    datasets: [{
+                        data: Object.values(dealsByStage),
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.8)',
+                            'rgba(54, 162, 235, 0.8)',
+                            'rgba(255, 206, 86, 0.8)',
+                            'rgba(75, 192, 192, 0.8)',
+                            'rgba(153, 102, 255, 0.8)'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+        }
+
+        function renderContactStageChart(contactsByStage) {
+            const ctx = document.getElementById('contactStageChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(contactsByStage),
+                    datasets: [{
+                        label: 'Contacts',
+                        data: Object.values(contactsByStage),
+                        backgroundColor: 'rgba(54, 162, 235, 0.8)'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: { beginAtZero: true }
+                    }
+                }
+            });
+        }
+
+        function renderConversionChart(conversionRates) {
+            const ctx = document.getElementById('conversionChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Lead → MQL', 'MQL → SQL', 'SQL → Customer'],
+                    datasets: [{
+                        label: 'Conversion Rate (%)',
+                        data: [
+                            conversionRates.lead_to_mql,
+                            conversionRates.mql_to_sql,
+                            conversionRates.sql_to_customer
+                        ],
+                        backgroundColor: [
+                            'rgba(75, 192, 192, 0.8)',
+                            'rgba(255, 206, 86, 0.8)',
+                            'rgba(153, 102, 255, 0.8)'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: { beginAtZero: true, max: 100 }
+                    }
+                }
+            });
+        }
+
+        function renderTopContactsTable(contacts) {
+            const tbody = document.querySelector('#topContactsTable tbody');
+            tbody.innerHTML = contacts.map(contact => `
+                <tr>
+                    <td>${contact.first_name} ${contact.last_name}</td>
+                    <td>${contact.email}</td>
+                    <td>${contact.company || 'N/A'}</td>
+                    <td>${contact.lifecycle_stage}</td>
+                    <td>$${contact.total_deal_value.toLocaleString()}</td>
+                </tr>
+            `).join('');
+        }
+
+        function renderTopDealsTable(deals) {
+            const tbody = document.querySelector('#topDealsTable tbody');
+            tbody.innerHTML = deals.map(deal => `
+                <tr>
+                    <td>${deal.name}</td>
+                    <td>${deal.stage}</td>
+                    <td>${deal.status}</td>
+                    <td>$${parseFloat(deal.amount).toLocaleString()}</td>
+                    <td>${deal.close_date || 'N/A'}</td>
+                </tr>
+            `).join('');
+        }
+
+        // Load analytics on page load
+        loadAnalytics();
+    </script>
+</body>
+</html>

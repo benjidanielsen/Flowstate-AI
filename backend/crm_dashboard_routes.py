@@ -210,3 +210,9 @@ def get_crm_stats():
         return jsonify(stats), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+
+@crm_bp.route('/analytics')
+def crm_analytics():
+    """CRM analytics dashboard view."""
+    return render_template('crm_analytics.html')
