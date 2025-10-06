@@ -37,6 +37,14 @@ try:
 except Exception as e:
     print(f"⚠️  Warning: Could not register CRM routes: {e}")
 
+# Import and register enhanced dashboard API
+try:
+    from api_dashboard_enhanced import dashboard_api
+    app.register_blueprint(dashboard_api)
+    print("✅ Enhanced Dashboard API registered successfully")
+except Exception as e:
+    print(f"⚠️  Warning: Could not register enhanced dashboard API: {e}")
+
 # --- Helper Functions ---
 def get_db_connection():
     conn = sqlite3.connect(DB_PATH)
@@ -100,6 +108,12 @@ def logout():
 # --- Dashboard Routes ---
 @app.route("/")
 def index():
+    if not session.get("logged_in"):
+        return redirect(url_for("login"))
+    return render_template("dashboard_enhanced.html")
+
+@app.route("/classic")
+def classic_dashboard():
     if not session.get("logged_in"):
         return redirect(url_for("login"))
     return render_template("index.html")
