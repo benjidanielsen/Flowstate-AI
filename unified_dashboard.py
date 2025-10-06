@@ -7,6 +7,8 @@
 """
 
 from flask import Flask, render_template, render_template_string, jsonify, request, redirect, url_for, session
+from flask_wtf.csrf import CSRFProtect, generate_csrf
+from werkzeug.security import generate_password_hash, check_password_hash
 import sqlite3
 import json
 from pathlib import Path
@@ -15,7 +17,6 @@ from openai import OpenAI
 import os
 import subprocess
 import time
-import hashlib
 import sys
 
 # Add backend directory to path for CRM imports
@@ -28,6 +29,9 @@ DB_PATH = PROJECT_ROOT / "godmode-state.db"
 
 # Initialize OpenAI client
 client = OpenAI()
+
+# Initialize CSRFProtect
+csrf = CSRFProtect(app)
 
 # Import and register CRM blueprint
 try:
@@ -51,26 +55,46 @@ def get_db_connection():
     conn.row_factory = sqlite3.Row
     return conn
 
-def hash_password(password):
-    return hashlib.sha256(password.encode()).hexdigest()
-
 # --- Authentication --- 
-ADMIN_USERNAME = "benjidanielsen"
-ADMIN_PASSWORD_HASH = hash_password("Sagemaster123")
+ADMIN_USERNAME = os.environ.get("ADMIN_USERNAME", "benjidanielsen")
+ADMIN_PASSWORD_HASH = os.environ.get("ADMIN_PASSWORD_HASH", generate_password_hash("Sagemaster123", method=\'pbkdf2:sha256\'))
+
+# In-memory store for login attempts (for rate limiting)
+login_attempts = {}
+LOGIN_ATTEMPT_LIMIT = 5
+LOGIN_ATTEMPT_WINDOW_SECONDS = 300 # 5 minutes
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
+    # Generate CSRF token for the form
+    csrf_token = generate_csrf()
     if request.method == "POST":
+        # Rate limiting check
+        client_ip = request.remote_addr
+        current_time = time.time()
+
+        if client_ip in login_attempts:
+            attempts, first_attempt_time = login_attempts[client_ip]
+            if current_time - first_attempt_time > LOGIN_ATTEMPT_WINDOW_SECONDS:
+                # Reset attempts after window expires
+                login_attempts[client_ip] = ([current_time], current_time)
+            else:
+                if len(attempts) >= LOGIN_ATTEMPT_LIMIT:
+                    return "Too many login attempts. Please try again later.", 429
+                attempts.append(current_time)
+        else:
+            login_attempts[client_ip] = ([current_time], current_time)
+
         username = request.form["username"]
         password = request.form["password"]
         
-        if username.lower() == ADMIN_USERNAME.lower() and hash_password(password) == ADMIN_PASSWORD_HASH:
+        if username.lower() == ADMIN_USERNAME.lower() and check_password_hash(ADMIN_PASSWORD_HASH, password):
             session["logged_in"] = True
             return redirect(url_for("index"))
         else:
             return render_template_string("""
                 <p>Invalid credentials. <a href="/login">Try again</a></p>
-            """, error="Invalid credentials")
+            """, error="Invalid credentials", csrf_token=csrf_token)
     return render_template_string("""
         <!DOCTYPE html>
         <html lang="en">
@@ -91,6 +115,7 @@ def login():
             <div class="login-container">
                 <h2>Flowstate-AI Admin Login</h2>
                 <form method="post">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
                     <input type="text" name="username" placeholder="Username" required>
                     <input type="password" name="password" placeholder="Password" required>
                     <button type="submit">Login</button>
@@ -98,7 +123,7 @@ def login():
             </div>
         </body>
         </html>
-    """)
+    """, csrf_token=csrf_token)
 
 @app.route("/logout")
 def logout():
@@ -141,7 +166,7 @@ def get_stats():
 
     # Assuming 'completed_at' is a timestamp and we want tasks completed today
     today = datetime.now().strftime("%Y-%m-%d")
-    cursor.execute("SELECT COUNT(*) FROM tasks WHERE status = 'completed' AND completed_at LIKE ? || '%'", (today,))
+    cursor.execute("SELECT COUNT(*) FROM tasks WHERE status = 'completed' AND completed_at LIKE ? || '%'"), (today,))
     completed_today = cursor.fetchone()[0]
 
     conn.close()
@@ -430,13 +455,10 @@ def resolve_note_disambiguation(note_id):
                   datetime.now().isoformat(), note_id))
             
             # Get note info for reminder
-            cursor.execute("""
-                SELECT raw_content, reminder_datetime 
-                FROM quick_notes WHERE id = ?
-            """, (note_id,))
+            cursor.execute("SELECT content, reminder_datetime FROM quick_notes WHERE id = ?", (note_id,))
             note = cursor.fetchone()
-            
-            # Create reminder if datetime exists
+
+            # Create reminder if time was extracted
             if note and note['reminder_datetime']:
                 cursor.execute("""
                     INSERT INTO reminders (note_id, lead_id, reminder_datetime, title, description)
@@ -446,74 +468,112 @@ def resolve_note_disambiguation(note_id):
                     lead_id,
                     note['reminder_datetime'],
                     f"Follow up: {lead['name']}",
-                    note['raw_content']
+                    note['content']
                 ))
-            
-            # Log activity
-            cursor.execute("""
-                INSERT INTO lead_activities (lead_id, activity_type, description, created_by)
-                VALUES (?, ?, ?, ?)
-            """, (lead_id, 'note_added', note['raw_content'] if note else '', 'admin'))
         
         conn.commit()
         conn.close()
-        
         return jsonify({"status": "success"})
         
     except Exception as e:
         conn.close()
         return jsonify({"error": str(e)}), 500
 
-@app.route("/api/quick_notes/pending")
-def get_pending_notes():
-    """Get all notes requiring disambiguation"""
-    conn = get_db_connection()
-    cursor = conn.cursor()
-    
-    cursor.execute("""
-        SELECT id, raw_content, disambiguation_options, created_at, priority
-        FROM quick_notes
-        WHERE status = 'pending' AND requires_disambiguation = 1
-        ORDER BY priority DESC, created_at ASC
-    """)
-    
-    notes = []
-    for row in cursor.fetchall():
-        notes.append({
-            "id": row['id'],
-            "content": row['raw_content'],
-            "options": json.loads(row['disambiguation_options']) if row['disambiguation_options'] else [],
-            "created_at": row['created_at'],
-            "priority": row['priority']
-        })
-    
-    conn.close()
-    return jsonify(notes)
-
-@app.route("/api/reminders/upcoming")
-def get_upcoming_reminders():
-    """Get upcoming reminders"""
-    conn = get_db_connection()
-    cursor = conn.cursor()
-    
-    cursor.execute("""
-        SELECT r.id, r.reminder_datetime, r.title, r.description,
-               l.name as lead_name, l.email, l.phone
-        FROM reminders r
-        LEFT JOIN leads l ON r.lead_id = l.id
-        WHERE r.status = 'pending' 
-        AND r.reminder_datetime > datetime('now')
-        ORDER BY r.reminder_datetime ASC
-        LIMIT 10
-    """)
-    
-    reminders = [dict(row) for row in cursor.fetchall()]
-    conn.close()
-    
-    return jsonify(reminders)
-
 
 if __name__ == "__main__":
-    app.run(debug=True, host="0.0.0.0", port=5000)
-
+    # Ensure the database exists and has the necessary tables
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS agents (
+            agent_number INTEGER PRIMARY KEY AUTOINCREMENT,
+            human_name TEXT NOT NULL,
+            role TEXT NOT NULL,
+            specialization TEXT,
+            personality_traits TEXT,
+            profile_photo_url TEXT,
+            gender TEXT,
+            tasks_completed INTEGER DEFAULT 0,
+            tasks_failed INTEGER DEFAULT 0
+        )
+    """)
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS agent_status (
+            agent_number INTEGER PRIMARY KEY,
+            status TEXT NOT NULL,
+            current_task TEXT,
+            last_heartbeat TEXT,
+            FOREIGN KEY (agent_number) REFERENCES agents (agent_number)
+        )
+    """)
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS tasks (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            title TEXT NOT NULL,
+            status TEXT NOT NULL,
+            priority TEXT,
+            assigned_to TEXT,
+            created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+            completed_at TEXT
+        )
+    """)
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS leads (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL,
+            email TEXT NOT NULL,
+            stage TEXT NOT NULL,
+            created_at TEXT DEFAULT CURRENT_TIMESTAMP
+        )
+    """)
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS activity_log (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            agent_name TEXT,
+            agent_number TEXT,
+            description TEXT NOT NULL,
+            details TEXT,
+            timestamp TEXT DEFAULT CURRENT_TIMESTAMP
+        )
+    """)
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS quick_notes (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            content TEXT NOT NULL,
+            raw_content TEXT NOT NULL,
+            note_type TEXT,
+            language TEXT,
+            extracted_time TEXT,
+            extracted_date TEXT,
+            reminder_datetime TEXT,
+            priority TEXT,
+            ai_confidence REAL,
+            ai_suggestions TEXT,
+            requires_disambiguation BOOLEAN,
+            disambiguation_options TEXT,
+            status TEXT,
+            lead_id INTEGER,
+            lead_name TEXT,
+            processed_at TEXT,
+            committed_at TEXT,
+            created_at TEXT DEFAULT CURRENT_TIMESTAMP
+        )
+    """)
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS reminders (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            note_id INTEGER,
+            lead_id INTEGER,
+            reminder_datetime TEXT NOT NULL,
+            title TEXT NOT NULL,
+            description TEXT,
+            status TEXT DEFAULT 'pending',
+            created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (note_id) REFERENCES quick_notes (id),
+            FOREIGN KEY (lead_id) REFERENCES leads (id)
+        )
+    """)
+    conn.commit()
+    conn.close()
+    app.run(debug=True, port=5000)
 
