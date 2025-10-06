@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flowstate-AI | Command Center</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        body {
+            background: #0a0e27;
+            color: #e2e8f0;
+            min-height: 100vh;
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+        }
+        
+        .glass-card {
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            border-radius: 16px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            transition: all 0.3s ease;
+        }
+        
+        .glass-card:hover {
+            border-color: rgba(148, 163, 184, 0.2);
+            box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.5);
+        }
+        
+        .stat-card {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--accent-color), transparent);
+            animation: shimmer 2s infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        .pulse-dot {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% {
+                opacity: .5;
+                transform: scale(1.1);
+            }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .agent-card {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .agent-card:hover {
+            transform: translateX(5px);
+            background: rgba(99, 102, 241, 0.1);
+        }
+        
+        .chat-container {
+            max-height: 400px;
+            overflow-y: auto;
+            scroll-behavior: smooth;
+        }
+        
+        .chat-container::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .chat-container::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.5);
+            border-radius: 10px;
+        }
+        
+        .chat-container::-webkit-scrollbar-thumb {
+            background: rgba(99, 102, 241, 0.5);
+            border-radius: 10px;
+        }
+        
+        .chat-container::-webkit-scrollbar-thumb:hover {
+            background: rgba(99, 102, 241, 0.7);
+        }
+        
+        .message-bubble {
+            max-width: 80%;
+            padding: 12px 16px;
+            border-radius: 16px;
+            margin-bottom: 12px;
+            animation: slideIn 0.3s ease;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .message-user {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin-left: auto;
+            text-align: right;
+        }
+        
+        .message-agent {
+            background: rgba(51, 65, 85, 0.8);
+            margin-right: auto;
+        }
+        
+        .status-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 8px;
+        }
+        
+        .status-active {
+            background: #22c55e;
+            box-shadow: 0 0 10px #22c55e;
+        }
+        
+        .status-idle {
+            background: #fbbf24;
+            box-shadow: 0 0 10px #fbbf24;
+        }
+        
+        .status-offline {
+            background: #64748b;
+        }
+        
+        .health-bar {
+            height: 8px;
+            background: rgba(51, 65, 85, 0.5);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .health-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #22c55e 0%, #10b981 100%);
+            transition: width 1s ease;
+            border-radius: 4px;
+        }
+        
+        .task-item {
+            transition: all 0.2s ease;
+            border-left: 3px solid transparent;
+        }
+        
+        .task-item:hover {
+            background: rgba(99, 102, 241, 0.05);
+            border-left-color: #6366f1;
+        }
+        
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .badge-success {
+            background: rgba(34, 197, 94, 0.2);
+            color: #22c55e;
+        }
+        
+        .badge-warning {
+            background: rgba(251, 191, 36, 0.2);
+            color: #fbbf24;
+        }
+        
+        .badge-info {
+            background: rgba(59, 130, 246, 0.2);
+            color: #3b82f6;
+        }
+        
+        .badge-danger {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 10px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        .input-field {
+            background: rgba(51, 65, 85, 0.5);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 8px;
+            padding: 10px 16px;
+            color: #e2e8f0;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+        
+        .input-field:focus {
+            outline: none;
+            border-color: #6366f1;
+            background: rgba(51, 65, 85, 0.7);
+        }
+        
+        .metric-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="glass-card m-4 p-4">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-4">
+                <div class="w-12 h-12 rounded-full gradient-bg flex items-center justify-center">
+                    <i class="fas fa-brain text-white text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-2xl font-bold">Flowstate-AI Command Center</h1>
+                    <p class="text-sm text-gray-400">Autonomous AI Development System</p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-4">
+                <div class="text-right">
+                    <p class="text-sm text-gray-400">System Status</p>
+                    <div class="flex items-center">
+                        <span class="status-indicator status-active pulse-dot"></span>
+                        <span class="text-green-400 font-semibold">Operational</span>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <p class="text-sm text-gray-400">Last Update</p>
+                    <p class="text-sm font-semibold" id="lastUpdate">Just now</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container mx-auto px-4 pb-8">
+        <!-- Stats Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            <div class="glass-card stat-card p-6 fade-in" style="--accent-color: #22c55e;">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="w-12 h-12 rounded-lg bg-green-500 bg-opacity-20 flex items-center justify-center">
+                        <i class="fas fa-robot text-green-400 text-xl"></i>
+                    </div>
+                    <span class="badge badge-success">Active</span>
+                </div>
+                <p class="text-gray-400 text-sm mb-2">Active Agents</p>
+                <p class="metric-value" id="activeAgents">0</p>
+            </div>
+
+            <div class="glass-card stat-card p-6 fade-in" style="--accent-color: #fbbf24; animation-delay: 0.1s;">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="w-12 h-12 rounded-lg bg-yellow-500 bg-opacity-20 flex items-center justify-center">
+                        <i class="fas fa-tasks text-yellow-400 text-xl"></i>
+                    </div>
+                    <span class="badge badge-warning">Pending</span>
+                </div>
+                <p class="text-gray-400 text-sm mb-2">Pending Tasks</p>
+                <p class="metric-value" id="pendingTasks">0</p>
+            </div>
+
+            <div class="glass-card stat-card p-6 fade-in" style="--accent-color: #3b82f6; animation-delay: 0.2s;">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="w-12 h-12 rounded-lg bg-blue-500 bg-opacity-20 flex items-center justify-center">
+                        <i class="fas fa-check-circle text-blue-400 text-xl"></i>
+                    </div>
+                    <span class="badge badge-info">Today</span>
+                </div>
+                <p class="text-gray-400 text-sm mb-2">Completed Today</p>
+                <p class="metric-value" id="completedToday">0</p>
+            </div>
+
+            <div class="glass-card stat-card p-6 fade-in" style="--accent-color: #6366f1; animation-delay: 0.3s;">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="w-12 h-12 rounded-lg bg-indigo-500 bg-opacity-20 flex items-center justify-center">
+                        <i class="fas fa-heartbeat text-indigo-400 text-xl"></i>
+                    </div>
+                    <span class="badge badge-info" id="healthBadge">Excellent</span>
+                </div>
+                <p class="text-gray-400 text-sm mb-2">System Health</p>
+                <div class="flex items-center space-x-3">
+                    <p class="metric-value" id="systemHealth">100</p>
+                    <span class="text-gray-400">%</span>
+                </div>
+                <div class="health-bar mt-3">
+                    <div class="health-fill" id="healthBar" style="width: 100%"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Left Column: Agents & Activity -->
+            <div class="lg:col-span-2 space-y-6">
+                <!-- Activity Chart -->
+                <div class="glass-card p-6 fade-in">
+                    <h2 class="text-xl font-bold mb-4 flex items-center">
+                        <i class="fas fa-chart-line mr-3 text-indigo-400"></i>
+                        Activity Overview
+                    </h2>
+                    <canvas id="activityChart" height="80"></canvas>
+                </div>
+
+                <!-- AI Agents -->
+                <div class="glass-card p-6 fade-in">
+                    <h2 class="text-xl font-bold mb-4 flex items-center">
+                        <i class="fas fa-users mr-3 text-indigo-400"></i>
+                        AI Agents
+                    </h2>
+                    <div id="agentsList" class="space-y-3">
+                        <!-- Agents will be loaded here -->
+                    </div>
+                </div>
+
+                <!-- Recent Tasks -->
+                <div class="glass-card p-6 fade-in">
+                    <h2 class="text-xl font-bold mb-4 flex items-center">
+                        <i class="fas fa-list mr-3 text-indigo-400"></i>
+                        Recent Tasks
+                    </h2>
+                    <div id="tasksList" class="space-y-2">
+                        <!-- Tasks will be loaded here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Agent Communication -->
+            <div class="space-y-6">
+                <!-- Agent Communication Panel -->
+                <div class="glass-card p-6 fade-in">
+                    <h2 class="text-xl font-bold mb-4 flex items-center">
+                        <i class="fas fa-comments mr-3 text-indigo-400"></i>
+                        Agent Communication
+                    </h2>
+                    
+                    <div class="mb-4">
+                        <label class="text-sm text-gray-400 mb-2 block">Select Agent</label>
+                        <select id="agentSelect" class="input-field">
+                            <option value="project_manager">Project Manager</option>
+                            <option value="all">All Agents (Broadcast)</option>
+                        </select>
+                    </div>
+
+                    <div class="chat-container mb-4 p-4 rounded-lg bg-slate-900 bg-opacity-50" id="chatContainer">
+                        <div class="message-bubble message-agent">
+                            <p class="text-sm"><strong>System</strong></p>
+                            <p>Welcome to the Flowstate-AI Command Center. Select an agent to start communication.</p>
+                        </div>
+                    </div>
+
+                    <div class="flex space-x-2">
+                        <input 
+                            type="text" 
+                            id="messageInput" 
+                            class="input-field" 
+                            placeholder="Type your message..."
+                            onkeypress="if(event.key === 'Enter') sendMessage()"
+                        >
+                        <button onclick="sendMessage()" class="btn-primary">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- System Logs -->
+                <div class="glass-card p-6 fade-in">
+                    <h2 class="text-xl font-bold mb-4 flex items-center">
+                        <i class="fas fa-terminal mr-3 text-indigo-400"></i>
+                        System Logs
+                    </h2>
+                    <div id="systemLogs" class="space-y-2 text-xs font-mono max-h-64 overflow-y-auto">
+                        <div class="text-green-400">[INFO] System initialized successfully</div>
+                        <div class="text-blue-400">[INFO] Dashboard loaded</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global state
+        let activityChart = null;
+        let updateInterval = null;
+
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeCharts();
+            loadDashboardData();
+            startAutoRefresh();
+            addSystemLog('[INFO] Dashboard initialized', 'info');
+        });
+
+        // Initialize charts
+        function initializeCharts() {
+            const ctx = document.getElementById('activityChart').getContext('2d');
+            activityChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Tasks Completed',
+                        data: [],
+                        borderColor: '#667eea',
+                        backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                        tension: 0.4,
+                        fill: true,
+                        pointRadius: 4,
+                        pointHoverRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(148, 163, 184, 0.1)'
+                            },
+                            ticks: {
+                                color: '#94a3b8'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                color: 'rgba(148, 163, 184, 0.1)'
+                            },
+                            ticks: {
+                                color: '#94a3b8'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Load dashboard data
+        async function loadDashboardData() {
+            try {
+                // Load stats
+                const statsResponse = await fetch('/api/dashboard/stats');
+                const stats = await statsResponse.json();
+                updateStats(stats);
+
+                // Load agents
+                const agentsResponse = await fetch('/api/agents/status');
+                const agents = await agentsResponse.json();
+                updateAgentsList(agents);
+                updateAgentSelect(agents);
+
+                // Load recent tasks
+                const tasksResponse = await fetch('/api/tasks/recent');
+                const tasks = await tasksResponse.json();
+                updateTasksList(tasks);
+
+                // Load activity data
+                const activityResponse = await fetch('/api/analytics/activity');
+                const activity = await activityResponse.json();
+                updateActivityChart(activity);
+
+                // Update last update time
+                document.getElementById('lastUpdate').textContent = new Date().toLocaleTimeString();
+                
+                addSystemLog('[INFO] Data refreshed successfully', 'info');
+            } catch (error) {
+                console.error('Error loading dashboard data:', error);
+                addSystemLog('[ERROR] Failed to load dashboard data: ' + error.message, 'error');
+            }
+        }
+
+        // Update stats
+        function updateStats(stats) {
+            document.getElementById('activeAgents').textContent = stats.active_agents || 0;
+            document.getElementById('pendingTasks').textContent = stats.pending_tasks || 0;
+            document.getElementById('completedToday').textContent = stats.completed_today || 0;
+            document.getElementById('systemHealth').textContent = Math.round(stats.system_health || 100);
+            document.getElementById('healthBar').style.width = (stats.system_health || 100) + '%';
+            
+            // Update health badge
+            const health = stats.system_health || 100;
+            const healthBadge = document.getElementById('healthBadge');
+            if (health >= 90) {
+                healthBadge.textContent = 'Excellent';
+                healthBadge.className = 'badge badge-success';
+            } else if (health >= 70) {
+                healthBadge.textContent = 'Good';
+                healthBadge.className = 'badge badge-info';
+            } else if (health >= 50) {
+                healthBadge.textContent = 'Fair';
+                healthBadge.className = 'badge badge-warning';
+            } else {
+                healthBadge.textContent = 'Poor';
+                healthBadge.className = 'badge badge-danger';
+            }
+        }
+
+        // Update agents list
+        function updateAgentsList(agents) {
+            const container = document.getElementById('agentsList');
+            if (!agents || agents.length === 0) {
+                container.innerHTML = '<p class="text-gray-400 text-sm">No agents available</p>';
+                return;
+            }
+
+            container.innerHTML = agents.map(agent => `
+                <div class="agent-card p-4 rounded-lg border border-slate-700">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 rounded-full gradient-bg flex items-center justify-center">
+                                <span class="text-white font-bold">${agent.agent_number}</span>
+                            </div>
+                            <div>
+                                <p class="font-semibold">${agent.human_name || 'Agent ' + agent.agent_number}</p>
+                                <p class="text-xs text-gray-400">${agent.role || 'Unknown Role'}</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <span class="status-indicator ${getStatusClass(agent.status)}"></span>
+                            <p class="text-xs text-gray-400 mt-1">
+                                ${agent.tasks_completed || 0} completed
+                            </p>
+                        </div>
+                    </div>
+                    ${agent.current_task ? `
+                        <div class="mt-3 pt-3 border-t border-slate-700">
+                            <p class="text-xs text-gray-400">Current Task:</p>
+                            <p class="text-sm">${agent.current_task}</p>
+                        </div>
+                    ` : ''}
+                </div>
+            `).join('');
+        }
+
+        // Update agent select dropdown
+        function updateAgentSelect(agents) {
+            const select = document.getElementById('agentSelect');
+            const currentValue = select.value;
+            
+            select.innerHTML = '<option value="project_manager">Project Manager</option>';
+            
+            if (agents && agents.length > 0) {
+                agents.forEach(agent => {
+                    const option = document.createElement('option');
+                    option.value = agent.agent_number;
+                    option.textContent = `${agent.human_name || 'Agent ' + agent.agent_number} (${agent.role || 'Unknown'})`;
+                    select.appendChild(option);
+                });
+            }
+            
+            select.innerHTML += '<option value="all">All Agents (Broadcast)</option>';
+            
+            // Restore previous selection if it still exists
+            if (currentValue) {
+                select.value = currentValue;
+            }
+        }
+
+        // Update tasks list
+        function updateTasksList(tasks) {
+            const container = document.getElementById('tasksList');
+            if (!tasks || tasks.length === 0) {
+                container.innerHTML = '<p class="text-gray-400 text-sm">No recent tasks</p>';
+                return;
+            }
+
+            container.innerHTML = tasks.slice(0, 10).map(task => `
+                <div class="task-item p-3 rounded-lg border border-slate-700">
+                    <div class="flex items-center justify-between">
+                        <div class="flex-1">
+                            <p class="font-semibold text-sm">${task.title}</p>
+                            <p class="text-xs text-gray-400 mt-1">${task.description || 'No description'}</p>
+                        </div>
+                        <span class="badge ${getTaskBadgeClass(task.status)} ml-3">
+                            ${task.status}
+                        </span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Update activity chart
+        function updateActivityChart(activity) {
+            if (!activity || activity.length === 0) return;
+
+            activityChart.data.labels = activity.map(d => {
+                const date = new Date(d.date);
+                return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+            });
+            activityChart.data.datasets[0].data = activity.map(d => d.completed);
+            activityChart.update();
+        }
+
+        // Send message to agent
+        function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const message = input.value.trim();
+            const agent = document.getElementById('agentSelect').value;
+            
+            if (!message) return;
+
+            // Add user message to chat
+            addMessageToChat(message, 'user');
+            input.value = '';
+
+            // Simulate agent response (in production, this would be an API call)
+            setTimeout(() => {
+                const agentName = agent === 'all' ? 'System' : 
+                                 agent === 'project_manager' ? 'Project Manager' : 
+                                 `Agent ${agent}`;
+                addMessageToChat(`Message received. Processing your request...`, 'agent', agentName);
+                addSystemLog(`[INFO] Message sent to ${agentName}`, 'info');
+            }, 1000);
+        }
+
+        // Add message to chat
+        function addMessageToChat(message, type, agentName = null) {
+            const container = document.getElementById('chatContainer');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message-bubble message-${type}`;
+            
+            if (type === 'agent' && agentName) {
+                messageDiv.innerHTML = `
+                    <p class="text-sm"><strong>${agentName}</strong></p>
+                    <p>${message}</p>
+                `;
+            } else {
+                messageDiv.innerHTML = `<p>${message}</p>`;
+            }
+            
+            container.appendChild(messageDiv);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        // Add system log
+        function addSystemLog(message, level = 'info') {
+            const container = document.getElementById('systemLogs');
+            const logDiv = document.createElement('div');
+            
+            const colors = {
+                'info': 'text-blue-400',
+                'success': 'text-green-400',
+                'warning': 'text-yellow-400',
+                'error': 'text-red-400'
+            };
+            
+            logDiv.className = colors[level] || colors.info;
+            logDiv.textContent = message;
+            
+            container.appendChild(logDiv);
+            container.scrollTop = container.scrollHeight;
+            
+            // Keep only last 50 logs
+            while (container.children.length > 50) {
+                container.removeChild(container.firstChild);
+            }
+        }
+
+        // Helper functions
+        function getStatusClass(status) {
+            const statusMap = {
+                'active': 'status-active',
+                'idle': 'status-idle',
+                'offline': 'status-offline'
+            };
+            return statusMap[status] || 'status-offline';
+        }
+
+        function getTaskBadgeClass(status) {
+            const statusMap = {
+                'completed': 'badge-success',
+                'running': 'badge-info',
+                'pending': 'badge-warning',
+                'failed': 'badge-danger'
+            };
+            return statusMap[status] || 'badge-info';
+        }
+
+        // Auto-refresh
+        function startAutoRefresh() {
+            updateInterval = setInterval(() => {
+                loadDashboardData();
+            }, 10000); // Refresh every 10 seconds
+        }
+
+        // Cleanup on page unload
+        window.addEventListener('beforeunload', () => {
+            if (updateInterval) {
+                clearInterval(updateInterval);
+            }
+        });
+    </script>
+</body>
+</html>

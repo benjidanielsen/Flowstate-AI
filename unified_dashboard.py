@@ -110,6 +110,12 @@ def logout():
 def index():
     if not session.get("logged_in"):
         return redirect(url_for("login"))
+    return render_template("dashboard_v2.html")
+
+@app.route("/v1")
+def dashboard_v1():
+    if not session.get("logged_in"):
+        return redirect(url_for("login"))
     return render_template("dashboard_enhanced.html")
 
 @app.route("/classic")
