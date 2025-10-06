@@ -267,12 +267,19 @@ UNIFIED_DASHBOARD_TEMPLATE = '''
         /* Agent Status */
         .agent-card {
             display: flex;
-            justify-content: space-between;
             align-items: center;
             padding: 15px;
             background: #f8f9fa;
             border-radius: 10px;
             margin-bottom: 10px;
+            gap: 15px;
+        }
+        .agent-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #667eea;
         }
         .agent-info {
             flex: 1;
@@ -467,8 +474,10 @@ UNIFIED_DASHBOARD_TEMPLATE = '''
             
             const html = agents.map(agent => `
                 <div class="agent-card">
+                    <img src="${agent.profile_photo_url}" alt="${agent.agent}" class="agent-avatar">
                     <div class="agent-info">
-                        <div class="agent-name">${agent.agent}</div>
+                        <div class="agent-name">${agent.agent} (${agent.gender})</div>
+                        <div class="agent-role">${agent.role}</div>
                         <div class="agent-task">${agent.current_task || 'Idle'}</div>
                     </div>
                     <div class="agent-status status-${agent.status}">${agent.status}</div>

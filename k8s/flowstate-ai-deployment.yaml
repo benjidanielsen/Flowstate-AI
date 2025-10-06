@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flowstate-ai-deployment
+  labels:
+    app: flowstate-ai
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: flowstate-ai
+  template:
+    metadata:
+      labels:
+        app: flowstate-ai
+    spec:
+      containers:
+      - name: flowstate-ai-container
+        image: flowstate-ai:latest
+        ports:
+        - containerPort: 8000
+        resources:
+          limits:
+            cpu: "500m"
+            memory: "512Mi"
+          requests:
+            cpu: "250m"
+            memory: "256Mi"
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 10
+          periodSeconds: 5
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 15
+          periodSeconds: 20
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: flowstate-ai-service
+spec:
+  selector:
+    app: flowstate-ai
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8000
+  type: LoadBalancer
