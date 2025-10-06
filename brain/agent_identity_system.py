@@ -85,10 +85,17 @@ class AgentIdentitySystem:
         
         return f"Agent-{count + 1:03d}"
     
-    def _pick_human_name(self, gender: str = None) -> str:
-        """Pick a unique human name"""
+    def _pick_human_name(self, gender: str = None) -> tuple:
+        """Pick a unique human name and return (name, gender)"""
         if gender is None:
-            gender = random.choice(['male', 'female', 'neutral'])
+            # 70% female, 20% male, 10% neutral
+            rand = random.random()
+            if rand < 0.7:
+                gender = 'female'
+            elif rand < 0.9:
+                gender = 'male'
+            else:
+                gender = 'neutral'
         
         available_names = [
             name for name in HUMAN_NAMES[gender]
@@ -102,11 +109,11 @@ class AgentIdentitySystem:
         
         if not available_names:
             # If still no names, generate a unique one
-            return f"Agent{random.randint(100, 999)}"
+            return (f"Agent{random.randint(100, 999)}", gender)
         
         name = random.choice(available_names)
         self.used_names.add(name)
-        return name
+        return (name, gender)
     
     def _pick_personality_traits(self, count: int = 3) -> str:
         """Pick random personality traits"""
@@ -118,20 +125,52 @@ class AgentIdentitySystem:
         specs = SPECIALIZATIONS.get(role, ['General development', 'Problem solving'])
         return ', '.join(random.sample(specs, min(2, len(specs))))
     
+    def _generate_profile_photo_url(self, human_name: str, gender: str) -> str:
+        """Generate a profile photo URL using a placeholder service"""
+        # Using UI Avatars as a free placeholder service
+        # You can replace these URLs with actual photos later
+        name_encoded = human_name.replace(' ', '+')
+        
+        # Color schemes based on gender
+        if gender == 'female':
+            colors = ['FF69B4', 'FF1493', '9370DB', '8A2BE2', 'BA55D3', 'DA70D6']
+        elif gender == 'male':
+            colors = ['4169E1', '1E90FF', '00BFFF', '4682B4', '5F9EA0', '6495ED']
+        else:
+            colors = ['32CD32', '00FA9A', '00CED1', '20B2AA', '48D1CC', '40E0D0']
+        
+        color = random.choice(colors)
+        
+        return f"https://ui-avatars.com/api/?name={name_encoded}&background={color}&color=fff&size=200&bold=true"
+    
+    def _generate_personality_description(self, traits: str, role: str, name: str) -> str:
+        """Generate a personality description"""
+        descriptions = [
+            f"{name} is a {traits.lower()} professional who excels at {role.lower()}.",
+            f"Known for being {traits.lower()}, {name} brings unique expertise to {role.lower()}.",
+            f"With a {traits.lower()} approach, {name} is the go-to agent for {role.lower()}.",
+            f"{name}'s {traits.lower()} nature makes them perfect for {role.lower()} tasks.",
+            f"As a {traits.lower()} specialist, {name} handles {role.lower()} with precision."
+        ]
+        return random.choice(descriptions)
+    
     def birth_agent(self, role: str, gender: str = None) -> Dict:
         """Create a new agent with identity"""
         agent_number = self._generate_agent_number()
-        human_name = self._pick_human_name(gender)
+        human_name, actual_gender = self._pick_human_name(gender)
         personality = self._pick_personality_traits()
         specialization = self._pick_specialization(role)
+        profile_photo = self._generate_profile_photo_url(human_name, actual_gender)
+        personality_desc = self._generate_personality_description(personality, role, human_name)
         
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
         
         cursor.execute('''
-            INSERT INTO agents (agent_number, human_name, role, specialization, personality_traits, status)
-            VALUES (?, ?, ?, ?, ?, 'active')
-        ''', (agent_number, human_name, role, specialization, personality))
+            INSERT INTO agents (agent_number, human_name, gender, role, specialization, 
+                              personality_traits, personality_description, profile_photo_url, status)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'active')
+        ''', (agent_number, human_name, actual_gender, role, specialization, personality, personality_desc, profile_photo))
         
         agent_id = cursor.lastrowid
         conn.commit()
@@ -141,16 +180,20 @@ class AgentIdentitySystem:
             'id': agent_id,
             'agent_number': agent_number,
             'human_name': human_name,
+            'gender': actual_gender,
             'role': role,
             'specialization': specialization,
             'personality_traits': personality,
+            'personality_description': personality_desc,
+            'profile_photo_url': profile_photo,
             'birth_timestamp': datetime.now().isoformat(),
             'status': 'active'
         }
         
-        logger.info(f"👶 Agent born: {agent_number} ({human_name}) - {role}")
+        logger.info(f"👶 Agent born: {agent_number} ({human_name}) - {actual_gender} - {role}")
         logger.info(f"   Personality: {personality}")
         logger.info(f"   Specialization: {specialization}")
+        logger.info(f"   Photo: {profile_photo}")
         
         # Log to activity log
         try:
@@ -209,9 +252,9 @@ class AgentIdentitySystem:
         cursor = conn.cursor()
         
         cursor.execute('''
-            SELECT id, agent_number, human_name, role, specialization, 
-                   personality_traits, birth_timestamp, death_timestamp, 
-                   status, tasks_completed, tasks_failed
+            SELECT id, agent_number, human_name, gender, role, specialization, 
+                   personality_traits, personality_description, profile_photo_url,
+                   birth_timestamp, death_timestamp, status, tasks_completed, tasks_failed
             FROM agents WHERE agent_number = ?
         ''', (agent_number,))
         
@@ -223,14 +266,17 @@ class AgentIdentitySystem:
                 'id': row[0],
                 'agent_number': row[1],
                 'human_name': row[2],
-                'role': row[3],
-                'specialization': row[4],
-                'personality_traits': row[5],
-                'birth_timestamp': row[6],
-                'death_timestamp': row[7],
-                'status': row[8],
-                'tasks_completed': row[9],
-                'tasks_failed': row[10]
+                'gender': row[3],
+                'role': row[4],
+                'specialization': row[5],
+                'personality_traits': row[6],
+                'personality_description': row[7],
+                'profile_photo_url': row[8],
+                'birth_timestamp': row[9],
+                'death_timestamp': row[10],
+                'status': row[11],
+                'tasks_completed': row[12],
+                'tasks_failed': row[13]
             }
         return None
     
@@ -240,8 +286,9 @@ class AgentIdentitySystem:
         cursor = conn.cursor()
         
         cursor.execute('''
-            SELECT id, agent_number, human_name, role, specialization, 
-                   personality_traits, birth_timestamp, tasks_completed, tasks_failed
+            SELECT id, agent_number, human_name, gender, role, specialization, 
+                   personality_traits, personality_description, profile_photo_url,
+                   birth_timestamp, tasks_completed, tasks_failed
             FROM agents WHERE status = 'active'
             ORDER BY birth_timestamp DESC
         ''')
@@ -252,12 +299,15 @@ class AgentIdentitySystem:
                 'id': row[0],
                 'agent_number': row[1],
                 'human_name': row[2],
-                'role': row[3],
-                'specialization': row[4],
-                'personality_traits': row[5],
-                'birth_timestamp': row[6],
-                'tasks_completed': row[7],
-                'tasks_failed': row[8]
+                'gender': row[3],
+                'role': row[4],
+                'specialization': row[5],
+                'personality_traits': row[6],
+                'personality_description': row[7],
+                'profile_photo_url': row[8],
+                'birth_timestamp': row[9],
+                'tasks_completed': row[10],
+                'tasks_failed': row[11]
             })
         
         conn.close()

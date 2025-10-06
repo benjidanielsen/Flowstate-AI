@@ -66,7 +66,8 @@ class AutonomousAIDeveloper:
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
         cursor.execute('''
-            SELECT agent_number, human_name, role, specialization, personality_traits
+            SELECT agent_number, human_name, gender, role, specialization, personality_traits, 
+                   personality_description, profile_photo_url
             FROM agents 
             WHERE role = 'Autonomous AI Developer' AND status = 'active'
             ORDER BY birth_timestamp DESC
@@ -80,9 +81,12 @@ class AutonomousAIDeveloper:
             return {
                 'agent_number': result[0],
                 'human_name': result[1],
-                'role': result[2],
-                'specialization': result[3],
-                'personality_traits': result[4]
+                'gender': result[2],
+                'role': result[3],
+                'specialization': result[4],
+                'personality_traits': result[5],
+                'personality_description': result[6],
+                'profile_photo_url': result[7]
             }
         else:
             # Create new agent
