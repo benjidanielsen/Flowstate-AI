@@ -12,8 +12,8 @@ from pathlib import Path
 from datetime import datetime
 from openai import OpenAI
 
-app = Flask(__name__, static_folder=PROJECT_ROOT / "static")
 PROJECT_ROOT = Path(__file__).parent
+app = Flask(__name__, static_folder=PROJECT_ROOT / "static")
 DB_PATH = PROJECT_ROOT / "godmode-state.db"
 
 # Initialize OpenAI client
