@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRM Dashboard - Flowstate-AI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        .crm-dashboard {
+            padding: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .dashboard-header {
+            margin-bottom: 30px;
+        }
+        
+        .dashboard-header h1 {
+            font-size: 2.5em;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .stat-card h3 {
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+            opacity: 0.9;
+        }
+        
+        .stat-card .value {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .stat-card.green {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        }
+        
+        .stat-card.blue {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+        
+        .stat-card.orange {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+        }
+        
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .content-section {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .content-section h2 {
+            font-size: 1.5em;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+        
+        .stage-breakdown {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .stage-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            transition: background 0.2s ease;
+        }
+        
+        .stage-item:hover {
+            background: #e9ecef;
+        }
+        
+        .stage-name {
+            font-weight: 500;
+            color: #495057;
+        }
+        
+        .stage-count {
+            font-weight: bold;
+            color: #667eea;
+            font-size: 1.2em;
+        }
+        
+        .recent-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .recent-item {
+            padding: 12px;
+            border-bottom: 1px solid #e9ecef;
+            transition: background 0.2s ease;
+        }
+        
+        .recent-item:hover {
+            background: #f8f9fa;
+        }
+        
+        .recent-item:last-child {
+            border-bottom: none;
+        }
+        
+        .item-name {
+            font-weight: 500;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+        
+        .item-meta {
+            font-size: 0.85em;
+            color: #6c757d;
+        }
+        
+        .nav-buttons {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .nav-button {
+            padding: 12px 24px;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: background 0.3s ease, transform 0.2s ease;
+        }
+        
+        .nav-button:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+        }
+        
+        @media (max-width: 768px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="crm-dashboard">
+        <div class="dashboard-header">
+            <h1>🎯 CRM Dashboard</h1>
+            <p>Manage contacts, deals, and pipelines with AI-powered insights</p>
+        </div>
+        
+        <div class="nav-buttons">
+            <a href="/" class="nav-button">← Back to Main Dashboard</a>
+            <a href="/crm/contacts" class="nav-button">Contacts</a>
+            <a href="/crm/deals" class="nav-button">Deals</a>
+            <a href="/crm/pipelines" class="nav-button">Pipelines</a>
+            <a href="/crm/analytics" class="nav-button">Analytics</a>
+        </div>
+        
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>Total Contacts</h3>
+                <div class="value">{{ total_contacts }}</div>
+            </div>
+            <div class="stat-card green">
+                <h3>Total Deals</h3>
+                <div class="value">{{ total_deals }}</div>
+            </div>
+            <div class="stat-card blue">
+                <h3>Sales Pipeline</h3>
+                <div class="value">{{ sales_deals }}</div>
+            </div>
+            <div class="stat-card orange">
+                <h3>Recruiting Pipeline</h3>
+                <div class="value">{{ recruiting_deals }}</div>
+            </div>
+        </div>
+        
+        <div class="content-grid">
+            <div class="content-section">
+                <h2>Lifecycle Stages</h2>
+                <div class="stage-breakdown">
+                    {% for stage, count in stage_counts.items() %}
+                    <div class="stage-item">
+                        <span class="stage-name">{{ stage.upper() }}</span>
+                        <span class="stage-count">{{ count }}</span>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <div class="content-section">
+                <h2>Recent Contacts</h2>
+                <ul class="recent-list">
+                    {% for contact in recent_contacts[:5] %}
+                    <li class="recent-item">
+                        <div class="item-name">{{ contact.name }}</div>
+                        <div class="item-meta">
+                            {{ contact.email }} | {{ contact.lifecycle_stage }}
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        
+        <div class="content-grid">
+            <div class="content-section">
+                <h2>Recent Deals</h2>
+                <ul class="recent-list">
+                    {% for deal in recent_deals[:5] %}
+                    <li class="recent-item">
+                        <div class="item-name">{{ deal.product or 'Untitled Deal' }}</div>
+                        <div class="item-meta">
+                            {{ deal.pipeline }} | {{ deal.stage }} | {{ deal.currency }} {{ deal.amount }}
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            
+            <div class="content-section">
+                <h2>Quick Actions</h2>
+                <div style="display: flex; flex-direction: column; gap: 10px;">
+                    <a href="/crm/contacts?lifecycle_stage=lead" class="nav-button">View Leads</a>
+                    <a href="/crm/deals?pipeline=Sales&stage=New" class="nav-button">View New Sales</a>
+                    <a href="/crm/pipelines" class="nav-button">Manage Pipelines</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
