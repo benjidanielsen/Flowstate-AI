@@ -621,7 +621,8 @@ def get_agents():
             as_t.current_task,
             as_t.last_heartbeat,
             a.profile_photo_url,
-            a.gender
+            a.gender,
+            a.role
         FROM agent_status as_t
         JOIN agents a ON as_t.agent_name = a.human_name
         ORDER BY as_t.last_heartbeat DESC
@@ -635,7 +636,8 @@ def get_agents():
                 'current_task': row[2],
                 'last_heartbeat': row[3],
                 'profile_photo_url': row[4],
-                'gender': row[5]
+                'gender': row[5],
+                'role': row[6]
             })
     
     conn.close()
