@@ -1,286 +1,152 @@
-#!/usr/bin/env python3
-"""
-🧠 DECISION ENGINE
-⚡ Handles task prioritization, resource allocation, and strategic decisions
-🎯 Mission: Make intelligent decisions to optimize system performance
-"""
+import heapq
+from typing import List, Dict, Any, Tuple, Optional
 
-import sqlite3
-import json
-from pathlib import Path
-from datetime import datetime
-from typing import Dict, List, Optional
-from openai import OpenAI
-import logging
+class Task:
+    """Represents a task with priority and resource requirements."""
+    def __init__(self, task_id: str, description: str, priority: int, resource_requirements: Dict[str, int]):
+        self.task_id = task_id
+        self.description = description
+        self.priority = priority  # Higher number means higher priority
+        self.resource_requirements = resource_requirements  # e.g., {"cpu": 2, "memory": 512}
+        self.allocated_resources = {}
+        self.status = "pending"  # could be pending, running, completed, failed
 
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger('DecisionEngine')
+    def __lt__(self, other: 'Task'):
+        # For priority queue, invert because heapq is min-heap
+        return self.priority > other.priority
 
-PROJECT_ROOT = Path(__file__).parent.parent
-DB_PATH = PROJECT_ROOT / "godmode-state.db"
+class ResourcePool:
+    """Tracks available resources and allocation."""
+    def __init__(self, total_resources: Dict[str, int]):
+        self.total_resources = total_resources.copy()
+        self.available_resources = total_resources.copy()
+
+    def can_allocate(self, requirements: Dict[str, int]) -> bool:
+        for r, amount in requirements.items():
+            if self.available_resources.get(r, 0) < amount:
+                return False
+        return True
+
+    def allocate(self, requirements: Dict[str, int]) -> bool:
+        if not self.can_allocate(requirements):
+            return False
+        for r, amount in requirements.items():
+            self.available_resources[r] -= amount
+        return True
+
+    def release(self, requirements: Dict[str, int]) -> None:
+        for r, amount in requirements.items():
+            self.available_resources[r] += amount
+            if self.available_resources[r] > self.total_resources[r]:
+                self.available_resources[r] = self.total_resources[r]
 
 class DecisionEngine:
-    """Makes intelligent decisions for task prioritization and resource allocation"""
-    
-    def __init__(self):
-        self.db_path = DB_PATH
-        self.client = OpenAI()
-        self.decision_history = []
-        
-    def analyze_task_complexity(self, task: Dict) -> int:
-        """Analyze task complexity (1-10 scale)"""
-        complexity_score = 5  # Default
-        
-        description = task.get('description', '').lower()
-        
-        # Increase complexity for certain keywords
-        if any(word in description for word in ['architecture', 'system', 'infrastructure']):
-            complexity_score += 2
-        if any(word in description for word in ['ai', 'machine learning', 'algorithm']):
-            complexity_score += 2
-        if any(word in description for word in ['security', 'authentication', 'encryption']):
-            complexity_score += 1
-        if any(word in description for word in ['database', 'migration', 'schema']):
-            complexity_score += 1
-        
-        # Decrease complexity for simpler tasks
-        if any(word in description for word in ['documentation', 'readme', 'comment']):
-            complexity_score -= 1
-        if any(word in description for word in ['fix typo', 'update text', 'rename']):
-            complexity_score -= 2
-        
-        return min(max(complexity_score, 1), 10)
-    
-    def estimate_task_duration(self, task: Dict) -> int:
-        """Estimate task duration in minutes"""
-        complexity = self.analyze_task_complexity(task)
-        
-        # Base duration on complexity
-        base_duration = complexity * 15  # 15 minutes per complexity point
-        
-        # Adjust based on task category
-        category = task.get('category', '').lower()
-        multipliers = {
-            'architecture': 1.5,
-            'security': 1.3,
-            'testing': 1.2,
-            'documentation': 0.8,
-            'refactoring': 1.1,
-            'bugfix': 0.9
+    """Handles task prioritization, resource allocation, and strategic decisions."""
+    def __init__(self, total_resources: Dict[str, int]):
+        self.resource_pool = ResourcePool(total_resources)
+        self.task_queue: List[Task] = []  # priority queue
+        self.running_tasks: Dict[str, Task] = {}
+
+    def add_task(self, task_id: str, description: str, priority: int, resource_requirements: Dict[str, int]) -> None:
+        task = Task(task_id, description, priority, resource_requirements)
+        heapq.heappush(self.task_queue, task)
+
+    def _allocate_resources_to_task(self, task: Task) -> bool:
+        if self.resource_pool.allocate(task.resource_requirements):
+            task.allocated_resources = task.resource_requirements.copy()
+            task.status = "running"
+            self.running_tasks[task.task_id] = task
+            return True
+        return False
+
+    def prioritize_and_allocate(self) -> List[Task]:
+        """
+        Try to allocate resources to highest priority tasks first.
+        Returns list of tasks that started running this cycle.
+        """
+        started_tasks = []
+        # We will try tasks in priority order but if cannot allocate, skip and try next
+
+        # Use a temporary list to hold tasks that can't be allocated now
+        temp_tasks = []
+
+        while self.task_queue:
+            task = heapq.heappop(self.task_queue)
+            if self._allocate_resources_to_task(task):
+                started_tasks.append(task)
+            else:
+                # Cannot allocate now, keep for next time
+                temp_tasks.append(task)
+
+        # Put back tasks that were not allocated
+        for task in temp_tasks:
+            heapq.heappush(self.task_queue, task)
+
+        return started_tasks
+
+    def complete_task(self, task_id: str, success: bool = True) -> None:
+        task = self.running_tasks.pop(task_id, None)
+        if not task:
+            return
+        # Release resources
+        self.resource_pool.release(task.allocated_resources)
+        task.status = "completed" if success else "failed"
+
+    def get_status(self) -> Dict[str, Any]:
+        """Returns current state for monitoring or strategic decisions."""
+        return {
+            "available_resources": self.resource_pool.available_resources.copy(),
+            "running_tasks": {tid: t.status for tid, t in self.running_tasks.items()},
+            "pending_tasks": [t.task_id for t in self.task_queue],
         }
-        
-        multiplier = multipliers.get(category, 1.0)
-        return int(base_duration * multiplier)
-    
-    def calculate_task_priority(self, task: Dict) -> int:
-        """Calculate dynamic priority based on multiple factors"""
-        base_priority = task.get('priority', 5)
-        
-        # Factor 1: Complexity (higher complexity = slightly higher priority)
-        complexity = self.analyze_task_complexity(task)
-        complexity_bonus = complexity * 0.5
-        
-        # Factor 2: Dependencies (tasks with no dependencies get priority)
-        dependencies = task.get('dependencies', [])
-        dependency_penalty = len(dependencies) * 2
-        
-        # Factor 3: Age (older tasks get priority boost)
-        created_at = task.get('created_at', datetime.now().isoformat())
-        # Simplified age calculation
-        age_bonus = 0  # Could be enhanced with actual date parsing
-        
-        # Factor 4: Category urgency
-        category = task.get('category', '').lower()
-        urgency_bonus = {
-            'security': 3,
-            'bugfix': 2,
-            'performance': 2,
-            'architecture': 1,
-            'feature': 0,
-            'documentation': -1
-        }.get(category, 0)
-        
-        final_priority = base_priority + complexity_bonus - dependency_penalty + age_bonus + urgency_bonus
-        
-        return int(min(max(final_priority, 1), 10))
-    
-    def select_best_agent_for_task(self, task: Dict) -> str:
-        """Select the most appropriate agent for a task"""
-        description = task.get('description', '').lower()
-        category = task.get('category', '').lower()
-        
-        # Agent specializations
-        agent_keywords = {
-            'Backend Developer': ['backend', 'api', 'server', 'database', 'flask', 'python'],
-            'Frontend Developer': ['frontend', 'ui', 'react', 'component', 'css', 'javascript'],
-            'Database Agent': ['database', 'schema', 'migration', 'query', 'sql', 'index'],
-            'DevOps Agent': ['deploy', 'docker', 'kubernetes', 'ci/cd', 'infrastructure'],
-            'Testing Agent': ['test', 'testing', 'qa', 'coverage', 'unit test', 'integration'],
-            'Security Agent': ['security', 'authentication', 'authorization', 'vulnerability'],
-            'Documentation Agent': ['documentation', 'readme', 'guide', 'tutorial', 'docs']
-        }
-        
-        # Score each agent
-        agent_scores = {}
-        for agent, keywords in agent_keywords.items():
-            score = sum(1 for keyword in keywords if keyword in description or keyword in category)
-            agent_scores[agent] = score
-        
-        # Get best match
-        if agent_scores:
-            best_agent = max(agent_scores, key=agent_scores.get)
-            if agent_scores[best_agent] > 0:
-                return best_agent
-        
-        # Default to Autonomous AI Developer
-        return 'Autonomous AI Developer'
-    
-    def make_resource_allocation_decision(self) -> Dict:
-        """Decide how to allocate resources across tasks"""
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
-        
-        # Get pending tasks
-        cursor.execute('''
-            SELECT id, title, description, priority, assigned_to, created_at
-            FROM tasks
-            WHERE status = 'pending'
-        ''')
-        
-        tasks = []
-        for row in cursor.fetchall():
-            tasks.append({
-                'id': row[0],
-                'title': row[1],
-                'description': row[2],
-                'priority': row[3],
-                'assigned_to': row[4],
-                'created_at': row[5]
-            })
-        
-        conn.close()
-        
-        # Analyze and prioritize
-        task_analysis = []
-        for task in tasks:
-            analysis = {
-                'task_id': task['id'],
-                'title': task['title'],
-                'calculated_priority': self.calculate_task_priority(task),
-                'complexity': self.analyze_task_complexity(task),
-                'estimated_duration': self.estimate_task_duration(task),
-                'recommended_agent': self.select_best_agent_for_task(task)
-            }
-            task_analysis.append(analysis)
-        
-        # Sort by calculated priority
-        task_analysis.sort(key=lambda x: x['calculated_priority'], reverse=True)
-        
-        decision = {
-            'timestamp': datetime.now().isoformat(),
-            'total_pending_tasks': len(tasks),
-            'prioritized_tasks': task_analysis[:10],  # Top 10
-            'recommendation': 'Focus on high-priority tasks first'
-        }
-        
-        self.decision_history.append(decision)
-        
-        return decision
-    
-    def should_generate_new_tasks(self) -> bool:
-        """Decide if new tasks should be generated"""
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
-        
-        cursor.execute("SELECT COUNT(*) FROM tasks WHERE status = 'pending'")
-        pending_count = cursor.fetchone()[0]
-        
-        conn.close()
-        
-        # Generate new tasks if queue is low
-        threshold = 10
-        return pending_count < threshold
-    
-    def decide_on_system_action(self, context: str) -> Dict:
-        """Make a high-level system decision using AI"""
-        logger.info(f"🤔 Making decision on: {context}")
-        
-        # Get current system state
-        resource_allocation = self.make_resource_allocation_decision()
-        
-        prompt = f"""You are the Decision Engine for Flowstate-AI autonomous development system.
 
-Context: {context}
+    def strategic_decision(self) -> Optional[str]:
+        """
+        Placeholder for strategic decision logic.
+        For example, preempt low priority tasks if high priority task cannot be allocated.
+        Returns a string describing action or None if no action.
+        """
+        if not self.task_queue:
+            return None
 
-Current System State:
-- Pending tasks: {resource_allocation['total_pending_tasks']}
-- Top priority task: {resource_allocation['prioritized_tasks'][0]['title'] if resource_allocation['prioritized_tasks'] else 'None'}
+        highest_priority_task = self.task_queue[0]
+        if self.resource_pool.can_allocate(highest_priority_task.resource_requirements):
+            return None  # No action needed
 
-Make a strategic decision on what the system should do next. Consider:
-1. Should we continue with current tasks or reprioritize?
-2. Do we need to generate new tasks?
-3. Should we optimize any processes?
-4. Are there any bottlenecks to address?
+        # Try to preempt lower priority running tasks
+        low_priority_tasks = [t for t in self.running_tasks.values() if t.priority < highest_priority_task.priority]
+        if not low_priority_tasks:
+            return None
 
-Respond in JSON format:
-{{
-    "action": "continue/reprioritize/generate_tasks/optimize",
-    "reasoning": "brief explanation",
-    "specific_steps": ["step 1", "step 2", ...]
-}}"""
+        # Sort low priority tasks ascending by priority (lowest first)
+        low_priority_tasks.sort(key=lambda t: t.priority)
 
-        try:
-            response = self.client.chat.completions.create(
-                model="gpt-4.1-mini",
-                messages=[
-                    {"role": "system", "content": "You are a strategic decision-making AI."},
-                    {"role": "user", "content": prompt}
-                ],
-                temperature=0.7,
-                max_tokens=800
-            )
-            
-            decision_text = response.choices[0].message.content
-            
-            # Parse JSON
-            if decision_text.startswith("```json"):
-                decision_text = decision_text.split("```json")[1].split("```")[0].strip()
-            elif decision_text.startswith("```"):
-                decision_text = decision_text.split("```")[1].split("```")[0].strip()
-            
-            decision = json.loads(decision_text)
-            decision['timestamp'] = datetime.now().isoformat()
-            
-            logger.info(f"✅ Decision made: {decision['action']}")
-            
-            return decision
-            
-        except Exception as e:
-            logger.error(f"❌ Decision making failed: {e}")
-            return {
-                'action': 'continue',
-                'reasoning': 'Error in decision making, defaulting to continue',
-                'specific_steps': ['Continue with current tasks']
-            }
+        # Try releasing resources by preempting tasks until enough resources
+        resources_needed = highest_priority_task.resource_requirements.copy()
 
-if __name__ == "__main__":
-    print("🧠 Decision Engine")
-    print("=" * 60)
-    
-    engine = DecisionEngine()
-    
-    print("\n📊 Analyzing resource allocation...")
-    allocation = engine.make_resource_allocation_decision()
-    print(f"Total pending tasks: {allocation['total_pending_tasks']}")
-    print(f"\nTop 5 prioritized tasks:")
-    for i, task in enumerate(allocation['prioritized_tasks'][:5], 1):
-        print(f"{i}. {task['title']}")
-        print(f"   Priority: {task['calculated_priority']}, Complexity: {task['complexity']}")
-        print(f"   Duration: {task['estimated_duration']} min, Agent: {task['recommended_agent']}")
-    
-    print("\n🤔 Making strategic decision...")
-    decision = engine.decide_on_system_action("System startup - what should we focus on?")
-    print(f"Action: {decision['action']}")
-    print(f"Reasoning: {decision['reasoning']}")
-    
-    print("\n✅ Decision Engine operational!")
+        # Calculate current available + resources that could be freed by preemption
+        available = self.resource_pool.available_resources.copy()
+        for r in available:
+            resources_needed[r] = max(0, resources_needed.get(r, 0) - available.get(r, 0))
+
+        tasks_to_preempt = []
+
+        def resources_sufficient(needed: Dict[str, int]) -> bool:
+            return all(amount <= 0 for amount in needed.values())
+
+        for task in low_priority_tasks:
+            # Subtract task resources from needed
+            for r, amount in task.allocated_resources.items():
+                resources_needed[r] = max(0, resources_needed.get(r, 0) - amount)
+            tasks_to_preempt.append(task)
+            if resources_sufficient(resources_needed):
+                break
+
+        if not resources_sufficient(resources_needed):
+            return None  # Cannot free enough resources
+
+        # Preempt identified tasks
+        for task in tasks_to_preempt:
+            self.complete_task(task.task_id, success=False)
+
+        return f"Preempted tasks {[t.task_id for t in tasks_to_preempt]} to allocate task {highest_priority_task.task_id}"
