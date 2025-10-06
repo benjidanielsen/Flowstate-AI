@@ -42,8 +42,51 @@ class AutonomousAIDeveloper:
         self.project_root = PROJECT_ROOT
         self.db_path = DB_PATH
         self.running = True
-        self.agent_name = "Autonomous AI Developer"
-        logger.info("🤖 Autonomous AI Developer initialized")
+        
+        # Initialize agent identity
+        self.agent_identity = self._initialize_identity()
+        self.agent_number = self.agent_identity['agent_number']
+        self.human_name = self.agent_identity['human_name']
+        self.agent_name = f"{self.human_name} ({self.agent_number})"
+        
+        logger.info(f"🤖 {self.agent_name} initialized")
+        logger.info(f"   Role: {self.agent_identity['role']}")
+        logger.info(f"   Personality: {self.agent_identity['personality_traits']}")
+        logger.info(f"   Specialization: {self.agent_identity['specialization']}")
+    
+    def _initialize_identity(self):
+        """Initialize or retrieve agent identity"""
+        # Import here to avoid circular imports
+        sys.path.insert(0, str(self.project_root / 'brain'))
+        from agent_identity_system import AgentIdentitySystem
+        
+        identity_system = AgentIdentitySystem()
+        
+        # Check if this agent already exists
+        conn = sqlite3.connect(self.db_path)
+        cursor = conn.cursor()
+        cursor.execute('''
+            SELECT agent_number, human_name, role, specialization, personality_traits
+            FROM agents 
+            WHERE role = 'Autonomous AI Developer' AND status = 'active'
+            ORDER BY birth_timestamp DESC
+            LIMIT 1
+        ''')
+        result = cursor.fetchone()
+        conn.close()
+        
+        if result:
+            # Existing agent
+            return {
+                'agent_number': result[0],
+                'human_name': result[1],
+                'role': result[2],
+                'specialization': result[3],
+                'personality_traits': result[4]
+            }
+        else:
+            # Create new agent
+            return identity_system.birth_agent('Autonomous AI Developer')
         
     def get_next_task(self):
         """Get the next pending task from the database"""
