@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <!-- Home Tab -->
+    <div id="home-tab" class="tab-content active">
+        <div class="stat-grid">
+            <div class="stat-card">
+                <div class="stat-label">Active AI Agents</div>
+                <div class="stat-value" id="home-agents">-</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Pending Tasks</div>
+                <div class="stat-value" id="home-tasks">-</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Total Leads</div>
+                <div class="stat-value" id="home-leads">-</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Tasks Completed Today</div>
+                <div class="stat-value" id="home-completed">-</div>
+            </div>
+        </div>
+        
+        <div class="grid-2-col" style="margin-top: 30px;">
+            <div class="card">
+                <h2>🚀 Recent Activity</h2>
+                <div id="recent-activity"></div>
+            </div>
+            <div class="card">
+                <h2>⚡ System Status</h2>
+                <div id="system-status"></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- AI Agents Tab -->
+    <div id="agents-tab" class="tab-content">
+        <div class="card">
+            <h2>🤖 Active AI Agents</h2>
+            <div id="agents-list" class="agent-grid"></div>
+        </div>
+    </div>
+    
+    <!-- CRM Pipeline Tab -->
+    <div id="crm-tab" class="tab-content">
+        <div class="card">
+            <h2>🎯 Frazer Method CRM Pipeline</h2>
+            <div class="pipeline" id="crm-pipeline"></div>
+        </div>
+        <div class="card" style="margin-top: 20px;">
+            <h2>📋 Recent Leads</h2>
+            <div id="recent-leads"></div>
+        </div>
+    </div>
+    
+    <!-- Tasks Tab -->
+    <div id="tasks-tab" class="tab-content">
+        <div class="grid-2-col">
+            <div class="card">
+                <h2>📋 Pending Tasks</h2>
+                <div id="pending-tasks"></div>
+            </div>
+            <div class="card">
+                <h2>✅ Completed Tasks</h2>
+                <div id="completed-tasks"></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Chat Tab -->
+    <div id="chat-tab" class="tab-content">
+        <div class="chat-container">
+            <h2 style="margin-bottom: 20px;">💬 Chat with Project Manager AI</h2>
+            <div class="chat-messages" id="chat-messages">
+                <div class="chat-message ai">
+                    <div class="chat-message-header">
+                        <img src="https://ui-avatars.com/api/?name=PM&background=4F46E5&color=fff&size=40&bold=true" alt="PM AI" class="chat-avatar">
+                        <div class="chat-message-info">
+                            <span class="chat-agent-name">Project Manager AI</span>
+                            <span class="chat-timestamp">Just now</span>
+                        </div>
+                    </div>
+                    <div class="chat-message-content">
+                        Hello! I'm the Project Manager AI. How can I help you today?
+                    </div>
+                </div>
+            </div>
+            <div class="chat-input-container">
+                <input type="text" class="chat-input" id="chat-input" placeholder="Type your message..." onkeypress="if(event.key === 'Enter') sendMessage()">
+                <button class="chat-send" onclick="sendMessage()">Send</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Analytics Tab -->
+    <div id="analytics-tab" class="tab-content">
+        <div class="grid-2-col">
+            <div class="card">
+                <h2>📊 Task Completion Rate</h2>
+                <div id="completion-rate"></div>
+            </div>
+            <div class="card">
+                <h2>📈 CRM Conversion Funnel</h2>
+                <div id="conversion-funnel"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Tab -->
+    <div id="settings-tab" class="tab-content">
+        <div class="card">
+            <h2>⚙️ Settings</h2>
+            <p>Settings content will go here.</p>
+        </div>
+    </div>
+{% endblock %}

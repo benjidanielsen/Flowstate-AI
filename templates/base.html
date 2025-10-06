@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flowstate-AI Unified Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="sidebar">
+        <div class="logo">Flowstate-AI</div>
+        <ul class="nav-links">
+            <li class="nav-item active" data-tab="home"><i class="fas fa-home"></i> Home</li>
+            <li class="nav-item" data-tab="agents"><i class="fas fa-robot"></i> AI Agents</li>
+            <li class="nav-item" data-tab="crm"><i class="fas fa-chart-line"></i> CRM Pipeline</li>
+            <li class="nav-item" data-tab="tasks"><i class="fas fa-tasks"></i> Tasks</li>
+            <li class="nav-item" data-tab="chat"><i class="fas fa-comments"></i> Chat</li>
+            <li class="nav-item" data-tab="analytics"><i class="fas fa-chart-pie"></i> Analytics</li>
+            <li class="nav-item" data-tab="settings"><i class="fas fa-cog"></i> Settings</li>
+            <li class="nav-item" data-tab="logout"><i class="fas fa-sign-out-alt"></i> Logout</li>
+        </ul>
+    </div>
+    <div class="main-content">
+        <div class="header">
+            <div class="header-left">
+                <h1 id="current-tab-title">Home</h1>
+            </div>
+            <div class="header-right">
+                <span class="status-badge online"><i class="fas fa-check-circle"></i> System Online</span>
+                <span class="status-badge active"><i class="fas fa-robot"></i> AI Active</span>
+            </div>
+        </div>
+        <div class="content-area">
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
