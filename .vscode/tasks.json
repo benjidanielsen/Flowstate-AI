@@ -1,57 +1,22 @@
 {
     "version": "2.0.0",
     "tasks": [
-        // ****************************************************************** //
-        //                      CODE QUALITY & SCANNING                       //
-        // ****************************************************************** //
         {
             "label": "Fix Code Style Issues",
             "type": "npm",
-            "script": "format",
-            "detail": "Runs the 'format' script from package.json (e.g., prettier --write .)",
-            "group": "none",
-            "problemMatcher": []
+            "script": "lint:fix",
+            "detail": "Runs the 'lint:fix' script from package.json (e.g., eslint --fix .)",
+            "group": "none"
         },
         {
             "label": "Scan for Issues",
             "type": "npm",
             "script": "lint",
             "detail": "Runs the 'lint' script from package.json (e.g., eslint .)",
-            "group": "test",
-            "problemMatcher": []
+            "group": "test"
         },
-        // ****************************************************************** //
-        //                      APPLICATION LIFECYCLE                         //
-        // ****************************************************************** //
         {
             "label": "Start Flowstate-AI System",
-            "dependsOn": [
-                "Fix Code Style Issues",
-                "Scan for Issues"
-            ],
-            "dependsOrder": "sequence",
-            "windows": {
-                "command": "powershell",
-                "args": [
-                    "-NoProfile",
-                    "-ExecutionPolicy",
-                    "Bypass",
-                    "-File",
-                    "${workspaceFolder}\\scripts\\windows\\START_FLOWSTATE_WINDOWS.ps1"
-                ]
-            },
-            "linux": {
-                "command": "sh",
-                "args": [
-                    "${workspaceFolder}/scripts/linux/START_FLOWSTATE_LINUX.sh"
-                ]
-            },
-            "osx": {
-                "command": "sh",
-                "args": [
-                    "${workspaceFolder}/scripts/macos/START_FLOWSTATE_MACOS.sh"
-                ]
-            },
             "group": {
                 "kind": "build",
                 "isDefault": true
@@ -59,36 +24,27 @@
             "runOptions": {
                 "runOn": "folderOpen"
             },
-            "problemMatcher": []
+            "command": "powershell",
+            "args": [
+                "-NoProfile",
+                "-ExecutionPolicy",
+                "Bypass",
+                "-File",
+                "${workspaceFolder}/scripts/windows/START_FLOWSTATE_WINDOWS.ps1"
+            ]
         },
         {
             "label": "Stop Flowstate-AI System",
             "type": "process",
-            "command": "echo 'Stopping...'",
-            "windows": {
-                "command": "powershell",
-                "args": [
-                    "-NoProfile",
-                    "-ExecutionPolicy",
-                    "Bypass",
-                    "-File",
-                    "${workspaceFolder}\\scripts\\windows\\STOP_FLOWSTATE_WINDOWS.ps1"
-                ]
-            },
-            "linux": {
-                "command": "sh",
-                "args": [
-                    "${workspaceFolder}/scripts/linux/STOP_FLOWSTATE_LINUX.sh"
-                ]
-            },
-            "osx": {
-                "command": "sh",
-                "args": [
-                    "${workspaceFolder}/scripts/macos/STOP_FLOWSTATE_MACOS.sh"
-                ]
-            },
+            "command": "powershell",
             "group": "none",
-            "problemMatcher": []
+            "args": [
+                "-NoProfile",
+                "-ExecutionPolicy",
+                "Bypass",
+                "-File",
+                "${workspaceFolder}/scripts/windows/STOP_FLOWSTATE_WINDOWS.ps1"
+            ]
         },
         {
             "label": "Restart Flowstate-AI System",
@@ -100,8 +56,7 @@
             "group": {
                 "kind": "test",
                 "isDefault": true
-            },
-            "problemMatcher": []
+            }
         }
     ]
 }

@@ -1,11 +1,11 @@
-import express from 'express';
 import cors from 'cors';
-import helmet from 'helmet';
 import dotenv from 'dotenv';
+import express from 'express';
+import helmet from 'helmet';
+import http from 'http';
 import DatabaseManager from './database';
 import { runMigrations } from './database/migrate';
 import routes from './routes';
-import http from 'http';
 
 dotenv.config();
 
@@ -25,7 +25,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/api', routes);
 
 // Error handling middleware
-app.use((err: Error, req: express.Request, res: express.Response, _next: express.NextFunction) => {
+app.use((err: Error, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
   console.error(err.stack);
   res.status(500).json({ error: 'Something broke!' });
 });

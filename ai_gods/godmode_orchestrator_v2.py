@@ -1,8 +1,30 @@
 ﻿#!/usr/bin/env python3
 """
 🎯 GODMODE ORCHESTRATOR v2.0 - Master Coordination System
-⚡ Ultimate autonomous development authority
-🚀 Mission: Coordinate all AI agents and systems for seamless autonomous operation
+⚡ Ultimate autonomous develo            "python_worker": {
+                "type": "uvicorn",
+                "app": "python-worker.src.main:app",
+                "name": "Python Worker",
+                "critical": True,
+                "restart_on_failure": True,
+                "is_service": True,
+            },thority
+🚀 Mission: Coord                )
+                command = [sys.executable, "-m", module_path]
+            elif component_type == "uvicorn":
+                command = [
+                    sys.executable,
+                    "-m",
+                    "uvicorn",
+                    component["app"],
+                    "--host",
+                    "0.0.0.0",
+                ]
+            elif component_type == "command":
+                command = component["command"]
+            else:
+                logger.error(f"❌ Unknown component type: {component_type}")
+                return Falseall AI agents and systems for seamless autonomous operation
 🧠 Features: Multi-agent coordination, health monitoring, auto-recovery
 """
 
@@ -15,39 +37,15 @@ import subprocess
 import sys
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import IO, Dict, List, Optional
+
+from ai_gods.logging_config import setup_logging
 
 # Configuration
 LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO")
 
 # Setup logging
-# Force UTF-8 encoding for all handlers to prevent UnicodeEncodeError on Windows
-logging.basicConfig(
-    level=getattr(logging, LOG_LEVEL),
-    format="🎯 [GODMODE-v2] %(asctime)s - %(levelname)s - %(message)s",
-    handlers=[
-        logging.FileHandler(
-            "godmode-logs/godmode-orchestrator-v2.log", encoding="utf-8"
-        ),
-        logging.StreamHandler(sys.stdout),  # Explicitly use stdout
-    ],
-    encoding="utf-8",  # This is for the basicConfig, might not be inherited by handlers always
-)
-
-# For StreamHandler, we need to be more direct on Windows
-if sys.platform == "win32":
-    try:
-        sys.stdout.reconfigure(encoding="utf-8")
-        sys.stderr.reconfigure(encoding="utf-8")
-    except TypeError:
-        # In some environments (like older Python versions or certain terminals),
-        # reconfigure might not be available. We try an alternative.
-        import codecs
-
-        sys.stdout = codecs.getwriter("utf-8")(sys.stdout.buffer, "strict")
-        sys.stderr = codecs.getwriter("utf-8")(sys.stderr.buffer, "strict")
-
-logger = logging.getLogger(__name__)
+logger = setup_logging("GODMODE-v2", "godmode-orchestrator-v2.log")
 
 
 class GODMODEOrchestratorV2:
@@ -64,89 +62,69 @@ class GODMODEOrchestratorV2:
         # System state
         self.running = False
         self.godmode_enabled = False
+        self.port_config = {}
 
         # Health monitoring
-        self.last_health_check = {}
+        self.last_health_check: Dict[str, datetime] = {}
         self.health_check_interval = 30  # seconds
 
         # Component configuration
         self.components = {
-            "backend_api": {
+            "vscode_backend_api": {
                 "type": "python",
-                "script": "ai_gods/vscode_backend_api_v2.py",
+                "script": "ai_gods.vscode_backend_api_v2",
                 "name": "VSCode Backend API",
                 "critical": True,
                 "restart_on_failure": True,
+                "is_service": True,
             },
-            "project_manager": {
+            "vscode_agent": {
                 "type": "python",
-                "script": "ai_gods/project_manager_v2.py",
-                "name": "Project Manager AI",
+                "script": "ai_gods.vscode_agent_integration",
+                "name": "VSCode Agent",
                 "critical": True,
                 "restart_on_failure": True,
+                "is_service": True,
             },
             "communication_hub": {
                 "type": "python",
-                "script": "ai_gods/communication_hub_v2.py",
+                "script": "ai_gods.communication_hub_enhanced",
                 "name": "Communication Hub",
                 "critical": True,
                 "restart_on_failure": True,
+                "is_service": True,
+            },
+            "project_manager": {
+                "type": "python",
+                "script": "ai_gods.project_manager_enhanced",
+                "name": "Project Manager AI",
+                "critical": True,
+                "restart_on_failure": True,
+                "is_service": True,
             },
             "autonomous_dev": {
                 "type": "python",
-                "script": "ai_gods/autonomous_development_v2.py",
+                "script": "ai_gods.autonomous_development_v2",
                 "name": "Autonomous Development",
                 "critical": False,
                 "restart_on_failure": True,
+                "is_service": True,
+            },
+            "git_agent": {
+                "type": "python",
+                "script": "ai_gods.git_agent",
+                "name": "Git Agent",
+                "critical": False,
+                "restart_on_failure": False,
+                "is_service": False,
             },
             "python_worker": {
-                "type": "command",
-                "command": [
-                    "python",
-                    "-m",
-                    "uvicorn",
-                    "src.main:app",
-                    "--host",
-                    "127.0.0.1",
-                    "--port",
-                    "8000",
-                ],
-                "cwd": "python-worker",
+                "type": "python_script",
+                "script": "python-worker/src/main.py",
                 "name": "Python Worker",
                 "critical": True,
                 "restart_on_failure": True,
-            },
-            "godmode_dashboard": {
-                "type": "python",
-                "script": "godmode-dashboard/app_enhanced.py",
-                "name": "Godmode Dashboard",
-                "critical": True,
-                "restart_on_failure": True,
-            },
-            "backend_server": {
-                "type": "command",
-                "command": ["npm", "run", "dev"],
-                "cwd": "backend",
-                "name": "Backend API Server",
-                "critical": True,
-                "restart_on_failure": True,
-            },
-            "frontend_server": {
-                "type": "command",
-                "command": [
-                    "npm",
-                    "run",
-                    "dev",
-                    "--",
-                    "--host",
-                    "127.0.0.1",
-                    "--port",
-                    "3000",
-                ],
-                "cwd": "frontend",
-                "name": "Frontend Server",
-                "critical": True,
-                "restart_on_failure": True,
+                "is_service": True,
             },
         }
 
@@ -166,10 +144,43 @@ class GODMODEOrchestratorV2:
             log_dir.mkdir(exist_ok=True)
             log_file_path = log_dir / f"{component_id}.log"
 
+            # Load port configuration from the state file
+            state_file = self.project_root / "godmode-state.json"
+            if state_file.exists():
+                try:
+                    with open(state_file, "r") as f:
+                        state_data = json.load(f)
+                        self.port_config = state_data.get("ports", {})
+                        logger.info(f"Loaded port config: {self.port_config}")
+                except (json.JSONDecodeError, KeyError) as e:
+                    logger.error(f"Could not read port config from {state_file}: {e}")
+
+            env = os.environ.copy()
+            # Set component-specific ports if they exist in the config
+            if (
+                component_id == "python_worker"
+                and "PYTHON_API_PORT" in self.port_config
+            ):
+                env["PYTHON_API_PORT"] = str(self.port_config["PYTHON_API_PORT"])
+                logger.info(
+                    f"Setting PYTHON_API_PORT to {env['PYTHON_API_PORT']} for python_worker"
+                )
+            if component_id == "vscode_backend_api" and "API_PORT" in self.port_config:
+                env["API_PORT"] = str(self.port_config["API_PORT"])
+
             command = []
             component_type = component.get("type", "python")
 
             if component_type == "python":
+                # Convert file path to module path for execution with -m
+                module_path = (
+                    component["script"]
+                    .replace("/", ".")
+                    .replace("\\", ".")
+                    .replace(".py", "")
+                )
+                command = [sys.executable, "-m", module_path]
+            elif component_type == "python_script":
                 script_path = self.project_root / component["script"]
                 if not script_path.exists():
                     logger.error(f"❌ Script not found: {script_path}")
@@ -191,25 +202,40 @@ class GODMODEOrchestratorV2:
                 else False
             )
 
+            # Ensure PYTHONPATH is set for any python-based component
+            if (
+                component_type in ["python", "python_script"]
+                or component_id == "python_worker"
+            ):
+                project_root_str = str(self.project_root)
+                if "PYTHONPATH" in env:
+                    env["PYTHONPATH"] = (
+                        f"{project_root_str}{os.pathsep}{env['PYTHONPATH']}"
+                    )
+                else:
+                    env["PYTHONPATH"] = project_root_str
+
             process = subprocess.Popen(
                 command,
                 stdout=log_file,
                 stderr=log_file,
                 cwd=cwd,
                 shell=is_shell,
+                env=env,
             )
 
             self.processes[component_id] = process
             self.last_health_check[component_id] = datetime.now()
-
             logger.info(f"✅ {component['name']} started (PID: {process.pid})")
             return True
-
         except Exception as e:
-            logger.error(f"❌ Error starting {component_id}: {e}")
+            logger.error(
+                f"❌ Failed to start {self.components.get(component_id, {}).get('name', component_id)}: {e}",
+                exc_info=True,
+            )
             return False
 
-    async def stop_component(self, component_id: str) -> bool:
+    async def stop_component(self, component_id: str):
         """Stop a component"""
         try:
             if component_id not in self.processes:
@@ -236,102 +262,134 @@ class GODMODEOrchestratorV2:
             return True
 
         except Exception as e:
-            logger.error(f"❌ Error stopping {component_id}: {e}")
-            return False
+            logger.error(f"❌ Error stopping {component_name}: {e}", exc_info=True)
 
-    async def check_component_health(self, component_id: str) -> bool:
+        if component_id in self.processes:
+            del self.processes[component_id]
+
+    async def check_component_health(self, component_id: str):
         """Check if a component is healthy"""
         if component_id not in self.processes:
-            return False
+            # If it's not in the process list, it's either completed or never started.
+            # We consider it "healthy" from a monitoring perspective to avoid trying to restart it.
+            return True
 
         process = self.processes[component_id]
+        component = self.components[component_id]
+        is_service = component.get("is_service", True)
 
-        # Check if process is still running
         if process.poll() is not None:
+            # Process has terminated
+            exit_code = process.poll()
+
+            # If it's a task (not a service) and it exited cleanly, it's a success.
+            if not is_service and exit_code == 0:
+                logger.info(f"✅ Task '{component['name']}' completed successfully.")
+                # Remove it from monitoring.
+                del self.processes[component_id]
+                return True  # It's "healthy" because it finished as expected.
+
+            # For all other cases (services stopping, tasks failing), it's an unhealthy state.
             logger.warning(
-                f"⚠️ Component {component_id} has stopped (exit code: {process.returncode})"
+                f"⚠️ Component '{component['name']}' has stopped unexpectedly (exit code: {exit_code})"
             )
+            logger.error(f"❌ {component['name']} is unhealthy")
             return False
 
+        # For running services, we could add more sophisticated checks here. For now, running is healthy.
         return True
 
-    async def health_monitor_loop(self):
-        """Monitor health of all components"""
+    async def monitor_health(self):
+        """Periodically check the health of all components."""
         while self.running:
-            try:
-                for component_id, component in self.components.items():
-                    if component_id in self.processes:
-                        healthy = await self.check_component_health(component_id)
+            unhealthy_components = []
+            component_keys = list(self.processes.keys())  # Create a copy of keys
+            for component_id in component_keys:
+                if not await self.check_component_health(component_id):
+                    unhealthy_components.append(component_id)
 
-                        if not healthy:
-                            logger.error(f"❌ {component['name']} is unhealthy")
+            if unhealthy_components:
+                logger.warning(
+                    f"🚨 Unhealthy components detected: {', '.join(unhealthy_components)}"
+                )
+                await self.handle_failures(unhealthy_components)
+            else:
+                running_components = [
+                    self.components[cid]["name"]
+                    for cid in self.processes
+                    if self.processes[cid].poll() is None
+                ]
+                if running_components:
+                    logger.info(
+                        f"✅ All monitored components are healthy: {', '.join(running_components)}"
+                    )
 
-                            # Restart if configured
-                            if component["restart_on_failure"]:
-                                logger.info(f"🔄 Restarting {component['name']}...")
-                                await self.stop_component(component_id)
-                                await asyncio.sleep(2)
-                                await self.start_component(component_id)
+            await asyncio.sleep(self.health_check_interval)
 
-                await asyncio.sleep(self.health_check_interval)
-
-            except Exception as e:
-                logger.error(f"❌ Error in health monitor: {e}")
-                await asyncio.sleep(self.health_check_interval)
+    async def handle_failures(self, unhealthy_components: List[str]):
+        """Handle component failures."""
+        for component_id in unhealthy_components:
+            component = self.components[component_id]
+            if component.get("restart_on_failure", False):
+                logger.info(f"🔄 Restarting {component['name']}...")
+                await self.stop_component(component_id)
+                await asyncio.sleep(2)  # Wait a bit before restarting
+                await self.start_component(component_id)
+            elif component["critical"]:
+                logger.critical(
+                    f"💥 Critical component {component['name']} failed and cannot be restarted. Shutting down GODMODE."
+                )
+                await self.stop_godmode()
 
     async def start_godmode(self):
-        """Start GODMODE - all systems"""
+        """Start all GODMODE components in the correct order."""
         logger.info("🎯 STARTING GODMODE...")
-
         self.running = True
-        self.godmode_enabled = True
 
-        # Start all components in order
         start_order = [
-            "backend_api",
+            "python_worker",
+            "vscode_backend_api",
+            "vscode_agent",
             "communication_hub",
             "project_manager",
             "autonomous_dev",
-            "python_worker",
-            "godmode_dashboard",
-            "backend_server",
-            "frontend_server",
+            "git_agent",
         ]
 
         for component_id in start_order:
-            success = await self.start_component(component_id)
-            if not success and self.components[component_id]["critical"]:
-                logger.error(f"❌ Failed to start critical component: {component_id}")
-                logger.error("❌ GODMODE startup failed")
-                await self.stop_godmode()
-                return False
+            if not await self.start_component(component_id):
+                if self.components[component_id]["critical"]:
+                    logger.critical(
+                        f"💥 Failed to start critical component {self.components[component_id]['name']}. Aborting GODMODE startup."
+                    )
+                    await self.stop_godmode()
+                    return
 
-            # Wait a bit between starts
-            await asyncio.sleep(2)
-
+        self.godmode_enabled = True
         logger.info("✅ GODMODE ACTIVATED - All systems operational")
-        return True
+
+        # Start health monitoring
+        asyncio.create_task(self.monitor_health())
 
     async def stop_godmode(self):
-        """Stop GODMODE - all systems"""
+        """Stop all GODMODE components."""
         logger.info("🛑 STOPPING GODMODE...")
-
+        self.running = False
         self.godmode_enabled = False
 
-        # Stop all components in reverse order
         stop_order = [
+            "git_agent",
             "autonomous_dev",
             "project_manager",
             "communication_hub",
-            "backend_api",
+            "vscode_agent",
+            "vscode_backend_api",
         ]
 
         for component_id in stop_order:
             if component_id in self.processes:
                 await self.stop_component(component_id)
-                await asyncio.sleep(1)
 
-        self.running = False
         logger.info("✅ GODMODE DEACTIVATED")
 
     async def run(self):
@@ -339,35 +397,19 @@ class GODMODEOrchestratorV2:
         logger.info("🎯 GODMODE ORCHESTRATOR v2.0 RUNNING...")
 
         # Start GODMODE
-        success = await self.start_godmode()
-
-        if not success:
-            logger.error("❌ Failed to start GODMODE")
-            return
-
-        # Start health monitor
-        health_monitor_task = asyncio.create_task(self.health_monitor_loop())
+        await self.start_godmode()
 
         try:
             # Main loop
             while self.running:
-                # Log status periodically
-                if datetime.now().second % 60 == 0:
-                    active_components = len(self.processes)
-                    logger.info(
-                        f"📊 Status: {active_components}/{len(self.components)} components running"
-                    )
-
                 await asyncio.sleep(1)
 
-        except KeyboardInterrupt:
-            logger.info("⚠️ Keyboard interrupt received")
-        except Exception as e:
-            logger.error(f"❌ Error in main loop: {e}")
+        except (KeyboardInterrupt, asyncio.CancelledError):
+            logger.info("⚠️ Orchestrator run loop interrupted.")
         finally:
             # Cleanup
-            health_monitor_task.cancel()
-            await self.stop_godmode()
+            if self.godmode_enabled:
+                await self.stop_godmode()
 
     def signal_handler(self, signum, frame):
         """Handle system signals"""
@@ -383,8 +425,12 @@ async def main():
     signal.signal(signal.SIGINT, orchestrator.signal_handler)
     signal.signal(signal.SIGTERM, orchestrator.signal_handler)
 
-    # Run orchestrator
-    await orchestrator.run()
+    main_task = asyncio.create_task(orchestrator.run())
+
+    try:
+        await main_task
+    except asyncio.CancelledError:
+        logger.info("Main task cancelled.")
 
     logger.info("✅ GODMODE ORCHESTRATOR v2.0 SHUTDOWN COMPLETE")
 
@@ -396,4 +442,3 @@ if __name__ == "__main__":
 
     # Run
     asyncio.run(main())
-

@@ -1,14 +1,18 @@
+import json
+import logging
+import os
+import sqlite3
+from datetime import datetime, timedelta
+from typing import Any, Dict, List, Optional
+
+import uvicorn
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from typing import List, Optional, Dict, Any
-import uvicorn
-import os
-from datetime import datetime, timedelta
-import sqlite3
-import json
-from services.reminder_service import ReminderService
 from services.nba_service import NBAService
+from services.reminder_service import ReminderService
+
+from ai_gods.logging_config import setup_logging
 
 app = FastAPI(title="Flowstate-AI Worker", version="1.0.0")
 
@@ -25,23 +29,34 @@ app.add_middleware(
 reminder_service = ReminderService()
 nba_service = NBAService()
 
+# Setup logging
+logger = setup_logging(__name__, "python-worker.log")
+
+
 class ReminderRequest(BaseModel):
     customer_id: str
     type: str
     message: str
     scheduled_for: datetime
 
+
 class NBARequest(BaseModel):
     customer_id: Optional[str] = None
     limit: int = 10
 
+
 @app.get("/")
 async def root():
-    return {"message": "Flowstate-AI Python Worker", "timestamp": datetime.now().isoformat()}
+    return {
+        "message": "Flowstate-AI Python Worker",
+        "timestamp": datetime.now().isoformat(),
+    }
+
 
 @app.get("/health")
 async def health_check():
     return {"status": "healthy", "timestamp": datetime.now().isoformat()}
+
 
 @app.post("/reminders")
 async def create_reminder(reminder: ReminderRequest):
@@ -51,11 +66,13 @@ async def create_reminder(reminder: ReminderRequest):
             customer_id=reminder.customer_id,
             reminder_type=reminder.type,
             message=reminder.message,
-            scheduled_for=reminder.scheduled_for
+            scheduled_for=reminder.scheduled_for,
         )
         return result
     except Exception as e:
+        logger.error(f"Error creating reminder: {e}")
         raise HTTPException(status_code=500, detail=str(e))
+
 
 @app.get("/reminders/due")
 async def get_due_reminders():
@@ -63,7 +80,9 @@ async def get_due_reminders():
     try:
         return await reminder_service.get_due_reminders()
     except Exception as e:
+        logger.error(f"Error fetching due reminders: {e}")
         raise HTTPException(status_code=500, detail=str(e))
+
 
 @app.post("/reminders/{reminder_id}/complete")
 async def complete_reminder(reminder_id: str):
@@ -76,7 +95,9 @@ async def complete_reminder(reminder_id: str):
     except HTTPException:
         raise
     except Exception as e:
+        logger.error(f"Error completing reminder {reminder_id}: {e}")
         raise HTTPException(status_code=500, detail=str(e))
+
 
 @app.post("/reminders/process-due")
 async def process_due_reminders():
@@ -85,15 +106,21 @@ async def process_due_reminders():
         results = await reminder_service.process_due_reminders()
         return {"processed": len(results), "results": results}
     except Exception as e:
+        logger.error(f"Error processing due reminders: {e}")
         raise HTTPException(status_code=500, detail=str(e))
+
 
 @app.get("/nba")
 async def get_next_best_actions(customer_id: Optional[str] = None, limit: int = 10):
     """Get Next Best Actions (NBA) recommendations"""
     try:
-        return await nba_service.get_recommendations(customer_id=customer_id, limit=limit)
+        return await nba_service.get_recommendations(
+            customer_id=customer_id, limit=limit
+        )
     except Exception as e:
+        logger.error(f"Error fetching NBA recommendations: {e}")
         raise HTTPException(status_code=500, detail=str(e))
+
 
 @app.post("/nba/analyze")
 async def analyze_customer_data():
@@ -102,8 +129,10 @@ async def analyze_customer_data():
         results = await nba_service.analyze_and_generate_recommendations()
         return {"analyzed": len(results), "recommendations": results}
     except Exception as e:
+        logger.error(f"Error analyzing customer data: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
+
 if __name__ == "__main__":
-    port = int(os.getenv("PORT", 8000))
+    port = int(os.getenv("PYTHON_API_PORT", 8000))
     uvicorn.run(app, host="0.0.0.0", port=port)

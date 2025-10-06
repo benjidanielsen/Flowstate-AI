@@ -16,13 +16,13 @@ export class StatsService {
     return result;
   }
 
-  private dateRange(_daySpan: number) {
+  private dateRange(_daySpan: number = 7) {
     const now = new Date();
     const start = new Date();
-    start.setHours(0,0,0,0);
+    start.setHours(0, 0, 0, 0);
     const weekStart = new Date(now);
     weekStart.setDate(now.getDate() - 6);
-    weekStart.setHours(0,0,0,0);
+    weekStart.setHours(0, 0, 0, 0);
     return { todayStart: start, weekStart };
   }
 
@@ -54,13 +54,13 @@ export class StatsService {
     const db = DatabaseManager.getInstance().getDb();
     const nowIso = new Date().toISOString();
     const noShow = await new Promise<number>((resolve, reject) => {
-      db.get('SELECT COUNT(*) as c FROM event_logs WHERE event_type = ?', ['NO_SHOW'], (e, r: any) => e?reject(e):resolve(r.c||0));
+      db.get('SELECT COUNT(*) as c FROM event_logs WHERE event_type = ?', ['NO_SHOW'], (e, r: any) => e ? reject(e) : resolve(r.c || 0));
     });
     const videoSent = await new Promise<number>((resolve, reject) => {
-      db.get('SELECT COUNT(*) as c FROM event_logs WHERE event_type = ?', ['VIDEO_SENT'], (e, r: any) => e?reject(e):resolve(r.c||0));
+      db.get('SELECT COUNT(*) as c FROM event_logs WHERE event_type = ?', ['VIDEO_SENT'], (e, r: any) => e ? reject(e) : resolve(r.c || 0));
     });
     const overdueFollowups = await new Promise<number>((resolve, reject) => {
-      db.get('SELECT COUNT(*) as c FROM reminders WHERE completed = 0 AND scheduled_for < ?', [nowIso], (e, r: any) => e?reject(e):resolve(r.c||0));
+      db.get('SELECT COUNT(*) as c FROM reminders WHERE completed = 0 AND scheduled_for < ?', [nowIso], (e, r: any) => e ? reject(e) : resolve(r.c || 0));
     });
     return { no_show_count: noShow, video_sent_count: videoSent, overdue_followups: overdueFollowups };
   }

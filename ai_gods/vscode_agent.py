@@ -1,60 +1,100 @@
-import logging
-from typing import List, Dict, Any
-from ai_gods.base_agent import BaseAgent
+#!/usr/bin/env python3
+"""
+🤖 VSCode Agent v1.0
+⚡ GODMODE: Unlimited autonomous development authority
+🎯 Mission: Interact with the VSCode environment, manage extensions, and configure settings.
+"""
 
-logger = logging.getLogger(__name__)
+import asyncio
+import json
+import logging
+import os
+from pathlib import Path
+
+from ai_gods.base_agent import BaseAgent
+from ai_gods.logging_config import setup_logging
+from ai_gods.vscode_agent_integration import VSCodeAgentIntegration
+
+# Configure logging
+LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO")
+logger = setup_logging("VSCodeAgent", "vscode_agent.log")
 
 
 class VSCodeAgent(BaseAgent):
-    """An agent specialized in managing the VS Code environment."""
+    """
+    An agent dedicated to interacting with the VSCode environment.
+    """
 
-    def __init__(
-        self,
-        agent_id: str = "VSCodeAgent",
-        agent_name: str = "VSCodeAgent",
-        role: str = "Environment Specialist",
-        capabilities: List[str] = ["vscode_management"],
-        **kwargs: Any,
-    ):
-        super().__init__(agent_id, agent_name, role, capabilities, **kwargs)
-        logger.info(f"{self.agent_name} initialized.")
+    def __init__(self):
+        super().__init__(
+            agent_id="vscode_agent",
+            agent_name="VSCode Agent",
+            role="Manages VSCode environment, settings, and extensions.",
+            capabilities=["configure_sqltools", "manage_extensions"],
+        )
+        self.vscode_integration = VSCodeAgentIntegration()
+        self.project_root = Path(__file__).parent.parent
+        self.settings_file = self.project_root / ".vscode" / "settings.json"
+        self.running = True
 
-    def _execute_vscode_command(self, command: str) -> str:
-        """Executes a VS Code command line command."""
-        full_command = f"code --{command}"
-        logger.info(f"Executing VS Code command: {full_command}")
-        return self.run_terminal_command(full_command)
+    async def configure_sqltools(self):
+        """
+        Automatically configure the SQLTools extension.
+        """
+        logger.info("Configuring SQLTools extension...")
+        try:
+            self.settings_file.parent.mkdir(exist_ok=True)
 
-    def install_extension(self, extension_id: str) -> str:
-        """Installs a VS Code extension."""
-        if not self.can_auto_approve():
-            return "Extension installation requires auto-approval, which is disabled."
-        return self._execute_vscode_command(f"install-extension {extension_id}")
+            if self.settings_file.exists():
+                with open(self.settings_file, "r") as f:
+                    settings = json.load(f)
+            else:
+                settings = {}
 
-    def uninstall_extension(self, extension_id: str) -> str:
-        """Uninstalls a VS Code extension."""
-        if not self.can_auto_approve():
-            return "Extension uninstallation requires auto-approval, which is disabled."
-        return self._execute_vscode_command(f"uninstall-extension {extension_id}")
+            # Add or update SQLTools settings
+            settings["sqltools.connections"] = [
+                {
+                    "name": "Flowstate DB",
+                    "driver": "SQLite",
+                    "database": str(self.project_root / "godmode-state.db"),
+                }
+            ]
+            settings["sqltools.useNodeRuntime"] = True
 
-    def list_extensions(self) -> str:
-        """Lists installed VS Code extensions."""
-        return self._execute_vscode_command("list-extensions")
+            with open(self.settings_file, "w") as f:
+                json.dump(settings, f, indent=4)
 
-    def process_message(self, message_data: Dict[str, Any]):
-        """Processes messages for VS Code operations."""
-        super().process_message(message_data)
-        if message_data.get("type") == "task_assignment":
-            payload = message_data.get("payload", {})
-            action = payload.get("action")
+            logger.info("✅ SQLTools configured successfully.")
+            self.vscode_integration.notify_vscode(
+                "SQLTools has been configured for the Flowstate database.", "info"
+            )
+            return True
+        except Exception as e:
+            logger.error(f"❌ Error configuring SQLTools: {e}")
+            self.vscode_integration.notify_vscode(
+                f"Error configuring SQLTools: {e}", "error"
+            )
+            return False
 
-            if action == "install_extension":
-                extension_id = payload.get("extension_id")
-                if extension_id:
-                    self.install_extension(extension_id)
-            elif action == "uninstall_extension":
-                extension_id = payload.get("extension_id")
-                if extension_id:
-                    self.uninstall_extension(extension_id)
-            elif action == "list_extensions":
-                self.list_extensions()
+    async def run(self):
+        """Main run loop for the VSCode Agent"""
+        logger.info("🚀 VSCode Agent v1.0 starting main loop...")
+        self.vscode_integration.register_agent(self.agent_id, "IDLE")
+
+        # For now, the agent will just configure SQLTools on startup
+        # In the future, this would listen for tasks from the Project Manager
+        await self.configure_sqltools()
+
+        while self.running:
+            # In a real scenario, this would be a loop listening for tasks
+            # from the project manager via Redis or another message queue.
+            await asyncio.sleep(10)
+
+
+async def main():
+    agent = VSCodeAgent()
+    await agent.run()
+
+
+if __name__ == "__main__":
+    asyncio.run(main())

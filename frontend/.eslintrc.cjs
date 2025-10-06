@@ -5,6 +5,7 @@ module.exports = {
     'eslint:recommended',
     'plugin:@typescript-eslint/recommended',
     'plugin:react/recommended',
+    'plugin:react/jsx-runtime',
     'plugin:react-hooks/recommended',
   ],
   ignorePatterns: ['dist', '.eslintrc.cjs'],
@@ -18,5 +19,10 @@ module.exports = {
     react: { version: 'detect' },
   },
   plugins: ['@typescript-eslint', 'react', 'react-hooks'],
-  rules: {},
+  rules: {
+    'react/react-in-jsx-scope': 'off',
+    '@typescript-eslint/no-explicit-any': 'warn',
+    'react-hooks/exhaustive-deps': 'off',
+    'react/no-unescaped-entities': 'warn'
+  },
 }

@@ -1,5 +1,8 @@
+import asyncio
 import logging
-from typing import List, Dict, Any
+from datetime import datetime
+from typing import Any, Dict, List
+
 from ai_gods.base_agent import BaseAgent
 
 logger = logging.getLogger(__name__)
@@ -55,6 +58,15 @@ class GitAgent(BaseAgent):
         logger.info(f"Pull successful: {pull_output}")
         return pull_output
 
+    async def auto_publish(self):
+        """Automatically commits and pushes changes."""
+        logger.info("Starting auto-publish process...")
+        commit_message = f"Auto-commit by GitAgent at {datetime.now().isoformat()}"
+        self.commit_changes(commit_message)
+        await asyncio.sleep(1)  # Brief pause
+        self.push_changes()
+        logger.info("Auto-publish process completed.")
+
     def process_message(self, message_data: Dict[str, Any]):
         """Processes messages for Git operations."""
         super().process_message(message_data)
@@ -69,3 +81,5 @@ class GitAgent(BaseAgent):
                 self.push_changes()
             elif action == "pull":
                 self.pull_changes()
+            elif action == "auto_publish":
+                asyncio.run(self.auto_publish())

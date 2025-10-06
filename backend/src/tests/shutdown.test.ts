@@ -1,10 +1,10 @@
-import { startServer, shutdown, createApp } from '../index';
-import request from 'supertest';
 import http from 'http';
+import request from 'supertest';
+import { shutdown, startServer } from '../index';
 
 describe('server lifecycle', () => {
   let server: http.Server;
-  let app: Express.Application;
+  // let app: Express.Application;
   let port: number;
 
 
@@ -14,7 +14,7 @@ describe('server lifecycle', () => {
     port = Math.floor(Math.random() * (40000 - 30000 + 1)) + 30000;
     process.env.PORT = port.toString();
 
-    app = createApp(); // Create the app once for the test suite
+    // app = createApp(); // Create the app once for the test suite
     // Start the server once for the entire test suite
     server = await startServer();
   });

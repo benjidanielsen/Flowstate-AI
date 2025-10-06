@@ -19,6 +19,10 @@ Write-Host " One-Click Startup for Windows" -ForegroundColor Cyan
 Write-Host "========================================" -ForegroundColor Cyan
 Write-Host ""
 
+# Add a delay to allow OS to release file locks from the stop script
+Write-Host "Waiting for 5 seconds for system resources to free up..." -ForegroundColor Yellow
+Start-Sleep -Seconds 5
+
 # ---------- Encoding fixes (emoji-safe logs) ----------
 $env:PYTHONUTF8 = "1"
 $env:PYTHONIOENCODING = "utf-8"
@@ -28,10 +32,22 @@ Write-Host "[OK] UTF-8 console + Python I/O set." -ForegroundColor Green
 
 # ---------- Helpers ----------
 function Test-PortFree([int]$Port) {
+  $tcpListener = $null
   try {
-    $listeners = [System.Net.NetworkInformation.IPGlobalProperties]::GetIPGlobalProperties().GetActiveTcpListeners()
-    return -not ($listeners | Where-Object { $_.Port -eq $Port })
-  } catch { return $true }
+    $ipAddress = [System.Net.IPAddress]::Parse("127.0.0.1")
+    $tcpListener = New-Object System.Net.Sockets.TcpListener $ipAddress, $Port
+    $tcpListener.Start()
+    # If we get here, the port is free
+    return $true
+  } catch {
+    # If an exception is thrown, the port is likely in use
+    return $false
+  } finally {
+    # Make sure to stop the listener to free up the port
+    if ($tcpListener -ne $null) {
+      $tcpListener.Stop()
+    }
+  }
 }
 
 function Choose-Port([int]$Preferred, [int[]]$Fallbacks) {
@@ -56,6 +72,7 @@ function Assert-Cli($name, $probe, $helpUrl) {
 
 Assert-Cli "Python" { python --version 2>&1 } "https://www.python.org/downloads/"
 Assert-Cli "Node.js" { node --version 2>&1 }  "https://nodejs.org/"
+Assert-Cli "Docker" { docker-compose --version 2>&1 } "https://docs.docker.com/compose/install/"
 
 # ---------- Locate repo root ----------
 $here = Split-Path -Parent $MyInvocation.MyCommand.Path
@@ -85,9 +102,20 @@ $env:BACKEND_API_PORT  = "$apiPortChosen"         # Some code reads this; harmle
 $env:PORT              = "$frontPortChosen"       # Common Node/Vite port var
 $env:PYTHON_API_PORT   = "$pythonApiPortChosen"   # If python-worker honors it
 
+# Create a JSON state file for the orchestrator to read
+$state = @{
+  ports = @{
+    API_PORT = $apiPortChosen
+    FRONTEND_PORT = $frontPortChosen
+    PYTHON_API_PORT = $pythonApiPortChosen
+  }
+}
+$state | ConvertTo-Json | Set-Content -Path (Join-Path $ProjectDir "godmode-state.json") -Encoding UTF8
+
 # Make python-worker imports resolve (services/*)
 $pwSrc = Join-Path $ProjectDir "python-worker\src"
-if (Test-Path $pwSrc) { $env:PYTHONPATH = $pwSrc; Write-Host "[OK] PYTHONPATH set for python-worker: $env:PYTHONPATH" -ForegroundColor Green }
+$aiGods = Join-Path $ProjectDir "ai_gods"
+if (Test-Path $pwSrc) { $env:PYTHONPATH = "$pwSrc;$aiGods"; Write-Host "[OK] PYTHONPATH set for python-worker: $env:PYTHONPATH" -ForegroundColor Green }
 
 Write-Host ""
 Write-Host "Selected ports:" -ForegroundColor Cyan
@@ -141,15 +169,40 @@ if (Test-Path "docker-compose.yml") {
   Write-Host "[INFO] docker-compose.yml not found. Skipping Docker startup." -ForegroundColor Yellow
 }
 
-# ---------- Launch Orchestrator (manages all components) ----------
-Write-Host ""; Write-Host "Starting GODMODE Orchestrator v2..." -ForegroundColor Green
+# ---------- Launch Sequence ----------
+Write-Host ""
+Write-Host "========================================" -ForegroundColor Cyan
+Write-Host " Launching GODMODE Orchestrator v2..." -ForegroundColor Cyan
+Write-Host "========================================" -ForegroundColor Cyan
 
-Start-Process -FilePath "cmd.exe" `
-  -ArgumentList '/k', 'title GODMODE Orchestrator v2 && python -m ai_gods.godmode_orchestrator_v2' `
-  -WorkingDirectory $ProjectDir `
-  -WindowStyle Minimized
+# The ONLY service to launch is the orchestrator. It handles everything else.
+$orchestratorName = "godmode-orchestrator-v2"
+$orchestratorPath = "ai_gods.godmode_orchestrator_v2"
+$logFile = Join-Path $ProjectDir "godmode-logs\$orchestratorName.log"
 
-Start-Sleep -Seconds 2
+# Define the command to run the orchestrator module
+$Command = "python -u -m $orchestratorPath"
+
+# Use Start-Process to run the command in a new hidden window.
+# Stdout and Stderr are redirected to the log file.
+$Process = Start-Process "powershell" -ArgumentList "-NoProfile -WindowStyle Hidden -Command `"& { $Command } *>> '$logFile'`"" -PassThru
+
+if ($Process) {
+    Write-Host "[OK] GODMODE Orchestrator v2 started successfully (PID: $($Process.Id))." -ForegroundColor Green
+    Write-Host "     Monitoring logs at: $logFile" -ForegroundColor Green
+} else {
+    Write-Host "[ERROR] Failed to start GODMODE Orchestrator v2." -ForegroundColor Red
+    Write-Host "        Check logs for details: $logFile" -ForegroundColor Red
+    Read-Host "Press Enter to exit"
+    exit 1
+}
+
+Write-Host ""
+Write-Host "========================================" -ForegroundColor Cyan
+Write-Host " FlowState-AI Startup Sequence Initiated" -ForegroundColor Cyan
+Write-Host " The GODMODE Orchestrator is now in control." -ForegroundColor Cyan
+Write-Host "========================================" -ForegroundColor Cyan
+Write-Host ""
 
 # ---------- Final output ----------
 Write-Host ""

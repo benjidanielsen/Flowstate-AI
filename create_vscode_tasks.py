@@ -1,39 +1,56 @@
-'''
-import os
 import json
+import os
 
 tasks = {
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "Start Flowstate-AI System (Windows)",
-            "type": "shell",
-            "command": "Start-Process python -ArgumentList \"./MANUS_SYNC_ENGINE_ENHANCED.py\" -NoNewWindow; Start-Process python -ArgumentList \"./godmode-dashboard/app_enhanced.py\" -NoNewWindow; Start-Process python -ArgumentList \"./godmode-backend/backend.py\" -NoNewWindow; Start-Process node -ArgumentList \"./godmode-frontend/server.js\" -NoNewWindow",
-            "windows": {
-                "command": "Start-Process python -ArgumentList \"./MANUS_SYNC_ENGINE_ENHANCED.py\" -NoNewWindow; Start-Process python -ArgumentList \"./godmode-dashboard/app_enhanced.py\" -NoNewWindow; Start-Process python -ArgumentList \"./godmode-backend/backend.py\" -NoNewWindow; Start-Process node -ArgumentList \"./godmode-frontend/server.js\" -NoNewWindow"
-            },
-            "group": "build",
-            "presentation": {
-                "reveal": "always",
-                "panel": "new"
-            },
-            "problemMatcher": []
+            "label": "Fix Code Style Issues",
+            "type": "npm",
+            "script": "lint:fix",
+            "detail": "Runs the 'lint:fix' script from package.json (e.g., eslint --fix .)",
+            "group": "none",
         },
         {
-            "label": "Stop Flowstate-AI System (Windows)",
-            "type": "shell",
-            "command": "Stop-Process -Name python; Stop-Process -Name node",
-            "windows": {
-                "command": "Stop-Process -Name python; Stop-Process -Name node"
-            },
-            "group": "build",
-            "presentation": {
-                "reveal": "always",
-                "panel": "new"
-            },
-            "problemMatcher": []
-        }
-    ]
+            "label": "Scan for Issues",
+            "type": "npm",
+            "script": "lint",
+            "detail": "Runs the 'lint' script from package.json (e.g., eslint .)",
+            "group": "test",
+        },
+        {
+            "label": "Start Flowstate-AI System",
+            "group": {"kind": "build", "isDefault": True},
+            "runOptions": {"runOn": "folderOpen"},
+            "command": "powershell",
+            "args": [
+                "-NoProfile",
+                "-ExecutionPolicy",
+                "Bypass",
+                "-File",
+                "${workspaceFolder}/scripts/windows/START_FLOWSTATE_WINDOWS.ps1",
+            ],
+        },
+        {
+            "label": "Stop Flowstate-AI System",
+            "type": "process",
+            "command": "powershell",
+            "group": "none",
+            "args": [
+                "-NoProfile",
+                "-ExecutionPolicy",
+                "Bypass",
+                "-File",
+                "${workspaceFolder}/scripts/windows/STOP_FLOWSTATE_WINDOWS.ps1",
+            ],
+        },
+        {
+            "label": "Restart Flowstate-AI System",
+            "dependsOn": ["Stop Flowstate-AI System", "Start Flowstate-AI System"],
+            "dependsOrder": "sequence",
+            "group": {"kind": "test", "isDefault": True},
+        },
+    ],
 }
 
 if not os.path.exists(".vscode"):
@@ -43,4 +60,3 @@ with open(".vscode/tasks.json", "w") as f:
     json.dump(tasks, f, indent=4)
 
 print("✅ VSCode tasks.json file created successfully.")
-'''

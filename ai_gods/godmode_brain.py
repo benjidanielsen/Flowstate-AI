@@ -12,12 +12,19 @@ from __future__ import annotations
 
 import argparse
 import json
-from dataclasses import dataclass, field, asdict
+import logging
+from dataclasses import asdict, dataclass, field
 from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-from ai_gods.project_manager_config import ProjectManagerConfig, load_project_manager_config
+from ai_gods.logging_config import setup_logging
+from ai_gods.project_manager_config import (
+    ProjectManagerConfig,
+    load_project_manager_config,
+)
+
+logger = setup_logging(__name__, "godmode_brain.log")
 
 
 @dataclass
@@ -514,5 +521,3 @@ def main() -> None:
 
 if __name__ == "__main__":  # pragma: no cover - CLI entry point
     main()
-
- 

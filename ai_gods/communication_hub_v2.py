@@ -15,10 +15,12 @@ from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from enum import Enum
 from pathlib import Path
-from typing import Dict, List, Any, Optional, Set
+from typing import Any, Dict, List, Optional, Set
 
 import aioredis
 from aiosqlite import connect as aio_connect
+
+from ai_gods.logging_config import setup_logging
 
 # Configuration
 REDIS_HOST = os.getenv("REDIS_HOST", "localhost")
@@ -27,15 +29,7 @@ DB_PATH = os.getenv("COMM_DB_PATH", "godmode-communication.db")
 LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO")
 
 # Setup logging
-logging.basicConfig(
-    level=getattr(logging, LOG_LEVEL),
-    format="🧠 [COMM-v2] %(asctime)s - %(levelname)s - %(message)s",
-    handlers=[
-        logging.FileHandler("godmode-logs/communication-hub-v2.log"),
-        logging.StreamHandler(),
-    ],
-)
-logger = logging.getLogger(__name__)
+logger = setup_logging("COMM-v2", "communication-hub-v2.log")
 
 
 class MessageType(Enum):

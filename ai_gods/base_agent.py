@@ -1,6 +1,6 @@
-﻿import os
-import json
+﻿import json
 import logging
+import os
 import sqlite3
 import subprocess
 import threading
@@ -12,12 +12,9 @@ import redis
 from redis.client import PubSub
 
 from ai_gods.godmode_config import is_full_autonomy_enabled
+from ai_gods.logging_config import setup_logging
 
-# Configure logging
-logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-)
-logger = logging.getLogger(__name__)
+logger = setup_logging(__name__, "base_agent.log")
 
 
 class BaseAgent:
@@ -66,9 +63,7 @@ class BaseAgent:
                 f"Agent {self.agent_name} successfully installed dependencies: {dependencies}"
             )
         except subprocess.CalledProcessError as e:
-            logger.error(
-                f"Agent {self.agent_name} failed to install dependencies: {e}"
-            )
+            logger.error(f"Agent {self.agent_name} failed to install dependencies: {e}")
 
     def run_terminal_command(self, command: str) -> str:
         if not self.can_auto_approve():
@@ -80,9 +75,7 @@ class BaseAgent:
             result = subprocess.run(
                 command, shell=True, capture_output=True, text=True, check=True
             )
-            logger.info(
-                f"Agent {self.agent_name} successfully ran command: {command}"
-            )
+            logger.info(f"Agent {self.agent_name} successfully ran command: {command}")
             return result.stdout
         except subprocess.CalledProcessError as e:
             logger.error(f"Agent {self.agent_name} failed to run command: {e}")
@@ -353,7 +346,3 @@ if __name__ == "__main__":
     test_agent.stop()
 
     logger.info("Example finished.")
-
-
-
-
