@@ -181,44 +181,29 @@ Respond in JSON format:
             return False
     
     def commit_and_push(self, message):
-        """Commit and push changes to GitHub"""
+        """Commit changes locally (push skipped to avoid blocking)"""
         try:
             # Configure git if not already done
             subprocess.run(['git', 'config', 'user.name', 'Autonomous AI Developer'], 
-                         cwd=self.project_root, check=False)
+                         cwd=self.project_root, check=False, capture_output=True)
             subprocess.run(['git', 'config', 'user.email', 'ai@flowstate.dev'], 
-                         cwd=self.project_root, check=False)
+                         cwd=self.project_root, check=False, capture_output=True)
             
             # Add all changes
-            subprocess.run(['git', 'add', '.'], cwd=self.project_root, check=True)
+            subprocess.run(['git', 'add', '.'], cwd=self.project_root, check=True, capture_output=True)
             
             # Commit
             result = subprocess.run(['git', 'commit', '-m', message], 
                          cwd=self.project_root, capture_output=True, text=True)
             
             if result.returncode == 0:
-                logger.info(f"✅ Changes committed locally: {message}")
-                
-                # Try to push, but don't fail if it requires auth
-                push_result = subprocess.run(['git', 'push'], 
-                             cwd=self.project_root, 
-                             capture_output=True, 
-                             text=True,
-                             timeout=5)
-                
-                if push_result.returncode == 0:
-                    logger.info(f"✅ Changes pushed to GitHub")
-                else:
-                    logger.warning(f"⚠️  Could not push (may need auth), but committed locally")
-                
+                logger.info(f"✅ Changes committed locally")
+                # Note: Push skipped to avoid blocking. User can manually push later.
                 return True
             else:
                 logger.info(f"ℹ️  No changes to commit")
                 return True
                 
-        except subprocess.TimeoutExpired:
-            logger.warning(f"⚠️  Git push timed out (may need auth), but committed locally")
-            return True
         except subprocess.CalledProcessError as e:
             logger.error(f"❌ Git operation failed: {e}")
             return False
