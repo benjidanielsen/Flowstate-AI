@@ -114,11 +114,11 @@ jobs:
     
     - name: Build Docker images
       run: |
-        docker-compose build --parallel
+        docker compose build --parallel
     
     - name: Start services
       run: |
-        docker-compose up -d
+        docker compose up -d
         sleep 30
     
     - name: Check service health
@@ -130,7 +130,7 @@ jobs:
     - name: Stop services
       if: always()
       run: |
-        docker-compose down -v
+        docker compose down -v
 
   integration-test:
     runs-on: ubuntu-latest
