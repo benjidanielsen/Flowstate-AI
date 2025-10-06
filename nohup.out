@@ -1,6 +1,29 @@
 nohup: ignoring input
-Traceback (most recent call last):
-  File "/home/ubuntu/Flowstate-AI/unified_dashboard.py", line 15, in <module>
-    app = Flask(__name__, static_folder=PROJECT_ROOT / "static")
-                                        ^^^^^^^^^^^^
-NameError: name 'PROJECT_ROOT' is not defined
+🚀 Starting Flowstate-AI Unified Dashboard...
+📊 Dashboard available at: http://localhost:5000
+🔄 Auto-refresh enabled (every 10 seconds)
+
+✨ Features:
+   - 🏠 Home: System overview
+   - 🤖 AI Agents: Agent status and control
+   - 🎯 CRM Pipeline: Frazer Method visualization
+   - 📋 Tasks: Task management
+   - 💬 Chat: Talk to Project Manager AI
+   - 📊 Analytics: Metrics and reports
+ * Serving Flask app 'unified_dashboard'
+ * Debug mode: on
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://169.254.0.21:5000
+[33mPress CTRL+C to quit[0m
+ * Restarting with watchdog (inotify)
+ * Debugger is active!
+ * Debugger PIN: 758-002-807
+127.0.0.1 - - [06/Oct/2025 09:32:14] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [06/Oct/2025 09:32:14] "GET /api/agents HTTP/1.1" 200 -
+127.0.0.1 - - [06/Oct/2025 09:32:14] "GET /api/tasks HTTP/1.1" 200 -
+127.0.0.1 - - [06/Oct/2025 09:32:14] "GET /api/pipeline HTTP/1.1" 200 -
+127.0.0.1 - - [06/Oct/2025 09:32:14] "GET /api/leads HTTP/1.1" 200 -
+127.0.0.1 - - [06/Oct/2025 09:32:14] "GET /api/stats HTTP/1.1" 200 -
+127.0.0.1 - - [06/Oct/2025 09:32:21] "GET /api/agents HTTP/1.1" 200 -
