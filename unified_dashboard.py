@@ -24,7 +24,7 @@ sys.path.insert(0, str(Path(__file__).parent / "backend"))
 
 PROJECT_ROOT = Path(__file__).parent
 app = Flask(__name__, static_folder=PROJECT_ROOT / "static", template_folder=PROJECT_ROOT / "templates")
-app.secret_key = os.urandom(24) # Needed for session management
+app.secret_key = os.environ.get("FLASK_SECRET_KEY", os.urandom(24)) # Load from env or generate for dev
 DB_PATH = PROJECT_ROOT / "godmode-state.db"
 
 # Initialize OpenAI client
@@ -575,5 +575,5 @@ if __name__ == "__main__":
     """)
     conn.commit()
     conn.close()
-    app.run(debug=True, port=5000)
+    app.run(debug=os.environ.get("FLASK_DEBUG") == "1", port=5000, host="0.0.0.0")
 
