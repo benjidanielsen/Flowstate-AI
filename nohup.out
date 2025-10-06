@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/home/ubuntu/Flowstate-AI/unified_dashboard.py", line 15, in <module>
+    app = Flask(__name__, static_folder=PROJECT_ROOT / "static")
+                                        ^^^^^^^^^^^^
+NameError: name 'PROJECT_ROOT' is not defined
