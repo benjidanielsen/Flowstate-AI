@@ -9,6 +9,7 @@ from datetime import datetime
 from typing import Dict, List, Optional
 import requests
 from openai import OpenAI
+from pathlib import Path
 
 class CRMAutomationAgent:
     """AI Agent for automating CRM operations."""
@@ -23,7 +24,7 @@ class CRMAutomationAgent:
         self.api_base = api_base_url
         self.client = OpenAI()
         self.agent_name = "CRM Automation Agent"
-        self.log_file = "logs/crm_automation_agent.log"
+        self.log_file = Path(__file__).parent.parent / "logs" / "crm_automation_agent.log"
         
     def log(self, message: str):
         """Log agent activity."""
