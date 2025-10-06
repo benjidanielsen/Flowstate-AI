@@ -150,3 +150,176 @@ class DecisionEngine:
             self.complete_task(task.task_id, success=False)
 
         return f"Preempted tasks {[t.task_id for t in tasks_to_preempt]} to allocate task {highest_priority_task.task_id}"
+
+    def analyze_task_dependencies(self, task_dependencies: Dict[str, List[str]]) -> List[str]:
+        """
+        Analyze task dependencies and return optimal execution order.
+        
+        Args:
+            task_dependencies: Dict mapping task_id to list of prerequisite task_ids
+            
+        Returns:
+            List of task_ids in topological order (dependencies first)
+        """
+        # Topological sort using Kahn's algorithm
+        in_degree = {task_id: 0 for task_id in task_dependencies}
+        
+        for task_id, deps in task_dependencies.items():
+            for dep in deps:
+                if dep in in_degree:
+                    in_degree[task_id] += 1
+        
+        queue = [task_id for task_id, degree in in_degree.items() if degree == 0]
+        result = []
+        
+        while queue:
+            task_id = queue.pop(0)
+            result.append(task_id)
+            
+            # Reduce in-degree for dependent tasks
+            for other_task_id, deps in task_dependencies.items():
+                if task_id in deps:
+                    in_degree[other_task_id] -= 1
+                    if in_degree[other_task_id] == 0:
+                        queue.append(other_task_id)
+        
+        return result
+    
+    def optimize_resource_allocation(self) -> Dict[str, Any]:
+        """
+        Optimize resource allocation using a greedy algorithm.
+        
+        Returns:
+            Dictionary with optimization recommendations
+        """
+        recommendations = {
+            'reallocate_tasks': [],
+            'scale_up_resources': [],
+            'estimated_improvement': 0.0
+        }
+        
+        # Calculate current utilization
+        total_capacity = sum(self.resource_pool.total_resources.values())
+        current_usage = sum(
+            self.resource_pool.total_resources[r] - self.resource_pool.available_resources[r]
+            for r in self.resource_pool.total_resources
+        )
+        utilization = current_usage / total_capacity if total_capacity > 0 else 0
+        
+        # If utilization is very high, recommend scaling
+        if utilization > 0.85:
+            for resource, total in self.resource_pool.total_resources.items():
+                available = self.resource_pool.available_resources[resource]
+                if available < total * 0.15:  # Less than 15% available
+                    recommendations['scale_up_resources'].append({
+                        'resource': resource,
+                        'current': total,
+                        'recommended': int(total * 1.5),
+                        'reason': 'High utilization detected'
+                    })
+        
+        # Analyze pending tasks for potential reallocation
+        if len(self.task_queue) > 5:
+            recommendations['reallocate_tasks'] = [
+                {
+                    'task_id': task.task_id,
+                    'priority': task.priority,
+                    'waiting_time': 'high',
+                    'recommendation': 'Consider splitting or deferring'
+                }
+                for task in sorted(self.task_queue, key=lambda t: t.priority)[:3]
+            ]
+        
+        # Estimate improvement
+        recommendations['estimated_improvement'] = len(recommendations['scale_up_resources']) * 0.2
+        
+        return recommendations
+    
+    def predict_task_completion(self, task_id: str, historical_data: Optional[Dict[str, float]] = None) -> Dict[str, Any]:
+        """
+        Predict task completion time based on historical data.
+        
+        Args:
+            task_id: ID of the task to predict
+            historical_data: Optional dict mapping task types to average completion times
+            
+        Returns:
+            Dictionary with prediction details
+        """
+        task = self.running_tasks.get(task_id)
+        
+        if not task:
+            return {'error': 'Task not found or not running'}
+        
+        # Default completion time estimates based on resource requirements
+        base_time = sum(task.resource_requirements.values()) * 10  # 10 seconds per resource unit
+        
+        # Adjust based on historical data if available
+        if historical_data:
+            task_type = task.description.split()[0] if task.description else 'unknown'
+            if task_type in historical_data:
+                base_time = historical_data[task_type]
+        
+        # Factor in current system load
+        utilization = 1.0 - (sum(self.resource_pool.available_resources.values()) / 
+                            sum(self.resource_pool.total_resources.values()))
+        adjusted_time = base_time * (1 + utilization * 0.5)  # Up to 50% slower under full load
+        
+        return {
+            'task_id': task_id,
+            'estimated_completion_seconds': round(adjusted_time, 2),
+            'confidence': 0.7 if historical_data else 0.5,
+            'factors': {
+                'base_time': base_time,
+                'system_utilization': round(utilization, 2),
+                'adjustment_factor': round(1 + utilization * 0.5, 2)
+            }
+        }
+    
+    def make_strategic_decision(self, context: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Make a strategic decision based on current system state and context.
+        
+        Args:
+            context: Dictionary with additional context for decision-making
+            
+        Returns:
+            Dictionary with decision and reasoning
+        """
+        status = self.get_status()
+        
+        # Analyze current state
+        pending_count = len(status['pending_tasks'])
+        running_count = len(status['running_tasks'])
+        resource_utilization = 1.0 - (sum(status['available_resources'].values()) / 
+                                     sum(self.resource_pool.total_resources.values()))
+        
+        decision = {
+            'action': 'continue',
+            'reasoning': [],
+            'recommendations': []
+        }
+        
+        # Decision logic based on system state
+        if pending_count > 10 and resource_utilization < 0.5:
+            decision['action'] = 'scale_up_parallelism'
+            decision['reasoning'].append('Many pending tasks with available resources')
+            decision['recommendations'].append('Increase parallel task execution')
+        
+        if resource_utilization > 0.9:
+            decision['action'] = 'throttle_new_tasks'
+            decision['reasoning'].append('System resources nearly exhausted')
+            decision['recommendations'].append('Defer non-critical tasks')
+        
+        if running_count == 0 and pending_count > 0:
+            decision['action'] = 'investigate_blockage'
+            decision['reasoning'].append('Tasks pending but none running')
+            decision['recommendations'].append('Check for resource allocation issues')
+        
+        # Consider external context
+        if context.get('high_priority_incoming'):
+            decision['action'] = 'prepare_for_priority_tasks'
+            decision['reasoning'].append('High priority tasks expected')
+            decision['recommendations'].append('Consider preemptive resource reservation')
+        
+        return decision
