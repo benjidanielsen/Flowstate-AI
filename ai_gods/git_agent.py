@@ -83,3 +83,23 @@ class GitAgent(BaseAgent):
                 self.pull_changes()
             elif action == "auto_publish":
                 asyncio.run(self.auto_publish())
+
+
+async def main():
+    """Main execution loop for the GitAgent."""
+    agent = GitAgent()
+    # The agent currently does not have a long-running task,
+    # so we'll just log that it's ready.
+    # In a real implementation, this would listen on a message queue.
+    logger.info(f"{agent.agent_name} is ready and listening for tasks.")
+    # Keep the agent alive to listen for tasks
+    while True:
+        await asyncio.sleep(60)
+
+
+if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO)
+    try:
+        asyncio.run(main())
+    except KeyboardInterrupt:
+        logger.info("GitAgent stopped by user.")
