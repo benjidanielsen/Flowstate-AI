@@ -12,7 +12,7 @@ from pathlib import Path
 from datetime import datetime
 from openai import OpenAI
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder=PROJECT_ROOT / "static")
 PROJECT_ROOT = Path(__file__).parent
 DB_PATH = PROJECT_ROOT / "godmode-state.db"
 
@@ -606,9 +606,16 @@ def get_agents():
     cursor = conn.cursor()
     
     cursor.execute('''
-        SELECT agent_name, status, current_task, last_heartbeat
-        FROM agent_status
-        ORDER BY last_heartbeat DESC
+        SELECT
+            as_t.agent_name,
+            as_t.status,
+            as_t.current_task,
+            as_t.last_heartbeat,
+            a.profile_photo_url,
+            a.gender
+        FROM agent_status as_t
+        JOIN agents a ON as_t.agent_name = a.human_name
+        ORDER BY as_t.last_heartbeat DESC
     ''')
     
     agents = []
