@@ -620,12 +620,14 @@ def get_agents():
     
     agents = []
     for row in cursor.fetchall():
-        agents.append({
-            'agent': row[0],
-            'status': row[1],
-            'current_task': row[2],
-            'last_heartbeat': row[3]
-        })
+            agents.append({
+                'agent': row[0],
+                'status': row[1],
+                'current_task': row[2],
+                'last_heartbeat': row[3],
+                'profile_photo_url': row[4],
+                'gender': row[5]
+            })
     
     conn.close()
     return jsonify(agents)
