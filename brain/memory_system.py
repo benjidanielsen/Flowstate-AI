@@ -85,9 +85,6 @@ class MemorySystem:
             self._save_memory()
 
 
-# Singleton instance to be used across agents
-memory_system = MemorySystem()
-
     def add_context(self, category, context_key, context_value):
         """
         Add contextual information to a memory category.
