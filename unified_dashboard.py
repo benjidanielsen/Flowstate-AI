@@ -8,6 +8,7 @@
 
 from flask import Flask, render_template, render_template_string, jsonify, request, redirect, url_for, session
 from flask_wtf.csrf import CSRFProtect, generate_csrf
+from flask_talisman import Talisman
 from werkzeug.security import generate_password_hash, check_password_hash
 import sqlite3
 import json
@@ -33,6 +34,23 @@ client = OpenAI()
 # Initialize CSRFProtect
 csrf = CSRFProtect(app)
 
+# Initialize Talisman for HTTP security headers
+# In development, force_https is False; in production, set FLASK_ENV=production
+talisman = Talisman(
+    app,
+    force_https=os.environ.get("FLASK_ENV") == "production",
+    strict_transport_security=True,
+    content_security_policy={
+        'default-src': "'self'",
+        'script-src': ["'self'", "'unsafe-inline'", "https://cdn.jsdelivr.net", "https://cdnjs.cloudflare.com"],
+        'style-src': ["'self'", "'unsafe-inline'", "https://cdn.jsdelivr.net", "https://fonts.googleapis.com"],
+        'font-src': ["'self'", "https://fonts.gstatic.com"],
+        'img-src': ["'self'", "data:", "https:", "http:"],
+        'connect-src': ["'self'"]
+    },
+    content_security_policy_nonce_in=['script-src']
+)
+
 # Import and register CRM blueprint
 try:
     from crm_dashboard_routes import crm_bp
@@ -48,6 +66,14 @@ try:
     print("✅ Enhanced Dashboard API registered successfully")
 except Exception as e:
     print(f"⚠️  Warning: Could not register enhanced dashboard API: {e}")
+
+# Import and register error handlers
+try:
+    from error_handlers import register_error_handlers
+    register_error_handlers(app)
+    print("✅ Error handlers registered successfully")
+except Exception as e:
+    print(f"⚠️  Warning: Could not register error handlers: {e}")
 
 # --- Helper Functions ---
 def get_db_connection():
