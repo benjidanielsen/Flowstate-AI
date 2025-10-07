@@ -95,12 +95,18 @@ jobs:
       run: |
         cd python-worker
         pip install flake8
-        flake8 src --count --select=E9,F63,F7,F82 --show-source --statistics || true
+        # Only check for critical syntax errors, not style issues
+        flake8 src --count --select=E9,F63,F7,F82 --show-source --statistics
     
     - name: Run Python tests
       run: |
         cd python-worker
-        python -m pytest tests/ -v --tb=short || echo "No tests found yet"
+        # Run tests if they exist, but don't fail if test directory is empty
+        if [ -d "tests" ] && [ "$(find tests -name 'test_*.py' -o -name '*_test.py' | wc -l)" -gt 0 ]; then
+          python -m pytest tests/ -v --tb=short
+        else
+          echo "No tests found - skipping test execution"
+        fi
 
   docker-build:
     runs-on: ubuntu-latest
