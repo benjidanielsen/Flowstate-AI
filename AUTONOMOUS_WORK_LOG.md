@@ -8,8 +8,8 @@
 
 | Phase / Step | Owner | Status | Notes |
 | --- | --- | --- | --- |
-| Phase 1 – Assemble the GODMODE Brain | _Unclaimed_ | Available | Run health checks, codify MACCS lessons, and publish roadmap artefacts. |
-| Phase 2 – Mobilise the AI Build Army | _Unclaimed_ | Blocked (awaits Phase 1) | Prepare autonomous squads, automation loops, and CRM demos. |
+| Phase 1 – Assemble the GODMODE Brain | SCRIBE | Complete | Ran health checks, codified MACCS lessons, and published roadmap artefacts. |
+| Phase 2 – Mobilise the AI Build Army | _Unclaimed_ | Available | Prepare autonomous squads, automation loops, and CRM demos. |
 | Phase 3 – Stage the Live Pilot | _Unclaimed_ | Blocked (awaits Phase 2) | Harden deployment, onboard five operators, and record go/no-go. |
 
 **Quick Links:** `docs/GODMODE_BRAIN_ROADMAP.md`,
