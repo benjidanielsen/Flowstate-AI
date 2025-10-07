@@ -15,7 +15,7 @@ updates:
       include: "scope"
     reviewers:
       - "benjidanielsen"
-    
+
   # Frontend Node.js dependencies
   - package-ecosystem: "npm"
     directory: "/frontend"
@@ -31,7 +31,7 @@ updates:
       include: "scope"
     reviewers:
       - "benjidanielsen"
-    
+
   # Python worker dependencies
   - package-ecosystem: "pip"
     directory: "/python-worker"
@@ -47,7 +47,7 @@ updates:
       include: "scope"
     reviewers:
       - "benjidanielsen"
-    
+
   # Root Python dependencies
   - package-ecosystem: "pip"
     directory: "/"
@@ -63,7 +63,7 @@ updates:
       include: "scope"
     reviewers:
       - "benjidanielsen"
-    
+
   # GitHub Actions
   - package-ecosystem: "github-actions"
     directory: "/"
