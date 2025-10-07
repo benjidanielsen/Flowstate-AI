@@ -13,6 +13,7 @@ from datetime import datetime, timedelta
 from pathlib import Path
 import sqlite3
 import redis
+from .error_handler import with_retry, with_error_handling, CircuitBreaker, log_error_to_db, default_fallback_value
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -40,12 +41,15 @@ class SystemMonitor:
             'error_rate_percent': 5.0
         }
         
+    @with_error_handling(fallback=default_fallback_value)
     def get_db_connection(self) -> sqlite3.Connection:
+
         """Get database connection."""
         conn = sqlite3.Connect(self.db_path)
         conn.row_factory = sqlite3.Row
         return conn
         
+    @with_error_handling(fallback=default_fallback_value)
     async def start(self):
         """Start the system monitoring."""
         self.running = True
@@ -59,11 +63,13 @@ class SystemMonitor:
                 logger.error(f"Error in monitoring cycle: {str(e)}")
                 await asyncio.sleep(30)
                 
+    @with_error_handling(fallback=default_fallback_value)
     async def stop(self):
         """Stop the system monitoring."""
         self.running = False
         logger.info("System Monitor stopped")
         
+    @with_error_handling(fallback=default_fallback_value)
     async def monitoring_cycle(self):
         """Execute one cycle of system monitoring."""
         metrics = await self.collect_metrics()
@@ -82,6 +88,8 @@ class SystemMonitor:
         if alerts:
             await self.auto_optimize(alerts)
             
+    @with_error_handling(fallback=default_fallback_value)
+    @with_retry(expected_exception=sqlite3.OperationalError)
     async def collect_metrics(self) -> Dict[str, Any]:
         """
         Collect comprehensive system metrics.
@@ -132,6 +140,7 @@ class SystemMonitor:
         
         return metrics
         
+    @with_error_handling(fallback=default_fallback_value)
     async def store_metrics(self, metrics: Dict[str, Any]):
         """Store metrics in Redis for historical analysis."""
         try:
@@ -146,6 +155,7 @@ class SystemMonitor:
         except Exception as e:
             logger.error(f"Error storing metrics: {str(e)}")
             
+    @with_error_handling(fallback=default_fallback_value)
     def check_thresholds(self, metrics: Dict[str, Any]) -> List[Dict[str, Any]]:
         """
         Check if any metrics exceed defined thresholds.
@@ -187,6 +197,7 @@ class SystemMonitor:
         
         return alerts
         
+    @with_error_handling(fallback=default_fallback_value)
     async def auto_optimize(self, alerts: List[Dict[str, Any]]):
         """
         Automatically optimize system based on alerts.
@@ -223,6 +234,7 @@ class SystemMonitor:
                 except Exception as e:
                     logger.error(f"Error optimizing disk: {str(e)}")
                     
+    @with_error_handling(fallback=default_fallback_value)
     def get_health_status(self) -> Dict[str, Any]:
         """
         Get overall system health status.
@@ -274,6 +286,7 @@ class SystemMonitor:
             'timestamp': datetime.now().isoformat()
         }
         
+    @with_error_handling(fallback=default_fallback_value)
     def get_performance_trends(self, hours: int = 24) -> Dict[str, Any]:
         """
         Analyze performance trends over a specified period.

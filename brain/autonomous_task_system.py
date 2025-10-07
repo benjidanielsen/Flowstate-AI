@@ -12,6 +12,7 @@ from pathlib import Path
 import sqlite3
 import redis
 from openai import OpenAI
+from .error_handler import with_retry, with_error_handling, CircuitBreaker, log_error_to_db, default_fallback_value, CircuitBreakerOpenException
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -27,6 +28,7 @@ class AutonomousTaskSystem:
         self.db_path = Path(__file__).parent.parent / db_path
         self.redis = redis.Redis(host=redis_host, port=6379, db=0, decode_responses=True)
         self.client = OpenAI()
+        self.openai_circuit_breaker = CircuitBreaker(failure_threshold=3, recovery_timeout=60, expected_exception=Exception) # Adjust exception type as needed
         self.running = False
         self.task_generation_interval = 300  # 5 minutes
         
@@ -69,12 +71,15 @@ class AutonomousTaskSystem:
             }
         }
         
+    @with_error_handling(fallback=default_fallback_value)
     def get_db_connection(self) -> sqlite3.Connection:
+
         """Get database connection."""
         conn = sqlite3.connect(self.db_path)
         conn.row_factory = sqlite3.Row
         return conn
         
+    @with_error_handling(fallback=default_fallback_value)
     async def start(self):
         """Start the autonomous task generation system."""
         self.running = True
@@ -85,11 +90,13 @@ class AutonomousTaskSystem:
         except Exception as e:
             logger.error(f"Error in generation cycle: {str(e)}")
                 
+    @with_error_handling(fallback=default_fallback_value)
     async def stop(self):
         """Stop the autonomous task generation system."""
         self.running = False
         logger.info("Autonomous Task System stopped")
         
+    @with_error_handling(fallback=default_fallback_value)
     async def generation_cycle(self):
         """Execute one cycle of task generation."""
         logger.info("Starting task generation cycle")
@@ -111,6 +118,8 @@ class AutonomousTaskSystem:
         
         logger.info(f"Generation cycle complete: {stored_count} tasks created, {assigned_count} auto-assigned")
         
+    @with_error_handling(fallback=default_fallback_value)
+    @with_retry(expected_exception=sqlite3.OperationalError)
     async def analyze_project_state(self) -> Dict[str, Any]:
         """
         Analyze current project state to identify areas needing attention.
@@ -180,6 +189,7 @@ class AutonomousTaskSystem:
         
         return analysis
         
+    @with_error_handling(fallback=default_fallback_value)
     async def generate_tasks(self, project_state: Dict[str, Any]) -> List[Dict[str, Any]]:
         """
         Generate tasks based on project state analysis using AI.
@@ -246,6 +256,7 @@ class AutonomousTaskSystem:
         
         return tasks
         
+    @with_error_handling(fallback=default_fallback_value)
     async def _generate_ai_tasks(self, project_state: Dict[str, Any]) -> List[Dict[str, Any]]:
         """Generate tasks using AI analysis."""
         try:
@@ -277,7 +288,7 @@ class AutonomousTaskSystem:
             }}
             """
             
-            response = self.client.chat.completions.create(
+            response = await self.openai_circuit_breaker(self.client.chat.completions.create)(
                 model="gpt-4.1-mini",
                 messages=[
                     {"role": "system", "content": "You are an expert software project manager and technical architect."},
@@ -346,7 +357,10 @@ class AutonomousTaskSystem:
         # Limit to top 10 tasks per cycle
         return unique_tasks[:10]
         
+    @with_error_handling(fallback=default_fallback_value)
+    @with_retry(expected_exception=sqlite3.OperationalError)
     async def store_tasks(self, tasks: List[Dict[str, Any]]) -> int:
+
         """
         Store generated tasks in the database.
         
@@ -387,7 +401,10 @@ class AutonomousTaskSystem:
         
         return stored_count
         
+    @with_error_handling(fallback=default_fallback_value)
+    @with_retry(expected_exception=sqlite3.OperationalError)
     async def auto_assign_tasks(self) -> int:
+
         """
         Automatically assign high-priority tasks to available agents.
         

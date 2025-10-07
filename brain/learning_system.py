@@ -10,6 +10,7 @@ from datetime import datetime, timedelta
 from collections import defaultdict
 import redis
 import numpy as np
+from .error_handler import with_retry, with_error_handling, default_fallback_value
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -27,7 +28,10 @@ class LearningSystem:
         self.patterns: Dict[str, Any] = {}
         self.feedback_history: List[Dict[str, Any]] = []
         
+    @with_error_handling(fallback=default_fallback_value)
+    @with_retry(expected_exception=redis.exceptions.ConnectionError)
     def record_experience(self, agent_id: str, experience: Dict[str, Any]) -> None:
+
         """
         Record an experience for an agent to learn from.
         
@@ -58,6 +62,7 @@ class LearningSystem:
             
         logger.info(f"Recorded experience for agent {agent_id}")
         
+    @with_error_handling(fallback=default_fallback_value)
     def analyze_patterns(self, agent_id: Optional[str] = None) -> Dict[str, Any]:
         """
         Analyze patterns in agent experiences to identify successful strategies.
@@ -126,6 +131,7 @@ class LearningSystem:
         
         return patterns
         
+    @with_error_handling(fallback=default_fallback_value)
     def get_recommendations(self, agent_id: str, task_type: str) -> Dict[str, Any]:
         """
         Get recommendations for an agent based on learned patterns.
@@ -165,6 +171,8 @@ class LearningSystem:
         
         return recommendations
         
+    @with_error_handling(fallback=default_fallback_value)
+    @with_retry(expected_exception=redis.exceptions.ConnectionError)
     def record_feedback(self, task_id: str, feedback: Dict[str, Any]) -> None:
         """
         Record feedback on a completed task for learning purposes.
@@ -195,6 +203,7 @@ class LearningSystem:
             
         logger.info(f"Recorded feedback for task {task_id}")
         
+    @with_error_handling(fallback=default_fallback_value)
     def get_learning_progress(self, agent_id: str, days: int = 30) -> Dict[str, Any]:
         """
         Get learning progress for an agent over a specified period.
@@ -263,7 +272,9 @@ class LearningSystem:
             'timestamp': datetime.now().isoformat()
         }
         
+    @with_error_handling(fallback=default_fallback_value)
     def export_learning_data(self, agent_id: Optional[str] = None, format: str = 'json') -> str:
+
         """
         Export learning data for analysis or backup.
         
@@ -297,6 +308,7 @@ class LearningSystem:
         else:
             raise ValueError(f"Unsupported export format: {format}")
             
+    @with_error_handling(fallback=default_fallback_value)
     def reset_learning_data(self, agent_id: Optional[str] = None) -> None:
         """
         Reset learning data for an agent or all agents.
@@ -315,6 +327,7 @@ class LearningSystem:
             self.feedback_history.clear()
             logger.info("Reset all learning data")
             
+    @with_error_handling(fallback=default_fallback_value)
     def get_insights(self) -> Dict[str, Any]:
         """
         Get high-level insights from all learning data.
