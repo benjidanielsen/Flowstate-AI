@@ -1,27 +1,62 @@
-aiofiles
-aiosqlite
-asyncio
-beautifulsoup4
-fastapi
-flask
-flask-cors
-flask-socketio
-gitpython
-gunicorn
-matplotlib
-numpy
-pandas
-playwright
-psutil
-pydantic
-pytest
-python-dotenv
-requests
-schedule
-uvicorn
-watchdog
-websockets
-redis
-aioredis==1.3.1
+# Flowstate-AI Python Dependencies
+# Last updated: October 7, 2025
 
-redis
+# Web Framework
+Flask==3.0.0
+Flask-WTF==1.2.1
+Flask-Talisman==1.1.0
+Flask-Cors==4.0.0
+Flask-SocketIO==5.3.5
+Werkzeug==3.0.1
+gunicorn==21.2.0
+
+# FastAPI (for async endpoints)
+fastapi==0.108.0
+uvicorn==0.25.0
+pydantic==2.5.3
+
+# AI & Machine Learning
+openai==1.54.5
+
+# Data Storage & Caching
+redis==5.2.0
+aioredis==2.0.1
+
+# Async I/O
+aiofiles==23.2.1
+aiosqlite==0.19.0
+
+# Data Processing
+numpy==1.26.2
+pandas==2.1.4
+matplotlib==3.8.2
+
+# Web Scraping & Automation
+beautifulsoup4==4.12.2
+playwright==1.40.0
+
+# System Monitoring
+psutil==5.9.6
+watchdog==3.0.0
+
+# Version Control
+GitPython==3.1.40
+
+# Task Scheduling
+schedule==1.2.0
+
+# WebSockets
+websockets==12.0
+
+# Utilities
+python-dotenv==1.0.0
+requests==2.31.0
+
+# Testing
+pytest==7.4.3
+pytest-asyncio==0.21.1
+
+# Development
+black==23.12.1
+flake8==6.1.0
+mypy==1.7.1
