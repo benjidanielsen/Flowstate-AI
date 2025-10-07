@@ -3,6 +3,22 @@
 
 version: 2
 updates:
+  # Root npm dependencies (workspaces, e2e tests)
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "daily"
+      time: "03:00"
+    open-pull-requests-limit: 10
+    versioning-strategy: increase
+    labels:
+      - "dependencies"
+      - "root"
+      - "automerge"
+    commit-message:
+      prefix: "chore(root)"
+      include: "scope"
+
   # Backend npm dependencies
   - package-ecosystem: "npm"
     directory: "/backend"
@@ -33,6 +49,22 @@ updates:
       - "automerge"
     commit-message:
       prefix: "chore(frontend)"
+      include: "scope"
+
+  # VSCode Extension npm dependencies
+  - package-ecosystem: "npm"
+    directory: "/vscode-extension"
+    schedule:
+      interval: "daily"
+      time: "03:00"
+    open-pull-requests-limit: 10
+    versioning-strategy: increase
+    labels:
+      - "dependencies"
+      - "vscode-extension"
+      - "automerge"
+    commit-message:
+      prefix: "chore(vscode-extension)"
       include: "scope"
 
   # Python worker pip dependencies
