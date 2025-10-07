@@ -24,8 +24,8 @@ class TestCRMContactService(unittest.TestCase):
     
     def setUp(self):
         """Set up test fixtures"""
-        import redis
-        redis_client = redis.Redis(host='localhost', port=6379, db=0, decode_responses=True)
+        import fakeredis
+        redis_client = fakeredis.FakeRedis(decode_responses=True)
         self.service = CRMContactService(redis_client)
         # Clear any existing test data
         test_keys = self.service.redis.keys("crm:contact:test*")
@@ -115,8 +115,8 @@ class TestCRMDealService(unittest.TestCase):
     
     def setUp(self):
         """Set up test fixtures"""
-        import redis
-        redis_client = redis.Redis(host='localhost', port=6379, db=0, decode_responses=True)
+        import fakeredis
+        redis_client = fakeredis.FakeRedis(decode_responses=True)
         self.service = CRMDealService(redis_client)
         # Clear any existing test data
         test_keys = self.service.redis.keys("crm:deal:test*")

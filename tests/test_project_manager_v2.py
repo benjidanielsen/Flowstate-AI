@@ -1,11 +1,15 @@
 import asyncio
 import os
+import sys
 import sqlite3
 from pathlib import Path
 
 import pytest
 import pytest_asyncio
 from aiosqlite import connect as aio_connect
+
+# Add project root to path
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 # Set environment variables for testing
 os.environ["PM_DB_PATH"] = "test-godmode-state.db"

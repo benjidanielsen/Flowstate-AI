@@ -5,11 +5,10 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-MODULE_DIR = REPO_ROOT / "ai_gods"
-if str(MODULE_DIR) not in sys.path:
-    sys.path.insert(0, str(MODULE_DIR))
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
 
-import godmode_brain  # type: ignore  # noqa: E402
+from ai_gods import godmode_brain  # type: ignore  # noqa: E402
 
 
 class GodmodeBrainTestCase(unittest.TestCase):
