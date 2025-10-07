@@ -6,166 +6,222 @@ on:
   pull_request:
     branches: [ main ]
 
+# Cancel in-progress runs for the same workflow and branch
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+# Set minimal required permissions for security
+permissions:
+  contents: read
+  pull-requests: read
+
 jobs:
   test-backend:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+    - name: Checkout code
+      uses: actions/checkout@v4
     
-    - name: Use Node.js 20
+    - name: Setup Node.js 20
       uses: actions/setup-node@v4
       with:
-        node-version: 20
+        node-version: '20'
+        cache: 'npm'
+        cache-dependency-path: backend/package-lock.json
     
     - name: Install backend dependencies
-      run: |
-        cd backend
-        npm ci --prefer-offline --no-audit
+      working-directory: backend
+      run: npm ci --prefer-offline --no-audit
     
     - name: Run backend linting
-      run: |
-        cd backend
-        npm run lint
-      continue-on-error: false
+      working-directory: backend
+      run: npm run lint
     
     - name: Build backend
-      run: |
-        cd backend
-        npm run build
+      working-directory: backend
+      run: npm run build
     
     - name: Run backend tests
-      run: |
-        cd backend
-        npm test -- --ci --maxWorkers=2
+      working-directory: backend
+      run: npm test -- --ci --maxWorkers=2
       env:
         NODE_ENV: test
 
   test-frontend:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+    - name: Checkout code
+      uses: actions/checkout@v4
     
-    - name: Use Node.js 20
+    - name: Setup Node.js 20
       uses: actions/setup-node@v4
       with:
-        node-version: 20
+        node-version: '20'
+        cache: 'npm'
+        cache-dependency-path: frontend/package-lock.json
     
     - name: Install frontend dependencies
-      run: |
-        cd frontend
-        npm ci --prefer-offline --no-audit
+      working-directory: frontend
+      run: npm ci --prefer-offline --no-audit
     
     - name: Run frontend linting
-      run: |
-        cd frontend
-        npm run lint
-      continue-on-error: false
+      working-directory: frontend
+      run: npm run lint
     
     - name: Build frontend
-      run: |
-        cd frontend
-        npm run build
+      working-directory: frontend
+      run: npm run build
     
     - name: Run frontend tests
-      run: |
-        cd frontend
-        npm test -- --run --reporter=verbose
+      working-directory: frontend
+      run: npm test -- --run --reporter=verbose
       env:
         NODE_ENV: test
 
   test-python-worker:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+    - name: Checkout code
+      uses: actions/checkout@v4
     
-    - name: Set up Python 3.11
-      uses: actions/setup-python@v4
+    - name: Setup Python 3.11
+      uses: actions/setup-python@v5
       with:
         python-version: '3.11'
         cache: 'pip'
         cache-dependency-path: python-worker/requirements.txt
     
     - name: Install Python dependencies
+      working-directory: python-worker
       run: |
-        cd python-worker
         pip install --upgrade pip
         pip install -r requirements.txt
+        pip install flake8 pytest pytest-asyncio
     
-    - name: Run Python linting
-      run: |
-        cd python-worker
-        pip install flake8
-        flake8 src --count --select=E9,F63,F7,F82 --show-source --statistics || true
+    - name: Run Python linting (critical errors only)
+      working-directory: python-worker
+      run: flake8 src --count --select=E9,F63,F7,F82 --show-source --statistics
     
     - name: Run Python tests
+      working-directory: python-worker
       run: |
-        cd python-worker
-        python -m pytest tests/ -v --tb=short || echo "No tests found yet"
+        if [ -d "tests" ]; then
+          python -m pytest tests/ -v --tb=short
+        else
+          echo "No tests directory found, skipping tests"
+        fi
+
+  test-root-python:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Setup Python 3.11
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+        cache: 'pip'
+        cache-dependency-path: requirements.txt
+    
+    - name: Install Python dependencies
+      run: |
+        pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install flake8 pytest pytest-asyncio
+    
+    - name: Run Python linting (critical errors only)
+      run: flake8 . --exclude=.git,__pycache__,venv,env,node_modules,dist,build --count --select=E9,F63,F7,F82 --show-source --statistics
+    
+    - name: Run root-level Python tests
+      run: |
+        if [ -d "tests" ]; then
+          python -m pytest tests/ -v --tb=short
+        else
+          echo "No tests directory found, skipping tests"
+        fi
 
   docker-build:
     runs-on: ubuntu-latest
-    needs: [test-backend, test-frontend, test-python-worker]
+    needs: [test-backend, test-frontend, test-python-worker, test-root-python]
     if: github.ref == 'refs/heads/main'
     steps:
-    - uses: actions/checkout@v4
+    - name: Checkout code
+      uses: actions/checkout@v4
     
-    - name: Set up Docker Buildx
+    - name: Setup Docker Buildx
       uses: docker/setup-buildx-action@v3
     
     - name: Build Docker images
-      run: |
-        docker compose build --parallel
+      run: docker compose build --parallel
     
     - name: Start services
       run: |
         docker compose up -d
+        echo "Waiting for services to be ready..."
         sleep 30
     
     - name: Check service health
       run: |
-        # Test if services are running
-        curl -f http://localhost:3001/api/health || echo "Backend health check failed"
-        curl -f http://localhost:8000/health || echo "Python worker health check failed"
+        echo "Testing backend health..."
+        curl -f http://localhost:3001/api/health || exit 1
+        echo "Backend is healthy"
+        
+        echo "Testing Python worker health..."
+        curl -f http://localhost:8000/health || exit 1
+        echo "Python worker is healthy"
     
     - name: Stop services
       if: always()
-      run: |
-        docker compose down -v
+      run: docker compose down -v
 
   integration-test:
     runs-on: ubuntu-latest
-    needs: [test-backend, test-frontend, test-python-worker]
+    needs: [test-backend, test-frontend, test-python-worker, test-root-python]
     steps:
-    - uses: actions/checkout@v4
+    - name: Checkout code
+      uses: actions/checkout@v4
     
-    - name: Use Node.js 20
+    - name: Setup Node.js 20
       uses: actions/setup-node@v4
       with:
-        node-version: 20
+        node-version: '20'
+        cache: 'npm'
+        cache-dependency-path: backend/package-lock.json
     
-    - name: Set up Python 3.11
-      uses: actions/setup-python@v4
+    - name: Setup Python 3.11
+      uses: actions/setup-python@v5
       with:
         python-version: '3.11'
         cache: 'pip'
+        cache-dependency-path: python-worker/requirements.txt
     
-    - name: Install dependencies
-      run: |
-        cd backend && npm ci --prefer-offline --no-audit
-        cd ../python-worker && pip install -r requirements.txt
+    - name: Install backend dependencies
+      working-directory: backend
+      run: npm ci --prefer-offline --no-audit
+    
+    - name: Install Python worker dependencies
+      working-directory: python-worker
+      run: pip install -r requirements.txt
     
     - name: Build backend
-      run: |
-        cd backend && npm run build
+      working-directory: backend
+      run: npm run build
     
     - name: Start services in background
       run: |
         cd backend && npm start &
         BACKEND_PID=$!
-        echo "Backend PID: $BACKEND_PID"
+        echo "BACKEND_PID=$BACKEND_PID" >> $GITHUB_ENV
+        echo "Backend started with PID: $BACKEND_PID"
+        
         cd ../python-worker && python -m uvicorn src.main:app --host 0.0.0.0 --port 8000 &
         WORKER_PID=$!
-        echo "Worker PID: $WORKER_PID"
+        echo "WORKER_PID=$WORKER_PID" >> $GITHUB_ENV
+        echo "Worker started with PID: $WORKER_PID"
+        
+        echo "Waiting for services to be ready..."
         sleep 15
       env:
         NODE_ENV: production
@@ -173,41 +229,65 @@ jobs:
     
     - name: Run integration tests
       run: |
-        # Test backend health
-        curl -f http://localhost:3001/api/health || echo "Backend not ready"
-        # Test python worker health  
-        curl -f http://localhost:8000/health || echo "Worker not ready"
-        # Test API endpoints
-        curl -f http://localhost:3001/api/customers/stats || echo "Stats endpoint not ready"
-      continue-on-error: true
+        echo "Testing backend health..."
+        curl -f http://localhost:3001/api/health || exit 1
+        echo "Backend health check passed"
+        
+        echo "Testing Python worker health..."
+        curl -f http://localhost:8000/health || exit 1
+        echo "Python worker health check passed"
+        
+        echo "Testing stats endpoint..."
+        curl -f http://localhost:3001/api/customers/stats || exit 1
+        echo "Stats endpoint check passed"
     
-    - name: Cleanup
+    - name: Cleanup services
       if: always()
       run: |
+        echo "Cleaning up services..."
         pkill -f "node.*dist/index.js" || true
         pkill -f "uvicorn" || true
+        echo "Cleanup complete"
 
   code-quality:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+    - name: Checkout code
+      uses: actions/checkout@v4
     
-    - name: Use Node.js 20
+    - name: Setup Node.js 20
       uses: actions/setup-node@v4
       with:
-        node-version: 20
+        node-version: '20'
+        cache: 'npm'
+        cache-dependency-path: |
+          backend/package-lock.json
+          frontend/package-lock.json
     
-    - name: Install dependencies
-      run: |
-        cd backend && npm ci --prefer-offline --no-audit
-        cd ../frontend && npm ci --prefer-offline --no-audit
+    - name: Install backend dependencies
+      working-directory: backend
+      run: npm ci --prefer-offline --no-audit
     
-    - name: Check for security vulnerabilities
-      run: |
-        cd backend && npm audit --audit-level=high || true
-        cd ../frontend && npm audit --audit-level=high || true
+    - name: Install frontend dependencies
+      working-directory: frontend
+      run: npm ci --prefer-offline --no-audit
     
-    - name: Check for outdated dependencies
-      run: |
-        cd backend && npm outdated || true
-        cd ../frontend && npm outdated || true
+    - name: Check for security vulnerabilities (backend)
+      working-directory: backend
+      run: npm audit --audit-level=high
+      continue-on-error: true
+    
+    - name: Check for security vulnerabilities (frontend)
+      working-directory: frontend
+      run: npm audit --audit-level=high
+      continue-on-error: true
+    
+    - name: Check for outdated dependencies (backend)
+      working-directory: backend
+      run: npm outdated
+      continue-on-error: true
+    
+    - name: Check for outdated dependencies (frontend)
+      working-directory: frontend
+      run: npm outdated
+      continue-on-error: true
