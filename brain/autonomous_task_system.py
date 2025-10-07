@@ -80,13 +80,10 @@ class AutonomousTaskSystem:
         self.running = True
         logger.info("Autonomous Task System started")
         
-        while self.running:
-            try:
-                await self.generation_cycle()
-                await asyncio.sleep(self.task_generation_interval)
-            except Exception as e:
-                logger.error(f"Error in generation cycle: {str(e)}")
-                await asyncio.sleep(60)  # Wait 1 minute before retrying
+        try:
+            await self.generation_cycle()
+        except Exception as e:
+            logger.error(f"Error in generation cycle: {str(e)}")
                 
     async def stop(self):
         """Stop the autonomous task generation system."""
