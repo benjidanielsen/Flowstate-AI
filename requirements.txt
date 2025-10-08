@@ -5,10 +5,10 @@
 Flask==3.0.0
 Flask-WTF==1.2.1
 Flask-Talisman==1.1.0
-Flask-Cors==4.0.0
+Flask-Cors==6.0.0
 Flask-SocketIO==5.3.5
-Werkzeug==3.0.1
-gunicorn==21.2.0
+Werkzeug==3.0.6
+gunicorn==22.0.0
 
 # FastAPI (for async endpoints)
 fastapi==0.108.0
@@ -50,13 +50,13 @@ websockets==12.0
 
 # Utilities
 python-dotenv==1.0.0
-requests==2.31.0
+requests==2.32.4
 
 # Testing
 pytest==7.4.3
 pytest-asyncio==0.21.1
 
 # Development
-black==23.12.1
+black==24.3.0
 flake8==6.1.0
 mypy==1.7.1
