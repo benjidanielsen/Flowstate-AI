@@ -1,0 +1,88 @@
+name: CRM Automation
+
+on:
+  # Run on a schedule every 4 hours
+  schedule:
+    - cron: '0 */4 * * *'
+  # Allow manual triggering
+  workflow_dispatch:
+  # Run on pushes to main for testing
+  push:
+    branches:
+      - main
+    paths:
+      - 'agents/crm_automation_agent.py'
+      - 'backend/crm_api.py'
+      - 'backend/crm_contact_service.py'
+      - 'backend/crm_deal_service.py'
+      - '.github/workflows/crm-automation.yml'
+
+jobs:
+  run-crm-automation:
+    runs-on: ubuntu-latest
+    
+    services:
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+          cache-dependency-path: requirements.txt
+      
+      - name: Install Python dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+      
+      - name: Start CRM API service
+        run: |
+          cd backend
+          python crm_api.py &
+          CRM_API_PID=$!
+          echo "CRM_API_PID=$CRM_API_PID" >> $GITHUB_ENV
+          # Wait for API to be ready
+          sleep 10
+        env:
+          REDIS_HOST: localhost
+          REDIS_PORT: 6379
+      
+      - name: Health check CRM API
+        run: |
+          curl -f http://localhost:5001/api/v1/health || (echo "CRM API health check failed" && exit 1)
+      
+      - name: Run CRM automation agent
+        run: |
+          python agents/crm_automation_agent.py
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      
+      - name: Upload automation logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: crm-automation-logs-${{ github.run_number }}
+          path: logs/crm_automation_agent.log
+          if-no-files-found: warn
+          retention-days: 30
+      
+      - name: Cleanup
+        if: always()
+        run: |
+          if [ ! -z "$CRM_API_PID" ]; then
+            kill $CRM_API_PID || true
+          fi
+          pkill -f "python.*crm_api.py" || true

@@ -81,6 +81,7 @@ now live inside the GODMODE Brain principles.
 ### 🤝 GitHub Coordination for AI Agents
 - **Centralized Task Management**: GitHub Issues serve as the primary mechanism for assigning and tracking tasks for AI agents.
 - **Automated Workflows**: GitHub Actions automate repetitive tasks like testing, deployment, and issue triage.
+- **Scheduled CRM Automation**: Automated CRM agent runs every 4 hours to process leads and monitor deals.
 - **Transparent Collaboration**: All agent activities, including code changes and task progress, are visible on GitHub.
 - **Version Control**: Git is used for tracking changes to code, documentation, and configurations.
 
@@ -93,6 +94,26 @@ now live inside the GODMODE Brain principles.
 - **Database**: SQLite for development, PostgreSQL for production
 - **Containerization**: Docker + Docker Compose
 - **CI/CD**: GitHub Actions
+- **Automation**: Scheduled CRM workflows with AI-powered lead qualification
+
+## Automated Workflows
+
+### CRM Automation Agent
+
+The CRM automation agent runs automatically every 4 hours via GitHub Actions to:
+
+- **Process New Leads**: Automatically fetch and qualify new leads from the CRM
+- **AI Qualification**: Use GPT-4 to qualify leads as MQL (Marketing Qualified Lead) or SQL (Sales Qualified Lead)
+- **Deal Creation**: Automatically create deals for qualified SQL leads
+- **Deal Monitoring**: Monitor and analyze existing deals in the pipeline
+
+**Manual Trigger**: You can also manually trigger the automation from GitHub Actions tab → CRM Automation → Run workflow
+
+**Requirements**: Configure `OPENAI_API_KEY` in GitHub repository secrets
+
+**Logs**: Automation logs are saved as artifacts and retained for 30 days
+
+See [.github/workflows/README.md](.github/workflows/README.md) for detailed workflow documentation.
 
 ## Quick Start
 
