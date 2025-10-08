@@ -24,7 +24,11 @@ class AutomaticTaskGenerator:
             db_path: Path to the SQLite database
         """
         self.db_path = Path(__file__).parent.parent / db_path
-        self.client = OpenAI()
+        try:
+            self.client = OpenAI()
+        except Exception:
+            # OpenAI client optional - some features won't work without it
+            self.client = None
         self.log_file = Path(__file__).parent.parent / "logs" / "task_generator.log"
         
         # Task generation rules and priorities
@@ -229,6 +233,10 @@ class AutomaticTaskGenerator:
             List of AI-generated tasks
         """
         try:
+            if self.client is None:
+                self.log("OpenAI client not available, returning empty task list")
+                return []
+            
             prompt = f"""
             Based on the following context about the Flowstate-AI project, generate {count} actionable tasks that would improve the system.
             
