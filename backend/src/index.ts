@@ -4,6 +4,7 @@ import bodyParser from 'body-parser';
 import helmet from 'helmet';
 import http from 'http';
 import routes from './routes';
+import performanceMiddleware from './middleware/performanceMiddleware';
 import DatabaseManager from './database';
 import { runMigrations } from './database/migrate';
 import logger from './utils/logger';
@@ -21,6 +22,7 @@ app.use(helmet());
 app.use(cors());
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(performanceMiddleware);
 
 // Routes
 app.use('/api', routes);
