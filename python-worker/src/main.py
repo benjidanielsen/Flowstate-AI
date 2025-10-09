@@ -8,6 +8,7 @@ from typing import Any, Dict, List, Optional
 import uvicorn
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
 import httpx
 
 BACKEND_API_URL = os.getenv("BACKEND_API_URL", "http://localhost:3001")
