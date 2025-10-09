@@ -1,5 +1,5 @@
 import axiosInstance from '../api/axiosInstance';
-import { Customer, Interaction, PipelineStatus, Reminder, EventLog, PipelineStats } from '../types';
+import { Customer, Interaction, PipelineStatus, Reminder, EventLog, PipelineStats, Stats } from '../types';
 
 // Customer API
 export const customerApi = {
@@ -91,6 +91,14 @@ export const reminderApi = {
 export const eventLogApi = {
   getAll: async (customerId: string): Promise<EventLog[]> => {
     const response = await axiosInstance.get(`/customers/${customerId}/event-logs`);
+    return response.data;
+  },
+};
+
+// Stats API
+export const statsApi = {
+  getStats: async (): Promise<Stats> => {
+    const response = await axiosInstance.get("/stats");
     return response.data;
   },
 };

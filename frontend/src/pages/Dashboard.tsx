@@ -1,25 +1,28 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Users, TrendingUp, Calendar, AlertCircle } from 'lucide-react';
-import { customerApi, interactionApi } from '../services/api';
+import { customerApi, interactionApi, statsApi } from '../services/api';
 import { useToast } from '../contexts/ToastContext';
-import { PipelineStats, Interaction, PipelineStatus } from '../types';
+import { PipelineStats, Interaction, PipelineStatus, Stats } from '../types';
 
 const Dashboard: React.FC = () => {
-  const [stats, setStats] = useState<PipelineStats>({});
+  const [pipelineStats, setPipelineStats] = useState<PipelineStats>({});
   const [upcomingInteractions, setUpcomingInteractions] = useState<Interaction[]>([]);
+  const [allStats, setAllStats] = useState<Stats | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const [statsData, interactionsData] = await Promise.all([
+        const [pipelineStatsData, interactionsData, allStatsData] = await Promise.all([
           customerApi.getStats(),
-          interactionApi.getUpcoming(10)
+          interactionApi.getUpcoming(10),
+          statsApi.getStats()
         ]);
-        setStats(statsData);
+        setPipelineStats(pipelineStatsData);
         setUpcomingInteractions(interactionsData);
+        setAllStats(allStatsData);
       } catch (error) {
         console.error('Error fetching dashboard data:', error);
       } finally {
@@ -30,7 +33,7 @@ const Dashboard: React.FC = () => {
     fetchData();
   }, []);
 
-  const totalCustomers = Object.values(stats).reduce((sum, count) => sum + count, 0);
+  const totalCustomers = allStats ? Object.values(allStats.countsByStatus).reduce((sum, count) => sum + count, 0) : 0;
 
   const pipelineSteps = [
     { key: PipelineStatus.LEAD, label: 'Leads', color: 'bg-gray-500' },
@@ -110,14 +113,97 @@ const Dashboard: React.FC = () => {
               <AlertCircle className="h-8 w-8 text-orange-600" />
             </div>
             <div className="ml-4">
-              <h2 className="text-sm font-medium text-gray-500">Follow-ups</h2>
-              <p className="text-2xl font-bold text-gray-900">{stats[PipelineStatus.FOLLOW_UP] || 0}</p>
+              <h2 className="text-sm font-medium text-gray-500">Overdue Follow-ups</h2>
+              <p className="text-2xl font-bold text-gray-900">{allStats?.extraCounts?.overdue_followups || 0}</p>
             </div>
           </div>
         </div>
       </div>
 
+      {/* Customer Demographics */}
+      {allStats?.customerDemographics && (
+        <div className="bg-white p-6 rounded-lg shadow">
+          <h2 className="text-lg font-semibold text-gray-900 mb-4">Customer Demographics</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <h3 className="text-md font-medium text-gray-700 mb-2">By Country</h3>
+              <ul className="space-y-1">
+                {Object.entries(allStats.customerDemographics.byCountry).map(([country, count]) => (
+                  <li key={country} className="flex justify-between text-sm text-gray-600">
+                    <span>{country || 'Unknown'}</span>
+                    <span>{count}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div>
+              <h3 className="text-md font-medium text-gray-700 mb-2">By Language</h3>
+              <ul className="space-y-1">
+                {Object.entries(allStats.customerDemographics.byLanguage).map(([language, count]) => (
+                  <li key={language} className="flex justify-between text-sm text-gray-600">
+                    <span>{language || 'Unknown'}</span>
+                    <span>{count}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div>
+              <h3 className="text-md font-medium text-gray-700 mb-2">By Source</h3>
+              <ul className="space-y-1">
+                {Object.entries(allStats.customerDemographics.bySource).map(([source, count]) => (
+                  <li key={source} className="flex justify-between text-sm text-gray-600">
+                    <span>{source || 'Unknown'}</span>
+                    <span>{count}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Interaction Summary */}
+        {allStats?.interactionSummary && (
+          <div className="bg-white p-6 rounded-lg shadow">
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">Interaction Summary</h2>
+            <div className="space-y-3">
+              <div className="flex justify-between items-center">
+                <span className="text-sm font-medium text-gray-700">Total Interactions:</span>
+                <span className="text-lg font-bold text-gray-900">{allStats.interactionSummary.totalInteractions}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-sm font-medium text-gray-700">Avg. Interactions per Customer:</span>
+                <span className="text-lg font-bold text-gray-900">{allStats.interactionSummary.avgInteractionsPerCustomer.toFixed(2)}</span>
+              </div>
+              <h3 className="text-md font-medium text-gray-700 mt-4 mb-2">Interactions by Type</h3>
+              <ul className="space-y-1">
+                {Object.entries(allStats.interactionSummary.byType).map(([type, count]) => (
+                  <li key={type} className="flex justify-between text-sm text-gray-600">
+                    <span>{type.charAt(0).toUpperCase() + type.slice(1)}</span>
+                    <span>{count}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        )}
+
+        {/* Pipeline Conversion Rates */}
+        {allStats?.pipelineConversionRates && (
+          <div className="bg-white p-6 rounded-lg shadow">
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">Pipeline Conversion Rates</h2>
+            <div className="space-y-3">
+              {Object.entries(allStats.pipelineConversionRates).map(([stagePair, rate]) => (
+                <div key={stagePair} className="flex justify-between items-center">
+                  <span className="text-sm font-medium text-gray-700">{stagePair.replace(/_/g, ' ').replace(/to/g, 'to').replace(/\b\w/g, (l) => l.toUpperCase())}:</span>
+                  <span className="text-lg font-bold text-gray-900">{rate.toFixed(2)}%</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Pipeline Overview */}
         <div className="bg-white p-6 rounded-lg shadow lg:col-span-2">
           <h2 className="text-lg font-semibold text-gray-900 mb-4">Pipeline Overview</h2>

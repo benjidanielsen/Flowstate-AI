@@ -43,3 +43,27 @@ export enum InteractionType {
 export interface PipelineStats {
   [key: string]: number;
 }
+
+export interface Stats {
+  countsByStatus: Record<string, number>;
+  dmoCounters: {
+    today: { invites: number; follow_ups: number; };
+    week: { invites: number; follow_ups: number; };
+  };
+  extraCounts: {
+    no_show_count: number;
+    video_sent_count: number;
+    overdue_followups: number;
+  };
+  customerDemographics: {
+    byCountry: Record<string, number>;
+    byLanguage: Record<string, number>;
+    bySource: Record<string, number>;
+  };
+  interactionSummary: {
+    byType: Record<string, number>;
+    totalInteractions: number;
+    avgInteractionsPerCustomer: number;
+  };
+  pipelineConversionRates: Record<string, number>;
+}
