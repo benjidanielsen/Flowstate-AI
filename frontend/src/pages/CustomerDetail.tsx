@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { ArrowLeft, Edit, Phone, Mail, Calendar, Plus, MessageSquare, ArrowRight, CheckCircle } from 'lucide-react';
 import { customerApi, interactionApi } from '../services/api';
+import AddInteractionModal from '../components/AddInteractionModal';
 import { Customer, Interaction, PipelineStatus, InteractionType } from '../types';
 import { format } from 'date-fns';
 import QualificationQuestionnaire from '../components/QualificationQuestionnaire';
@@ -258,12 +259,13 @@ const CustomerDetail: React.FC = () => {
                           {format(new Date(interaction.created_at), 'PPp')}
                         </span>
                       </div>
-                      <p className="text-sm text-gray-700 mt-1">{interaction.content}</p>
-                      {interaction.scheduled_for && (
-                        <p className="text-xs text-gray-500 mt-1">
-                          Scheduled for: {format(new Date(interaction.scheduled_for), 'PPp')}
-                        </p>
+                      <p className="text-sm font-medium text-gray-900 mt-1">{interaction.summary}</p>
+                      {interaction.notes && (
+                        <p className="text-sm text-gray-700 mt-1 whitespace-pre-wrap">{interaction.notes}</p>
                       )}
+                      <p className="text-xs text-gray-500 mt-1">
+                        Interaction Date: {format(new Date(interaction.interaction_date), 'PPp')}
+                      </p>
                     </div>
                   </div>
                 ))}
