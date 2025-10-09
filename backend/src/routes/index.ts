@@ -6,7 +6,7 @@ import eventRoutes from './events';
 import webhookRoutes from './webhooks';
 import nbaRoutes from './nba';
 import authRoutes from './auth';
-import reminderRoutes from './reminders';
+import reminderRoutes from './reminder';
 import { authenticateToken } from '../middleware/authMiddleware';
 
 const router = Router();

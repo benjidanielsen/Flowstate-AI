@@ -37,6 +37,8 @@ const migrations = [
         scheduled_for DATETIME NOT NULL,
         completed BOOLEAN DEFAULT 0,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        repeat_interval TEXT,
         FOREIGN KEY (customer_id) REFERENCES customers (id)
       );
 

@@ -58,6 +58,7 @@ export interface Reminder {
   scheduled_for: Date;
   completed: boolean;
   created_at: Date;
+  updated_at: Date;
 }
 
 export enum ReminderType {
