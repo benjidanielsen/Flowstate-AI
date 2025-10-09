@@ -1,83 +1,74 @@
 import { Request, Response } from 'express';
-import { InteractionService } from '../services/interactionService';
+import { interactionService } from '../services/interactionService';
 
-export class InteractionController {
-  // make the service readonly since it's only assigned in the constructor
-  private readonly interactionService: InteractionService;
+export const interactionController = {
+  async createInteraction(req: Request, res: Response) {
+    try {
+      const { customer_id, type, summary, notes, interaction_date } = req.body;
+      const newInteraction = await interactionService.create({
+        customer_id,
+        type,
+        summary,
+        notes,
+        interaction_date: interaction_date ? new Date(interaction_date) : new Date(),
+      });
+      res.status(201).json(newInteraction);
+    } catch (error) {
+      console.error("Error creating interaction:", error);
+      res.status(500).json({ message: "Error creating interaction" });
+    }
+  },
 
-  constructor() {
-    this.interactionService = new InteractionService();
-  }
-
-  getInteractionsByCustomer = async (req: Request, res: Response) => {
+  async getInteractionsByCustomerId(req: Request, res: Response) {
     try {
       const { customerId } = req.params;
-      const interactions = await this.interactionService.getInteractionsByCustomer(customerId);
-      res.json(interactions);
+      const interactions = await interactionService.getByCustomerId(customerId);
+      res.status(200).json(interactions);
     } catch (error) {
-      console.error('Error fetching interactions:', error);
-      res.status(500).json({ error: 'Internal server error' });
+      console.error("Error fetching interactions:", error);
+      res.status(500).json({ message: "Error fetching interactions" });
     }
-  };
+  },
 
-  createInteraction = async (req: Request, res: Response) => {
+  async getInteractionById(req: Request, res: Response) {
     try {
-      const interactionData = req.body;
-      
-      if (!interactionData.customer_id || !interactionData.type || !interactionData.content) {
-        return res.status(400).json({ error: 'customer_id, type, and content are required' });
+      const { id } = req.params;
+      const interaction = await interactionService.getById(id);
+      if (interaction) {
+        res.status(200).json(interaction);
+      } else {
+        res.status(404).json({ message: "Interaction not found" });
       }
-      
-      const interaction = await this.interactionService.createInteraction(interactionData);
-      res.status(201).json(interaction);
     } catch (error) {
-      console.error('Error creating interaction:', error);
-      res.status(500).json({ error: 'Internal server error' });
+      console.error("Error fetching interaction:", error);
+      res.status(500).json({ message: "Error fetching interaction" });
     }
-  };
+  },
 
-  updateInteraction = async (req: Request, res: Response) => {
+  async updateInteraction(req: Request, res: Response) {
     try {
       const { id } = req.params;
       const updates = req.body;
-      
-      const interaction = await this.interactionService.updateInteraction(id, updates);
-      
-      if (!interaction) {
-        return res.status(404).json({ error: 'Interaction not found' });
+      const updatedInteraction = await interactionService.update(id, updates);
+      if (updatedInteraction) {
+        res.status(200).json(updatedInteraction);
+      } else {
+        res.status(404).json({ message: "Interaction not found" });
       }
-      
-      res.json(interaction);
     } catch (error) {
-      console.error('Error updating interaction:', error);
-      res.status(500).json({ error: 'Internal server error' });
+      console.error("Error updating interaction:", error);
+      res.status(500).json({ message: "Error updating interaction" });
     }
-  };
+  },
 
-  deleteInteraction = async (req: Request, res: Response) => {
+  async deleteInteraction(req: Request, res: Response) {
     try {
       const { id } = req.params;
-      const deleted = await this.interactionService.deleteInteraction(id);
-      
-      if (!deleted) {
-        return res.status(404).json({ error: 'Interaction not found' });
-      }
-      
+      await interactionService.delete(id);
       res.status(204).send();
     } catch (error) {
-      console.error('Error deleting interaction:', error);
-      res.status(500).json({ error: 'Internal server error' });
+      console.error("Error deleting interaction:", error);
+      res.status(500).json({ message: "Error deleting interaction" });
     }
-  };
-
-  getUpcomingInteractions = async (req: Request, res: Response) => {
-    try {
-      const limit = parseInt(req.query.limit as string) || 20;
-      const interactions = await this.interactionService.getUpcomingInteractions(limit);
-      res.json(interactions);
-    } catch (error) {
-      console.error('Error fetching upcoming interactions:', error);
-      res.status(500).json({ error: 'Internal server error' });
-    }
-  };
-}
+  },
+};

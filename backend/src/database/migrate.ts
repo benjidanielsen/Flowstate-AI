@@ -21,10 +21,11 @@ const migrations = [
         id TEXT PRIMARY KEY,
         customer_id TEXT NOT NULL,
         type TEXT NOT NULL,
-        content TEXT NOT NULL,
+        summary TEXT NOT NULL,
+        notes TEXT,
+        interaction_date DATETIME DEFAULT CURRENT_TIMESTAMP,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-        scheduled_for DATETIME,
-        completed BOOLEAN DEFAULT 0,
+        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (customer_id) REFERENCES customers (id)
       );
 
