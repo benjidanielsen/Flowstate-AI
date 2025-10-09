@@ -8,10 +8,15 @@ import HighlightText from '../components/HighlightText';
 
 const Customers: React.FC = () => {
   const [customers, setCustomers] = useState<Customer[]>([]);
-  const [filteredCustomers, setFilteredCustomers] = useState<Customer[]>([]);
   const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState<PipelineStatus | ''>('');
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState<PipelineStatus | "">("");
+  const [sourceFilter, setSourceFilter] = useState("");
+  const [countryFilter, setCountryFilter] = useState("");
+  const [languageFilter, setLanguageFilter] = useState("");
+  const [nextActionFilter, setNextActionFilter] = useState("");
+  const [sortBy, setSortBy] = useState("updated_at");
+  const [sortOrder, setSortOrder] = useState<"ASC" | "DESC">("DESC");
   const [showCreateModal, setShowCreateModal] = useState(false);
   
   // Debounce search term for better performance
@@ -19,37 +24,24 @@ const Customers: React.FC = () => {
 
   useEffect(() => {
     fetchCustomers();
-  }, []);
-
-  useEffect(() => {
-    let filtered = customers;
-
-    if (debouncedSearchTerm) {
-      const searchLower = debouncedSearchTerm.toLowerCase();
-      filtered = filtered.filter(
-        (customer) =>
-          customer.name.toLowerCase().includes(searchLower) ||
-          customer.email?.toLowerCase().includes(searchLower) ||
-          customer.phone?.includes(debouncedSearchTerm) ||
-          customer.status.toLowerCase().includes(searchLower) ||
-          customer.notes?.toLowerCase().includes(searchLower)
-      );
-    }
-
-    if (statusFilter) {
-      filtered = filtered.filter((customer) => customer.status === statusFilter);
-    }
-
-    setFilteredCustomers(filtered);
-  }, [customers, debouncedSearchTerm, statusFilter]);
+  }, [debouncedSearchTerm, statusFilter, sourceFilter, countryFilter, languageFilter, nextActionFilter, sortBy, sortOrder]);
 
   const fetchCustomers = async () => {
     try {
       setLoading(true);
-      const data = await customerApi.getAll();
+      const data = await customerApi.getAll({
+        search: debouncedSearchTerm,
+        status: statusFilter === "" ? undefined : statusFilter,
+        source: sourceFilter === "" ? undefined : sourceFilter,
+        country: countryFilter === "" ? undefined : countryFilter,
+        language: languageFilter === "" ? undefined : languageFilter,
+        next_action: nextActionFilter === "" ? undefined : nextActionFilter,
+        sortBy,
+        sortOrder,
+      });
       setCustomers(data);
     } catch (error) {
-      console.error('Error fetching customers:', error);
+      console.error("Error fetching customers:", error);
     } finally {
       setLoading(false);
     }
@@ -134,12 +126,64 @@ const Customers: React.FC = () => {
                 </button>
               )}
             </div>
-            {(searchTerm || statusFilter) && (
-              <p className="text-sm text-gray-600 mt-2">
-                Showing {filteredCustomers.length} of {customers.length} customers
-                {searchTerm && ` matching "${searchTerm}"`}
-              </p>
-            )}
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 mt-4">
+              <select
+                value={sourceFilter}
+                onChange={(e) => setSourceFilter(e.target.value)}
+                className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                aria-label="Filter by source"
+              >
+                <option value="">All Sources</option>
+                {/* Add source options here */}
+              </select>
+              <select
+                value={countryFilter}
+                onChange={(e) => setCountryFilter(e.target.value)}
+                className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                aria-label="Filter by country"
+              >
+                <option value="">All Countries</option>
+                {/* Add country options here */}
+              </select>
+              <select
+                value={languageFilter}
+                onChange={(e) => setLanguageFilter(e.target.value)}
+                className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                aria-label="Filter by language"
+              >
+                <option value="">All Languages</option>
+                {/* Add language options here */}
+              </select>
+              <select
+                value={nextActionFilter}
+                onChange={(e) => setNextActionFilter(e.target.value)}
+                className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                aria-label="Filter by next action"
+              >
+                <option value="">All Next Actions</option>
+                {/* Add next action options here */}
+              </select>
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                aria-label="Sort by"
+              >
+                <option value="updated_at">Last Updated</option>
+                <option value="created_at">Date Created</option>
+                <option value="name">Name</option>
+                <option value="status">Status</option>
+              </select>
+              <select
+                value={sortOrder}
+                onChange={(e) => setSortOrder(e.target.value as 'ASC' | 'DESC')}
+                className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                aria-label="Sort order"
+              >
+                <option value="DESC">Descending</option>
+                <option value="ASC">Ascending</option>
+              </select>
+            </div>
           </div>
           <div className="flex items-center space-x-2">
             <Filter size={20} className="text-gray-400" />
@@ -160,15 +204,22 @@ const Customers: React.FC = () => {
         </div>
       </div>
 
+      {(searchTerm || statusFilter || sourceFilter || countryFilter || languageFilter || nextActionFilter) && (
+        <p className="text-sm text-gray-600 mt-2">
+          Showing {customers.length} customers
+          {searchTerm && ` matching "${searchTerm}"`}
+        </p>
+      )}
+
       {/* Customer List */}
       <div className="bg-white shadow rounded-lg">
-        {filteredCustomers.length === 0 ? (
+        {customers.length === 0 ? (
           <div className="p-12 text-center">
             <p className="text-gray-500">No customers found</p>
           </div>
         ) : (
           <div className="divide-y divide-gray-200">
-            {filteredCustomers.map((customer) => (
+            {customers.map((customer) => (
               <div key={customer.id} className="p-6 hover:bg-gray-50 transition-colors">
                 <div className="flex items-center justify-between">
                   <div className="flex-1">

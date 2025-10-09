@@ -1,87 +1,96 @@
-import axios from 'axios';
-import { Customer, Interaction, PipelineStatus, PipelineStats } from '../types';
+import axiosInstance from '../api/axiosInstance';
+import { Customer, Interaction, PipelineStatus, Reminder, EventLog, PipelineStats } from '../types';
 
-const API_BASE_URL = '/api';
-
-const api = axios.create({
-  baseURL: API_BASE_URL,
-  timeout: 10000,
-});
-
+// Customer API
 export const customerApi = {
-  getAll: async (status?: PipelineStatus): Promise<Customer[]> => {
-    const params = status ? { status } : {};
-    const response = await api.get('/customers', { params });
+  getAll: async (filters?: { 
+    status?: PipelineStatus; 
+    search?: string; 
+    source?: string; 
+    country?: string; 
+    language?: string; 
+    next_action?: string; 
+    sortBy?: string; 
+    sortOrder?: 'ASC' | 'DESC'; 
+  }): Promise<Customer[]> => {
+    const response = await axiosInstance.get('/customers', { params: filters });
     return response.data;
   },
-
   getById: async (id: string): Promise<Customer> => {
-    const response = await api.get(`/customers/${id}`);
+    const response = await axiosInstance.get(`/customers/${id}`);
     return response.data;
   },
-
   create: async (customerData: Omit<Customer, 'id' | 'created_at' | 'updated_at'>): Promise<Customer> => {
-    const response = await api.post('/customers', customerData);
+    const response = await axiosInstance.post('/customers', customerData);
     return response.data;
   },
-
   update: async (id: string, updates: Partial<Customer>): Promise<Customer> => {
-    const response = await api.put(`/customers/${id}`, updates);
+    const response = await axiosInstance.put(`/customers/${id}`, updates);
     return response.data;
   },
-
   delete: async (id: string): Promise<void> => {
-    await api.delete(`/customers/${id}`);
+    await axiosInstance.delete(`/customers/${id}`);
   },
-
   moveToNextStage: async (id: string): Promise<Customer> => {
-    const response = await api.post(`/customers/${id}/next-stage`);
+    const response = await axiosInstance.post(`/customers/${id}/move-next-stage`);
     return response.data;
   },
-
   getStats: async (): Promise<PipelineStats> => {
-    const response = await api.get('/customers/stats');
+    const response = await axiosInstance.get('/customers/stats');
     return response.data;
   },
 };
 
+// Interaction API
 export const interactionApi = {
-  getByCustomer: async (customerId: string): Promise<Interaction[]> => {
-    const response = await api.get(`/interactions/customer/${customerId}`);
+  getAll: async (customerId: string): Promise<Interaction[]> => {
+    const response = await axiosInstance.get(`/customers/${customerId}/interactions`);
     return response.data;
   },
-
-  create: async (interactionData: Omit<Interaction, 'id' | 'created_at'>): Promise<Interaction> => {
-    const response = await api.post('/interactions', interactionData);
+  create: async (customerId: string, interactionData: Omit<Interaction, 'id' | 'created_at'>): Promise<Interaction> => {
+    const response = await axiosInstance.post(`/customers/${customerId}/interactions`, interactionData);
     return response.data;
   },
-
-  update: async (id: string, updates: Partial<Interaction>): Promise<Interaction> => {
-    const response = await api.put(`/interactions/${id}`, updates);
+  update: async (customerId: string, id: string, updates: Partial<Interaction>): Promise<Interaction> => {
+    const response = await axiosInstance.put(`/customers/${customerId}/interactions/${id}`, updates);
     return response.data;
   },
-
-  delete: async (id: string): Promise<void> => {
-    await api.delete(`/interactions/${id}`);
+  delete: async (customerId: string, id: string): Promise<void> => {
+    await axiosInstance.delete(`/customers/${customerId}/interactions/${id}`);
   },
-
-  getUpcoming: async (limit?: number): Promise<Interaction[]> => {
-    const params = limit ? { limit } : {};
-    const response = await api.get('/interactions/upcoming', { params });
+  getUpcoming: async (limit: number = 5): Promise<Interaction[]> => {
+    const response = await axiosInstance.get(`/interactions/upcoming?limit=${limit}`);
     return response.data;
   },
-  
-  // Mark an interaction as completed on the server
-  complete: async (id: string): Promise<void> => {
-    await api.post(`/interactions/${id}/complete`);
-  },
-};
-
-export const healthApi = {
-  check: async (): Promise<{ status: string; timestamp: string }> => {
-    const response = await api.get('/health');
+  complete: async (id: string): Promise<Interaction> => {
+    const response = await axiosInstance.post(`/interactions/${id}/complete`);
     return response.data;
   },
 };
 
-export default api;
+// Reminder API
+export const reminderApi = {
+  getAll: async (customerId: string): Promise<Reminder[]> => {
+    const response = await axiosInstance.get(`/customers/${customerId}/reminders`);
+    return response.data;
+  },
+  create: async (customerId: string, reminderData: Omit<Reminder, 'id' | 'created_at'>): Promise<Reminder> => {
+    const response = await axiosInstance.post(`/customers/${customerId}/reminders`, reminderData);
+    return response.data;
+  },
+  update: async (customerId: string, id: string, updates: Partial<Reminder>): Promise<Reminder> => {
+    const response = await axiosInstance.put(`/customers/${customerId}/reminders/${id}`, updates);
+    return response.data;
+  },
+  delete: async (customerId: string, id: string): Promise<void> => {
+    await axiosInstance.delete(`/customers/${customerId}/reminders/${id}`);
+  },
+};
+
+// EventLog API
+export const eventLogApi = {
+  getAll: async (customerId: string): Promise<EventLog[]> => {
+    const response = await axiosInstance.get(`/customers/${customerId}/event-logs`);
+    return response.data;
+  },
+};
