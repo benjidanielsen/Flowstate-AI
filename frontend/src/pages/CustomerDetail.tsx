@@ -1,8 +1,9 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { ArrowLeft, Edit, Phone, Mail, Calendar, Plus, MessageSquare, ArrowRight, CheckCircle } from 'lucide-react';
-import { customerApi, interactionApi } from '../services/api';
+import { customerApi, interactionApi, reminderApi } from '../services/api';
 import AddInteractionModal from '../components/AddInteractionModal';
+import AddReminderModal from '../components/AddReminderModal';
 import { Customer, Interaction, PipelineStatus, InteractionType } from '../types';
 import { format } from 'date-fns';
 import QualificationQuestionnaire from '../components/QualificationQuestionnaire';
@@ -12,6 +13,9 @@ const CustomerDetail: React.FC = () => {
   const navigate = useNavigate();
   const [customer, setCustomer] = useState<Customer | null>(null);
   const [interactions, setInteractions] = useState<Interaction[]>([]);
+  const [reminders, setReminders] = useState<Reminder[]>([]);
+  const [showAddReminder, setShowAddReminder] = useState(false);
+  const [editingReminder, setEditingReminder] = useState<Reminder | undefined>(undefined);
   const [loading, setLoading] = useState(true);
   const [editMode, setEditMode] = useState(false);
   const [showAddInteraction, setShowAddInteraction] = useState(false);
@@ -20,12 +24,14 @@ const CustomerDetail: React.FC = () => {
   const fetchCustomerData = useCallback(async (customerId: string) => {
     try {
       setLoading(true);
-      const [customerData, interactionsData] = await Promise.all([
-        customerApi.getById(customerId),
-        interactionApi.getByCustomer(customerId)
-      ]);
+        const [customerData, interactionsData, remindersData] = await Promise.all([
+          customerApi.getById(customerId),
+          interactionApi.getByCustomer(customerId),
+          reminderApi.getAll(customerId)
+        ]);
       setCustomer(customerData);
       setInteractions(interactionsData);
+      setReminders(remindersData);
     } catch (error) {
       console.error('Error fetching customer data:', error);
       navigate('/customers');
@@ -294,7 +300,80 @@ const CustomerDetail: React.FC = () => {
             )}
           </div>
 
+          {/* Reminders */}
+          <div className="bg-white rounded-lg shadow p-6 mt-6">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-semibold text-gray-900">Reminders</h2>
+              <button
+                onClick={() => setShowAddReminder(true)}
+                className="flex items-center space-x-2 px-3 py-2 text-sm bg-primary-600 text-white rounded-md hover:bg-primary-700 transition-colors"
+              >
+                <Plus size={16} />
+                <span>Add Reminder</span>
+              </button>
+            </div>
+
+            {reminders.length === 0 ? (
+              <p className="text-gray-500 italic">No reminders set yet</p>
+            ) : (
+              <div className="space-y-4">
+                {reminders.map((reminder) => (
+                  <div key={reminder.id} className="flex items-start space-x-3 p-3 bg-gray-50 rounded-lg">
+                    <div className="flex-shrink-0 p-2 bg-white rounded-md shadow-sm">
+                      <Calendar size={16} />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center space-x-2">
+                        <span className="text-sm font-medium text-gray-900 capitalize">
+                          {reminder.type.replace(/_/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase())}
+                        </span>
+                        {reminder.completed && (
+                          <span className="px-2 py-0.5 text-xs font-medium bg-green-100 text-green-800 rounded-full">Completed</span>
+                        )}
+                        <span className="text-xs text-gray-500">
+                          {format(new Date(reminder.created_at), 'PPp')}
+                        </span>
+                      </div>
+                      <p className="text-sm font-medium text-gray-900 mt-1">{reminder.message}</p>
+                      <p className="text-xs text-gray-500 mt-1">
+                        Scheduled For: {format(new Date(reminder.scheduled_for), 'PPp')}
+                      </p>
+                      {reminder.repeat_interval && (
+                        <p className="text-xs text-gray-500 mt-1">
+                          Repeats: {reminder.repeat_interval}
+                        </p>
+                      )}
+                      <div className="mt-2 flex space-x-2">
+                        <button
+                          onClick={() => {
+                            setEditingReminder(reminder);
+                            setShowAddReminder(true);
+                          }}
+                          className="text-xs text-blue-600 hover:text-blue-800"
+                        >
+                          Edit
+                        </button>
+                        <button
+                          onClick={async () => {
+                            if (window.confirm('Are you sure you want to delete this reminder?')) {
+                              await reminderApi.delete(customer.id, reminder.id);
+                              fetchCustomerData(customer.id);
+                            }
+                          }}
+                          className="text-xs text-red-600 hover:text-red-800"
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
           {/* Quick Actions */}
+
           <div className="bg-white rounded-lg shadow p-6">
             <h2 className="text-xl font-semibold text-gray-900 mb-4">Quick Actions</h2>
             <div className="space-y-2">
@@ -322,6 +401,13 @@ const CustomerDetail: React.FC = () => {
               >
                 <MessageSquare size={16} />
                 <span>Add Note</span>
+              </button>
+              <button
+                onClick={() => setShowAddReminder(true)}
+                className="flex items-center space-x-2 w-full px-3 py-2 text-sm text-gray-700 bg-gray-50 rounded-md hover:bg-gray-100 transition-colors"
+              >
+                <Calendar size={16} />
+                <span>Add Reminder</span>
               </button>
               {customer.status === PipelineStatus.INVITED && !customer.prospect_why && (
                 <button
@@ -358,6 +444,23 @@ const CustomerDetail: React.FC = () => {
             setShowQualification(false);
           }}
           onCancel={() => setShowQualification(false)}
+        />
+      )}
+
+      {/* Add/Edit Reminder Modal */}
+      {showAddReminder && (
+        <AddReminderModal
+          customerId={customer.id}
+          onClose={() => {
+            setShowAddReminder(false);
+            setEditingReminder(undefined);
+          }}
+          onSuccess={() => {
+            setShowAddReminder(false);
+            setEditingReminder(undefined);
+            fetchCustomerData(customer.id);
+          }}
+          existingReminder={editingReminder}
         />
       )}
     </div>
