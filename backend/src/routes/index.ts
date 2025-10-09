@@ -7,6 +7,7 @@ import webhookRoutes from './webhooks';
 import nbaRoutes from './nba';
 import authRoutes from './auth';
 import reminderRoutes from './reminder';
+import statsRoutes from './stats';
 import { authenticateToken } from '../middleware/authMiddleware';
 
 const router = Router();
@@ -16,6 +17,7 @@ router.use('/auth', authRoutes);
 // Apply authentication middleware to all other routes
 router.use('/customers', authenticateToken, customerRoutes);
 router.use("/interactions", authenticateToken, interactionRoutes);
+router.use("/stats", authenticateToken, statsRoutes);
 router.use('/events', authenticateToken, eventRoutes);
 router.use('/hooks', authenticateToken, webhookRoutes);
 router.use('/nba', authenticateToken, nbaRoutes);

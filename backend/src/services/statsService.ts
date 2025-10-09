@@ -1,5 +1,5 @@
 import DatabaseManager from '../database';
-import { PipelineStatus } from '../types';
+import { PipelineStatus, InteractionType } from '../types';
 
 export class StatsService {
   async countsByStatus(): Promise<Record<string, number>> {
@@ -64,4 +64,100 @@ export class StatsService {
     });
     return { no_show_count: noShow, video_sent_count: videoSent, overdue_followups: overdueFollowups };
   }
+
+  async getCustomerDemographics(): Promise<{
+    byCountry: Record<string, number>;
+    byLanguage: Record<string, number>;
+    bySource: Record<string, number>;
+  }> {
+    const db = DatabaseManager.getInstance().getDb();
+    const [byCountry, byLanguage, bySource] = await Promise.all([
+      new Promise<Record<string, number>>((resolve, reject) => {
+        db.all('SELECT country, COUNT(*) as count FROM customers WHERE country IS NOT NULL GROUP BY country', (err, rows: any[]) => {
+          if (err) return reject(err);
+          resolve(rows.reduce((acc, row) => ({ ...acc, [row.country]: row.count }), {}));
+        });
+      }),
+      new Promise<Record<string, number>>((resolve, reject) => {
+        db.all('SELECT language, COUNT(*) as count FROM customers WHERE language IS NOT NULL GROUP BY language', (err, rows: any[]) => {
+          if (err) return reject(err);
+          resolve(rows.reduce((acc, row) => ({ ...acc, [row.language]: row.count }), {}));
+        });
+      }),
+      new Promise<Record<string, number>>((resolve, reject) => {
+        db.all('SELECT source, COUNT(*) as count FROM customers WHERE source IS NOT NULL GROUP BY source', (err, rows: any[]) => {
+          if (err) return reject(err);
+          resolve(rows.reduce((acc, row) => ({ ...acc, [row.source]: row.count }), {}));
+        });
+      }),
+    ]);
+    return { byCountry, byLanguage, bySource };
+  }
+
+  async getInteractionSummary(): Promise<{
+    byType: Record<string, number>;
+    totalInteractions: number;
+    avgInteractionsPerCustomer: number;
+  }> {
+    const db = DatabaseManager.getInstance().getDb();
+    const [byType, totalInteractionsResult, totalCustomersResult] = await Promise.all([
+      new Promise<Record<string, number>>((resolve, reject) => {
+        db.all('SELECT type, COUNT(*) as count FROM interactions GROUP BY type', (err, rows: any[]) => {
+          if (err) return reject(err);
+          resolve(rows.reduce((acc, row) => ({ ...acc, [row.type]: row.count }), {}));
+        });
+      }),
+      new Promise<number>((resolve, reject) => {
+        db.get('SELECT COUNT(*) as count FROM interactions', (err, row: any) => {
+          if (err) return reject(err);
+          resolve(row.count || 0);
+        });
+      }),
+      new Promise<number>((resolve, reject) => {
+        db.get('SELECT COUNT(*) as count FROM customers', (err, row: any) => {
+          if (err) return reject(err);
+          resolve(row.count || 0);
+        });
+      }),
+    ]);
+
+    const totalInteractions = totalInteractionsResult;
+    const totalCustomers = totalCustomersResult;
+    const avgInteractionsPerCustomer = totalCustomers > 0 ? totalInteractions / totalCustomers : 0;
+
+    return { byType, totalInteractions, avgInteractionsPerCustomer };
+  }
+
+  async getPipelineConversionRates(): Promise<Record<string, number>> {
+    const db = DatabaseManager.getInstance().getDb();
+    const pipelineStatuses = Object.values(PipelineStatus);
+    const conversionRates: Record<string, number> = {};
+
+    for (let i = 0; i < pipelineStatuses.length - 1; i++) {
+      const currentStage = pipelineStatuses[i];
+      const nextStage = pipelineStatuses[i + 1];
+
+      const currentStageCount = await new Promise<number>((resolve, reject) => {
+        db.get('SELECT COUNT(*) as count FROM customers WHERE status = ?', [currentStage], (err, row: any) => {
+          if (err) return reject(err);
+          resolve(row.count || 0);
+        });
+      });
+
+      const nextStageCount = await new Promise<number>((resolve, reject) => {
+        db.get('SELECT COUNT(*) as count FROM customers WHERE status = ?', [nextStage], (err, row: any) => {
+          if (err) return reject(err);
+          resolve(row.count || 0);
+        });
+      });
+
+      if (currentStageCount > 0) {
+        conversionRates[`${currentStage}_to_${nextStage}`] = (nextStageCount / currentStageCount) * 100;
+      } else {
+        conversionRates[`${currentStage}_to_${nextStage}`] = 0;
+      }
+    }
+    return conversionRates;
+  }
 }
+
