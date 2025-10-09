@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeAll, vi } from 'vitest';
-import { render } from '@testing-library/react';
+import { render, waitFor } from '@testing-library/react';
 import { axe, toHaveNoViolations } from 'jest-axe';
 import QualificationQuestionnaire from '../components/QualificationQuestionnaire';
 import RemindersPanel from '../components/RemindersPanel';
@@ -47,8 +47,10 @@ describe('Accessibility Tests', () => {
     it('should not have accessibility violations', async () => {
       const { container } = render(<RemindersPanel />);
 
-      // Wait for component to load
-      await new Promise((resolve) => setTimeout(resolve, 100));
+      // Wait for component to load and state updates to complete
+      await waitFor(() => {
+        expect(container.querySelector('[role="status"]') || container.querySelector('div')).toBeTruthy();
+      }, { timeout: 1000 });
 
       const results = await axe(container);
       expect(results).toHaveNoViolations();
