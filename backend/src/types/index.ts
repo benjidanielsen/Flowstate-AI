@@ -59,6 +59,7 @@ export interface Reminder {
   completed: boolean;
   created_at: Date;
   updated_at: Date;
+  repeat_interval?: string; // e.g., "daily", "weekly", "monthly"
 }
 
 export enum ReminderType {
@@ -85,3 +86,22 @@ export interface User {
   created_at: Date;
   updated_at: Date;
 }
+
+export interface ExternalIntegration {
+  id: string;
+  customer_id: string;
+  type: string; // e.g., "google_calendar", "outlook_calendar", "slack"
+  config: any; // JSON object for integration-specific configuration
+  created_at: Date;
+  updated_at: Date;
+}
+
+export interface Database {
+  customers: Customer;
+  interactions: Interaction;
+  reminders: Reminder;
+  event_logs: EventLog;
+  users: User;
+  external_integrations: ExternalIntegration;
+}
+

@@ -110,6 +110,22 @@ const migrations = [
       CREATE INDEX IF NOT EXISTS idx_event_logs_event_type ON event_logs(event_type);
     `
   }
+  },
+  {
+    version: 5,
+    up: `
+      CREATE TABLE IF NOT EXISTS external_integrations (
+        id TEXT PRIMARY KEY,
+        customer_id TEXT NOT NULL,
+        type TEXT NOT NULL,
+        config TEXT NOT NULL, -- Storing as JSON string
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (customer_id) REFERENCES customers (id)
+      );
+      CREATE INDEX IF NOT EXISTS idx_external_integrations_customer_id ON external_integrations(customer_id);
+    `
+  }
 ];
 
 export async function runMigrations(): Promise<void> {

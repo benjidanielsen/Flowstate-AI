@@ -7,6 +7,7 @@ import webhookRoutes from './webhooks';
 import nbaRoutes from './nba';
 import authRoutes from './auth';
 import reminderRoutes from './reminder';
+import externalIntegrationRoutes from './externalIntegration';
 import statsRoutes from './stats';
 import { authenticateToken } from '../middleware/authMiddleware';
 
@@ -21,7 +22,8 @@ router.use("/stats", authenticateToken, statsRoutes);
 router.use('/events', authenticateToken, eventRoutes);
 router.use('/hooks', authenticateToken, webhookRoutes);
 router.use('/nba', authenticateToken, nbaRoutes);
-router.use('/reminders', authenticateToken, reminderRoutes);
+router.use("/reminders", authenticateToken, reminderRoutes);
+router.use("/integrations", authenticateToken, externalIntegrationRoutes);
 
 // Health check
 router.get('/health', (req, res) => {
