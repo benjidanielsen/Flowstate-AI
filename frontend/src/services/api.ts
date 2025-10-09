@@ -2,6 +2,17 @@ import axiosInstance from '../api/axiosInstance';
 import { Customer, Interaction, PipelineStatus, Reminder, EventLog, PipelineStats, Stats } from '../types';
 
 // Customer API
+export const aiDecisionLogApi = {
+  getAIDecisionLogs: async () => {
+    const response = await axiosInstance.get('/ai/decision-logs');
+    return response.data;
+  },
+  updateDecisionStatus: async (id: number, newStatus: string, humanReviewer?: string) => {
+    const response = await axiosInstance.put(`/ai/decision-logs/${id}/status`, { newStatus, humanReviewer });
+    return response.data;
+  },
+};
+
 export const customerApi = {
   getAll: async (filters?: { 
     status?: PipelineStatus; 

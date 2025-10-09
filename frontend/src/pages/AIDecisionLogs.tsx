@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { AIDecisionLog } from '../types';
-import { aiCoordinationApi } from '../services/api';
+import { aiDecisionLogApi } from '../services/api';
 import { toast } from 'react-toastify';
 
 const AIDecisionLogs: React.FC = () => {
@@ -15,7 +15,7 @@ const AIDecisionLogs: React.FC = () => {
   const fetchDecisionLogs = async () => {
     try {
       setLoading(true);
-      const response = await aiCoordinationApi.getDecisionLogs();
+      const response = await aiDecisionLogApi.getAIDecisionLogs();
       setLogs(response.data);
     } catch (err: any) {
       setError(err.response?.data?.message || err.message);
@@ -27,7 +27,7 @@ const AIDecisionLogs: React.FC = () => {
 
   const handleUpdateStatus = async (logId: number, newStatus: 'approved' | 'rejected' | 'executed') => {
     try {
-      await aiCoordinationApi.updateDecisionStatus(logId, newStatus, 'Human Reviewer'); // Placeholder for actual reviewer
+      await aiDecisionLogApi.updateDecisionStatus(logId, newStatus, 'Human Reviewer'); // Placeholder for actual reviewer
       toast.success(`Decision log ${logId} ${newStatus} successfully.`);
       fetchDecisionLogs(); // Refresh logs
     } catch (err: any) {
