@@ -101,6 +101,13 @@ const migrations = [
         updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
       );
       CREATE INDEX IF NOT EXISTS idx_users_username ON users(username);
+      CREATE INDEX IF NOT EXISTS idx_customers_email ON customers(email);
+      CREATE INDEX IF NOT EXISTS idx_customers_phone ON customers(phone);
+      CREATE INDEX IF NOT EXISTS idx_customers_country ON customers(country);
+      CREATE INDEX IF NOT EXISTS idx_customers_language ON customers(language);
+      CREATE INDEX IF NOT EXISTS idx_interactions_interaction_date ON interactions(interaction_date);
+      CREATE INDEX IF NOT EXISTS idx_reminders_completed ON reminders(completed);
+      CREATE INDEX IF NOT EXISTS idx_event_logs_event_type ON event_logs(event_type);
     `
   }
 ];
