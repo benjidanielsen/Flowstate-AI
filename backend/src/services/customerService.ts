@@ -13,11 +13,52 @@ export class CustomerService {
     this.pipelineValidationService = new PipelineValidationService();
   }
 
-  async getAllCustomers(): Promise<Customer[]> {
+  async getAllCustomers(filters: { 
+    status?: PipelineStatus; 
+    search?: string; 
+    source?: string; 
+    country?: string; 
+    language?: string; 
+    next_action?: string; 
+    sortBy?: string; 
+    sortOrder?: 'ASC' | 'DESC'; 
+  } = {}): Promise<Customer[]> {
     const db = DatabaseManager.getInstance().getDb();
+    let query = 'SELECT * FROM customers WHERE 1=1';
+    const params: any[] = [];
+
+    if (filters.status) {
+      query += ' AND status = ?';
+      params.push(filters.status);
+    }
+    if (filters.source) {
+      query += ' AND source = ?';
+      params.push(filters.source);
+    }
+    if (filters.country) {
+      query += ' AND country = ?';
+      params.push(filters.country);
+    }
+    if (filters.language) {
+      query += ' AND language = ?';
+      params.push(filters.language);
+    }
+    if (filters.next_action) {
+      query += ' AND next_action = ?';
+      params.push(filters.next_action);
+    }
+    if (filters.search) {
+      const searchTerm = `%${filters.search}%`;
+      query += ' AND (name LIKE ? OR email LIKE ? OR phone LIKE ? OR notes LIKE ?)';
+      params.push(searchTerm, searchTerm, searchTerm, searchTerm);
+    }
+
+    const sortBy = filters.sortBy || 'updated_at';
+    const sortOrder = filters.sortOrder || 'DESC';
+    query += ` ORDER BY ${sortBy} ${sortOrder}`;
     
     return new Promise((resolve, reject) => {
-      db.all('SELECT * FROM customers ORDER BY updated_at DESC', (err, rows: any[]) => {
+      db.all(query, params, (err, rows: any[]) => {
         if (err) {
           reject(err);
         } else {
@@ -39,7 +80,7 @@ export class CustomerService {
     const db = DatabaseManager.getInstance().getDb();
     
     return new Promise((resolve, reject) => {
-      db.get('SELECT * FROM customers WHERE id = ?', [id], (err, row: any) => {
+      db.get("SELECT * FROM customers WHERE id = ?", [id], (err, row: any) => {
         if (err) {
           reject(err);
         } else if (!row) {
@@ -48,7 +89,7 @@ export class CustomerService {
           const customer = {
             ...row,
             created_at: new Date(row.created_at),
-            updated_at: new Date(row.updated_at),
+            updated_at: new Date(row.created_at),
             next_action_date: row.next_action_date ? new Date(row.next_action_date) : undefined,
             consent_json: row.consent_json ? JSON.parse(row.consent_json) : undefined,
             utm_json: row.utm_json ? JSON.parse(row.utm_json) : undefined

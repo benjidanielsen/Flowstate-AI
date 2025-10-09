@@ -42,19 +42,23 @@ export class CustomerController {
 
   getAllCustomers = async (req: Request, res: Response) => {
     try {
-      const { status } = req.query;
+      const { status, search, source, country, language, next_action, sortBy, sortOrder } = req.query;
       
-      let customers;
-      if (status && Object.values(PipelineStatus).includes(status as PipelineStatus)) {
-        customers = await this.customerService.getCustomersByStatus(status as PipelineStatus);
-      } else {
-        customers = await this.customerService.getAllCustomers();
-      }
+      const customers = await this.customerService.getAllCustomers({
+        status: status as PipelineStatus,
+        search: search as string,
+        source: source as string,
+        country: country as string,
+        language: language as string,
+        next_action: next_action as string,
+        sortBy: sortBy as string,
+        sortOrder: sortOrder as 'ASC' | 'DESC',
+      });
       
       res.json(customers);
     } catch (error) {
-      console.error('Error fetching customers:', error);
-      res.status(500).json({ error: 'Internal server error' });
+      console.error("Error fetching customers:", error);
+      res.status(500).json({ error: "Internal server error" });
     }
   };
 
