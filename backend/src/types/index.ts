@@ -35,10 +35,11 @@ export interface Interaction {
   id: string;
   customer_id: string;
   type: InteractionType;
-  content: string;
+  summary: string;
+  notes?: string;
+  interaction_date: Date;
   created_at: Date;
-  scheduled_for?: Date;
-  completed: boolean;
+  updated_at: Date;
 }
 
 export enum InteractionType {
