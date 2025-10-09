@@ -134,7 +134,9 @@ const Customers: React.FC = () => {
                 aria-label="Filter by source"
               >
                 <option value="">All Sources</option>
-                {/* Add source options here */}
+                {Array.from(new Set(customers.map(c => c.source).filter(Boolean))).map(source => (
+                  <option key={source} value={source}>{source}</option>
+                ))}
               </select>
               <select
                 value={countryFilter}
@@ -143,7 +145,9 @@ const Customers: React.FC = () => {
                 aria-label="Filter by country"
               >
                 <option value="">All Countries</option>
-                {/* Add country options here */}
+                {Array.from(new Set(customers.map(c => c.country).filter(Boolean))).map(country => (
+                  <option key={country} value={country}>{country}</option>
+                ))}
               </select>
               <select
                 value={languageFilter}
@@ -152,7 +156,9 @@ const Customers: React.FC = () => {
                 aria-label="Filter by language"
               >
                 <option value="">All Languages</option>
-                {/* Add language options here */}
+                {Array.from(new Set(customers.map(c => c.language).filter(Boolean))).map(language => (
+                  <option key={language} value={language}>{language}</option>
+                ))}
               </select>
               <select
                 value={nextActionFilter}
@@ -220,42 +226,53 @@ const Customers: React.FC = () => {
         ) : (
           <div className="divide-y divide-gray-200">
             {customers.map((customer) => (
-              <div key={customer.id} className="p-6 hover:bg-gray-50 transition-colors">
-                <div className="flex items-center justify-between">
-                  <div className="flex-1">
-                    <div className="flex items-center space-x-4">
-                      <div>
-                        <h3 className="text-lg font-medium text-gray-900">
-                          <Link
-                            to={`/customers/${customer.id}`}
-                            className="hover:text-primary-600 transition-colors"
-                          >
-                            <HighlightText text={customer.name} highlight={debouncedSearchTerm} />
-                          </Link>
-                        </h3>
-                        <div className="flex items-center space-x-4 text-sm text-gray-500 mt-1">
-                          {customer.email && (
-                            <span>
-                              <HighlightText text={customer.email} highlight={debouncedSearchTerm} />
-                            </span>
-                          )}
-                          {customer.phone && (
-                            <span>
-                              <HighlightText text={customer.phone} highlight={debouncedSearchTerm} />
-                            </span>
-                          )}
-                        </div>
-                      </div>
+              <div key={customer.id} className="p-6 hover:bg-gray-50 transition-colors border-b border-gray-100 last:border-b-0">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                  <div className="flex-1 min-w-0">
+                    <h3 className="text-lg font-semibold text-gray-900 truncate">
+                      <Link
+                        to={`/customers/${customer.id}`}
+                        className="hover:text-primary-600 transition-colors"
+                      >
+                        <HighlightText text={customer.name} highlight={debouncedSearchTerm} />
+                      </Link>
+                    </h3>
+                    <div className="flex flex-wrap items-center gap-x-4 text-sm text-gray-500 mt-1">
+                      {customer.email && (
+                        <span className="flex items-center gap-1">
+                          <Mail size={14} className="text-gray-400" />
+                          <HighlightText text={customer.email} highlight={debouncedSearchTerm} />
+                        </span>
+                      )}
+                      {customer.phone && (
+                        <span className="flex items-center gap-1">
+                          <Phone size={14} className="text-gray-400" />
+                          <HighlightText text={customer.phone} highlight={debouncedSearchTerm} />
+                        </span>
+                      )}
+                      {customer.country && (
+                        <span className="flex items-center gap-1">
+                          <span className="text-gray-400">📍</span>
+                          <HighlightText text={customer.country} highlight={debouncedSearchTerm} />
+                        </span>
+                      )}
+                      {customer.language && (
+                        <span className="flex items-center gap-1">
+                          <span className="text-gray-400">🗣️</span>
+                          <HighlightText text={customer.language} highlight={debouncedSearchTerm} />
+                        </span>
+                      )}
                     </div>
                     {customer.notes && (
-                      <p className="text-sm text-gray-600 mt-2 max-w-md truncate">{customer.notes}</p>
+                      <p className="text-sm text-gray-600 mt-2 max-w-full sm:max-w-md truncate">{customer.notes}</p>
                     )}
                     {customer.next_action && (
-                      <div className="mt-2">
+                      <div className="mt-2 flex items-center gap-2">
+                        <Calendar size={16} className="text-gray-500" />
                         <span className="text-sm font-medium text-gray-700">Next Action: </span>
                         <span className="text-sm text-gray-600">{customer.next_action}</span>
                         {customer.next_action_date && (
-                          <span className="text-sm text-gray-500 ml-2">
+                          <span className="text-sm text-gray-500 ml-1">
                             ({new Date(customer.next_action_date).toLocaleDateString()})
                           </span>
                         )}
@@ -263,7 +280,7 @@ const Customers: React.FC = () => {
                     )}
                   </div>
                   
-                  <div className="flex items-center space-x-4">
+                  <div className="flex flex-col items-end sm:items-center space-y-2 sm:space-y-0 sm:flex-row sm:space-x-4 mt-4 sm:mt-0">
                     <span
                       className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(customer.status)}`}
                     >
@@ -273,7 +290,7 @@ const Customers: React.FC = () => {
                     {customer.status !== PipelineStatus.SIGNED_UP && (
                       <button
                         onClick={() => handleMoveToNextStage(customer.id)}
-                        className="p-2 text-gray-400 hover:text-primary-600 transition-colors"
+                        className="p-2 text-gray-400 hover:text-primary-600 transition-colors rounded-full bg-gray-100 hover:bg-gray-200"
                         title="Move to next stage"
                       >
                         <ArrowRight size={16} />

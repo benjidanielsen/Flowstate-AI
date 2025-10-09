@@ -171,23 +171,25 @@ const CustomerDetail: React.FC = () => {
                   </span>
                 </div>
 
-                {customer.email && (
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium text-gray-500">Email</span>
-                    <a href={`mailto:${customer.email}`} className="text-primary-600 hover:text-primary-700">
-                      {customer.email}
-                    </a>
-                  </div>
-                )}
+                <div className="grid grid-cols-2 gap-4">
+                  {customer.email && (
+                    <div>
+                      <span className="text-sm font-medium text-gray-500">Email</span>
+                      <a href={`mailto:${customer.email}`} className="block text-primary-600 hover:text-primary-700 truncate">
+                        {customer.email}
+                      </a>
+                    </div>
+                  )}
 
-                {customer.phone && (
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium text-gray-500">Phone</span>
-                    <a href={`tel:${customer.phone}`} className="text-primary-600 hover:text-primary-700">
-                      {customer.phone}
-                    </a>
-                  </div>
-                )}
+                  {customer.phone && (
+                    <div>
+                      <span className="text-sm font-medium text-gray-500">Phone</span>
+                      <a href={`tel:${customer.phone}`} className="block text-primary-600 hover:text-primary-700 truncate">
+                        {customer.phone}
+                      </a>
+                    </div>
+                  )}
+                </div>
 
                 <div className="flex items-start justify-between">
                   <span className="text-sm font-medium text-gray-500">Created</span>
