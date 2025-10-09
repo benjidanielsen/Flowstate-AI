@@ -86,6 +86,19 @@ const migrations = [
       
       CREATE INDEX IF NOT EXISTS idx_customers_prospect_why ON customers(prospect_why);
     `
+  },
+  {
+    version: 4,
+    up: `
+      CREATE TABLE IF NOT EXISTS users (
+        id TEXT PRIMARY KEY,
+        username TEXT NOT NULL UNIQUE,
+        password TEXT NOT NULL,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+      );
+      CREATE INDEX IF NOT EXISTS idx_users_username ON users(username);
+    `
   }
 ];
 

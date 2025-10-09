@@ -1,11 +1,12 @@
-import cors from 'cors';
-import dotenv from 'dotenv';
-import express from 'express';
+import express, { Request, Response, NextFunction } from 'express';
+import bodyParser from 'body-parser';
+
 import helmet from 'helmet';
 import http from 'http';
+import routes from './routes';
 import DatabaseManager from './database';
 import { runMigrations } from './database/migrate';
-import routes from './routes';
+import logger from './utils/logger';
 
 dotenv.config();
 
@@ -18,20 +19,20 @@ let shutdownPromise: Promise<void> | null = null;
 // Middleware
 app.use(helmet());
 app.use(cors());
-app.use(express.json());
+app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Routes
 app.use('/api', routes);
 
-// Error handling middleware
-app.use((err: Error, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
-  console.error(err.stack);
-  res.status(500).json({ error: 'Something broke!' });
+// Global Error Handling Middleware
+app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+  logger.error(`Unhandled error: ${err.message}`, { stack: err.stack, path: req.path, method: req.method });
+  res.status(500).json({ message: 'Internal Server Error', error: err.message });
 });
 
 // 404 handler
-app.use((req: express.Request, res: express.Response) => {
+app.use((req: Request, res: Response) => {
   res.status(404).json({ error: 'Route not found' });
 });
 
@@ -42,21 +43,21 @@ export function createApp() {
 export async function startServer() {
   try {
     // Initialize database
-    console.log('Connecting to database...');
+    logger.info('Connecting to database...');
     await DatabaseManager.getInstance().connect();
 
     // Run migrations
-    console.log('Running database migrations...');
+    logger.info('Running database migrations...');
     await runMigrations();
 
     // Start server
     serverRef = app.listen(process.env.PORT || 3001, () => {
-      console.log(`Server is running on port ${process.env.PORT || 3001}`);
-      console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
+      logger.info(`Server is running on port ${process.env.PORT || 3001}`);
+      logger.info(`Environment: ${process.env.NODE_ENV || 'development'}`);
     });
     return serverRef;
   } catch (error) {
-    console.error('Failed to start server:', error);
+    logger.error('Failed to start server:', error);
     // Throw instead of process.exit so tests can handle failures
     throw error;
   }
@@ -64,7 +65,7 @@ export async function startServer() {
 
 // Graceful shutdown
 export async function shutdown() {
-  console.log('Shutting down gracefully');
+  logger.info('Shutting down gracefully');
   if (isShuttingDown && shutdownPromise) {
     return shutdownPromise;
   }
@@ -82,7 +83,7 @@ export async function shutdown() {
             closeTimeout = null;
           }
           if (err) {
-            console.error('Error closing server:', err);
+            logger.error('Error closing server:', err);
             reject(err);
             return;
           }
@@ -96,7 +97,7 @@ export async function shutdown() {
         closeTimeout = setTimeout(() => {
           try {
             /* istanbul ignore next */
-            console.warn('Server close timed out after 5s; continuing with DB close');
+            logger.warn('Server close timed out after 5s; continuing with DB close');
           } catch (e) {
             // swallow any logging errors
           }
@@ -117,18 +118,18 @@ export async function shutdown() {
 if (require.main === module) {
   // When run directly, start the server and attach signal handlers that exit the process
   startServer().catch((err) => {
-    console.error('Fatal error starting server:', err);
+    logger.error('Fatal error starting server:', err);
     process.exit(1);
   });
 
   process.on('SIGTERM', async () => {
-    console.log('SIGTERM received, shutting down gracefully');
+    logger.info('SIGTERM received, shutting down gracefully');
     await shutdown();
     process.exit(0);
   });
 
   process.on('SIGINT', async () => {
-    console.log('SIGINT received, shutting down gracefully');
+    logger.info('SIGINT received, shutting down gracefully');
     await shutdown();
     process.exit(0);
   });

@@ -76,3 +76,10 @@ export interface EventLog {
   timestamp: Date;
   user_id?: string;
 }
+
+export interface User {
+  id: string;
+  username: string;
+  created_at: Date;
+  updated_at: Date;
+}
