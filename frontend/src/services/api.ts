@@ -95,10 +95,23 @@ export const eventLogApi = {
   },
 };
 
-// Stats API
-export const statsApi = {
-  getStats: async (): Promise<Stats> => {
-    const response = await axiosInstance.get("/stats");
+// AI Coordination API
+export const aiCoordinationApi = {
+  getDecisionLogs: async (status?: string): Promise<any> => {
+    const response = await axiosInstance.get("/ai/decision-logs", { params: { status } });
+    return response.data;
+  },
+  updateDecisionStatus: async (id: number, newStatus: string, humanReviewer?: string): Promise<any> => {
+    const response = await axiosInstance.put(`/ai/decision-logs/${id}/status`, { newStatus, humanReviewer });
+    return response.data;
+  },
+  sendTask: async (taskType: string, payload: any): Promise<any> => {
+    const response = await axiosInstance.post("/ai/ai-task", { taskType, payload });
+    return response.data;
+  },
+  getAIStatus: async (): Promise<any> => {
+    const response = await axiosInstance.get("/ai/ai-status");
     return response.data;
   },
 };
+

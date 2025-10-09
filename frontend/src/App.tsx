@@ -2,7 +2,8 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Login from './pages/Login';
 import Home from './pages/Home';
 import ProtectedRoute from './components/ProtectedRoute';
-import Dashboard from './pages/Dashboard'; // Keep for now, will be protected
+import Dashboard from './pages/Dashboard';
+import AIDecisionLogs from './pages/AIDecisionLogs';
 
 function App() {
   return (
@@ -22,6 +23,14 @@ function App() {
           element={
             <ProtectedRoute>
               <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/ai-decision-logs"
+          element={
+            <ProtectedRoute>
+              <AIDecisionLogs />
             </ProtectedRoute>
           }
         />
