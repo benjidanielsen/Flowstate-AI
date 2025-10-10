@@ -1,0 +1,42 @@
+{
+  "Lead": {
+    "source_event": "LEAD_QUALIFIED",
+    "dedupe": {
+      "event_id": "event_id",
+      "browser_ids": [
+        "fbp",
+        "fbc"
+      ]
+    },
+    "payload_map": {
+      "event_name": "Lead",
+      "event_time": "timestamp",
+      "action_source": "system",
+      "user_data": {
+        "em": "{{hash(email)}}",
+        "ph": "{{hash(phone)}}"
+      },
+      "custom_data": {
+        "value": "{{value}}",
+        "currency": "{{currency}}"
+      }
+    }
+  },
+  "Schedule": {
+    "source_event": "MEETING_BOOKED",
+    "payload_map": {
+      "event_name": "Schedule"
+    }
+  },
+  "Purchase": {
+    "source_event": "PURCHASED",
+    "payload_map": {
+      "event_name": "Purchase",
+      "custom_data": {
+        "content_ids": "{{product_ids}}",
+        "value": "{{amount}}",
+        "currency": "{{currency}}"
+      }
+    }
+  }
+}

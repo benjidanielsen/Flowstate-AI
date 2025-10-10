@@ -1,0 +1,3543 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="AI-first, self-improving CRM-OS for network marketers and solo founders">
+      
+      
+        <meta name="author" content="Flowstate-AI Team">
+      
+      
+        <link rel="canonical" href="https://benjidanielsen.github.io/Flowstate-AI/raw_docs_legacy/3%20-%20BUILDING%20BLOCKS/">
+      
+      
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.21">
+    
+    
+      
+        <title>AI + CRM (MODERN) - Flowstate-AI Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.2a3383ac.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#ai-crm-modern" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Flowstate-AI Documentation" class="md-header__button md-logo" aria-label="Flowstate-AI Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Flowstate-AI Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              AI + CRM (MODERN)
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/benjidanielsen/Flowstate-AI" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.0.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    benjidanielsen/Flowstate-AI
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../INDEX/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../.." class="md-tabs__link">
+          
+  
+  
+  Getting Started
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../GOVERNANCE/" class="md-tabs__link">
+          
+  
+  
+  Governance
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../OPS_RUNBOOK/" class="md-tabs__link">
+          
+  
+  
+  Operations
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../CODING_STANDARDS/" class="md-tabs__link">
+          
+  
+  
+  Development
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../RISK_REGISTER/" class="md-tabs__link">
+          
+  
+  
+  Risk & Compliance
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../FEDERATION_CHECKLIST/" class="md-tabs__link">
+          
+  
+  
+  Federation
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../api/" class="md-tabs__link">
+          
+  
+  
+  API Documentation
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../integrations/" class="md-tabs__link">
+          
+  
+  
+  Integrations
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Flowstate-AI Documentation" class="md-nav__button md-logo" aria-label="Flowstate-AI Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Flowstate-AI Documentation
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/benjidanielsen/Flowstate-AI" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.0.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    benjidanielsen/Flowstate-AI
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../INDEX/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Home
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Getting Started
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Getting Started
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Overview
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../DEPLOYMENT_GUIDE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Deployment Guide
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../SYSTEM_ARCHITECTURE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    System Architecture
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Governance
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Governance
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../GOVERNANCE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Governance Framework
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ETHICS/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Ethics Policy
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../FEDERATION_CHARTER/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Federation Charter
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../EMERGENT_BEHAVIOUR_OVERSIGHT_AND_CESSATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Emergent Behaviour Oversight
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Operations
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            Operations
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../OPS_RUNBOOK/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Operations Runbook
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../DR_RUNBOOK/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Disaster Recovery Runbook
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../SLOS/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Service Level Objectives
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../AUDIT_TRAIL/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Audit Trail
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Development
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            Development
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../CODING_STANDARDS/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Coding Standards
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adr/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Architecture Decision Records
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ROADMAP/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Roadmap
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../CHANGELOG/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Changelog
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../QUALITY/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Quality Metrics
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Risk & Compliance
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            Risk & Compliance
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../RISK_REGISTER/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Risk Register
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../SECURITY.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Security Policy
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Federation
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            Federation
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../FEDERATION_CHECKLIST/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Federation Checklist
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../REVOCATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Revocation Process
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    API Documentation
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            API Documentation
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    API Overview
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_9" >
+        
+          
+          <label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Integrations
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_9">
+            <span class="md-nav__icon md-icon"></span>
+            Integrations
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../integrations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Integration Guide
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+    <a href="https://github.com/benjidanielsen/Flowstate-AI/edit/main/docs/raw_docs_legacy/3 - BUILDING BLOCKS.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"/></svg>
+    </a>
+  
+  
+
+
+<h1 id="ai-crm-modern"><strong>AI + CRM (MODERN)</strong><a class="headerlink" href="#ai-crm-modern" title="Permanent link">&para;</a></h1>
+<p>Alt under er <strong>rene, leverandør-agnostiske eksempler</strong> på struktur og byggeklosser. En annen AI kan bruke idéene, eventnavnene, feltene og flytene her for å bygge systemet sitt med <strong>hvilke som helst</strong> verktøy eller helt egen kode.</p>
+<h1 id="hva-du-far-kun-eksempler-pa-struktur"><strong>Hva du får (kun eksempler på struktur)</strong><a class="headerlink" href="#hva-du-far-kun-eksempler-pa-struktur" title="Permanent link">&para;</a></h1>
+<ul>
+<li>
+<p><strong>Schemas</strong> (JSON): kanoniske <em>events</em> og <em>CRM-objekter</em> (enkelt å mappe til hvilket som helst CRM).</p>
+</li>
+<li>
+<p><strong>Flows</strong> (Make / n8n / Pipedream / Zapier – vendor-agnostiske):<br />
+   Comment→DM→Kvalifisering→CRM upsert→Booking→Varsling→Server-side <em>Conversions</em> + egen <strong>No-show→Rebook</strong>.</p>
+</li>
+<li>
+<p><strong>AI</strong> (YAML): RAG-pipeline + tre agent-roller (lead_triage, follow_up_coach, duplication_coach) med guardrails og prompts.</p>
+</li>
+<li>
+<p><strong>CRM</strong>: generiske pipeline-steg og felter som kan mappes til hva som helst.</p>
+</li>
+<li>
+<p><strong>Consent/GDPR</strong>: samtykkemodell og vakter (gating av events).</p>
+</li>
+<li>
+<p><strong>Metrics/KPI</strong>: definert mot eventene (DM→Qualified→Booked→Held→Purchase/Join).</p>
+</li>
+<li>
+<p><strong>SQL/dbt</strong>: små modeller som viser hvordan et lite datamart for funnel kan se ut.</p>
+</li>
+<li>
+<p><strong>Server-stubber</strong>: Python (Flask) og Node/Express webhooks + CAPI endepunkt (skjelett).</p>
+</li>
+<li>
+<p><strong>Meldingsmaler</strong>: kvalifisering og no-show (variabel-vennlig).</p>
+</li>
+</ul>
+<h1 id="eksempel-fil"><strong>Eksempel fil</strong><a class="headerlink" href="#eksempel-fil" title="Permanent link">&para;</a></h1>
+<p>Fil blueprint-pakken (ZIP) <br />
+Filnavn: “frazer_method_blueprints.zip”</p>
+<h1 id="hvordan-bruke-eksempel-ikke-fasit"><strong>Hvordan bruke (eksempel, ikke fasit)</strong><a class="headerlink" href="#hvordan-bruke-eksempel-ikke-fasit" title="Permanent link">&para;</a></h1>
+<ul>
+<li>
+<p><strong>Bygg din egen stack:</strong> Map <code>schemas/</code> til dine felter/tabeller. Portér en av <code>flows/</code> til ditt orkestreringsverktøy (eller egen kode).</p>
+</li>
+<li>
+<p><strong>AI-laget:</strong> Fyll <code>ai/</code> med dine SOP/FAQ/komp-plan-dokumenter, bytt ut <code>YOUR_VECTOR_DB</code> / <code>YOUR_EMBEDDING_MODEL</code> og koble agentene til dine verktøy.</p>
+</li>
+<li>
+<p><strong>Måling:</strong> Kopier <code>sql_dbt/</code> mønsteret uansett hvilket lager/ORM du bruker; viktigst er event-navn og idempotens (<code>event_id</code>).</p>
+</li>
+<li>
+<p><strong>Personvern:</strong> Bruk <code>consent/gdpr_guardrails.md</code> som “sjekkliste” når du porter til andre APIer.</p>
+</li>
+</ul>
+<h1 id="_1"><a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
+<h1 id="fremgangsmate-av-et-annet-system-med-forskjellig-verkty"><strong>FREMGANGSMÅTE AV ET ANNET SYSTEM MED FORSKJELLIG VERKTØY:</strong><a class="headerlink" href="#fremgangsmate-av-et-annet-system-med-forskjellig-verkty" title="Permanent link">&para;</a></h1>
+<p><strong>AI-drevet CRM-system for Network Marketing med automasjon</strong>, bygget på “DESCRIPTION + CODE + BLUEPRINT” og “FRAZER METHOD” (DM-først, kvalifisering, oppfølging, duplisering).</p>
+<p>3 - BUILDING BLOCKS</p>
+<p>Nedenfor er den <strong>beste, pragmatiske stakken</strong> plukket fra listen du sendte—ordnet i “kjerne → lim → måling → AI → støtte”. Jeg forklarer hvorfor hver passer perfekt til <em>FRAZER-flyten</em> (innhold → DM → kvalifisering → booking/kjøp → onboarding/duplisering).</p>
+<h1 id="kjerne"><strong>Kjerne</strong><a class="headerlink" href="#kjerne" title="Permanent link">&para;</a></h1>
+<ol>
+<li>
+<p><strong>CRM: HubSpot</strong> (evt. <strong>Pipedrive</strong> hvis du vil være ultralett; <strong>GoHighLevel</strong> hvis du vil white-labele og duplisere konto-maler til downline)<br />
+<strong>Hvorfor:</strong> HubSpot gir rask utrulling, sterke <strong>Workflows</strong>, sekvenser, bra API og skalerer fra SMB til enterprise. Nettverksmarkedsføring trenger strømlinjet <em>lead→deal→kunde→recruit</em> med én sannhetskilde og enkel rapportering.<br />
+<strong>Hvordan:</strong> Én pipeline for <em>Recruiting</em>, én for <em>Sales/Orders</em>. Required fields på stage-endringer, automasjoner for oppfølging, og egne <strong>Team/Owner</strong>-felter for upline/downline routing.</p>
+</li>
+<li>
+<p><strong>DM/Chat: Manychat (IG/Messenger)</strong><br />
+<strong>Hvorfor:</strong> “FRAZER-metoden” er DM-først. Manychat gir <strong>comment→DM</strong>, story-mentions, nøkkelord og webhooker. Perfekt for “post → DM → kvalifisering”.<br />
+<strong>Hvordan:</strong> Flow: <em>Kommentar “guide”</em> → auto-DM (samtykke) → 3 kvalifiseringsspørsmål → webhook → CRM-kontakt + stage → send bookinglenke.</p>
+</li>
+<li>
+<p><strong>Booking: Cal.com (+ Chili Piper ved inbound lead-ruting)</strong><br />
+<strong>Hvorfor:</strong> Cal.com er multi-brand, OS og kan selvhostes (EU-vennlig). Chili Piper konverterer MQL til møte <em>med én gang</em>.<br />
+<strong>Hvordan:</strong> Routing forms i Cal.com (budsjett/land/produkt) → riktig rådgiver/team. Logg booking + “no-show” tilbake til CRM.</p>
+</li>
+<li>
+<p><strong>Marketing Automation: ActiveCampaign</strong> (evt. <strong>Brevo</strong> for EU-budsjett; <strong>Klaviyo</strong> hvis e-handel er tungt)<br />
+<strong>Hvorfor:</strong> Du får kraftige e-post/SMS-flows uten kompleks enterprise-oppsett.<br />
+<strong>Hvordan:</strong> “Welcome/Nurture”, “Abandoned Checkout/Call”, “Post-purchase/Onboarding”, “Win-back”. Bruk <strong>tags</strong>/goals som enkel state-maskin.</p>
+</li>
+</ol>
+<h1 id="lim-integrasjon"><strong>Lim (integrasjon)</strong><a class="headerlink" href="#lim-integrasjon" title="Permanent link">&para;</a></h1>
+<ol>
+<li><strong>iPaaS: Make (EU) + Pipedream (dev-webhooks)</strong><br />
+<strong>Hvorfor:</strong> Make gir visuelle scenarier, EU-databehandling og hundrevis av konektorer; Pipedream gir deg kjapp kode rundt sær-APIer.<br />
+<strong>Hvordan:</strong> <strong>Manychat Webhook → Make</strong>: opprett kontakt i HubSpot, post <strong>Cal.com</strong>-lenke, send <strong>Slack</strong>-varsel, trigge <strong>ActiveCampaign</strong>-flow, og skyt <strong>Meta CAPI</strong> server-event (Lead/Schedule).</li>
+</ol>
+<h1 id="maling-annonser"><strong>Måling &amp; annonser</strong><a class="headerlink" href="#maling-annonser" title="Permanent link">&para;</a></h1>
+<ol>
+<li>
+<p><strong>Meta Conversions API (+ Pixel)</strong><br />
+<strong>Hvorfor:</strong> Stabil attribusjon når cookies ikke holder. Kritisk for å vite hvilke Reels/DM-hooks som faktisk gir leads og bookinger.<br />
+<strong>Hvordan:</strong> Send <code>event_id</code> + <code>fbp/fbc</code> fra Make; map <code>content_ids/value/currency</code>; respekter samtykke.</p>
+</li>
+<li>
+<p><strong>Mixpanel (produkt/growth)</strong> + <strong>Segment</strong> (CDP) når du vil stramme inn event-skjema<br />
+<strong>Hvorfor:</strong> Du vil se <em>Content → DM → kvalifisert → Booket → Holdt møte → Kjøp/Join</em> som en funnel og bygge kohorter for win-back/VIP.<br />
+<strong>Hvordan:</strong> Spesifiser events: <code>DM_Started</code>, <code>Lead_Qualified</code>, <code>Meeting_Booked</code>, <code>Meeting_Held</code>, <code>Joined_Team</code>, <code>Made_Purchase</code>. Synk kohorter til e-post/annonser.</p>
+</li>
+</ol>
+<h1 id="ai-laget"><strong>AI-laget</strong><a class="headerlink" href="#ai-laget" title="Permanent link">&para;</a></h1>
+<ol>
+<li>
+<p><strong>LangChain + LlamaIndex</strong> (+ valgfri hosting på <strong>Vertex AI</strong> om du vil ha GCP-governance)<br />
+<strong>Hvorfor:</strong> RAG-assistenter som <em>forstår dine scripts, SOPer, produktark og komp-plan</em>—akkurat det “DESCRIPTION + CODE + BLUEPRINT” sikter mot.<br />
+    3 - BUILDING BLOCKS</p>
+<p><strong>Hvordan:</strong></p>
+</li>
+<li>
+<p><strong>Ingest:</strong> SOPer, tilbud, compliance-regler, produkt-FAQ → vektorindeks.</p>
+</li>
+<li>
+<p><strong>Agent 1 (Lead Triage):</strong> Les kvalifiseringssvar fra Manychat, foreslå neste steg + mal (godkjennes i Slack/CRM).</p>
+</li>
+<li>
+<p><strong>Agent 2 (Follow-up Coach):</strong> Generér personaliserte DM/e-poster basert på persona, språk og historikk.</p>
+</li>
+<li>
+<p><strong>Agent 3 (Duplication Coach):</strong> Onboarding-mikroleksjoner og sjekklister for nye partnere—i DM/e-post.</p>
+</li>
+</ol>
+<h1 id="sttte"><strong>Støtte</strong><a class="headerlink" href="#sttte" title="Permanent link">&para;</a></h1>
+<ol>
+<li><strong>Airtable + Notion + Slack</strong><br />
+<strong>Hvorfor:</strong> Airtable som “operativ lett-DB” (team, scripts, content-bank), Notion som kunnskapsbase/dupliserbar playbook, Slack som operativ nerve (varsler, Godkjenn/Avvis).<br />
+<strong>Hvordan:</strong> Airtable “Template Library” for DM-hooks, Notion “Team Hub” med FRAZER-DMO (Daily Method of Operation), Slack-varsler ved nye MQL/No-show/VIP.</li>
+</ol>
+<hr />
+<h2 id="golden-path-slik-henger-det-sammen"><strong>“Golden path” (slik henger det sammen)</strong><a class="headerlink" href="#golden-path-slik-henger-det-sammen" title="Permanent link">&para;</a></h2>
+<ol>
+<li>
+<p><strong>IG Reels → kommentar “guide”</strong> → <em>Manychat</em> starter kvalifisering (opt-in).</p>
+</li>
+<li>
+<p><strong>Webhook (Make)</strong> → opprett <strong>HubSpot</strong>-kontakt + sett <em>Recruiting/Sales</em> pipeline-stage.</p>
+</li>
+<li>
+<p>Send <strong>Cal.com</strong>-lenke (+ <strong>Chili Piper</strong> hvis inbound skjema) → logg booking.</p>
+</li>
+<li>
+<p>Skyt <strong>Meta CAPI</strong> event (<em>Lead/Schedule</em>).</p>
+</li>
+<li>
+<p><strong>Slack</strong>: “Ny kvalifisert lead for [Brand] — foreslått mal-svar” (fra <strong>LangChain/LlamaIndex</strong>).</p>
+</li>
+<li>
+<p><strong>ActiveCampaign</strong>: Nurture/No-show/Win-back flows.</p>
+</li>
+<li>
+<p><strong>Mixpanel</strong>: Funnel fra DM→Booking→Holdt møte→Kjøp/Join; kohorter synkes til e-post/annonser.</p>
+</li>
+<li>
+<p><strong>Notion/Airtable</strong>: Onboarding-sjekklister + delbare “dupliser-dette” maler.</p>
+</li>
+</ol>
+<hr />
+<h2 id="hvorfor-disse-direkte-mot-frazer-method"><strong>Hvorfor disse – direkte mot <em>FRAZER METHOD</em></strong><a class="headerlink" href="#hvorfor-disse-direkte-mot-frazer-method" title="Permanent link">&para;</a></h2>
+<ul>
+<li>
+<p><strong>DM-først &amp; duplisering:</strong> Manychat (+ Notion maler) gjør at nye partnere kan kopiere vinnende DM-hooks på minutter.</p>
+</li>
+<li>
+<p><strong>Hastighet til handling:</strong> Chili Piper/Cal.com fjerner friksjon fra MQL→møte.</p>
+</li>
+<li>
+<p><strong>Automatisk coaching:</strong> LangChain/LlamaIndex gir “AI som lærer AI” over dine scripts/SOPer—replikerer beste praksis til hele teamet.</p>
+</li>
+<li>
+<p><strong>Synlig ROI:</strong> Meta CAPI + Mixpanel viser hvilke innholdsbiter/DM-flows som faktisk flytter folk til booking/kjøp.</p>
+</li>
+<li>
+<p><strong>EU-hensyn:</strong> Make (EU), Cal.com self-host mulighet, dataminimering, og tydelig opt-in i Manychat/ActiveCampaign.</p>
+</li>
+</ul>
+<hr />
+<h2 id="minimal-start-uke-12"><strong>Minimal start (uke 1–2)</strong><a class="headerlink" href="#minimal-start-uke-12" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>HubSpot + Manychat + Make + Cal.com + ActiveCampaign + Slack</strong><br />
+   Konfigurer 3 flows: <em>Comment→DM</em>, <em>DM→Booking</em>, <em>No-show→ny booking</em>.<br />
+   Events til <strong>Mixpanel</strong> for enkel funnel.</li>
+</ul>
+<h2 id="niva-2-maned-12"><strong>Nivå 2 (måned 1–2)</strong><a class="headerlink" href="#niva-2-maned-12" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Meta CAPI</strong> live, <strong>Notion</strong> playbook, <strong>Airtable</strong> content/scripthub, AI-assistenter (LangChain+LlamaIndex).</li>
+</ul>
+<h2 id="niva-3-maned-3"><strong>Nivå 3 (måned 3+)</strong><a class="headerlink" href="#niva-3-maned-3" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Segment</strong> som CDP, <strong>Hightouch</strong> for annonser/CRM-aktivering, ev. <strong>Vertex AI</strong> for enterprise drift.</li>
+</ul>
+<h1 id="dette-er-verkty-funnet-online-og-beskrevet-av-chatgpt"><strong>DETTE ER VERKTØY FUNNET ONLINE OG BESKREVET AV CHATGPT:</strong><a class="headerlink" href="#dette-er-verkty-funnet-online-og-beskrevet-av-chatgpt" title="Permanent link">&para;</a></h1>
+<p>Gruppert ALLE de 110 fra lista di i relevante kategorier og rangert dem <strong>innenfor hver kategori</strong> (øverst \= mest nyttig/bred/robust for ditt bruk: Norge/EU, flere brands, Meta/IG, SMB/agency). Hver får én kort beskrivelse.</p>
+<p><strong>Legend:</strong> (OS) \= open-source • (E) \= enterprise • (SMB) \= små/mellomstore</p>
+<hr />
+<h1 id="bonus-mest-sannsynlige-kjernevalg-hurtig-anbefaling-av-chatgpt"><strong>Bonus: Mest sannsynlige “kjernevalg” (hurtig anbefaling av ChatGPT)</strong><a class="headerlink" href="#bonus-mest-sannsynlige-kjernevalg-hurtig-anbefaling-av-chatgpt" title="Permanent link">&para;</a></h1>
+<ul>
+<li>
+<p><strong>CRM:</strong> HubSpot <em>eller</em> Pipedrive (evt. GHL for alt-i-ett byråstil).</p>
+</li>
+<li>
+<p><strong>Booking:</strong> Cal.com + (Chili Piper hvis lead-ruting er kritisk).</p>
+</li>
+<li>
+<p><strong>DM/Chat:</strong> Manychat (IG/Messenger) + Intercom på web.</p>
+</li>
+<li>
+<p><strong>iPaaS:</strong> Make (EU) + Pipedream for dev-webhooks.</p>
+</li>
+<li>
+<p><strong>Måling:</strong> Meta CAPI + Mixpanel + (Segment/Hightouch når datalager kommer).</p>
+</li>
+<li>
+<p><strong>AI/Agents:</strong> LangChain + LlamaIndex for SOP/FAQ/triage.</p>
+</li>
+<li>
+<p><strong>Prosjekt/DB:</strong> Notion/Airtable + Slack-varsler.</p>
+</li>
+</ul>
+<h1 id="_2"><a class="headerlink" href="#_2" title="Permanent link">&para;</a></h1>
+<h1 id="crm-revenue-plattformer"><strong>CRM &amp; Revenue-plattformer</strong><a class="headerlink" href="#crm-revenue-plattformer" title="Permanent link">&para;</a></h1>
+<h2 id="salesforce-sales-cloud-e"><strong>Salesforce Sales Cloud (E)</strong><a class="headerlink" href="#salesforce-sales-cloud-e" title="Permanent link">&para;</a></h2>
+<ul>
+<li>
+<p><strong>Kjernefunksjoner:</strong> Accounts/Contacts/Leads/Opportunities, Forecasting, CPQ (tillegg), Flow Builder, Apex, AppExchange, Einstein-innsikt.</p>
+</li>
+<li>
+<p><strong>Best på:</strong> Kompleks enterprise-salg, compliance, skreddersøm i stor skala.</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Bygg prosesser i <strong>Flow</strong> (ikke bare triggers), hold tilpasning i metadata/appar, og bruk AppExchange for standardbehov før kode. Koble til ERP/Marketing Cloud for “lead-to-cash”.</p>
+</li>
+</ul>
+<p>## <strong>HubSpot (SMB→E)</strong></p>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> CRM + Hubs (Marketing/Sales/Service/Operations), Workflows, Sequences, landingssider, rapporter, bra API/Marketplace.</p>
+</li>
+<li>
+<p><strong>Best på:</strong> Rask iverksetting, alt-i-ett go-to-market, innholds-/inbound-drevet vekst.</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Start “Hub-lett” (Sales/Marketing Pro), modeller pipelines og obligatoriske felter, bruk <strong>Workflows</strong> for lead-routing/score, og hold e-post/SMS i HubSpot for sporbarhet.</p>
+</li>
+</ul>
+<p>## <strong>Microsoft Dynamics 365 Sales (E)</strong></p>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> Leads/Opportunities, Forecast, Playbooks, (CPQ via partner), tett med <strong>Power Platform</strong>, Dataverse, Teams/Outlook.</p>
+</li>
+<li>
+<p><strong>Best på:</strong> Microsoft-stack, sikkerhet/governance, modell-drevne apper.</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Bruk <strong>Power Automate</strong> for flyter, <strong>Power BI</strong> for salgspulser, og Dataverse-tabeller for delt datamodell. Knytt inn <strong>Customer Service</strong> og <strong>Field Service</strong> ved behov.</p>
+</li>
+</ul>
+<p>## <strong>Zoho CRM (SMB)</strong></p>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> Moduler, <strong>Blueprint</strong> (prosessmotor), Workflows, Omnikanal, Zia-AI, rimelig lisens, Zoho One-økosystem.</p>
+</li>
+<li>
+<p><strong>Best på:</strong> Kost/nytte for SMB med bred app-portefølje (CRM + Desk + Campaigns + Books).</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Tegn salgsprosess i <strong>Blueprint</strong>, la <strong>Zoho Flow</strong> binde apper, og bruk <strong>Desk</strong>/<strong>Campaigns</strong> for kundereise uten å forlate Zoho.</p>
+</li>
+</ul>
+<p>## <strong>Pipedrive (SMB)</strong></p>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> Visuell pipeline, Aktiviteter, E-postsync, Automations, Insights, markedsplass-apper.</p>
+</li>
+<li>
+<p><strong>Best på:</strong> Fokusert, enkel salgsutførelse og høy “rep-adopsjon”.</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Definér 1–2 pipeliner med få, tydelige steg og “required fields on stage change”. Koble automasjoner til e-post/SMS og bruk <strong>Insights</strong> for win-rate/aging.</p>
+</li>
+</ul>
+<p>## <strong>Freshsales (SMB)</strong></p>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> 360-kontakt, innebygd telefoni/SMS, Sequences, <strong>Freddy AI</strong>, tett med Freshdesk.</p>
+</li>
+<li>
+<p><strong>Best på:</strong> Salg + support i samme familie (Freshworks-suite).</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Synk support-tags fra <strong>Freshdesk</strong> inn i lead score; kjør ringe-/sekvens-playbooks fra Freshsales for “speed-to-lead”.</p>
+</li>
+</ul>
+<p>## <strong>GoHighLevel (SMB/agency)</strong></p>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> CRM, funnels/landingssider, e-post/SMS/WhatsApp (via Twilio/LC), kalender, call tracking, reputation, white-label &amp; snapshots.</p>
+</li>
+<li>
+<p><strong>Best på:</strong> Byråer/nettverkssalg som trenger alt-i-ett og gjenbrukbare “konto-maler”.</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Lag <strong>Snapshots</strong> per brand/niche, koble <strong>LC Phone/Twilio</strong>, og bygg DM→pipeline→booking-flows. Vær nøye på GDPR/SMS-samtykke.</p>
+</li>
+</ul>
+<p>## <strong>Close (SMB/inside sales)</strong></p>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> Innebygd dialer (power/predictive), SMS/e-post-sekvenser, pipeline, call-opptak.</p>
+</li>
+<li>
+<p><strong>Best på:</strong> Telefon-tungt “inside sales” (SaaS/B2B) med høyt volum.</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Design korte, stramme sekvenser (e-post+ring+SMS), bruk <strong>Call Dispositions</strong> og <strong>Custom Fields</strong> for coaching/rapport.</p>
+</li>
+</ul>
+<p>## <strong>Copper (SMB/Google)</strong></p>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> Dyp <strong>Gmail/Calendar/Drive</strong>-integrasjon, Deals, Tasks, automatisk e-postfangst.</p>
+</li>
+<li>
+<p><strong>Best på:</strong> Google-først-team som vil jobbe <strong>inne i Gmail</strong>.</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Tren teamet til å leve i sidepanelet i Gmail/Calendar; bruk <strong>Google Sheets</strong>-sync for lette rapporter.</p>
+</li>
+</ul>
+<p>## <strong>Keap (SMB)</strong></p>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> CRM + <strong>Campaign Builder</strong> (drag-and-drop), e-handel (tilbud/faktura), e-post, booking.</p>
+</li>
+<li>
+<p><strong>Best på:</strong> Småbedrifter som trenger enkel “lead→kunde→betaling” i ett system.</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Start med 1–2 <strong>Campaigns</strong> (lead nurturing + post-purchase), bruk innebygd checkout/tilbud for kortere salgssyklus.</p>
+</li>
+</ul>
+<p>## <strong>LeadSquared (SMB)</strong></p>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> Marketing-automatisering + <strong>Sales Execution</strong>, lead-distribusjon/score, mobil-CRM for feltteam, telephony-connect.</p>
+</li>
+<li>
+<p><strong>Best på:</strong> Høy “speed-to-lead”, felt-/inside-hybrid (edtech, helse, finans).</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Sett <strong>assignment rules</strong> (region/skill), bruk mobil-appen for sjekk-inn/geotags, og bygg SLA-varsler når lead ikke kontaktes i tide.</p>
+</li>
+</ul>
+<p>## <strong>SAP Sales Cloud (E)</strong></p>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> Del av SAP CX; Lead→Opportunity, <strong>Guided Selling</strong>, <strong>CPQ</strong>, felt-salg, tett med S/4HANA.</p>
+</li>
+<li>
+<p><strong>Best på:</strong> SAP-miljøer, komplekse tilbud/pris (CPQ) og global styring.</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Bruk <strong>SAP Integration Suite (CPI)</strong> mot ERP; standardiser produkt/kundemaster i SAP og la Sales Cloud håndtere prosess/CRM.</p>
+</li>
+</ul>
+<p>## <strong>Odoo (ERP/CRM)</strong></p>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> Modulært ERP (CRM, Salg, Faktura, Lager, Prosjekt), <strong>Studio</strong> for tilpasning, nettside/marketing-apper.</p>
+</li>
+<li>
+<p><strong>Best på:</strong> SMB som vil ha <strong>én</strong> plattform for drift + salg.</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Start “lean” (CRM+Salg+Faktura), unngå tung koding; bruk <strong>Studio</strong> til felter/visninger/automatisering og hold deg til kjerne-moduler.</p>
+</li>
+</ul>
+<p>## <strong>SugarCRM (SMB→E)</strong></p>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> Sugar Sell/Serve, <strong>SugarPredict</strong> (AI), Studio-tilpasning, avanserte rapporter/BPM, fleksibel hosting.</p>
+</li>
+<li>
+<p><strong>Best på:</strong> Tilpasningsbehov + kontroll (inkl. privat hosting).</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Modeller prosesser i <strong>Advanced Workflow</strong>, hold tilpasning i <strong>Studio/Module Loader</strong>, og koble BI for forecasting.</p>
+</li>
+</ul>
+<p>## <strong>SuiteCRM (OS)</strong></p>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> Open-source fork av Sugar, moduler, workflows, <strong>REST API</strong>, selvhost (LAMP).</p>
+</li>
+<li>
+<p><strong>Best på:</strong> Null lisenskostnad, full kontroll, tung skreddersøm.</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Planlegg drift/oppdateringer og sikkerhet; bygg egne moduler/felter via Studio, og legg integrasjoner på <strong>API</strong> + køtjeneste (f.eks. RabbitMQ/Redis).</p>
+</li>
+<li></li>
+</ul>
+<hr />
+<h1 id="sales-engagement-prospecting-revenue-intelligence"><strong>Sales Engagement, Prospecting &amp; Revenue Intelligence</strong><a class="headerlink" href="#sales-engagement-prospecting-revenue-intelligence" title="Permanent link">&para;</a></h1>
+<h2 id="outreach"><strong>Outreach</strong><a class="headerlink" href="#outreach" title="Permanent link">&para;</a></h2>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> Cadences (e-post/oppgaver/anrop), A/B-testing, regler/SLA, CRM-sync, rapporter.</p>
+</li>
+<li>
+<p><strong>Best på:</strong> Skalerbar, styrt outbound for SDR/AE i B2B.</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Bygg 3–5 ICP-spesifikke cadences, håndhev “speed-to-lead” med SLA-varsler, la CRM være “source of truth”, bruk rapportene til å kutte svake steg og doble på det som virker.</p>
+</li>
+</ul>
+<p>## <strong>Salesloft</strong></p>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> Multikanal-sekvenser, innebygd dialer, call-coaching, cadences, rapporter.</p>
+</li>
+<li>
+<p><strong>Best på:</strong> Call-tunge team og praktisk coaching i flyt.</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Lag korte, stramme sekvenser (e-post+ring+LI-oppgave), bruk <strong>call dispositions</strong> + snippets for coaching, evaluer “connect→meeting” pr. rep/sekvens ukentlig.</p>
+</li>
+</ul>
+<p>## <strong>Apollo.io</strong></p>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> B2B-databank (firma/kontakt), berikelse, e-postsekvenser, intent-/teknografifiltre.</p>
+</li>
+<li>
+<p><strong>Best på:</strong> Én pakke for listebygging + outbound i SMB/mid-market.</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Definér ICP (bransje, størrelse, tech-stack), bygg lister, berik CRM, kjør sekvenser fra Apollo eller push til Outreach/Salesloft; hold streng hygiene (bounces, validering).</p>
+</li>
+</ul>
+<p>## <strong>LinkedIn Sales Navigator</strong></p>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> Avansert søk, lagrede lister, varsel/signaler, TeamLink.</p>
+</li>
+<li>
+<p><strong>Best på:</strong> Målrettet ABM/prospektering—ikke automatisering.</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Lag “Named Accounts”, følg signaler (job-change, headcount), legg LI-oppgaver inn i cadences som manuelle steg; unngå uoffisielle automasjons-bots (risiko for sperring).</p>
+</li>
+</ul>
+<p>## <strong>Reply.io</strong></p>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> Multikanal (e-post, anrop, LI-oppgaver), sekvenser, enkel dialer, rapporter.</p>
+</li>
+<li>
+<p><strong>Best på:</strong> Rimelig, fleksibel outbound i SMB.</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Sett kapper (daglige send, pauser), varm opp domener, bruk <strong>conditional branches</strong> (åpnet/ikke åpnet), synk toveis med CRM.</p>
+</li>
+</ul>
+<p>## <strong>Lemlist</strong></p>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> Kald e-post + sterk bilde/video-personalisering, warm-up, sendings-infrastruktur.</p>
+</li>
+<li>
+<p><strong>Best på:</strong> Høy svarrate via dynamiske bilder/vids (“icebreakers”).</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Bygg maler med dynamiske felter/bilder, bruk eget tracking-domene, ramp sendvolum gradvis, test 1 variabel om gangen (subj vs. åpningslinje).</p>
+</li>
+</ul>
+<p>## <strong>Instantly.ai</strong></p>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> Masse-skala kald e-post, multi-innbokser, rotering, warm-up, deliverability-score.</p>
+</li>
+<li>
+<p><strong>Best på:</strong> Outbound i stor skala (byrå/aggregert volum).</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Rotér 5–20 innbokser pr. kampanje, sett konservative sendekvoter (30–50/dag/inbox i start), overvåk bounces/complaints, hold lister ultrarene.</p>
+</li>
+</ul>
+<p>## <strong>Gong</strong></p>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> Samtaleintelligens (opptak→transkripsjon→innsikt), deal boards, coach-analyser.</p>
+</li>
+<li>
+<p><strong>Best på:</strong> Coaching i stor skala + “reality-based” forecasting.</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Slå på opptak over Zoom/dialer, lag <strong>trackers</strong> for konkurrenter/tema, bygg “call library” med beste anrop, kjør ukentlig deal-review direkte i Gong.</p>
+</li>
+</ul>
+<p>## <strong>Chorus (ZoomInfo)</strong></p>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> Call-analyse/coaching, tematikk, snakkeforhold, biblioteker; tett med ZoomInfo-data.</p>
+</li>
+<li>
+<p><strong>Best på:</strong> Team som allerede bruker ZoomInfo for prospektering/intent.</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Lag playlister per fase (discovery/demo/negotiation), standardiser “next steps”-språk og mål talk-time pr. persona.</p>
+</li>
+</ul>
+<p>## <strong>Clari</strong></p>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> Forecasting, pipeline-helse, risikoflagg, dekning/konverterings-innsikt.</p>
+</li>
+<li>
+<p><strong>Best på:</strong> Forutsigbarhet på tvers av team/regioner/kvartaler.</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Koble CRM + kalender/e-post, definer stage-definisjoner og <strong>commit/best case</strong>, mål <strong>pipeline coverage</strong> (3–5× mål), bruk “inspect” ukentlig for å fjerne zombie-deals.</p>
+</li>
+</ul>
+<p>## <strong>Chili Piper</strong></p>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> Inbound lead-ruting + øyeblikkelig booking fra skjema/DM, round-robin, kvalifisering.</p>
+</li>
+<li>
+<p><strong>Best på:</strong> Konvertere MQL/handraiser til møte på sekundet.</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Embed på skjema (HubSpot/Marketo), rutér på territorium/vertikal, book direkte i AEs kalender, SMS/e-post-påminnelser, mål “form submit → meeting held”.</p>
+</li>
+</ul>
+<hr />
+<h1 id="marketing-automation-kundereiser"><strong>Marketing Automation &amp; Kundereiser</strong><a class="headerlink" href="#marketing-automation-kundereiser" title="Permanent link">&para;</a></h1>
+<h2 id="adobe-marketo-engage-e"><strong>Adobe Marketo Engage (E)</strong><a class="headerlink" href="#adobe-marketo-engage-e" title="Permanent link">&para;</a></h2>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> Engagement Programs, Smart Campaigns, lead score, avansert segmentering, flåtestyring, program-templat, Salesforce/Adobe-økosystem.</p>
+</li>
+<li>
+<p><strong>Best på:</strong> Enterprise nurture/ABM i stor skala med streng governance.</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Standardiser <strong>program-maler</strong> (tokenized), definer <strong>program statuses</strong> per kanal, la <strong>Smart Lists</strong> håndtere segmentlogikk, og bygg MQL med <strong>behaviour + firmografisk score</strong>. Bruk <strong>Workspaces/Partitions</strong> for flere brands/land.</p>
+</li>
+</ul>
+<p>## <strong>Braze (E)</strong></p>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> Omnikanal (push, e-post, SMS, WhatsApp, in-app, Content Cards), <strong>Canvas Flow</strong> (journeys), real-time events, Liquid-personalisering, frekvens-/quiet hours.</p>
+</li>
+<li>
+<p><strong>Best på:</strong> App-/produktdrevne kundereiser med høy personalisering i sanntid.</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Start med 3 kjerne-canvases: <strong>Onboarding</strong>, <strong>Activation</strong>, <strong>Re-engagement</strong>. Bruk <strong>entry triggers</strong> på events, <strong>holdouts</strong> for kausal effekt, <strong>subscription groups</strong> for SMS/e-post-samtykke.</p>
+</li>
+</ul>
+<p>## <strong>Iterable (E)</strong></p>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> Journey Builder, event-/profil-/katalog-data, kanaler (e-post/SMS/push/in-app), data feeds, eksperimenter.</p>
+</li>
+<li>
+<p><strong>Best på:</strong> Datadrevet personalisering når du har rikt bruker-/produktdata.</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Modellér <strong>user events</strong> (signup, view, cart, purchase), legg produktfeeds i <strong>Catalogs</strong>, bygg journeys med <strong>filters/branches</strong>, og kjør <strong>experiments</strong> pr. node for løpende vinner-valg.</p>
+</li>
+</ul>
+<p>## <strong>ActiveCampaign (SMB)</strong></p>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> Automations (if/else, goals, waits), e-post, lett CRM/deals, lead score, site &amp; event tracking.</p>
+</li>
+<li>
+<p><strong>Best på:</strong> SMB leadgen + e-postnurture uten tung kompleksitet.</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Lag 4 “recipes”: <strong>Lead magnet → Nurture</strong>, <strong>New lead → SDR alert</strong>, <strong>Abandoned cart/browse</strong>, <strong>Post-purchase upsell</strong>. Bruk <strong>tags</strong> som enkel “state machine” og <strong>Goals</strong> for å hoppe i flows.</p>
+</li>
+</ul>
+<p>## <strong>Klaviyo (e-handel)</strong></p>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> Dyp Shopify/Woo/BigCommerce-integrasjon, prediktive målinger (CLV/Churn), segmenter, dynamiske produktblokker, SMS.</p>
+</li>
+<li>
+<p><strong>Best på:</strong> E-handel: abandoned cart/browse, win-back, post-purchase, back-in-stock.</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Aktiver standard-flows (Welcome, <strong>Abandoned Cart</strong>, <strong>Browse Abandon</strong>, <strong>Post-Purchase</strong>), bruk <strong>Viewed Product</strong> + <strong>Added to Cart</strong> som triggere, <strong>price-drop/back-in-stock</strong> varsler, og test <strong>predictive splits</strong> for CLV-styrt kommunikasjon.</p>
+</li>
+</ul>
+<p>## <strong>Mailchimp (SMB)</strong></p>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> Audience/Tags/Segments, Customer Journey Builder, kampanjer, grunnleggende e-handelssync, maler, enkle rapporter.</p>
+</li>
+<li>
+<p><strong>Best på:</strong> Enkelt nyhetsbrev/lett journey for små lister/sideprosjekter.</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Hold <strong>én audience</strong>, segmentér med <strong>tags</strong>, bygg 2–3 journeys (Welcome, Re-engage, Post-purchase), og bruk <strong>A/B</strong> på emne/innhold før du skalerer.</p>
+</li>
+</ul>
+<p>## <strong>Brevo / Sendinblue (SMB/EU)</strong></p>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> E-post/SMS/WhatsApp, transaksjonell SMTP, automation, grunn-CRM, prisgunstig, EU/GDPR-vennlig.</p>
+</li>
+<li>
+<p><strong>Best på:</strong> SMB i EU som vil kombinere markedsføring + transaksjonell utsending.</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Skill <strong>marketing</strong> vs. <strong>transactional</strong> (egen IP/domene om mulig), lag <strong>double opt-in</strong> skjema, bygg <strong>RFM-segmenter</strong> for kampanjer, og bruk <strong>SMS</strong> for tidssensitive påminnelser.</p>
+</li>
+</ul>
+<p>## <strong>Mautic (OS)</strong></p>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> Open-source kampanjer/segmenter, dynamisk innhold, forms, kanaler (e-post/SMS), plugins, selvhost.</p>
+</li>
+<li>
+<p><strong>Best på:</strong> Full kontroll/on-prem og lav lisenskost ved teknisk kapasitet.</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Sett opp <strong>cron-jobs</strong> (segments:update, campaigns:trigger), bruk <strong>Themes</strong>/<strong>Custom Fields</strong>, og legg integrasjoner via webhook/REST. Planlegg <strong>oppgraderinger</strong> og sikkerhet aktivt.</p>
+</li>
+</ul>
+<p>## <strong>Mixpanel (analyse)</strong></p>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> Eventer/props, funnels, kohorter, retention, Paths/Journeys, Group Analytics, impact-analyse.</p>
+</li>
+<li>
+<p><strong>Best på:</strong> Produkt/growth-innsikt som styrer <em>hvilke</em> journeys du bør sende.</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Definér <strong>north-star</strong> og kritiske events (view → add to cart → purchase), bygg <strong>kohorter</strong> (f.eks. ikke aktiv 7 dager) og <strong>sync</strong> dem til MA-verktøy (via Reverse ETL) for målrettede kampanjer.</p>
+</li>
+</ul>
+<hr />
+<p>## <strong>Hvem passer med hvem? (vanlige stacks)</strong></p>
+<ul>
+<li>
+<p><strong>Enterprise B2B:</strong> Marketo + Salesforce + Chili Piper + Clari (+ Mixpanel/GA4 for produkt/web).</p>
+</li>
+<li>
+<p><strong>Produkt-/app-fokus:</strong> Braze <strong>eller</strong> Iterable + Segment/dbt + Mixpanel.</p>
+</li>
+<li>
+<p><strong>SMB leadgen:</strong> ActiveCampaign + Pipedrive/HubSpot Starter + Make + Cal.com.</p>
+</li>
+<li>
+<p><strong>E-handel:</strong> Klaviyo + Shopify + Meta CAPI + Mixpanel (eller GA4) + Reviews-app.</p>
+</li>
+<li>
+<p><strong>EU budsjett:</strong> Brevo + Woo/Shopify + Make + Cal.com (SMS/WhatsApp ved behov).</p>
+</li>
+<li>
+<p><strong>Selvhost/kontroll:</strong> Mautic + Postfix/SMTP + n8n + Matomo/Mixpanel.</p>
+</li>
+</ul>
+<hr />
+<h1 id="_3"><a class="headerlink" href="#_3" title="Permanent link">&para;</a></h1>
+<h1 id="meldinger-dm-bots-chat-kundesttte"><strong>Meldinger, DM-bots, Chat &amp; Kundestøtte</strong><a class="headerlink" href="#meldinger-dm-bots-chat-kundesttte" title="Permanent link">&para;</a></h1>
+<h2 id="intercom"><strong>Intercom</strong><a class="headerlink" href="#intercom" title="Permanent link">&para;</a></h2>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> Live chat, innboks, bots, help center, product tours, e-post/push.</p>
+</li>
+<li>
+<p><strong>Best på:</strong> SaaS/produktdrevne team som vil ha én kundehub.</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Bruk <strong>inbox rules</strong> + bot for triage, <strong>Product Tours</strong> for onboarding, og koble til CRM for full kontekst.</p>
+</li>
+</ul>
+<p>## <strong>Drift</strong></p>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> Conversational marketing, playbooks, chatbot, ABM, instant booking.</p>
+</li>
+<li>
+<p><strong>Best på:</strong> B2B inbound som skal bli møter i kalenderen raskt.</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Bygg <strong>playbooks</strong> som kvalifiserer og booker automatisk (gjerne med Chili Piper), ruter på konto/territorium.</p>
+</li>
+</ul>
+<p>## <strong>Manychat</strong></p>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> IG/Messenger DM-flows, comment→DM, story mentions, webhooks.</p>
+</li>
+<li>
+<p><strong>Best på:</strong> Vekst via IG Reels/Kommentar→DM + lead-capture.</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Lag <strong>flows</strong> for kvalifisering/opt-in, følg Meta-regler (samtykke/vinduer), håndover til agent/CRM via webhook.</p>
+</li>
+</ul>
+<p>## <strong>Chatfuel</strong></p>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> No-code bot-bygger for IG/Messenger, templates, enkle integrasjoner.</p>
+</li>
+<li>
+<p><strong>Best på:</strong> Raskt i gang med IG/Messenger uten kode.</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Start med maler (FAQ, giveaway, lead), koble til Google Sheets/CRM, hold deg innenfor Meta-policy.</p>
+</li>
+</ul>
+<p>## <strong>Landbot</strong></p>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> Web- og WhatsApp-chatbots, forms/conditional logic, integrasjoner.</p>
+</li>
+<li>
+<p><strong>Best på:</strong> <strong>WhatsApp-først</strong> opplevelser + webchat uten kode.</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Bruk <strong>WhatsApp-flows</strong> for kvalifisering, send til live agent ved behov, logg til CRM via webhook/Make.</p>
+</li>
+</ul>
+<p>## <strong>Crisp</strong></p>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> Delt innboks (mail/chat/SoMe), kampanjer, bot, kunnskapsbase.</p>
+</li>
+<li>
+<p><strong>Best på:</strong> SMB som vil ha én rimelig kundehub på tvers av domener.</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Sett <strong>routing/assign</strong>-regler, bygg en lett <strong>bot</strong> for FAQ, og bruk kampanjer for segmenterte utsendelser.</p>
+</li>
+</ul>
+<p>## <strong>Tidio</strong></p>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> Chat-widget, AI-bot (forenklet), e-handelstriggere (Shopify/Woo), automasjoner.</p>
+</li>
+<li>
+<p><strong>Best på:</strong> Nettbutikker som vil øke konvertering og redde handlekurver.</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Aktiver <strong>cart/browse-triggere</strong>, lag bot for vanlige spørsmål, mål “chat→checkout”.</p>
+</li>
+</ul>
+<p>## <strong>Front</strong></p>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> Omnikanal <strong>delt innboks</strong> (e-post/SMS/SoMe), regler, SLA, interne kommentarer.</p>
+</li>
+<li>
+<p><strong>Best på:</strong> Team som lever i e-post men må samarbeide strukturt.</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Bruk <strong>rules/SLAs</strong> per kanal, del <strong>drafts</strong> internt, koble til CRM for auto-oppslag og logging.</p>
+</li>
+</ul>
+<p>## <strong>Zendesk</strong></p>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> Tickets, omnikanal, help center, macros, SLAs, Sunshine (plattform).</p>
+</li>
+<li>
+<p><strong>Best på:</strong> Moden helpdesk med stort økosystem/integrasjoner.</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Standardiser <strong>ticket forms/fields</strong>, bruk <strong>macros/triggers</strong> for konsistens, bygg knowledge base → avlast chat.</p>
+</li>
+</ul>
+<p>## <strong>Freshdesk</strong></p>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> Tickets, automasjoner, SLAs, bots, kunnskapsbase (Freshworks-suite).</p>
+</li>
+<li>
+<p><strong>Best på:</strong> Budsjettvennlig, “Zendesk-light” med god dekning.</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Sett <strong>priority/SLA</strong>-policy, bygg scenario-automations, koble <strong>Freshsales</strong> for 360-visning.</p>
+</li>
+</ul>
+<p>## <strong>ServiceNow (E)</strong></p>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> ITSM/CSM, workflows, Virtual Agent, Knowledge, tung governance.</p>
+</li>
+<li>
+<p><strong>Best på:</strong> Enterprise service management på tvers av avdelinger.</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Modellér prosesser i <strong>Flow Designer</strong>, bruk <strong>CSM</strong> for kundeforespørsler, stram tilgang/CI-katalog.</p>
+</li>
+</ul>
+<p>## <strong>Meta Business Suite</strong></p>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> Administrer FB/IG-sider, planlegg innhold, samlet innboks, enkle autosvar.</p>
+</li>
+<li>
+<p><strong>Best på:</strong> Grunnleggende SoMe-publisering + svar i én innboks.</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Planlegg innlegg/Reels, aktiver <strong>FAQ/autosvar</strong>, synk samtaler til CRM via iPaaS (Make/n8n) når det trengs.</p>
+</li>
+</ul>
+<hr />
+<p>## <strong>Vanlige kombinasjoner</strong></p>
+<ul>
+<li>
+<p><strong>Web/app:</strong> Intercom <strong>eller</strong> Drift (chat/bot) + CRM (HubSpot/SFDC) + Chili Piper (booking).</p>
+</li>
+<li>
+<p><strong>IG/Messenger:</strong> Manychat <strong>eller</strong> Chatfuel + Meta Business Suite (innhold) + iPaaS for CRM-logging.</p>
+</li>
+<li>
+<p><strong>WhatsApp-først:</strong> Landbot + WhatsApp Business Platform (via BSP) + CRM.</p>
+</li>
+<li>
+<p><strong>Kundeservice:</strong> Zendesk <strong>eller</strong> Freshdesk + kunnskapsbase + Intercom/Front for live chat.</p>
+</li>
+<li>
+<p><strong>E-handel:</strong> Tidio/Crisp + Klaviyo/Brevo (e-post/SMS) + Shopify/Woo.</p>
+</li>
+</ul>
+<hr />
+<h1 id="planlegging-kalender-booking"><strong>Planlegging, Kalender &amp; Booking</strong><a class="headerlink" href="#planlegging-kalender-booking" title="Permanent link">&para;</a></h1>
+<h2 id="calcom-os"><strong>Cal.com (OS)</strong><a class="headerlink" href="#calcom-os" title="Permanent link">&para;</a></h2>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> Open-source booking, multi-brand/multi-team, round-robin, routing forms, payments, webhooks, self-host eller SaaS.</p>
+</li>
+<li>
+<p><strong>Best på:</strong> Flere brands/ressurser, streng kontroll (self-host), avanserte ruter.</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Lag <strong>Event Types</strong> per brand, bruk <strong>Routing Forms</strong> for kvalifisering, sett <strong>buffers</strong>/arbeidstid, og send webhooks til CRM (Make/n8n). Vurder <strong>self-host</strong> for data­kontroll.</p>
+</li>
+</ul>
+<p>## <strong>Calendly</strong></p>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> Event types, pooled/round-robin, routing forms, workflows (e-post/SMS), brede integrasjoner.</p>
+</li>
+<li>
+<p><strong>Best på:</strong> “Det bare funker” standard for link-booking i B2B.</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Bruk <strong>pooled availability</strong> for team, <strong>routing</strong> (territorium/produkt), og <strong>workflows</strong> for påminnelser/oppfølging. Koble til CRM for auto-oppgaver.</p>
+</li>
+</ul>
+<p>## <strong>SavvyCal</strong></p>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> Kalendere-overlay, forslag begge veier, preferanser/priority, team-slots.</p>
+</li>
+<li>
+<p><strong>Best på:</strong> Gjest-vennlig booking (mindre friksjon, høyere oppmøte).</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Del lenker der gjesten kan <strong>foreslå tid</strong>; lag <strong>ranked availability</strong> (morgen vs. ettermiddag), og bruk <strong>overlay</strong> av flere kalendere.</p>
+</li>
+</ul>
+<p>## <strong>Motion</strong></p>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> AI-planlegger som auto-timeboxer oppgaver + flytter møter smart.</p>
+</li>
+<li>
+<p><strong>Best på:</strong> Solo/leder med masse oppgaver/deadlines og lite planleggingstid.</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Opprett oppgaver med <strong>estimat/deadline/priority</strong>; la Motion auto-plassere. Lås viktige blokker (no-move) og la resten flyte.</p>
+</li>
+</ul>
+<p>## <strong>Reclaim.ai</strong></p>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> Auto-timeboxing for <strong>tasks</strong> og <strong>habits</strong>, smart reschedule, team-policy for møter.</p>
+</li>
+<li>
+<p><strong>Best på:</strong> Balanse mellom vaner (trening/admin) og møter uten å miste fokus.</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Definér <strong>Habits</strong> (f.eks. “regnskap man/tor”), legg tasks med SLA; Reclaim flytter dem når kalenderen endres. Synk med Slack for status.</p>
+</li>
+</ul>
+<p>## <strong>Clockwise</strong></p>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> Fokus-blokk optimalisering, “smart holds”, team-koordinering, fleksibilitetsvinduer.</p>
+</li>
+<li>
+<p><strong>Best på:</strong> Team/avdelinger som vil redusere møtekollisjoner og øke <strong>fokus-timer</strong>.</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Sett <strong>Focus Time goals</strong>, angi hvilke møter kan flyttes (+/- fleksibilitet), og la Clockwise optimalisere tverr-team.</p>
+</li>
+</ul>
+<p>## <strong>Sunsama</strong></p>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> Daglig planlegger som samler oppgaver (Asana/ClickUp/Jira/Trello/Email) + kalender, manuelt men rolig fokus.</p>
+</li>
+<li>
+<p><strong>Best på:</strong> Personlig “calm productivity” + realistisk dagplan.</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Morgenrituale: dra oppgaver inn i dagen, <strong>timebox</strong>, og logg faktisk tid. Hold backlog i verktøyet ditt, plan i Sunsama.</p>
+</li>
+</ul>
+<p>## <strong>Acuity Scheduling</strong></p>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> Avansert booking, intake-skjema, pakker/abonnementer, kuponger, betalinger (Squarespace).</p>
+</li>
+<li>
+<p><strong>Best på:</strong> Tjenesteytere/klinikker/verksteder med <strong>formularer + betaling</strong> før time.</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Lag <strong>Appointment Types</strong> m/ buffer, <strong>Intake Forms</strong> (felter), <strong>Packages</strong> for klippekort, og ta betalt ved booking.</p>
+</li>
+</ul>
+<p>## <strong>YouCanBook.me</strong></p>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> Enkel booking over Google/Microsoft, custom felter, varsler, ruter.</p>
+</li>
+<li>
+<p><strong>Best på:</strong> Rimelig, rett-fram teambooking uten stor kompleksitet.</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Lag <strong>templates</strong> per rolle/brand, bruk <strong>custom questions</strong> for kvalifisering, og send <strong>ICS</strong>/SMS-varsler.</p>
+</li>
+</ul>
+<p>## <strong>Cronofy (API)</strong></p>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> Enterprise <strong>scheduling API</strong>, real-time availability over Google/Microsoft/Apple, “Smart Invites”, enterprise-sikkerhet.</p>
+</li>
+<li>
+<p><strong>Best på:</strong> Å bygge <strong>booking inn i egne apper</strong> (B2B/B2C) med granulær kontroll.</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Bruk <strong>Enterprise Connect</strong> for dyp kalender-tilkobling, <strong>Availability API</strong> for regler (buffers, arbeidsvinduer), og <strong>Smart Invites</strong> for robust ICS.</p>
+</li>
+</ul>
+<p>## <strong>Nylas (API)</strong></p>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> Unified <strong>email/calendar/contacts API</strong>, webhooks, Scheduler-komponent.</p>
+</li>
+<li>
+<p><strong>Best på:</strong> Rask multi-leverandør-integrasjon (Gmail/Outlook/Exchange) i én API.</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Autentiser brukeres kontoer, lytt på <strong>webhooks</strong> (ny avtalestatus), og embedd <strong>Nylas Scheduler</strong> for booking. Avklar databehandlings-krav (DPA).</p>
+</li>
+</ul>
+<p>## <strong>Google Calendar API</strong></p>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> Direkte API til Google Calendar: events, ACL, free/busy, push-varsler.</p>
+</li>
+<li>
+<p><strong>Best på:</strong> Maksimal kontroll når du <strong>selv</strong> bygger logikken.</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Bruk <strong>service accounts/OAuth</strong>, <strong>Channels</strong> (push notifications) for endringer, og bygg regler for <strong>freeBusy</strong> + buffers selv. Husk kvoter.</p>
+</li>
+</ul>
+<hr />
+<p>## <strong>Vanlige kombinasjoner</strong></p>
+<ul>
+<li>
+<p><strong>Flere brands + CRM:</strong> Cal.com/Calendly + HubSpot/Pipedrive + Make (webhook → opprett contact/deal, send bekreftelse).</p>
+</li>
+<li>
+<p><strong>AI-plan + booking:</strong> Reclaim/Motion for tasks + Cal.com for eksterne møter.</p>
+</li>
+<li>
+<p><strong>Klinikk/verksted:</strong> Acuity (skjema+betaling) + SMS-påminnelser + Google Calendar.</p>
+</li>
+<li>
+<p><strong>Egne produkter/apper:</strong> Cronofy <strong>eller</strong> Nylas + eget UI + Stripe.</p>
+</li>
+</ul>
+<hr />
+<h1 id="integrasjon-ipaas-rpa-nettleser-automatisering"><strong>Integrasjon, iPaaS, RPA &amp; Nettleser-automatisering</strong><a class="headerlink" href="#integrasjon-ipaas-rpa-nettleser-automatisering" title="Permanent link">&para;</a></h1>
+<h2 id="make-eu-vennlig"><strong>Make (EU-vennlig)</strong><a class="headerlink" href="#make-eu-vennlig" title="Permanent link">&para;</a></h2>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> Visuelle scenarier, webhooks, iterator/aggregator, Data Stores, scheduling, mange connectors.</p>
+</li>
+<li>
+<p><strong>Best på:</strong> SMB/agency som vil bygge raske, robuste flows med EU-databehandling.</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Start med <strong>Webhook → Transform → Action</strong>-mønster; bruk <strong>Routers</strong> for grener, <strong>Error handlers</strong> for retry/branch, og <strong>Data Stores</strong> for idempotens/dedupe. God for IG/Messenger→CRM→Kalender.</p>
+</li>
+</ul>
+<p>## <strong>Zapier</strong></p>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> Enorm app-dekning, “Zaps” med triggere/handlinger, no-code logikk.</p>
+</li>
+<li>
+<p><strong>Best på:</strong> Kjapp prototyping og standard integrasjoner uten dev-ressurser.</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Bruk <strong>Paths/Filters</strong> for enkel branching, <strong>Storage by Zapier</strong> for små states, hold øye med <strong>Task-kost</strong> og rate limits ved skala.</p>
+</li>
+</ul>
+<p>## <strong>Workato (Enterprise)</strong></p>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> iPaaS med <strong>Recipes</strong>, RBAC, versjonering, approvals, SDK for connectors.</p>
+</li>
+<li>
+<p><strong>Best på:</strong> Enterprise-governance, sikkerhet og skalerbare integrasjoner.</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Bygg <strong>Reusable Recipes</strong> (sub-recipes), bruk <strong>Connections</strong> med secrets-styring, sett <strong>Error policies</strong>/observability for drift.</p>
+</li>
+</ul>
+<p>## <strong>Tray.io (Enterprise)</strong></p>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> Low-code visuelle workflows, dype API-steg, skalerbar kjøring.</p>
+</li>
+<li>
+<p><strong>Best på:</strong> Mid-market/enterprise som trenger fleksible API-pipelines.</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Modellér <strong>API-orchestration</strong> (pagination, rate limiting), bruk <strong>Callable workflows</strong> for gjenbruk, og konfigurer <strong>Workspace-governance</strong>.</p>
+</li>
+</ul>
+<p>## <strong>n8n (Open-source)</strong></p>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> Selvhostbar iPaaS, nodes + <strong>Function/Code</strong> noder (JS), credentials-vault.</p>
+</li>
+<li>
+<p><strong>Best på:</strong> Kontroll/privatliv (on-prem), kombinasjon av no-code + kode.</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Kjør i Docker; bygg <strong>trigger → nodes → code</strong>; lag <strong>Queues</strong> (BullMQ/Redis) for tunge tasks; fint sammen med Mautic/Matomo.</p>
+</li>
+</ul>
+<p>## <strong>Microsoft Power Automate</strong></p>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> 1000+ connectors, dyp M365/Dataverse/SharePoint, <strong>Desktop flows (RPA)</strong>.</p>
+</li>
+<li>
+<p><strong>Best på:</strong> Bedrifter på Microsoft-stacken (Teams/Outlook/SharePoint).</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Bruk <strong>Cloud flows</strong> for API-integrasjon og <strong>Desktop flows</strong> for UI-RPA; kombinér med <strong>Power Apps</strong> og <strong>Power BI</strong>.</p>
+</li>
+</ul>
+<p>## <strong>Pipedream</strong></p>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> Kode-først serverless workflows (Node/Python), raske webhooks, npm-økosystem.</p>
+</li>
+<li>
+<p><strong>Best på:</strong> Dev-team som vil lime API-er sammen med litt kode.</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Skriv små <strong>steps</strong> i JS/Py, bruk <strong>sources</strong> for events, <strong>$checkpoint</strong> for state, og utnytt npm-pakker direkte.</p>
+</li>
+</ul>
+<p>## <strong>Node-RED (Open-source)</strong></p>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> Visuelle flows, MQTT/IoT, HTTP-nodes, kan kjøre på Raspberry Pi.</p>
+</li>
+<li>
+<p><strong>Best på:</strong> IoT/edge og enkle API-broer i eget miljø.</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Bygg <strong>dashboard</strong> raskt, koble sensorer via <strong>MQTT</strong>, eksponer <strong>HTTP In/Out</strong> som minitjenester.</p>
+</li>
+</ul>
+<p>## <strong>IFTTT</strong></p>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> Enkle “If This Then That”-oppskrifter, forbruker-/SoMe-fokus.</p>
+</li>
+<li>
+<p><strong>Best på:</strong> Lett automasjon for enkle oppgaver; ikke for proff drift.</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Bruk til personlige varsler/enkle triggere, unngå kritiske forretningsprosesser.</p>
+</li>
+</ul>
+<p>## <strong>UiPath (Enterprise RPA)</strong></p>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> Attended/unattended bots, <strong>Studio</strong>, <strong>Orchestrator</strong>, dokument-AI.</p>
+</li>
+<li>
+<p><strong>Best på:</strong> Automatisere legacy GUI/desktop, ERP/finansprosesser i skala.</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Identifiser høyt volum, regelbaserte prosesser; bygg <strong>robuste selektorer</strong>, bruk <strong>Queues</strong>/<strong>REFramework</strong>, overvåk i <strong>Orchestrator</strong>.</p>
+</li>
+</ul>
+<p>## <strong>Automation Anywhere (Enterprise RPA)</strong></p>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> Cloud-native RPA, <strong>Bot Insight</strong>, IQ Bot (dokumenter).</p>
+</li>
+<li>
+<p><strong>Best på:</strong> Enterprise RPA med sky-drift og innebygd analyse.</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Standardiser <strong>Bot-livssyklus</strong> (dev/test/prod), bruk <strong>IQ Bot</strong> for faktura/PO/innboks-dokumenter.</p>
+</li>
+</ul>
+<p>## <strong>Bardeen</strong></p>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> Nettleser-automatisering, “playbooks”, UI-skraping (DOM), manuell+auto.</p>
+</li>
+<li>
+<p><strong>Best på:</strong> Personlig/SMB automatisering direkte i nettleseren (CRM-berikelse, scraping).</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Lag playbooks som <strong>leser DOM → skriver til tabell/CRM</strong>; vær obs på <strong>ToS</strong> og sprø API-grenser/sperrer ved scraping.</p>
+</li>
+</ul>
+<p>## <strong>Zoho Flow</strong></p>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> iPaaS i Zoho-økosystemet, connectors, enkel logikk.</p>
+</li>
+<li>
+<p><strong>Best på:</strong> Team som kjører <strong>Zoho CRM/Books/Desk</strong> og vil holde seg “in-suite”.</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Koble Zoho-apper først; bruk <strong>webhooks</strong> for 3.parts; sentraliser feilvarsler.</p>
+</li>
+</ul>
+<p>## <strong>Parabola</strong></p>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> No-code dataflows/ETL, CSV/Shopify/HubSpot, planer og filtre/joins.</p>
+</li>
+<li>
+<p><strong>Best på:</strong> E-handel/ops som må rydde og synke data uten kode.</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Lag <strong>import → clean → join → export</strong>-flows; planlegg kjøring (hourly/daily); bruk for feed-berikelse (Klaviyo/Ads/CRM).</p>
+</li>
+</ul>
+<hr />
+<p>## <strong>Vanlige kombinasjoner</strong></p>
+<ul>
+<li>
+<p><strong>SMB/Agency (EU):</strong> Make + HubSpot/Pipedrive + Manychat/Meta + Cal.com.</p>
+</li>
+<li>
+<p><strong>Dev-tyngde:</strong> Pipedream + GitHub + Slack + egen Postgres/S3.</p>
+</li>
+<li>
+<p><strong>MS-hus:</strong> Power Automate + SharePoint/Dataverse + Power BI.</p>
+</li>
+<li>
+<p><strong>Self-host &amp; kontroll:</strong> n8n + Mautic + Matomo + egen SMTP.</p>
+</li>
+<li>
+<p><strong>RPA + ERP:</strong> UiPath/Automation Anywhere + SAP/Oracle + dokument-AI.</p>
+</li>
+<li>
+<p><strong>IoT/Edge:</strong> Node-RED + MQTT + lokale API-er.</p>
+</li>
+<li>
+<p><strong>E-handel dataops:</strong> Parabola + Shopify + Klaviyo + GA4/Mixpanel.</p>
+</li>
+</ul>
+<hr />
+<h1 id="some-annonse-apier-styring"><strong>SoMe &amp; Annonse-APIer / Styring</strong><a class="headerlink" href="#some-annonse-apier-styring" title="Permanent link">&para;</a></h1>
+<h2 id="facebookmeta-graph-api"><strong>Facebook/Meta Graph API</strong><a class="headerlink" href="#facebookmeta-graph-api" title="Permanent link">&para;</a></h2>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> Tilgang til FB-/IG-ressurser (sider, innlegg, kommentarer, innsikt), webhooks, moderasjon.</p>
+</li>
+<li>
+<p><strong>Best på:</strong> Bygge egne verktøy for publisering, kommentarmoderasjon og innsikt.</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Bruk <strong>app-tokens + Page/IG-tokens</strong> (med fornyelse), <strong>Webhooks</strong> for hendelser (kommentar/mention), og cache svar for å spare rater. Avklar tillatelser i <strong>App Review</strong> tidlig.</p>
+</li>
+</ul>
+<p>## <strong>Instagram Graph API</strong></p>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> IG Business/Creator publisering (feed/reels), innsikt, mentions, kommentarer, webhooks.</p>
+</li>
+<li>
+<p><strong>Best på:</strong> Programmatisk IG-flyt (publiser, svar, mål).</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Koble IG Business ↔ FB-side, bruk <strong>Publishing + Mentions + Insights</strong> endepunkter, og logg feilkoder/ratelimits. Webhooks for <strong>comments/mentions</strong> → CRM.</p>
+</li>
+</ul>
+<p>## <strong>Messenger Platform</strong></p>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> DM-bots, quick replies, menyer, <strong>Handover Protocol</strong> (bot ↔ agent), webhooks.</p>
+</li>
+<li>
+<p><strong>Best på:</strong> Inbound DM-kvalifisering + overlevering til menneske/CRM.</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Følg <strong>24-timers-regelen</strong> for promotering; bruk <strong>One-Time Notification</strong>/message tags der det er lov; håndter <strong>handover</strong> til agent-inboks eller Intercom/Front.</p>
+</li>
+</ul>
+<p>## <strong>WhatsApp Business Platform</strong></p>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> Offisiell API (Cloud/API via BSP), mal-meldinger (HSM), toveis dialog, samtale-prising.</p>
+</li>
+<li>
+<p><strong>Best på:</strong> Høy leveranse, kritiske varsler og dialog i global kanal.</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Skaff <strong>opt-in</strong>, bygg <strong>template-bibliotek</strong> (marketing/utility/auth), sett opp <strong>conversation-tracking</strong>, og rute til CRM. Husk at <strong>initierte samtaler</strong> prises per kategori/land.</p>
+</li>
+</ul>
+<p>## <strong>Facebook Marketing API</strong></p>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> Kampanje/adset/ad, budsjetter, A/B, målgrupper (custom/lookalike), rapporter.</p>
+</li>
+<li>
+<p><strong>Best på:</strong> Programmatisk styring av annonser i skala (budsjett, kreativer, regler).</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Modellér <strong>idempotente deploys</strong> (eksterne IDs), bruk <strong>batch</strong> og <strong>async insights</strong>, og bygg <strong>naming-konvensjoner</strong> (Kampanje-mål/land/språk).</p>
+</li>
+</ul>
+<p>## <strong>Meta Conversions API (CAPI)</strong></p>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> Server-side events (PageView/Lead/Purchase/Schedule), deduplisering.</p>
+</li>
+<li>
+<p><strong>Best på:</strong> Stabil sporing når cookies/blokkere skaper hull.</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Send <strong>event_id</strong> + <strong>fbp/fbc</strong> for dedupe, mapp <strong>content_ids/value/currency</strong> korrekt, og bygg <strong>retry + queue</strong> (Make/n8n/server). Hold <strong>Consent Mode</strong>/samtykke som gate.</p>
+</li>
+</ul>
+<p>## <strong>TikTok Marketing API</strong></p>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> Kampanjer/ad groups/ads, katalog, <strong>Events API</strong> (server-side), rapporter.</p>
+</li>
+<li>
+<p><strong>Best på:</strong> Skalerbar TT-annonsering (inkl. katalog/collections).</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Koble <strong>Pixel + Events API</strong> (dedupe), bruk <strong>creative automation</strong> og <strong>spark ads</strong> (på organiske poster), mål <strong>view→click→purchase</strong> med post-view-vinduer.</p>
+</li>
+</ul>
+<p>## <strong>Buffer</strong></p>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> Planlegging/publisering for flere plattformer, enkel kalender/queues, grunn-rapporter.</p>
+</li>
+<li>
+<p><strong>Best på:</strong> Lett redaksjonell kalender for SMB/solo.</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Sett <strong>UTM-standard</strong>, bruk <strong>queue-slots</strong> per kanal, kjør reposter på evergreen og se på <strong>best time to post</strong>.</p>
+</li>
+</ul>
+<p>## <strong>Hootsuite</strong></p>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> Team-publisering, “listening”, innboks, approvals, rapporter.</p>
+</li>
+<li>
+<p><strong>Best på:</strong> Byråer/markedsavdelinger med governance og volum.</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Lag <strong>approval-workflows</strong>, <strong>streams</strong> (søk/mention/hashtags), og dashboard pr. brand/land. Eksporter <strong>krysskanal-rapporter</strong>.</p>
+</li>
+</ul>
+<p>## <strong>Sprout Social</strong></p>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> Smart Inbox (omnikanal), tagging, avansert analyse, “listening”.</p>
+</li>
+<li>
+<p><strong>Best på:</strong> Innsikt og kundedialog i team—sterk rapportering.</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Standardiser <strong>tag taxonomy</strong> (kampanje/intent), bruk <strong>saved replies</strong>, og bygg <strong>business reviews</strong> dashboards.</p>
+</li>
+</ul>
+<p>## <strong>Phantombuster</strong></p>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> Growth/automatisering (prospekter, scraping, SoMe-actions).</p>
+</li>
+<li>
+<p><strong>Best på:</strong> Eksperimentell lead-innhenting der APIer ikke finnes.</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Throttle hardt, roter cookies/proxy der lovlig, respekter <strong>ToS/personvern</strong>. Bruk kun hvor <strong>offisielle APIer</strong> ikke dekker behov.</p>
+</li>
+</ul>
+<hr />
+<p>## <strong>Vanlige kombinasjoner</strong></p>
+<ul>
+<li>
+<p><strong>IG/Messenger DM-vekst:</strong> Instagram Graph + Messenger Platform + Manychat/Chatfuel (flow) + <strong>CAPI</strong> (server-side events) + CRM (HubSpot/Pipedrive).</p>
+</li>
+<li>
+<p><strong>E-handel:</strong> Facebook Marketing API + CAPI + Klaviyo + Produktkatalog → <strong>ASC (Advantage+ Shopping)</strong>-styring via API.</p>
+</li>
+<li>
+<p><strong>App/produkt:</strong> Braze/Iterable (journeys) + Graph API webhooks (events) + CAPI + Mixpanel-kohorter.</p>
+</li>
+<li>
+<p><strong>Byrå/innhold:</strong> Hootsuite/Sprout/Buffer for plan/approval + Graph API for spesialfunksjoner + Marketing API for regler/budsjett.</p>
+</li>
+</ul>
+<hr />
+<h1 id="datastack-cdp-elt-reverse-etl-analyse"><strong>Datastack: CDP, ELT, Reverse ETL &amp; Analyse</strong><a class="headerlink" href="#datastack-cdp-elt-reverse-etl-analyse" title="Permanent link">&para;</a></h1>
+<h2 id="segment-cdp"><strong>Segment (CDP)</strong><a class="headerlink" href="#segment-cdp" title="Permanent link">&para;</a></h2>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> Samle inn hendelser (web/app/server), <strong>Sources → Destinations</strong>, identitet (userId/anonymousId), <strong>Schemas/Protocols</strong>, og datastyring.</p>
+</li>
+<li>
+<p><strong>Best på:</strong> Én sann datakilde for kunde-/produktdata som mates til alt annet (MA, analyse, annonser, lager).</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Lag en <strong>tracking plan</strong> (events + properties), send både <strong>client-</strong> og <strong>server-side</strong> events, bruk <strong>Protocols</strong> til å håndheve skjema (blokker ukjent data), og speil alt til datalager (Snowflake/BigQuery/Redshift). Bruk <strong>Group</strong> for B2B (konto-ID).</p>
+</li>
+</ul>
+<p>## <strong>Fivetran (ELT)</strong></p>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> Fullt styrte connectors (SaaS→lager), skjema-drift, inkrementelle laster, CDC på utvalgte kilder.</p>
+</li>
+<li>
+<p><strong>Best på:</strong> Stabil, vedlikeholdsfri innlasting fra tredjepart (Meta Ads, Shopify, HubSpot osv.) til datalager.</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Velg <strong>lager</strong> (Snowflake/BigQuery/Redshift), sett <strong>historikk-/sync-vinduer</strong>, overvåk <strong>row-basert</strong> kost, og hold transformasjoner i <strong>dbt</strong> (ikke i kilden).</p>
+</li>
+</ul>
+<p>## <strong>dbt (Transform)</strong></p>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> SQL-modeller, <strong>materializations</strong> (view/table/incremental), <strong>tests</strong> (unique/not null/relasjoner), <strong>snapshots</strong> (SCD), <strong>docs</strong> og gjenbruk (Jinja/macros).</p>
+</li>
+<li>
+<p><strong>Best på:</strong> Versjonert, team-vennlig modellering av <strong>staging → marts</strong> (dim/fct) med kvalitetssikring.</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Strukturér som <code>stg_*</code> (ren kildedata), <code>int_*</code> (mellom), <code>dim_*</code> og <code>fct_*</code>. Legg på <strong>tests</strong> og <strong>snapshots</strong> for SCD. Dokumentér alt og publiser <strong>dbt docs</strong>.</p>
+</li>
+</ul>
+<p>## <strong>Hightouch (Reverse ETL)</strong></p>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> Synk fra lager → CRM/MA/annonser (HubSpot, Salesforce, Klaviyo, Meta, Google, TikTok), <strong>audiences</strong>, event-streams.</p>
+</li>
+<li>
+<p><strong>Best på:</strong> Aktivere lagerdata i verktøyene du bruker uten egen lim-kode.</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Pek en modell (SQL/dbt) med <strong>primærnøkkel</strong>, mapp felter til destinasjon, velg sync-modus (upsert/patch), og bruk <strong>hashing</strong> for PII til annonseplattformer. La lageret være <strong>source of truth</strong>.</p>
+</li>
+</ul>
+<p>## <strong>Mixpanel (Produktanalyse)</strong></p>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> Eventer/props, <strong>funnels</strong>, <strong>retention</strong>, <strong>cohorts</strong>, <strong>Group Analytics</strong>, Paths/Journeys.</p>
+</li>
+<li>
+<p><strong>Best på:</strong> Hurtig produkt-/growth-innsikt som styrer hvilke journeys/kanaler du skal trigge.</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Definér <strong>kjerne-events</strong> (view/add_to_cart/purchase/booking_submitted), standardiser <strong>userId</strong> og <strong>groupId</strong> (B2B). Bygg <strong>cohorts</strong> og eksporter dem til MA/annonse via Hightouch.</p>
+</li>
+</ul>
+<p>## <strong>Clearbit (Berikelse)</strong></p>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> Firmografisk berikelse (bransje, størrelse, teknologi), <strong>Reveal</strong> (IP→firma), Forms.</p>
+</li>
+<li>
+<p><strong>Best på:</strong> B2B-segmentering/ruting, ABM, kortere skjema (mindre felter).</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Kjør <strong>batch/API-berikelse</strong> på lead/konto, bruk <strong>Reveal</strong> på web for å tilpasse innhold. Vær streng på GDPR—bruk legitime kilder og formål.</p>
+</li>
+</ul>
+<p>## <strong>ZoomInfo (Data)</strong></p>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> B2B-database, kontaktdata, intensjons-signaler, “Scoops”.</p>
+</li>
+<li>
+<p><strong>Best på:</strong> Prospektering/ABM når du trenger bred B2B-dekning.</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Synk til CRM med klare <strong>felter</strong> (kilde, kvalitet), bruk <strong>intent-tema</strong> til prioritering. Husk etterlevelse/GDPR i EU.</p>
+</li>
+</ul>
+<p>## <strong>Parabola (no-code ETL)</strong></p>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> Import→transform→export flows (CSV/Shopify/HubSpot), joins/filtre, planlagt kjøring.</p>
+</li>
+<li>
+<p><strong>Best på:</strong> SMB/e-handel som vil rense/forme data uten å kode.</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Bygg <strong>feed-flows</strong> (produkt/ordre/kunde), normaliser felter, eksporter til Klaviyo/CRM/Ads. Bra som “ops-verktøy” ved siden av Fivetran/dbt.</p>
+</li>
+</ul>
+<hr />
+<p>## <strong>Vanlige kombinasjoner (arketyper)</strong></p>
+<ul>
+<li>
+<p><strong>Produkt/app (sanntid + aktivering)</strong></p>
+</li>
+<li>
+<p><strong>Segment</strong> (events) → <strong>Fivetran</strong> (SaaS-kilder) → <strong>BigQuery/Snowflake</strong></p>
+</li>
+<li>
+<p><strong>dbt</strong> (stg→dim/fct) → <strong>Mixpanel</strong> (innsikt)</p>
+</li>
+<li>
+<p><strong>Hightouch</strong> (cohorts/audiences → HubSpot/Meta/TikTok)</p>
+</li>
+<li>
+<p><strong>E-handel (Shopify)</strong></p>
+</li>
+<li>
+<p><strong>Fivetran</strong> (Shopify/Ads) → lager → <strong>dbt</strong> (RFM/CLV)</p>
+</li>
+<li>
+<p><strong>Klaviyo</strong> får lister via <strong>Hightouch</strong>; <strong>Mixpanel</strong> for funnels/retensjon</p>
+</li>
+<li>
+<p><strong>B2B/ABM</strong></p>
+</li>
+<li>
+<p><strong>Segment</strong> (+ web events) + <strong>Clearbit/ZoomInfo</strong> (berikelse)</p>
+</li>
+<li>
+<p><strong>Fivetran</strong> (HubSpot/SFDC/Ads) → lager → <strong>dbt</strong></p>
+</li>
+<li>
+<p><strong>Hightouch</strong> (målgrupper til Sales/MA/Ads) + <strong>Mixpanel</strong> på produktbruk</p>
+</li>
+</ul>
+<hr />
+<p>## <strong>Rask valgsguide</strong></p>
+<ul>
+<li>
+<p><strong>CDP (samle/dirigere events):</strong> Segment</p>
+</li>
+<li>
+<p><strong>ELT (SaaS→lager, minst vedlikehold):</strong> Fivetran</p>
+</li>
+<li>
+<p><strong>Transform (modeller/testing/dokumentasjon):</strong> dbt</p>
+</li>
+<li>
+<p><strong>Aktivering (lager→verktøy/annonser):</strong> Hightouch</p>
+</li>
+<li>
+<p><strong>Produktinnsikt:</strong> Mixpanel</p>
+</li>
+<li>
+<p><strong>B2B-berikelse:</strong> Clearbit (lett) / ZoomInfo (tung dekning)</p>
+</li>
+<li>
+<p><strong>SMB no-code ETL:</strong> Parabola</p>
+</li>
+</ul>
+<hr />
+<h1 id="_4"><a class="headerlink" href="#_4" title="Permanent link">&para;</a></h1>
+<h1 id="ai-rammeverk-kodeassistenter-plattformer"><strong>AI-rammeverk, kodeassistenter &amp; plattformer</strong><a class="headerlink" href="#ai-rammeverk-kodeassistenter-plattformer" title="Permanent link">&para;</a></h1>
+<h2 id="google-vertex-ai"><strong>Google Vertex AI</strong><a class="headerlink" href="#google-vertex-ai" title="Permanent link">&para;</a></h2>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> Managed tren/hosting av modeller (LLM/klassisk ML), endpoints for sanntid/batch, pipelines, vektor-/RAG-komponenter, datastyring og MLOps på GCP.</p>
+</li>
+<li>
+<p><strong>Best på:</strong> Produksjonsklar ML/LLM i Google-skyen med skalerbarhet, sikkerhet og governance.</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Bygg <strong>Pipelines</strong> for tren/deploy, servér via <strong>Endpoints</strong>, bruk <strong>vector search</strong> + dokumentkilder for RAG, og styr secrets/tilganger via IAM. God når du vil ha “one-stop” plattform + compliance.</p>
+</li>
+</ul>
+<p>## <strong>LangChain</strong></p>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> Komponenter for <strong>chains</strong>, <strong>agents</strong>, verktøy/funksjonskall, minne, retrievers; stort integrasjonsøkosystem.</p>
+</li>
+<li>
+<p><strong>Best på:</strong> Raskt å bygge LLM-apper/arbeidsflyter (tool-use, samtale-trinn, beslutningslogikk).</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Modellér flyt som <strong>chain/agent</strong>, koble <strong>tools</strong> (søk, DB, API), bruk <strong>retriever</strong> for kunnskap, og test med eval/trace. Start enkelt (prompt → tool) før multi-step.</p>
+</li>
+</ul>
+<p>## <strong>LlamaIndex</strong></p>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> RAG-fokus: datainntak/connectors, chunking/“nodes”, indekser (vektor/tre/keyword), <strong>retrievers</strong>, query-engine, evaluering/observability.</p>
+</li>
+<li>
+<p><strong>Best på:</strong> Nøyaktig RAG over egne dokumenter/data uten mye lim-kode.</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Bygg <strong>ingestion pipeline</strong> (parser → chunk → lagring), velg <strong>index + retriever</strong> (vektor + rerank), slå på <strong>eval</strong> (groundedness/latency), og cache resultater. Fungerer utmerket sammen med LangChain/Vertex.</p>
+</li>
+</ul>
+<p>## </p>
+<p>## <strong>AutoGen</strong></p>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> <strong>Multi-agent</strong> orkestrering (AI↔AI og AI↔menneske), rolle-agenter (Planner/Coder/Critic), verktøy-kall og gruppesamtaler.</p>
+</li>
+<li>
+<p><strong>Best på:</strong> Komplekse oppgaver som krever samarbeid (kodegenerering, research, flerstegs-automatisering) med menneskelig godkjenning.</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Definér 2–4 spesialiserte agenter, registrér <strong>tools</strong>/APIer, sett <strong>stoppkriterier</strong>/timeouts for å unngå løkker, og logg samtaler for revisjon. Start med <em>Planner + Executor + Reviewer</em>.</p>
+</li>
+</ul>
+<p>## <strong>GitHub Copilot</strong></p>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> Kodefullføringer i IDE, chat/forklaring, test-/snutt-generering, PR-hjelp.</p>
+</li>
+<li>
+<p><strong>Best på:</strong> Fart i hverdagskoding, boilerplate, tests, ukjent API-bruk—rett i VS Code/JetBrains.</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Skriv målrettede <strong>kommentarer/Docstrings</strong> for kontekst, bruk <strong>Copilot Chat</strong> for refaktor/forklaring, valider med linters/tester, og behold “human-in-the-loop”.</p>
+</li>
+</ul>
+<hr />
+<p>## <strong>Vanlige kombinasjoner</strong></p>
+<ul>
+<li>
+<p><strong>RAG-app raskt:</strong> <em>LlamaIndex (ingest+retrieval) + LangChain (agent/flow) + Vertex AI (hosting/endpoints)</em>.</p>
+</li>
+<li>
+<p><strong>Komplekse oppgaver:</strong> <em>AutoGen (flere agenter) + LangChain-tools</em>; menneske godkjenner kritiske steg.</p>
+</li>
+<li>
+<p><strong>Dev-hverdagen:</strong> <em>Copilot</em> for koding + <em>LangChain/LlamaIndex</em> for app-logikk + <em>Vertex</em> for prod.</p>
+</li>
+</ul>
+<hr />
+<h1 id="_5"><a class="headerlink" href="#_5" title="Permanent link">&para;</a></h1>
+<h1 id="produktivitet-work-os-interne-verkty"><strong>Produktivitet, Work-OS &amp; Interne verktøy</strong><a class="headerlink" href="#produktivitet-work-os-interne-verkty" title="Permanent link">&para;</a></h1>
+<h2 id="clickup"><strong>ClickUp</strong><a class="headerlink" href="#clickup" title="Permanent link">&para;</a></h2>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> Prosjekter/oppgaver, mål, tidslinjer, dashboards, automasjoner, docs.</p>
+</li>
+<li>
+<p><strong>Best på:</strong> Én hub for prosjekter + operasjonelle prosesser med mye granularitet.</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Lag <strong>Spaces → Folders → Lists</strong>, definer <strong>Custom Fields</strong>, sett <strong>Automations</strong> (status→oppgave→varsel), og bygg <strong>dashboards</strong> for KPI.</p>
+</li>
+</ul>
+<p>## <strong>Monday.com</strong></p>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> Boards/visninger, automatiseringer, integrasjoner, lett CRM, WorkForms.</p>
+</li>
+<li>
+<p><strong>Best på:</strong> Tverrteam-prosesser og “no-code” flows som er lette å adoptere.</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Modellér hver prosess som et <strong>board</strong> med <strong>status/people/date</strong>-kolonner; bruk <strong>Automations</strong> (if/then) og <strong>Integrations</strong> (Slack/HubSpot).</p>
+</li>
+</ul>
+<p>## <strong>Notion + Notion AI</strong></p>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> Wiki, databaser, relasjoner/rullups, page-templates, AI-skriving/spørring.</p>
+</li>
+<li>
+<p><strong>Best på:</strong> Kunnskap + lett CRM/ops i samme fleksible verktøy.</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Bygg <strong>database-relasjoner</strong> (Prosjekter ↔ Tasks ↔ Docs), lag <strong>templates</strong> (SOP, møtenotater), og bruk <strong>AI</strong> til oppsummering/uttrekk.</p>
+</li>
+</ul>
+<p>## <strong>Airtable</strong></p>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> Database-regneark, <strong>Automations</strong>, Interfaces (app-UI), god API/webhooks.</p>
+</li>
+<li>
+<p><strong>Best på:</strong> Operativ “lett-DB” som snakker fint med CRM/marketing via iPaaS.</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Normaliser tabeller (Leads, Produkter, Bestillinger), lag <strong>Automations</strong> (record change → e-post/webhook), og bygg <strong>Interfaces</strong> for teamet.</p>
+</li>
+</ul>
+<p>## <strong>Asana (+ Intelligence)</strong></p>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> Prosjekter/roadmaps, workload, regler/automations, forms, AI-assist.</p>
+</li>
+<li>
+<p><strong>Best på:</strong> Strukturert prosjektleveranse med avhengigheter og rapportering.</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Bruk <strong>Portfolios</strong> og <strong>Goals</strong>, sett <strong>Rules</strong> (status→assignee), og la <strong>Asana Intelligence</strong> foreslå trinn/forfallsdatoer.</p>
+</li>
+</ul>
+<p>## <strong>Coda + Coda AI</strong></p>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> Docs + tabeller med <strong>Buttons</strong>, <strong>Automations</strong>, Packs (integrasjoner).</p>
+</li>
+<li>
+<p><strong>Best på:</strong> Skreddersy “mini-apper” i dokumenter med logikk og API-kall.</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Lag <strong>Packs</strong>-koblinger (HubSpot/Slack), bygg <strong>Buttons</strong> som kjører flows, og bruk <strong>AI</strong> for tekst/ops-forslag.</p>
+</li>
+</ul>
+<p>## <strong>Retool</strong></p>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> Drag-and-drop interne apper, koble databaser/APIer, queries, RBAC.</p>
+</li>
+<li>
+<p><strong>Best på:</strong> Raskt bygge admin-/operasjons-UI over dine data (Postgres, REST).</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Definér <strong>resources</strong> (DB/API), skriv <strong>queries</strong> (SQL/JS), bind til komponenter (tabeller/forms), legg <strong>actions</strong> (approve/deny).</p>
+</li>
+</ul>
+<p>## <strong>Pipefy</strong></p>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> Prosess/kanban-rør (Pipes), skjema, SLA/automations, dokumentgenerering.</p>
+</li>
+<li>
+<p><strong>Best på:</strong> Gjentakende forretningsprosesser (innkjøp, HR, service) uten koding.</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Modellér hvert trinn som en <strong>fase</strong> med obligatoriske felter; bruk <strong>Automations</strong> for ruting/SLA; eksporter data til BI.</p>
+</li>
+</ul>
+<p>## </p>
+<p>## <strong>Slack (Workflow &amp; Events API)</strong></p>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> Kanaler/DM, Workflow Builder, bots/apps, Events/Webhooks, modals.</p>
+</li>
+<li>
+<p><strong>Best på:</strong> Operativ nerve – varsler, godkjenninger, “human-in-the-loop”.</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Bygg <strong>Workflows</strong> (form→action), koble iPaaS for <strong>CRM-varsler</strong>, og bruk <strong>slash-commands</strong> for raske handlinger (f.eks. /book, /status).</p>
+</li>
+</ul>
+<p>## <strong>Superhuman</strong></p>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> Lynrask e-postklient, AI-svar/triage, oppfølging/påminnelser.</p>
+</li>
+<li>
+<p><strong>Best på:</strong> Individuell produktivitet for tung e-postbruk i salg/ledelse.</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Sett <strong>snippets</strong> og <strong>follow-up</strong>-regler; bruk <strong>AI triage</strong> for prioritert inbox; hold “inbox zero” ritual.</p>
+</li>
+</ul>
+<p>## <strong>AppSheet (Google)</strong></p>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> No-code apper fra Sheets/SQL, regler, offline, kamera/GPS.</p>
+</li>
+<li>
+<p><strong>Best på:</strong> Felt-/skjema-apper (inspeksjon, ordre, lager) uten kode.</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Knytt til <strong>Sheets/BigQuery</strong>, bygg visninger (Detail/Form/Deck), legg <strong>behaviors</strong> (submit→e-post/webhook), og publiser til mobil.</p>
+</li>
+</ul>
+<p>## <strong>Google Apps Script</strong></p>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> JS-skript for Gmail/Sheets/Drive/Calendar, tidsstyrte triggere, web-apps.</p>
+</li>
+<li>
+<p><strong>Best på:</strong> Små “lim-skript” og automasjoner direkte i Google Workspace.</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan:</strong> Lag <strong>time-driven triggers</strong> (daglig sync), bygg <strong>web app</strong> (doGet/doPost) som webhook-endepunkt, og kall eksterne API-er.</p>
+</li>
+</ul>
+<hr />
+<p>## <strong>Vanlige kombinasjoner</strong></p>
+<ul>
+<li>
+<p><strong>Kunnskap + oppgaver:</strong> Notion (wiki/DB) + ClickUp/Asana for leveranse.</p>
+</li>
+<li>
+<p><strong>Operativ DB + CRM-lim:</strong> Airtable + Make → HubSpot/Pipedrive.</p>
+</li>
+<li>
+<p><strong>Interne apper:</strong> Retool over Postgres/Sheets + Slack-varsler.</p>
+</li>
+<li>
+<p><strong>Prosesser uten kode:</strong> Monday/Pipefy + iPaaS (Make) for eksterne koblinger.</p>
+</li>
+<li>
+<p><strong>Google-hus:</strong> Apps Script + AppSheet + Calendar/Drive.</p>
+</li>
+</ul>
+<p>## <strong>Rask valgsguide</strong></p>
+<ul>
+<li>
+<p><strong>Prosjektstyring “alt-i-ett”:</strong> ClickUp / Asana</p>
+</li>
+<li>
+<p><strong>Prosess/boards + lett CRM:</strong> Monday.com</p>
+</li>
+<li>
+<p><strong>Wiki + fleksibel databank:</strong> Notion (AI for tekst/QA)</p>
+</li>
+<li>
+<p><strong>Operativ lett-DB &amp; API-vennlig:</strong> Airtable</p>
+</li>
+<li>
+<p><strong>Interne verktøy raskt:</strong> Retool</p>
+</li>
+<li>
+<p><strong>Formalisert prosessmotor:</strong> Pipefy</p>
+</li>
+<li>
+<p><strong>Operativ kommunikasjon:</strong> Slack (workflows/bots)</p>
+</li>
+<li>
+<p><strong>Personlig e-post-fart:</strong> Superhuman</p>
+</li>
+<li>
+<p><strong>Google-first no-code:</strong> AppSheet</p>
+</li>
+<li>
+<p><strong>Google-lim/skript:</strong> Apps Script</p>
+</li>
+</ul>
+<p>## <strong>Mini-oppsett for deg (konkret)</strong></p>
+<ul>
+<li>
+<p><strong>Butikk/verksted:</strong> Airtable (Jobbkort) ↔ ClickUp (oppgaver) → Slack-varsler; AppSheet for innsjekk/foto i verksted.</p>
+</li>
+<li>
+<p><strong>Villa Maleyna:</strong> Notion (SOP/husregler) + Airtable (bookinger/oppgaver) → Make → Cal.com &amp; Slack.</p>
+</li>
+<li>
+<p><strong>Etsy/produkt:</strong> Airtable (SKU/innhold) → Notion (briefs) → ClickUp (foto/listing) + Slack godkjenning.</p>
+</li>
+<li>
+<p><strong>Dev/Trading:</strong> Retool (admin-UI over DB/logg) + Slack / Apps Script for små sync-jobber.</p>
+</li>
+</ul>
+<hr />
+<h1 id="nettsted-funnels-konvertering"><strong>Nettsted, Funnels &amp; Konvertering</strong><a class="headerlink" href="#nettsted-funnels-konvertering" title="Permanent link">&para;</a></h1>
+<h1 id="clickfunnels"><strong>ClickFunnels</strong><a class="headerlink" href="#clickfunnels" title="Permanent link">&para;</a></h1>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> Drag-and-drop landingssider, funnels (opt-in → sales → checkout), order bumps, <strong>upsell/downsell (OTO)</strong>, medlemsområde, A/B-testing, analytics, integrasjoner (Stripe/PayPal, webhooks, Zapier).</p>
+</li>
+<li>
+<p><strong>Best på:</strong> Direct-response salg og skalering av <strong>gjennomsnittlig ordreverdi</strong> via bumps + OTO-er (kurs, info-produkter, høymargin fysiske varer).</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan (hurtigoppskrift):</strong></p>
+</li>
+<li>
+<p><strong>Struktur:</strong> Opt-in → Sales → Checkout → OTO1 (premium) → Downsells.</p>
+</li>
+<li>
+<p><strong>AOV-løft:</strong> 1 order bump (lite tillegg, 9–19% attach); 1–2 OTOer.</p>
+</li>
+<li>
+<p><strong>Sporing:</strong> Eget domene + <strong>UTM-naming</strong>, GA4, Meta-piksel + <strong>CAPI</strong> (via server/iPaaS).</p>
+</li>
+<li>
+<p><strong>Fart:</strong> Mobil-først; komprimer bilder; fold-over-fold copy med sosial bevis.</p>
+</li>
+<li>
+<p><strong>Drift:</strong> Split-test <strong>overskrift</strong> først, deretter pris/tilbud. Kill tapere raskt.</p>
+</li>
+</ul>
+<p># <strong>Systeme.io</strong></p>
+<ul>
+<li>
+<p><strong>Kjerne:</strong> Alt-i-ett på budsjett: nettsider/funnels, e-post (broadcast + automations), tags/seg­menter, enkle work­flows, kurs/medlemskap, affiliate-program, checkout (Stripe/PayPal).</p>
+</li>
+<li>
+<p><strong>Best på:</strong> Rask utrulling for <strong>solo/SMB/affiliates</strong> som vil ha <strong>funnel + e-post</strong> uten ekstra verktøy.</p>
+</li>
+<li>
+<p><strong>Hvorfor/hvordan (hurtigoppskrift):</strong></p>
+</li>
+<li>
+<p><strong>Domene &amp; e-post:</strong> Sett DMARC/SPF/DKIM; 1 liste, <strong>tags</strong> for atferd (opt-in, kjøp, avbrutt).</p>
+</li>
+<li>
+<p><strong>Flows:</strong> Welcome (3–5 e-poster), Abandon (2–3), Post-purchase (3).</p>
+</li>
+<li>
+<p><strong>Checkout:</strong> Stripe; enkel <strong>order bump</strong>; kvittering + automasjon på <strong>purchase</strong>.</p>
+</li>
+<li>
+<p><strong>Oppfølging:</strong> Automations: <em>If tag=opt-in &amp; no purchase 72t → tilbud</em>.</p>
+</li>
+<li>
+<p><strong>A/B:</strong> Test hero-overskrift og CTA-tekst først.</p>
+</li>
+</ul>
+<hr />
+<p>## <strong>Rask valgsguide</strong></p>
+<ul>
+<li>
+<p><strong>Maks AOV/upsell-kraft + moden økosystem:</strong> <strong>ClickFunnels</strong></p>
+</li>
+<li>
+<p><strong>Billigst alt-i-ett med innebygd e-post &amp; kurs/affiliate:</strong> <strong>Systeme.io</strong></p>
+</li>
+<li>
+<p><strong>Allerede sterk e-post (Klaviyo/Brevo):</strong> Bruk <strong>ClickFunnels</strong> som landings-/checkout-lag, la e-post bo i e-post-plattformen.</p>
+</li>
+</ul>
+<hr />
+<h1 id="her-er-en-minimal-proff-stack-skreddersydd-til-deg-norgeeu-flere-brands-metaigmessenger-nettverkssalg-service-booking-etsy">Her er en minimal, “proff” stack skreddersydd til deg (Norge/EU, flere brands, Meta/IG/Messenger, nettverkssalg, service-booking, Etsy):<a class="headerlink" href="#her-er-en-minimal-proff-stack-skreddersydd-til-deg-norgeeu-flere-brands-metaigmessenger-nettverkssalg-service-booking-etsy" title="Permanent link">&para;</a></h1>
+<h1 id="a-velg-retning"><strong>A) Velg retning</strong><a class="headerlink" href="#a-velg-retning" title="Permanent link">&para;</a></h1>
+<p><strong>Option 1 – Alt-i-ett (raskest å drifte):</strong></p>
+<ul>
+<li>
+<p><strong>GoHighLevel (GHL)</strong> – CRM, funnels, SMS/WhatsApp (via Twilio), kalender, workflows</p>
+</li>
+<li>
+<p><strong>Manychat</strong> – IG/Messenger-DM, lead capture + handover til GHL</p>
+</li>
+<li>
+<p><strong>Cal.com</strong> – booking (multi-kalender, ruter riktig brand/ressurs)</p>
+</li>
+<li>
+<p><strong>Make</strong> – limet mellom alt (EU-vennlig)</p>
+</li>
+<li>
+<p><strong>Meta Conversions API</strong> – server-side events for presis sporing</p>
+</li>
+<li>
+<p><strong>Brevo</strong> (eller <strong>Klaviyo</strong> for e-com) – e-post/SMS flows (GDPR-vennlig)</p>
+</li>
+<li>
+<p><strong>Airtable</strong> – lett datalager/operativ hub (prospekter, inventar, kampanjer)</p>
+</li>
+<li>
+<p><strong>Mixpanel</strong> – produkt-/growth-analyse på tvers av brands</p>
+</li>
+<li>
+<p><strong>Slack</strong> – operativ varslingskanal (MQL/SQL, no-show, VIP)</p>
+</li>
+<li>
+<p><strong>LangChain + LlamaIndex</strong> (+ valgfri LLM) – egen AI-agent for playbooks/SOP/QA</p>
+</li>
+</ul>
+<p><strong>Option 2 – Komponerbar (mer fleksibel, dev-vennlig):</strong></p>
+<ul>
+<li>
+<p><strong>HubSpot Pro</strong> (CRM, Sales, Marketing)</p>
+</li>
+<li>
+<p><strong>Cal.com</strong> + <strong>Reclaim.ai</strong> (planlegger + booking)</p>
+</li>
+<li>
+<p><strong>Manychat</strong> + <strong>Messenger/IG Graph API</strong> (DM-flows + webhooker)</p>
+</li>
+<li>
+<p><strong>Make</strong>/<strong>n8n</strong>/<strong>Pipedream</strong> (integrasjoner/API)</p>
+</li>
+<li>
+<p><strong>Airtable</strong>/<strong>Notion</strong> (operativ database + dokumentasjon)</p>
+</li>
+<li>
+<p><strong>Brevo/Klaviyo</strong> (e-post/SMS)</p>
+</li>
+<li>
+<p><strong>Meta CAPI</strong> + <strong>GA4</strong> + <strong>Mixpanel</strong> (måling)</p>
+</li>
+<li>
+<p><strong>Stripe</strong> (betalingslenker for deposits, reparasjoner, bookinger)</p>
+</li>
+<li>
+<p><strong>S3/Cloudflare R2</strong> (filopplasting av kvitteringer, kontrakter)</p>
+</li>
+<li>
+<p><strong>LangChain + AutoGen</strong> (interne AI-agenter for lead scoring/oppfølging)</p>
+</li>
+</ul>
+<h1 id="b-5-day-1-automasjoner-plug-and-play"><strong>B) 5 “Day-1” automasjoner (plug-and-play)</strong><a class="headerlink" href="#b-5-day-1-automasjoner-plug-and-play" title="Permanent link">&para;</a></h1>
+<ol>
+<li>
+<p><strong>IG/Messenger → CRM + booking:</strong><br />
+    DM-trigger (Manychat) → kvalifiseringsspørsmål → webhook → Make → opprett kontakt + pipeline-stage i CRM → send <strong>Cal.com</strong>-lenke → logg samtale → Slack-varsel.</p>
+</li>
+<li>
+<p><strong>Lead score + oppfølging:</strong><br />
+    Når lead får score ≥ X → auto-oppgave til deg + SMS/e-post mal → hvis ikke booket innen 24 t → ny DM/e-post + flytt stage.</p>
+</li>
+<li>
+<p><strong>Meta CAPI robust sporing:</strong><br />
+    Skjemasend/DM-mål → Make server-side event → Meta CAPI (PageView/Lead/Schedule) + dedup med fbp/fbc → bedre ROAS.</p>
+</li>
+<li>
+<p><strong>Service/repair pipeline (butikken):</strong><br />
+    Webskjema → CRM “Intake” → opprett jobbkort (Airtable) → Slack til verksted → SMS til kunde (Brevo) ved statusendring.</p>
+</li>
+<li>
+<p><strong>Villa/booking (villamaleyna.com):</strong><br />
+    Forespørselsskjema → CRM “Inquiry” → auto-e-post m/ priser + <strong>Stripe</strong> deposit-lenke → hvis betalt → send kalenderinvitasjon + husregler → opprett oppgaver for vask/overlevering.</p>
+</li>
+</ol>
+<h1 id="c-rask-implementeringsrekkeflge-123"><strong>C) Rask implementeringsrekkefølge (1–2–3)</strong><a class="headerlink" href="#c-rask-implementeringsrekkeflge-123" title="Permanent link">&para;</a></h1>
+<ol>
+<li>
+<p><strong>Grunnmur:</strong> domener, Cal.com, CRM (GHL/HubSpot), Make, Brevo/Klaviyo, Slack, Airtable.</p>
+</li>
+<li>
+<p><strong>Kanaler:</strong> Manychat (IG/Messenger), Meta CAPI (server-side), GA4/Mixpanel.</p>
+</li>
+<li>
+<p><strong>Flows:</strong> bygg de 5 over + maler (DM, e-post, SMS), pipelines, dashboards.</p>
+</li>
+</ol>
+<h1 id="d-ai-som-lrer-ai-i-praksis-enkelt-startoppsett"><strong>D) “AI som lærer AI” i praksis (enkelt startoppsett)</strong><a class="headerlink" href="#d-ai-som-lrer-ai-i-praksis-enkelt-startoppsett" title="Permanent link">&para;</a></h1>
+<ul>
+<li>
+<p><strong>LangChain + LlamaIndex</strong> på egne dokumenter (SOP, tilbud, scripts).</p>
+</li>
+<li>
+<p><strong>Agent</strong>: <em>Lead Triage Agent</em> (klassifiser henvendelser, foreslå svar), <em>Follow-up Agent</em> (foreslår neste steg + mal).</p>
+</li>
+<li>
+<p><strong>Human-in-the-loop:</strong> godkjenn i Slack før utsendelse de første ukene.</p>
+</li>
+</ul>
+<h1 id="e-sma-viktige-rad-norgeeu"><strong>E) Små, viktige råd (Norge/EU)</strong><a class="headerlink" href="#e-sma-viktige-rad-norgeeu" title="Permanent link">&para;</a></h1>
+<ul>
+<li>
+<p>Bruk <strong>Make</strong> (EU-databehandling) der du kan.</p>
+</li>
+<li>
+<p>Sett opp <strong>CMP/Consent Mode v2</strong> på nettsider for lovlig sporing.</p>
+</li>
+<li>
+<p>Malverk i norsk + engelsk, og hold én <strong>Airtable “Brand Hub”</strong> for alle brands.</p>
+</li>
+</ul>
+<p>Hvis du vil, kan jeg lage:</p>
+<ul>
+<li>
+<p>konkrete <strong>Make-scenarier</strong> (eksportbare),</p>
+</li>
+<li>
+<p>en <strong>Manychat-flow</strong> (JSON), og</p>
+</li>
+<li>
+<p>CRM-pipelines (steg + felter) — alt klart til å lime inn.</p>
+</li>
+</ul>
+
+
+
+
+
+
+
+  
+    
+  
+  
+    
+  
+
+
+  <aside class="md-source-file">
+    
+      
+  <span class="md-source-file__fact">
+    <span class="md-icon" title="Last update">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
+    </span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="September 28, 2025 14:58:32 UTC">September 28, 2025</span>
+  </span>
+
+    
+    
+      
+  <span class="md-source-file__fact">
+    <span class="md-icon" title="Created">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14.47 15.08 11 13V7h1.5v5.25l3.08 1.83c-.41.28-.79.62-1.11 1m-1.39 4.84c-.36.05-.71.08-1.08.08-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8c0 .37-.03.72-.08 1.08.69.1 1.33.32 1.92.64.1-.56.16-1.13.16-1.72 0-5.5-4.5-10-10-10S2 6.5 2 12s4.47 10 10 10c.59 0 1.16-.06 1.72-.16-.32-.59-.54-1.23-.64-1.92M18 15v3h-3v2h3v3h2v-3h3v-2h-3v-3z"/></svg>
+    </span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="September 28, 2025 05:31:50 UTC">September 28, 2025</span>
+  </span>
+
+    
+    
+    
+  </aside>
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2025 Flowstate-AI Team
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/benjidanielsen/Flowstate-AI" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.0.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "content.code.copy", "content.action.edit"], "search": "../../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.f55a23d4.min.js"></script>
+      
+    
+  </body>
+</html>

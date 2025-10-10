@@ -1,0 +1,65 @@
+{
+  "name": "Comment\u2192DM\u2192CRM\u2192Booking",
+  "nodes": [
+    {
+      "id": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "parameters": {
+        "path": "dm",
+        "httpMethod": "POST"
+      }
+    },
+    {
+      "id": "Function",
+      "type": "n8n-nodes-base.function",
+      "parameters": {
+        "function": "// map to contact/deal/events"
+      }
+    },
+    {
+      "id": "HTTP CRM",
+      "type": "n8n-nodes-base.httpRequest",
+      "parameters": {
+        "url": "https://YOUR_CRM/contacts/upsert",
+        "method": "POST"
+      }
+    },
+    {
+      "id": "HTTP Scheduler",
+      "type": "n8n-nodes-base.httpRequest",
+      "parameters": {
+        "url": "https://YOUR_SCHEDULER/links",
+        "method": "POST"
+      }
+    },
+    {
+      "id": "HTTP DM",
+      "type": "n8n-nodes-base.httpRequest",
+      "parameters": {
+        "url": "https://YOUR_DM/messages",
+        "method": "POST"
+      }
+    },
+    {
+      "id": "HTTP CAPI",
+      "type": "n8n-nodes-base.httpRequest",
+      "parameters": {
+        "url": "https://graph.facebook.com/vXX.X/{{pixel}}/events",
+        "method": "POST"
+      }
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Function",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}
