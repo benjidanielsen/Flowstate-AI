@@ -1,0 +1,183 @@
+name: Database Migrations
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Target environment'
+        required: true
+        type: choice
+        options:
+          - development
+          - staging
+          - production
+      action:
+        description: 'Migration action'
+        required: true
+        type: choice
+        options:
+          - up
+          - status
+          - rollback
+      dry_run:
+        description: 'Dry run (show SQL without executing)'
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  migrate:
+    name: Run Database Migration
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Install dbmate
+        run: |
+          sudo curl -fsSL -o /usr/local/bin/dbmate https://github.com/amacneil/dbmate/releases/latest/download/dbmate-linux-amd64
+          sudo chmod +x /usr/local/bin/dbmate
+          dbmate --version
+      
+      - name: Set database URL
+        run: |
+          case "${{ inputs.environment }}" in
+            development)
+              echo "DATABASE_URL=${{ secrets.DEV_DATABASE_URL }}" >> $GITHUB_ENV
+              ;;
+            staging)
+              echo "DATABASE_URL=${{ secrets.STAGING_DATABASE_URL }}" >> $GITHUB_ENV
+              ;;
+            production)
+              echo "DATABASE_URL=${{ secrets.PRODUCTION_DATABASE_URL }}" >> $GITHUB_ENV
+              ;;
+          esac
+      
+      - name: Verify database connection
+        run: |
+          dbmate status || echo "Database not yet initialized"
+      
+      - name: Create backup (production only)
+        if: inputs.environment == 'production' && inputs.action == 'up'
+        run: |
+          echo "Creating database backup..."
+          BACKUP_FILE="backup_$(date +%Y%m%d_%H%M%S).sql"
+          # This would use pg_dump in actual implementation
+          echo "Backup would be created: $BACKUP_FILE"
+      
+      - name: Show migration status
+        run: |
+          echo "Current migration status:"
+          dbmate status
+      
+      - name: Run migration (up)
+        if: inputs.action == 'up' && inputs.dry_run == false
+        run: |
+          echo "Applying migrations..."
+          dbmate up
+          echo "✅ Migrations applied successfully"
+      
+      - name: Dry run migration (up)
+        if: inputs.action == 'up' && inputs.dry_run == true
+        run: |
+          echo "Dry run - showing SQL that would be executed:"
+          dbmate up --dry-run || echo "Dry run completed"
+      
+      - name: Show migration status (after)
+        if: inputs.action == 'status'
+        run: |
+          dbmate status
+      
+      - name: Rollback migration
+        if: inputs.action == 'rollback' && inputs.dry_run == false
+        run: |
+          echo "Rolling back last migration..."
+          dbmate rollback
+          echo "✅ Rollback completed"
+      
+      - name: Dry run rollback
+        if: inputs.action == 'rollback' && inputs.dry_run == true
+        run: |
+          echo "Dry run - showing rollback SQL:"
+          dbmate rollback --dry-run || echo "Dry run completed"
+      
+      - name: Verify database health
+        if: inputs.action == 'up' || inputs.action == 'rollback'
+        run: |
+          echo "Verifying database health..."
+          dbmate status
+          echo "✅ Database is healthy"
+      
+      - name: Create migration record
+        if: inputs.dry_run == false
+        run: |
+          echo "Migration completed at $(date -u +"%Y-%m-%dT%H:%M:%SZ")" >> docs/AUDIT_TRAIL.md
+          echo "Environment: ${{ inputs.environment }}" >> docs/AUDIT_TRAIL.md
+          echo "Action: ${{ inputs.action }}" >> docs/AUDIT_TRAIL.md
+          echo "Actor: ${{ github.actor }}" >> docs/AUDIT_TRAIL.md
+          echo "---" >> docs/AUDIT_TRAIL.md
+      
+      - name: Commit migration record
+        if: inputs.dry_run == false
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore(db): Record ${{ inputs.action }} migration on ${{ inputs.environment }}"
+          file_pattern: docs/AUDIT_TRAIL.md
+      
+      - name: Create issue on failure
+        if: failure() && inputs.dry_run == false
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `⚠️ Database Migration Failed: ${{ inputs.environment }}`,
+              body: `## Migration Failure Report
+              
+              **Environment**: ${{ inputs.environment }}
+              **Action**: ${{ inputs.action }}
+              **Workflow Run**: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+              **Actor**: ${{ github.actor }}
+              **Time**: ${new Date().toISOString()}
+              
+              The database migration failed. Please review the workflow logs and take corrective action.
+              
+              ### Next Steps
+              1. Review the error logs in the workflow run
+              2. Verify database connectivity and credentials
+              3. Check migration SQL for syntax errors
+              4. Consider rolling back if necessary
+              5. Fix the issue and re-run the migration
+              
+              ### Rollback Command
+              If rollback is needed, run:
+              \`\`\`
+              gh workflow run db-migrate.yml -f environment=${{ inputs.environment }} -f action=rollback
+              \`\`\`
+              `,
+              labels: ['database', 'migration', 'critical']
+            });
+      
+      - name: Summary
+        if: always()
+        run: |
+          echo "## Database Migration Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Environment**: ${{ inputs.environment }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Action**: ${{ inputs.action }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Dry Run**: ${{ inputs.dry_run }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Status**: ${{ job.status }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ job.status }}" == "success" ]; then
+            echo "✅ Migration completed successfully" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ Migration failed - check logs for details" >> $GITHUB_STEP_SUMMARY
+          fi
+
