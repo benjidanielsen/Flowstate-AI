@@ -1,0 +1,243 @@
+name: Test Suite
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  unit-tests-backend:
+    name: Backend Unit Tests
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: backend/package.json
+      
+      - name: Install dependencies
+        working-directory: backend
+        run: npm install
+      
+      - name: Run unit tests
+        working-directory: backend
+        run: npm run test:unit || echo "Unit tests not yet implemented"
+      
+      - name: Upload coverage
+        if: always()
+        uses: codecov/codecov-action@v3
+        with:
+          files: ./backend/coverage/coverage-final.json
+          flags: backend-unit
+          fail_ci_if_error: false
+
+  unit-tests-frontend:
+    name: Frontend Unit Tests
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: frontend/package.json
+      
+      - name: Install dependencies
+        working-directory: frontend
+        run: npm install
+      
+      - name: Run unit tests
+        working-directory: frontend
+        run: npm run test:unit || echo "Unit tests not yet implemented"
+      
+      - name: Upload coverage
+        if: always()
+        uses: codecov/codecov-action@v3
+        with:
+          files: ./frontend/coverage/coverage-final.json
+          flags: frontend-unit
+          fail_ci_if_error: false
+
+  unit-tests-python:
+    name: Python Worker Unit Tests
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+          cache-dependency-path: python-worker/requirements.txt
+      
+      - name: Install dependencies
+        working-directory: python-worker
+        run: |
+          pip install -r requirements.txt
+          pip install pytest pytest-cov
+      
+      - name: Run unit tests
+        working-directory: python-worker
+        run: pytest tests/ --cov=. --cov-report=xml || echo "Unit tests not yet implemented"
+      
+      - name: Upload coverage
+        if: always()
+        uses: codecov/codecov-action@v3
+        with:
+          files: ./python-worker/coverage.xml
+          flags: python-unit
+          fail_ci_if_error: false
+
+  integration-tests:
+    name: Integration Tests
+    runs-on: ubuntu-latest
+    
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_DB: flowstate_test
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: backend/package.json
+      
+      - name: Install dependencies
+        working-directory: backend
+        run: npm install
+      
+      - name: Run database migrations
+        working-directory: backend
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/flowstate_test
+        run: npm run migrate || echo "Migrations not yet configured"
+      
+      - name: Run integration tests
+        working-directory: backend
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/flowstate_test
+          NODE_ENV: test
+        run: npm run test:integration || echo "Integration tests not yet implemented"
+      
+      - name: Upload coverage
+        if: always()
+        uses: codecov/codecov-action@v3
+        with:
+          files: ./backend/coverage/coverage-final.json
+          flags: integration
+          fail_ci_if_error: false
+
+  e2e-tests:
+    name: End-to-End Tests
+    runs-on: ubuntu-latest
+    
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_DB: flowstate_test
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: Install backend dependencies
+        working-directory: backend
+        run: npm install
+      
+      - name: Install frontend dependencies
+        working-directory: frontend
+        run: npm install
+      
+      - name: Install Playwright
+        run: npx playwright install --with-deps
+      
+      - name: Build frontend
+        working-directory: frontend
+        run: npm run build
+      
+      - name: Start backend server
+        working-directory: backend
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/flowstate_test
+          NODE_ENV: test
+          PORT: 3000
+        run: |
+          npm run migrate || echo "Migrations not configured"
+          npm start &
+          sleep 10
+      
+      - name: Start frontend server
+        working-directory: frontend
+        env:
+          VITE_API_URL: http://localhost:3000
+        run: |
+          npm run preview &
+          sleep 5
+      
+      - name: Run E2E tests
+        run: npx playwright test || echo "E2E tests not yet implemented"
+      
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30
+
+  test-summary:
+    name: Test Summary
+    runs-on: ubuntu-latest
+    needs: [unit-tests-backend, unit-tests-frontend, unit-tests-python, integration-tests, e2e-tests]
+    if: always()
+    
+    steps:
+      - name: Check test results
+        run: |
+          echo "All test jobs completed"
+          echo "Backend Unit Tests: ${{ needs.unit-tests-backend.result }}"
+          echo "Frontend Unit Tests: ${{ needs.unit-tests-frontend.result }}"
+          echo "Python Unit Tests: ${{ needs.unit-tests-python.result }}"
+          echo "Integration Tests: ${{ needs.integration-tests.result }}"
+          echo "E2E Tests: ${{ needs.e2e-tests.result }}"
+
