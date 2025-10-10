@@ -1,0 +1,43 @@
+name: Dependency Review
+
+on:
+  pull_request:
+    branches:
+      - main
+      - develop
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  dependency-review:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Dependency Review
+        uses: actions/dependency-review-action@v4
+        with:
+          fail-on-severity: high
+          deny-licenses: GPL-2.0, GPL-3.0, AGPL-3.0
+          comment-summary-in-pr: always
+          vulnerability-check: true
+          license-check: true
+          base-ref: ${{ github.event.pull_request.base.sha }}
+          head-ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Generate dependency report
+        if: always()
+        run: |
+          echo "## 📦 Dependency Review Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Dependency review completed for PR #${{ github.event.pull_request.number }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Configuration" >> $GITHUB_STEP_SUMMARY
+          echo "- **Fail on severity:** HIGH or above" >> $GITHUB_STEP_SUMMARY
+          echo "- **Denied licenses:** GPL-2.0, GPL-3.0, AGPL-3.0" >> $GITHUB_STEP_SUMMARY
+          echo "- **Vulnerability check:** ✅ Enabled" >> $GITHUB_STEP_SUMMARY
+          echo "- **License check:** ✅ Enabled" >> $GITHUB_STEP_SUMMARY
+
