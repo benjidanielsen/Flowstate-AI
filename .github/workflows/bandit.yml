@@ -1,0 +1,120 @@
+name: Bandit Security Scan
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+    paths:
+      - '**.py'
+      - 'requirements.txt'
+      - '**/requirements.txt'
+  pull_request:
+    branches:
+      - main
+      - develop
+    paths:
+      - '**.py'
+      - 'requirements.txt'
+      - '**/requirements.txt'
+  schedule:
+    - cron: '0 3 * * 1'  # Weekly on Monday at 3 AM UTC
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  security-events: write
+  actions: read
+
+jobs:
+  bandit:
+    name: Run Bandit Security Scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install Bandit
+        run: |
+          pip install bandit[sarif]
+
+      - name: Run Bandit on root Python files
+        run: |
+          bandit -r . \
+            -f sarif \
+            -o bandit-root-results.sarif \
+            --exclude './venv,./env,./site,./node_modules' \
+            --skip B101,B601
+        continue-on-error: true
+
+      - name: Run Bandit on python-worker
+        run: |
+          if [ -d "python-worker" ]; then
+            bandit -r python-worker \
+              -f sarif \
+              -o bandit-worker-results.sarif \
+              --skip B101,B601
+          fi
+        continue-on-error: true
+
+      - name: Upload root analysis results to GitHub
+        if: always()
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: bandit-root-results.sarif
+          category: bandit-root
+          wait-for-processing: true
+
+      - name: Upload worker analysis results to GitHub
+        if: always() && hashFiles('bandit-worker-results.sarif') != ''
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: bandit-worker-results.sarif
+          category: bandit-worker
+          wait-for-processing: true
+
+      - name: Upload Bandit results as artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bandit-results
+          path: |
+            bandit-root-results.sarif
+            bandit-worker-results.sarif
+          retention-days: 30
+
+      - name: Generate summary
+        if: always()
+        run: |
+          echo "## Bandit Security Scan Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Scan Status" >> $GITHUB_STEP_SUMMARY
+          
+          if [ -f bandit-root-results.sarif ]; then
+            echo "- ✅ Root Python files scan completed" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "- ❌ Root Python files scan failed" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          if [ -f bandit-worker-results.sarif ]; then
+            echo "- ✅ Python worker scan completed" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "- ℹ️ Python worker scan skipped (no python-worker directory)" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Skipped Tests" >> $GITHUB_STEP_SUMMARY
+          echo "- B101: assert_used (common in tests)" >> $GITHUB_STEP_SUMMARY
+          echo "- B601: paramiko_calls (if not using paramiko)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Next Steps" >> $GITHUB_STEP_SUMMARY
+          echo "1. Review findings in the Security tab" >> $GITHUB_STEP_SUMMARY
+          echo "2. Address high-severity issues first" >> $GITHUB_STEP_SUMMARY
+          echo "3. Configure Bandit exclusions in .bandit config if needed" >> $GITHUB_STEP_SUMMARY
+

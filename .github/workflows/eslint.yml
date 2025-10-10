@@ -1,0 +1,124 @@
+name: ESLint Security Scan
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+    paths:
+      - '**.js'
+      - '**.jsx'
+      - '**.ts'
+      - '**.tsx'
+      - '.eslintrc*'
+      - 'package.json'
+  pull_request:
+    branches:
+      - main
+      - develop
+    paths:
+      - '**.js'
+      - '**.jsx'
+      - '**.ts'
+      - '**.tsx'
+      - '.eslintrc*'
+      - 'package.json'
+  schedule:
+    - cron: '0 3 * * 1'  # Weekly on Monday at 3 AM UTC
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  security-events: write
+  actions: read
+
+jobs:
+  eslint:
+    name: Run ESLint Security Scan
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        component: [backend, frontend]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: ${{ matrix.component }}/package.json
+
+      - name: Install dependencies
+        working-directory: ${{ matrix.component }}
+        run: npm install
+
+      - name: Install ESLint and security plugins
+        working-directory: ${{ matrix.component }}
+        run: |
+          npm install --save-dev \
+            eslint \
+            @microsoft/eslint-formatter-sarif \
+            eslint-plugin-security \
+            @typescript-eslint/eslint-plugin \
+            @typescript-eslint/parser
+
+      - name: Run ESLint
+        working-directory: ${{ matrix.component }}
+        run: |
+          npx eslint . \
+            --ext .js,.jsx,.ts,.tsx \
+            --format @microsoft/eslint-formatter-sarif \
+            --output-file eslint-results.sarif
+        continue-on-error: true
+
+      - name: Upload analysis results to GitHub
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: ${{ matrix.component }}/eslint-results.sarif
+          category: eslint-${{ matrix.component }}
+          wait-for-processing: true
+
+      - name: Upload ESLint results as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: eslint-results-${{ matrix.component }}
+          path: ${{ matrix.component }}/eslint-results.sarif
+          retention-days: 30
+
+  summary:
+    name: ESLint Summary
+    needs: eslint
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: eslint-results
+
+      - name: Generate summary
+        run: |
+          echo "## ESLint Security Scan Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Scan Status" >> $GITHUB_STEP_SUMMARY
+          
+          if [ -f eslint-results/eslint-results-backend/eslint-results.sarif ]; then
+            echo "- ✅ Backend scan completed" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "- ❌ Backend scan failed" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          if [ -f eslint-results/eslint-results-frontend/eslint-results.sarif ]; then
+            echo "- ✅ Frontend scan completed" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "- ❌ Frontend scan failed" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Next Steps" >> $GITHUB_STEP_SUMMARY
+          echo "1. Review findings in the Security tab" >> $GITHUB_STEP_SUMMARY
+          echo "2. Address high-severity issues first" >> $GITHUB_STEP_SUMMARY
+          echo "3. Configure ESLint rules as needed" >> $GITHUB_STEP_SUMMARY
+
