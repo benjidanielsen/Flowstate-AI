@@ -1,0 +1,5 @@
+addReviewers: true
+addAssignees: false
+reviewers:
+  - benjidanielsen
+numberOfReviewers: 1

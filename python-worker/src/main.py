@@ -16,6 +16,8 @@ from evolution_framework.evolution_governor import EvolutionGovernor
 from evolution_framework.evolution_manager import FlowstateEvolutionManager
 from evolution_framework.anomaly_detector import AnomalyDetector
 from evolution_framework.metrics_collector import MetricsCollector
+from otel_bootstrap import init_tracing
+from flags import load_flags
 app = FastAPI(title="Flowstate-AI Worker", version="1.0.0")
 # Initialize Evolution Framework components
 metrics_collector = MetricsCollector("python_worker")
@@ -34,6 +36,9 @@ app.add_middleware(
 )
 # Setup logging
 logger = setup_logging(__name__, "python-worker.log")
+
+load_flags()
+init_tracing()
 
 class ReminderRequest(BaseModel):
     customer_id: str

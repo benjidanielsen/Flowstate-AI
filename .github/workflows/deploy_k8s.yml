@@ -1,0 +1,21 @@
+name: deploy-k8s
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: azure/setup-kubectl@v3
+      - name: Write kubeconfig
+        run: |
+          echo "${{ secrets.KUBE_CONFIG }}" > kubeconfig
+          chmod 600 kubeconfig
+      - name: kubectl apply
+        env:
+          KUBECONFIG: ${{ github.workspace }}/kubeconfig
+        run: kubectl apply -k k8s/base

@@ -1,0 +1,43 @@
+name: e2e
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+
+      - name: Install Playwright
+        working-directory: tests/e2e
+        run: |
+          npm ci
+          npx playwright install --with-deps
+
+      - name: Start preview server
+        run: |
+          cd tests/e2e/fixtures
+          python -m http.server 8080 &
+          echo $! > ../../server.pid
+          sleep 3
+
+      - name: Run e2e tests
+        working-directory: tests/e2e
+        env:
+          E2E_BASE_URL: http://localhost:8080
+        run: npx playwright test --reporter=dot
+
+      - name: Shutdown preview server
+        if: always()
+        run: |
+          if [ -f tests/server.pid ]; then
+            kill "$(cat tests/server.pid)" || true
+          elif [ -f tests/e2e/server.pid ]; then
+            kill "$(cat tests/e2e/server.pid)" || true
+          fi

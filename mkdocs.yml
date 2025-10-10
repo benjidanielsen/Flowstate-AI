@@ -1,0 +1,10 @@
+site_name: Flowstate-AI Codex
+theme: { name: material }
+nav:
+  - Home: docs/INDEX.md
+  - Governance: docs/GOVERNANCE.md
+  - Ethics: docs/ETHICS.md
+  - Federation: docs/FEDERATION_CHARTER.md
+  - Oversight: docs/EMERGENT_BEHAVIOUR_OVERSIGHT_AND_CESSATION.md
+  - Audit: docs/AUDIT_TRAIL.md
+markdown_extensions: [admonition, toc, pymdownx.superfences, pymdownx.details]

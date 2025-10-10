@@ -1,6 +1,7 @@
+import dotenv from 'dotenv';
 import express, { Request, Response, NextFunction } from 'express';
 import bodyParser from 'body-parser';
-
+import cors from 'cors';
 import helmet from 'helmet';
 import http from 'http';
 import routes from './routes';
@@ -8,14 +9,25 @@ import performanceMiddleware from './middleware/performanceMiddleware';
 import DatabaseManager from './database';
 import { runMigrations } from './database/migrate';
 import logger from './utils/logger';
+import { startOtel } from './otel';
+import { loadFlags } from './flags';
 
 dotenv.config();
 
+loadFlags();
 const app = express();
 
 let serverRef: http.Server | null = null;
 let isShuttingDown = false;
 let shutdownPromise: Promise<void> | null = null;
+
+let otelReady: Promise<void> | null = null;
+async function ensureOtel() {
+  if (!otelReady) {
+    otelReady = startOtel();
+  }
+  await otelReady;
+}
 
 // Middleware
 app.use(helmet());
@@ -44,6 +56,8 @@ export function createApp() {
 
 export async function startServer() {
   try {
+    await ensureOtel();
+
     // Initialize database
     logger.info('Connecting to database...');
     await DatabaseManager.getInstance().connect();

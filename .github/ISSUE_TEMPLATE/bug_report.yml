@@ -1,0 +1,8 @@
+name: Bug report
+description: Report a bug
+labels: [bug]
+body:
+  - type: textarea
+    id: desc
+    attributes: { label: What happened?, description: Steps, logs }
+    validations: { required: true }
