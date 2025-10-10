@@ -1,0 +1,49 @@
+# Flowstate-AI Code Owners
+# 
+# This file defines individuals or teams responsible for code in this repository.
+# Code owners are automatically requested for review when someone opens a pull request
+# that modifies code that they own.
+#
+# More info: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Default owners for everything in the repo
+* @benjidanielsen
+
+# Backend (Node.js/TypeScript)
+/backend/ @benjidanielsen
+/src/ @benjidanielsen
+
+# Frontend (React)
+/frontend/ @benjidanielsen
+/app/ @benjidanielsen
+
+# Python AI Worker
+/python-worker/ @benjidanielsen
+/flowstate_ai/ @benjidanielsen
+
+# Godmode Dashboard
+/godmode-dashboard/ @benjidanielsen
+/godmode-backend/ @benjidanielsen
+/godmode-frontend/ @benjidanielsen
+
+# Evolution Framework
+/evolution-framework/ @benjidanielsen
+
+# Infrastructure & DevOps
+/docker/ @benjidanielsen
+/k8s/ @benjidanielsen
+/infrastructure/ @benjidanielsen
+/.github/workflows/ @benjidanielsen
+docker-compose.yml @benjidanielsen
+
+# Database
+/db/ @benjidanielsen
+
+# Documentation
+/docs/ @benjidanielsen
+*.md @benjidanielsen
+
+# Security & Configuration
+SECURITY.md @benjidanielsen
+.github/CODEOWNERS @benjidanielsen
+

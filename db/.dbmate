@@ -1,0 +1,17 @@
+# Database migration configuration for dbmate
+# See: https://github.com/amacneil/dbmate
+
+# Database URL (override with DATABASE_URL environment variable)
+# Example: postgresql://user:pass@host:port/dbname?sslmode=disable
+
+# Migrations directory
+migrations: db/migrations
+
+# Schema file location
+schema: db/schema.sql
+
+# Wait for database to become available
+wait: true
+
+# Wait timeout (seconds)
+wait_timeout: 60
