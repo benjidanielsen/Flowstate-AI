@@ -64,12 +64,13 @@ jobs:
           context: ${{ matrix.context }}
           file: ${{ matrix.dockerfile }}
           push: ${{ github.event_name != 'pull_request' }}
-          tags: ghcr.io/${{ github.repository }}:${{ steps.slug.outputs.suffix }}
+          load: ${{ github.event_name == 'pull_request' }}
+          tags: ghcr.io/${{ toLower(github.repository) }}:${{ steps.slug.outputs.suffix }}
 
       - name: Trivy scan image
         uses: aquasecurity/trivy-action@0.20.0
         with:
-          image-ref: ghcr.io/${{ github.repository }}:${{ steps.slug.outputs.suffix }}
+          image-ref: ghcr.io/${{ toLower(github.repository) }}:${{ steps.slug.outputs.suffix }}
           format: 'sarif'
           output: 'trivy-${{ steps.slug.outputs.suffix }}.sarif'
 
