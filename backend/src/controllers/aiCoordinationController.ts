@@ -3,7 +3,7 @@ import { AICoordinationService } from '../services/aiCoordinationService';
 import DatabaseManager from '../database';
 import logger from '../utils/logger';
 
-const aiCoordinationService = new AICoordinationService(DatabaseManager.getInstance().getDb());
+const aiCoordinationService = new AICoordinationService();
 
 export const sendTask = async (req: Request, res: Response) => {
   try {

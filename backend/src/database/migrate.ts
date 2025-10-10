@@ -109,7 +109,6 @@ const migrations = [
       CREATE INDEX IF NOT EXISTS idx_reminders_completed ON reminders(completed);
       CREATE INDEX IF NOT EXISTS idx_event_logs_event_type ON event_logs(event_type);
     `
-  }
   },
   {
     version: 5,

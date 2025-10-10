@@ -1,6 +1,7 @@
 import express, { Request, Response, NextFunction } from 'express';
 import bodyParser from 'body-parser';
-
+import dotenv from 'dotenv';
+import cors from 'cors';
 import helmet from 'helmet';
 import http from 'http';
 import routes from './routes';

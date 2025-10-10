@@ -42,6 +42,7 @@ export class FollowUpService {
                   scheduled_for: new Date(row.scheduled_for),
                   completed: Boolean(row.completed),
                   created_at: new Date(row.created_at),
+                  updated_at: new Date(row.updated_at),
                 });
               } else {
                 reject(new Error("Failed to retrieve created reminder."));

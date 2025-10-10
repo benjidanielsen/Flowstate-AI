@@ -3,7 +3,7 @@ import { ExternalIntegrationService } from '../services/externalIntegrationServi
 import DatabaseManager from '../database';
 import logger from '../utils/logger';
 
-const externalIntegrationService = new ExternalIntegrationService(DatabaseManager.getInstance().getDb());
+const externalIntegrationService = new ExternalIntegrationService();
 
 export const createIntegration = async (req: Request, res: Response) => {
   try {

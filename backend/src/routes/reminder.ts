@@ -1,11 +1,11 @@
 import { Router } from 'express';
 import { ReminderController } from '../controllers/reminderController';
-import { authMiddleware } from '../middleware/authMiddleware';
+import { authenticateToken } from '../middleware/authMiddleware';
 
 const router = Router();
 const reminderController = new ReminderController();
 
-router.use(authMiddleware); // All reminder routes require authentication
+router.use(authenticateToken); // All reminder routes require authentication
 
 router.get('/due', reminderController.listDue);
 router.post('/', reminderController.create);
