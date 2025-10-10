@@ -1,0 +1,65 @@
+name: Build and Scan Docker Images
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        ctx:
+          - .
+          - ./backend
+          - ./frontend
+          - ./python-worker
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Derive sanitized image name
+        id: metadata
+        run: |
+          ctx="${{ matrix.ctx }}"
+          clean="$ctx"
+          clean="${clean#./}"
+          clean="${clean#.}"
+          clean="${clean#/}"
+          clean="${clean//\//-}"
+          clean="${clean//./-}"
+          if [ -z "$clean" ]; then
+            clean="root"
+          fi
+          image_ref="ghcr.io/${{ github.repository }}:$clean"
+          echo "sanitized=$clean" >> "$GITHUB_OUTPUT"
+          echo "image_ref=$image_ref" >> "$GITHUB_OUTPUT"
+
+      - name: Build and push image
+        uses: docker/build-push-action@v6
+        with:
+          context: ${{ matrix.ctx }}
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.metadata.outputs.image_ref }}
+
+      - name: Scan image with Trivy
+        uses: aquasecurity/trivy-action@0.20.0
+        with:
+          image-ref: ${{ steps.metadata.outputs.image_ref }}
+          format: table
+          ignore-unfixed: true
