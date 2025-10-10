@@ -1,0 +1,31 @@
+name: backup-db
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '7 2 * * *'
+
+permissions:
+  contents: write
+
+jobs:
+  dump:
+    runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: ${{ secrets.PROD_DATABASE_URL }}
+    steps:
+      - name: Install client tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y postgresql-client
+
+      - name: Dump database
+        run: |
+          set -euo pipefail
+          pg_dump "$DATABASE_URL" --format=custom --file=db.dump --no-owner
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: db-backup
+          path: db.dump
+          retention-days: 14

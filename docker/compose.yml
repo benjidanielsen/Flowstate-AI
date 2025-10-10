@@ -1,0 +1,38 @@
+services:
+  backend:
+    image: ghcr.io/${GH_IMAGE_NS:-${GITHUB_REPOSITORY}}-backend:${APP_TAG:-latest}
+    restart: unless-stopped
+    env_file: [ ./.env.shared, ./.env.runtime ]
+    ports: [ "3000:3000" ]
+    depends_on: [ db ]
+  worker:
+    image: ghcr.io/${GH_IMAGE_NS:-${GITHUB_REPOSITORY}}-python-worker:${APP_TAG:-latest}
+    restart: unless-stopped
+    env_file: [ ./.env.shared, ./.env.runtime ]
+    depends_on: [ db, backend ]
+  frontend:
+    image: ghcr.io/${GH_IMAGE_NS:-${GITHUB_REPOSITORY}}-frontend:${APP_TAG:-latest}
+    restart: unless-stopped
+    env_file: [ ./.env.shared, ./.env.runtime ]
+    ports: [ "8080:8080" ]
+    depends_on: [ backend ]
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-flowstate}
+      POSTGRES_USER: ${POSTGRES_USER:-flow}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-flow}
+    volumes:
+      - dbdata:/var/lib/postgresql/data
+    ports: [ "5432:5432" ]
+  otel-collector:
+    image: otel/opentelemetry-collector:0.100.0
+    command: [ "--config=/etc/otel-collector.yaml" ]
+    volumes:
+      - ./otel-collector.yaml:/etc/otel-collector.yaml:ro
+    ports: [ "4317:4317", "4318:4318" ]
+    restart: unless-stopped
+
+volumes:
+  dbdata:

@@ -1,0 +1,16 @@
+frontend:
+  - "frontend/**"
+backend:
+  - "backend/**"
+python:
+  - "python-worker/**"
+  - "godmode-dashboard/**"
+docs:
+  - "docs/**"
+  - "mkdocs.yml"
+ci:
+  - ".github/**"
+  - "scripts/**"
+security:
+  - "SECURITY.md"
+  - ".github/dependabot.yml"

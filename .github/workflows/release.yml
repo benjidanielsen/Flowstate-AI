@@ -1,0 +1,68 @@
+name: release
+on:
+  push:
+    tags: ['v*.*.*']
+
+permissions:
+  contents: write
+  id-token: write
+  packages: read
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    outputs:
+      zip_subject: ${{ steps.checksums.outputs.zip_subject }}
+      sbom_subject: ${{ steps.checksums.outputs.sbom_subject }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build master ZIP + manifest
+        run: python3 scripts/build_master_zip.py
+
+      - name: SBOM (SPDX)
+        uses: anchore/sbom-action@v0
+        with:
+          path: .
+          format: spdx-json
+          output-file: SBOM.spdx.json
+
+      - name: Checksums
+        id: checksums
+        run: |
+          set -euo pipefail
+          zip_sha=$(sha256sum Flowstate-AI_Codex_v1.0_Master.zip | tee Flowstate-AI_Codex_v1.0_Master_SHA256.txt | awk '{print $1}')
+          sbom_sha=$(sha256sum SBOM.spdx.json | awk '{print $1}')
+          zip_subject=$(printf 'sha256:%s' "$zip_sha" | base64 -w0)
+          sbom_subject=$(printf 'sha256:%s' "$sbom_sha" | base64 -w0)
+          echo "zip_subject=$zip_subject" >> "$GITHUB_OUTPUT"
+          echo "sbom_subject=$sbom_subject" >> "$GITHUB_OUTPUT"
+
+      - name: Install cosign
+        uses: sigstore/cosign-installer@v3
+
+      - name: Sign ZIP
+        run: cosign sign-blob --yes --output-signature Flowstate-AI_Codex_v1.0_Master.zip.sig Flowstate-AI_Codex_v1.0_Master.zip
+
+      - name: Sign SBOM
+        run: cosign sign-blob --yes --output-signature SBOM.spdx.json.sig SBOM.spdx.json
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            Flowstate-AI_Codex_v1.0_Master.zip
+            Flowstate-AI_Codex_v1.0_Master_SHA256.txt
+            SBOM.spdx.json
+            Flowstate-AI_Codex_v1.0_Master.zip.sig
+            SBOM.spdx.json.sig
+
+  provenance:
+    needs: build-and-release
+    if: ${{ needs.build-and-release.outputs.zip_subject != '' }}
+    uses: slsa-framework/slsa-github-generator/.github/workflows/generator_generic_slsa3.yml@v2.0.0
+    with:
+      upload-assets: true
+      base64-subjects: |
+        ${{ needs.build-and-release.outputs.zip_subject }}
+        ${{ needs.build-and-release.outputs.sbom_subject }}

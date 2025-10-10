@@ -1,0 +1,8 @@
+version: 1
+flags:
+  new_onboarding:
+    description: "Enable the new onboarding flow"
+    default: false
+  ai_power_mode:
+    description: "Experimental AI features"
+    default: false

@@ -1,0 +1,88 @@
+name: deploy-staging
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: "Git ref (branch, tag, or SHA) to deploy"
+        required: true
+        default: main
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-staging
+  cancel-in-progress: true
+
+env:
+  TARGET_DIR: /opt/flowstate-ai/staging
+  COMPOSE_FILE: docker/compose.yml
+  ENV_FILE: docker/.env.staging
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: staging
+      url: ${{ steps.out.outputs.app_url || '' }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.ref }}
+
+      - name: Prepare bundle
+        run: |
+          mkdir -p .bundle
+          rsync -a docker/ .bundle/docker/
+
+      - name: Ensure target directory exists
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.STAGING_SSH_HOST }}
+          username: ${{ secrets.STAGING_SSH_USER }}
+          key: ${{ secrets.STAGING_SSH_KEY }}
+          port: ${{ secrets.STAGING_SSH_PORT || 22 }}
+          script: |
+            mkdir -p $TARGET_DIR
+        env:
+          TARGET_DIR: ${{ env.TARGET_DIR }}
+
+      - name: Push bundle
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.STAGING_SSH_HOST }}
+          username: ${{ secrets.STAGING_SSH_USER }}
+          key: ${{ secrets.STAGING_SSH_KEY }}
+          port: ${{ secrets.STAGING_SSH_PORT || 22 }}
+          source: ".bundle/*"
+          target: "${{ env.TARGET_DIR }}"
+
+      - name: Compose up
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.STAGING_SSH_HOST }}
+          username: ${{ secrets.STAGING_SSH_USER }}
+          key: ${{ secrets.STAGING_SSH_KEY }}
+          port: ${{ secrets.STAGING_SSH_PORT || 22 }}
+          script_stop: true
+          script: |
+            set -euo pipefail
+            cd $TARGET_DIR
+            if [ -n "${{ secrets.GHCR_READ_TOKEN || '' }}" ]; then
+              echo "${{ secrets.GHCR_READ_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+            fi
+            if [ -f $ENV_FILE ]; then
+              set -a
+              . $ENV_FILE
+              set +a
+            fi
+            docker compose -f $COMPOSE_FILE --env-file $ENV_FILE pull
+            docker compose -f $COMPOSE_FILE --env-file $ENV_FILE up -d --remove-orphans
+            docker compose -f $COMPOSE_FILE --env-file $ENV_FILE ps
+        env:
+          TARGET_DIR: ${{ env.TARGET_DIR }}
+          COMPOSE_FILE: ${{ env.COMPOSE_FILE }}
+          ENV_FILE: ${{ env.ENV_FILE }}
+
+      - id: out
+        run: echo "app_url=${{ secrets.STAGING_APP_URL || '' }}" >> "$GITHUB_OUTPUT"

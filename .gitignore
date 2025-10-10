@@ -73,3 +73,15 @@ playwright/.cache/
 
 # Databases
 *.db
+
+# Repo hygiene additions
+.venv/
+venv/
+__pycache__/
+*.pyc
+node_modules/
+dist/
+build/
+.DS_Store
+*.log
+coverage/

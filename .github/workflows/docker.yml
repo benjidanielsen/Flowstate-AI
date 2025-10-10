@@ -1,0 +1,81 @@
+name: docker
+on:
+  push:
+    tags: ['v*.*.*']
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  packages: write
+  id-token: write
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NS: ${{ github.repository }}
+
+jobs:
+  discover-dockerfiles:
+    runs-on: ubuntu-latest
+    outputs:
+      dockerfiles: ${{ steps.find.outputs.list }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: find
+        run: |
+          python3 - <<'PY'
+          import os, json
+          res = []
+          for root, _, files in os.walk('.'):
+              if 'Dockerfile' in files:
+                  res.append(root)
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as fh:
+              fh.write('list=' + json.dumps(sorted(res)) + '\n')
+          PY
+
+  build:
+    needs: discover-dockerfiles
+    if: ${{ needs.discover-dockerfiles.outputs.dockerfiles != '[]' }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        ctx: ${{ fromJson(needs.discover-dockerfiles.outputs.dockerfiles) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-qemu-action@v3
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Derive image name
+        id: meta
+        run: |
+          ctx='${{ matrix.ctx }}'
+          name="${ctx#./}"
+          name="${name#/}"
+          name="${name//\//-}"
+          [ -z "$name" ] && name="root"
+          echo "name=$name" >> "$GITHUB_OUTPUT"
+
+      - uses: sigstore/cosign-installer@v3
+
+      - name: Build & push ${{ steps.meta.outputs.name }}
+        uses: docker/build-push-action@v6
+        with:
+          context: ${{ matrix.ctx }}
+          tags: ghcr.io/${{ env.IMAGE_NS }}-${{ steps.meta.outputs.name }}:${{ github.ref_name }}
+          push: true
+
+      - name: Sign image (keyless)
+        run: |
+          cosign sign --yes ghcr.io/${{ env.IMAGE_NS }}-${{ steps.meta.outputs.name }}:${{ github.ref_name }}
+
+      - name: Trivy scan image
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          image-ref: ghcr.io/${{ env.IMAGE_NS }}-${{ steps.meta.outputs.name }}:${{ github.ref_name }}
+          format: table
+          exit-code: '0'

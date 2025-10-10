@@ -1,0 +1,24 @@
+name: migrate
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: "staging|production"
+        required: true
+        default: staging
+
+permissions:
+  contents: read
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: ${{ github.event.inputs.target == 'production' && secrets.PROD_DATABASE_URL || secrets.STAGING_DATABASE_URL }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run dbmate
+        uses: amacneil/dbmate-action@v1
+        with:
+          database_url: ${{ env.DATABASE_URL }}
+          migrate: true
