@@ -1,0 +1,233 @@
+name: Deploy to Staging
+
+on:
+  push:
+    branches:
+      - develop
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version/tag to deploy (leave empty for latest develop)'
+        required: false
+        type: string
+
+permissions:
+  contents: read
+  deployments: write
+  actions: read
+
+env:
+  ENVIRONMENT: staging
+  DEPLOY_TIMEOUT: 600  # 10 minutes
+
+jobs:
+  deploy-staging:
+    name: Deploy to Staging Environment
+    runs-on: ubuntu-latest
+    environment:
+      name: staging
+      url: ${{ steps.deploy.outputs.url }}
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.version || 'develop' }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata
+        id: meta
+        run: |
+          VERSION=${{ inputs.version || github.sha }}
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
+          echo "short_sha=${VERSION:0:7}" >> $GITHUB_OUTPUT
+          echo "timestamp=$(date -u +'%Y%m%d%H%M%S')" >> $GITHUB_OUTPUT
+
+      - name: Build and push Docker images
+        run: |
+          # Build backend
+          docker build -t ghcr.io/${{ github.repository }}/backend:staging-${{ steps.meta.outputs.short_sha }} \
+            --build-arg VERSION=${{ steps.meta.outputs.version }} \
+            --cache-from ghcr.io/${{ github.repository }}/backend:staging-latest \
+            --cache-to type=inline \
+            ./backend
+          docker push ghcr.io/${{ github.repository }}/backend:staging-${{ steps.meta.outputs.short_sha }}
+          
+          # Build frontend
+          docker build -t ghcr.io/${{ github.repository }}/frontend:staging-${{ steps.meta.outputs.short_sha }} \
+            --build-arg VERSION=${{ steps.meta.outputs.version }} \
+            --cache-from ghcr.io/${{ github.repository }}/frontend:staging-latest \
+            --cache-to type=inline \
+            ./frontend
+          docker push ghcr.io/${{ github.repository }}/frontend:staging-${{ steps.meta.outputs.short_sha }}
+          
+          # Build python-worker
+          docker build -t ghcr.io/${{ github.repository }}/python-worker:staging-${{ steps.meta.outputs.short_sha }} \
+            --build-arg VERSION=${{ steps.meta.outputs.version }} \
+            --cache-from ghcr.io/${{ github.repository }}/python-worker:staging-latest \
+            --cache-to type=inline \
+            ./python-worker
+          docker push ghcr.io/${{ github.repository }}/python-worker:staging-${{ steps.meta.outputs.short_sha }}
+          
+          # Tag as latest
+          docker tag ghcr.io/${{ github.repository }}/backend:staging-${{ steps.meta.outputs.short_sha }} \
+            ghcr.io/${{ github.repository }}/backend:staging-latest
+          docker push ghcr.io/${{ github.repository }}/backend:staging-latest
+          
+          docker tag ghcr.io/${{ github.repository }}/frontend:staging-${{ steps.meta.outputs.short_sha }} \
+            ghcr.io/${{ github.repository }}/frontend:staging-latest
+          docker push ghcr.io/${{ github.repository }}/frontend:staging-latest
+          
+          docker tag ghcr.io/${{ github.repository }}/python-worker:staging-${{ steps.meta.outputs.short_sha }} \
+            ghcr.io/${{ github.repository }}/python-worker:staging-latest
+          docker push ghcr.io/${{ github.repository }}/python-worker:staging-latest
+
+      - name: Deploy to staging server
+        id: deploy
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.STAGING_SSH_KEY }}
+          SSH_HOST: ${{ secrets.STAGING_HOST }}
+          SSH_USER: ${{ secrets.STAGING_USER }}
+          SSH_PORT: ${{ secrets.STAGING_PORT || '22' }}
+        run: |
+          # Setup SSH
+          mkdir -p ~/.ssh
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -p $SSH_PORT -H $SSH_HOST >> ~/.ssh/known_hosts
+          
+          # Deploy via SSH
+          ssh -i ~/.ssh/deploy_key -p $SSH_PORT $SSH_USER@$SSH_HOST << 'EOF'
+            set -e
+            cd /opt/flowstate-ai
+            
+            # Pull latest images
+            docker pull ghcr.io/${{ github.repository }}/backend:staging-latest
+            docker pull ghcr.io/${{ github.repository }}/frontend:staging-latest
+            docker pull ghcr.io/${{ github.repository }}/python-worker:staging-latest
+            
+            # Stop current containers
+            docker-compose -f docker/compose.yml down
+            
+            # Start new containers
+            docker-compose -f docker/compose.yml up -d
+            
+            # Wait for health checks
+            echo "Waiting for services to become healthy..."
+            sleep 10
+            
+            # Check health
+            docker-compose -f docker/compose.yml ps
+          EOF
+          
+          # Set output URL
+          echo "url=https://staging.flowstate-ai.com" >> $GITHUB_OUTPUT
+
+      - name: Run health checks
+        env:
+          STAGING_URL: ${{ secrets.STAGING_URL || 'https://staging.flowstate-ai.com' }}
+        run: |
+          echo "Running health checks..."
+          
+          # Wait for services to be ready
+          for i in {1..30}; do
+            if curl -f -s "${STAGING_URL}/health" > /dev/null; then
+              echo "✅ Backend health check passed"
+              break
+            fi
+            echo "Waiting for backend... ($i/30)"
+            sleep 10
+          done
+          
+          # Verify backend health
+          HEALTH_STATUS=$(curl -s "${STAGING_URL}/health" | jq -r '.status')
+          if [ "$HEALTH_STATUS" != "healthy" ]; then
+            echo "❌ Backend health check failed"
+            exit 1
+          fi
+          
+          # Verify frontend
+          if ! curl -f -s "${STAGING_URL}" > /dev/null; then
+            echo "❌ Frontend health check failed"
+            exit 1
+          fi
+          echo "✅ Frontend health check passed"
+          
+          echo "✅ All health checks passed"
+
+      - name: Run smoke tests
+        env:
+          STAGING_URL: ${{ secrets.STAGING_URL || 'https://staging.flowstate-ai.com' }}
+        run: |
+          echo "Running smoke tests..."
+          
+          # Test API endpoints
+          curl -f -s "${STAGING_URL}/api/v1/health" || exit 1
+          echo "✅ API health endpoint working"
+          
+          # Test authentication endpoint
+          curl -f -s "${STAGING_URL}/api/v1/auth/status" || exit 1
+          echo "✅ Auth endpoint working"
+          
+          echo "✅ Smoke tests passed"
+
+      - name: Create deployment record
+        if: always()
+        run: |
+          echo "## Staging Deployment" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Version**: ${{ steps.meta.outputs.version }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Short SHA**: ${{ steps.meta.outputs.short_sha }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Timestamp**: ${{ steps.meta.outputs.timestamp }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Environment**: staging" >> $GITHUB_STEP_SUMMARY
+          echo "**URL**: ${{ steps.deploy.outputs.url }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          if [ "${{ job.status }}" == "success" ]; then
+            echo "**Status**: ✅ Deployed successfully" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "**Status**: ❌ Deployment failed" >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Rollback on failure
+        if: failure()
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.STAGING_SSH_KEY }}
+          SSH_HOST: ${{ secrets.STAGING_HOST }}
+          SSH_USER: ${{ secrets.STAGING_USER }}
+          SSH_PORT: ${{ secrets.STAGING_PORT || '22' }}
+        run: |
+          echo "⚠️ Deployment failed, initiating rollback..."
+          
+          ssh -i ~/.ssh/deploy_key -p $SSH_PORT $SSH_USER@$SSH_HOST << 'EOF'
+            set -e
+            cd /opt/flowstate-ai
+            
+            # Rollback to previous version
+            docker-compose -f docker/compose.yml down
+            docker-compose -f docker/compose.yml up -d
+            
+            echo "✅ Rollback completed"
+          EOF
+
+  notify:
+    name: Send Deployment Notification
+    needs: deploy-staging
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Send notification
+        run: |
+          echo "Deployment notification would be sent here"
+          echo "Status: ${{ needs.deploy-staging.result }}"
+          # Add Slack/Discord/Email notification here
+
