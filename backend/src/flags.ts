@@ -1,11 +1,26 @@
 import fs from 'fs';
+import path from 'path';
 import yaml from 'js-yaml';
 
 type FlagMap = Record<string, boolean>;
 let flags: FlagMap = {};
 
-export function loadFlags(path = 'config/flags.yaml') {
-  const contents = fs.readFileSync(path, 'utf8');
+const DEFAULT_LOCATIONS = [
+  path.resolve(process.cwd(), 'config/flags.yaml'),
+  path.resolve(__dirname, '../../config/flags.yaml'),
+  path.resolve(__dirname, '../config/flags.yaml'),
+];
+
+export function loadFlags(filePath?: string) {
+  const candidatePaths = filePath ? [filePath] : DEFAULT_LOCATIONS;
+  const resolvedPath = candidatePaths.find((candidate) => fs.existsSync(candidate));
+
+  if (!resolvedPath) {
+    flags = {};
+    return;
+  }
+
+  const contents = fs.readFileSync(resolvedPath, 'utf8');
   const doc = yaml.load(contents) as any;
   const items = (doc?.flags ?? {}) as Record<string, { default?: boolean }>;
   flags = Object.fromEntries(
