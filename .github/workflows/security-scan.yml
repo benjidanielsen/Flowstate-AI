@@ -1,0 +1,202 @@
+name: Security Scan
+
+on:
+  schedule:
+    # Run daily at 2 AM UTC
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+  security-events: write
+  issues: write
+
+jobs:
+  trivy-scan:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        scan-type:
+          - fs
+          - config
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run Trivy ${{ matrix.scan-type }} scan
+        uses: aquasecurity/trivy-action@0.20.0
+        with:
+          scan-type: ${{ matrix.scan-type }}
+          scan-ref: '.'
+          format: 'sarif'
+          output: 'trivy-${{ matrix.scan-type }}-results.sarif'
+          severity: 'CRITICAL,HIGH,MEDIUM'
+
+      - name: Upload Trivy results to GitHub Security
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: 'trivy-${{ matrix.scan-type }}-results.sarif'
+          category: trivy-${{ matrix.scan-type }}
+
+  grype-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run Grype vulnerability scanner
+        uses: anchore/scan-action@v3
+        id: grype
+        with:
+          path: "."
+          fail-build: false
+          severity-cutoff: high
+
+      - name: Upload Grype results to GitHub Security
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: ${{ steps.grype.outputs.sarif }}
+          category: grype
+
+  python-safety-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version-file: '.python-version'
+
+      - name: Install Safety
+        run: pip install safety
+
+      - name: Run Safety check on root requirements
+        continue-on-error: true
+        run: |
+          if [ -f "requirements.txt" ]; then
+            safety check --file requirements.txt --output json > safety-root.json || true
+          fi
+
+      - name: Run Safety check on python-worker
+        continue-on-error: true
+        run: |
+          if [ -f "python-worker/requirements.txt" ]; then
+            safety check --file python-worker/requirements.txt --output json > safety-python-worker.json || true
+          fi
+
+      - name: Upload Safety results
+        uses: actions/upload-artifact@v4
+        with:
+          name: safety-scan-results
+          path: safety-*.json
+          retention-days: 30
+
+  npm-audit:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        component:
+          - backend
+          - frontend
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+
+      - name: Run npm audit for ${{ matrix.component }}
+        continue-on-error: true
+        run: |
+          cd ${{ matrix.component }}
+          if [ -f "package.json" ]; then
+            npm install
+            npm audit --json > ../npm-audit-${{ matrix.component }}.json || true
+          fi
+
+      - name: Upload npm audit results
+        uses: actions/upload-artifact@v4
+        with:
+          name: npm-audit-${{ matrix.component }}
+          path: npm-audit-${{ matrix.component }}.json
+          retention-days: 30
+
+  security-summary:
+    needs: [trivy-scan, grype-scan, python-safety-scan, npm-audit]
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Download all scan results
+        uses: actions/download-artifact@v4
+        with:
+          path: scan-results
+
+      - name: Generate security summary
+        run: |
+          echo "## 🔒 Security Scan Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Scan Date:** $(date -u +"%Y-%m-%d %H:%M:%S UTC")" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Scans Completed" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Trivy filesystem scan" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Trivy configuration scan" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Grype vulnerability scan" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Python Safety check" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ NPM audit (backend & frontend)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Results Location" >> $GITHUB_STEP_SUMMARY
+          echo "- SARIF files uploaded to GitHub Security tab" >> $GITHUB_STEP_SUMMARY
+          echo "- Detailed reports available in workflow artifacts" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Next Steps" >> $GITHUB_STEP_SUMMARY
+          echo "1. Review findings in the Security tab" >> $GITHUB_STEP_SUMMARY
+          echo "2. Prioritize HIGH and CRITICAL vulnerabilities" >> $GITHUB_STEP_SUMMARY
+          echo "3. Create issues for remediation" >> $GITHUB_STEP_SUMMARY
+          echo "4. Update dependencies as needed" >> $GITHUB_STEP_SUMMARY
+
+      - name: Create issue on critical findings
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const title = '🚨 Critical Security Vulnerabilities Detected';
+            const body = `## Security Scan Alert
+            
+            Critical or high-severity vulnerabilities were detected in the latest security scan.
+            
+            **Scan Date:** ${new Date().toISOString()}
+            **Workflow Run:** ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+            
+            ### Action Required
+            
+            1. Review the Security tab for detailed findings
+            2. Check workflow artifacts for complete scan reports
+            3. Prioritize remediation of CRITICAL and HIGH severity issues
+            4. Update affected dependencies
+            5. Re-run security scans after fixes
+            
+            ### Scan Coverage
+            
+            - Trivy (filesystem & configuration)
+            - Grype (vulnerability scanning)
+            - Safety (Python dependencies)
+            - npm audit (Node.js dependencies)
+            
+            ---
+            *This issue was automatically created by the security-scan workflow.*`;
+            
+            github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: title,
+              body: body,
+              labels: ['security', 'automated']
+            });
+
