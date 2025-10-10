@@ -1,0 +1,45 @@
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+
+processors:
+  batch:
+    timeout: 10s
+    send_batch_size: 1024
+
+exporters:
+  # Logging exporter for development/debugging
+  logging:
+    loglevel: info
+  
+  # File exporter for local persistence
+  file:
+    path: /var/log/otel/traces.json
+  
+  # Uncomment and configure for production observability backends
+  # otlp:
+  #   endpoint: your-observability-backend:4317
+  #   tls:
+  #     insecure: false
+
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [logging, file]
+    
+    metrics:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [logging, file]
+    
+    logs:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [logging, file]
+

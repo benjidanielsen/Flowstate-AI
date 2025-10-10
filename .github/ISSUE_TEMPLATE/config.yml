@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Security Vulnerability
+    url: https://github.com/benjidanielsen/Flowstate-AI/security
+    about: Please report security vulnerabilities through GitHub Security Advisories
+  - name: Documentation
+    url: https://benjidanielsen.github.io/Flowstate-AI/
+    about: Visit our documentation portal for guides and references

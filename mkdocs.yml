@@ -1,0 +1,99 @@
+site_name: Flowstate-AI Documentation
+site_description: AI-first, self-improving CRM-OS for network marketers and solo founders
+site_author: Flowstate-AI Team
+site_url: https://benjidanielsen.github.io/Flowstate-AI/
+
+repo_name: benjidanielsen/Flowstate-AI
+repo_url: https://github.com/benjidanielsen/Flowstate-AI
+edit_uri: edit/main/docs/
+
+theme:
+  name: material
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+    - content.action.edit
+
+plugins:
+  - search
+  - git-revision-date-localized:
+      enable_creation_date: true
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.tabbed:
+      alternate_style: true
+  - tables
+  - attr_list
+  - md_in_html
+  - toc:
+      permalink: true
+
+nav:
+  - Home: INDEX.md
+  - Getting Started:
+      - Overview: README.md
+      - Deployment Guide: DEPLOYMENT_GUIDE.md
+      - System Architecture: SYSTEM_ARCHITECTURE.md
+  - Governance:
+      - Governance Framework: GOVERNANCE.md
+      - Ethics Policy: ETHICS.md
+      - Federation Charter: FEDERATION_CHARTER.md
+      - Emergent Behaviour Oversight: EMERGENT_BEHAVIOUR_OVERSIGHT_AND_CESSATION.md
+  - Operations:
+      - Operations Runbook: OPS_RUNBOOK.md
+      - Disaster Recovery Runbook: DR_RUNBOOK.md
+      - Service Level Objectives: SLOS.md
+      - Audit Trail: AUDIT_TRAIL.md
+  - Development:
+      - Coding Standards: CODING_STANDARDS.md
+      - Architecture Decision Records: adr/
+      - Roadmap: ROADMAP.md
+      - Changelog: CHANGELOG.md
+      - Quality Metrics: QUALITY.md
+  - Risk & Compliance:
+      - Risk Register: RISK_REGISTER.md
+      - Security Policy: ../SECURITY.md
+  - Federation:
+      - Federation Checklist: FEDERATION_CHECKLIST.md
+      - Revocation Process: REVOCATION.md
+  - API Documentation:
+      - API Overview: api/
+  - Integrations:
+      - Integration Guide: integrations/
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/benjidanielsen/Flowstate-AI
+  version:
+    provider: mike
+
+copyright: Copyright &copy; 2025 Flowstate-AI Team
+
