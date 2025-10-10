@@ -1,4 +1,3 @@
-import { Kysely } from 'kysely';
 import { Database } from '../types';
 import logger from '../utils/logger';
 import axios from 'axios';
@@ -6,7 +5,7 @@ import axios from 'axios';
 export class AICoordinationService {
   private pythonWorkerUrl: string;
 
-  constructor(private db: Kysely<Database>) {
+  constructor() {
     this.pythonWorkerUrl = process.env.PYTHON_WORKER_URL || 'http://localhost:8000'; // Default to local FastAPI
   }
 

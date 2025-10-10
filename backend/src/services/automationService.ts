@@ -1,4 +1,5 @@
 import { ReminderService } from './reminderService';
+import { ReminderType } from '../types';
 
 export class AutomationService {
   private reminderService = new ReminderService();
@@ -13,12 +14,12 @@ export class AutomationService {
 
     switch (name) {
       case 'VIDEO_SENT':
-        await this.reminderService.createReminder({ customer_id: customerId, type: 'follow_up_24h', message: 'Follow up after video sent (24h)', scheduled_for: inHours(24) });
-        await this.reminderService.createReminder({ customer_id: customerId, type: 'follow_up_48h', message: 'Follow up after video sent (48h)', scheduled_for: inHours(48) });
+        await this.reminderService.createReminder({ customer_id: customerId, type: ReminderType.FOLLOW_UP_24H, message: 'Follow up after video sent (24h)', scheduled_for: inHours(24) });
+        await this.reminderService.createReminder({ customer_id: customerId, type: ReminderType.FOLLOW_UP_48H, message: 'Follow up after video sent (48h)', scheduled_for: inHours(48) });
         break;
       case 'NO_SHOW':
-        await this.reminderService.createReminder({ customer_id: customerId, type: 'follow_up_2h', message: 'Follow up after no-show (2h)', scheduled_for: inHours(2) });
-        await this.reminderService.createReminder({ customer_id: customerId, type: 'follow_up_1d', message: 'Follow up after no-show (1d)', scheduled_for: inDays(1) });
+        await this.reminderService.createReminder({ customer_id: customerId, type: ReminderType.FOLLOW_UP_2H, message: 'Follow up after no-show (2h)', scheduled_for: inHours(2) });
+        await this.reminderService.createReminder({ customer_id: customerId, type: ReminderType.FOLLOW_UP_1D, message: 'Follow up after no-show (1d)', scheduled_for: inDays(1) });
         break;
       default:
         break;

@@ -161,8 +161,8 @@ export class ReminderService {
   }): Promise<Reminder | null> {
     const db = DatabaseManager.getInstance().getDb();
     const now = new Date().toISOString();
-    const fields = [];
-    const values = [];
+    const fields: string[] = [];
+    const values: any[] = [];
 
     if (data.type) { fields.push('type = ?'); values.push(data.type); }
     if (data.message) { fields.push('message = ?'); values.push(data.message); }
@@ -176,11 +176,12 @@ export class ReminderService {
     values.push(now);
     values.push(id);
 
+    const self = this;
     return new Promise((resolve, reject) => {
       db.run(`UPDATE reminders SET ${fields.join(', ')} WHERE id = ?`, values, function(err) {
         if (err) return reject(err);
         if (this.changes > 0) {
-          this.getReminderById(id).then(resolve).catch(reject);
+          self.getReminderById(id).then(resolve).catch(reject);
         } else {
           resolve(null);
         }
