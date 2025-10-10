@@ -1,0 +1,181 @@
+name: Documentation
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'docs/**'
+      - 'mkdocs.yml'
+      - '.github/workflows/docs.yml'
+  pull_request:
+    paths:
+      - 'docs/**'
+      - 'mkdocs.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build Documentation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Fetch all history for git-revision-date-localized plugin
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install mkdocs-material mkdocs-git-revision-date-localized-plugin
+
+      - name: Build documentation
+        run: mkdocs build --strict
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site/
+
+  deploy:
+    name: Deploy to GitHub Pages
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+  link-check:
+    name: Check Documentation Links
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install mkdocs-material mkdocs-git-revision-date-localized-plugin
+
+      - name: Build documentation
+        run: mkdocs build --strict
+
+      - name: Check links
+        uses: lycheeverse/lychee-action@v1
+        with:
+          args: --verbose --no-progress 'site/**/*.html'
+          fail: true
+        continue-on-error: true  # Don't fail the workflow on broken links, just report them
+
+  validate:
+    name: Validate Documentation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install mkdocs-material mkdocs-git-revision-date-localized-plugin
+
+      - name: Validate mkdocs.yml
+        run: mkdocs build --strict --verbose
+
+      - name: Check for broken internal links
+        run: |
+          # Check that all files referenced in mkdocs.yml exist
+          python << 'EOF'
+          import yaml
+          import os
+          import sys
+
+          with open('mkdocs.yml', 'r') as f:
+              config = yaml.safe_load(f)
+
+          def check_nav_files(nav, prefix='docs/'):
+              errors = []
+              if isinstance(nav, dict):
+                  for key, value in nav.items():
+                      if isinstance(value, str):
+                          filepath = os.path.join(prefix, value)
+                          if not os.path.exists(filepath):
+                              errors.append(f"File not found: {filepath}")
+                      elif isinstance(value, (list, dict)):
+                          errors.extend(check_nav_files(value, prefix))
+              elif isinstance(nav, list):
+                  for item in nav:
+                      errors.extend(check_nav_files(item, prefix))
+              return errors
+
+          errors = check_nav_files(config.get('nav', []))
+          
+          if errors:
+              print("❌ Documentation validation failed:")
+              for error in errors:
+                  print(f"  - {error}")
+              sys.exit(1)
+          else:
+              print("✅ All documentation files exist")
+          EOF
+
+      - name: Check documentation formatting
+        run: |
+          # Check for common markdown issues
+          find docs -name "*.md" -type f | while read file; do
+            # Check for trailing whitespace
+            if grep -n ' $' "$file" > /dev/null; then
+              echo "⚠️  Trailing whitespace found in $file"
+            fi
+            
+            # Check for tabs (should use spaces)
+            if grep -P '\t' "$file" > /dev/null; then
+              echo "⚠️  Tabs found in $file (use spaces)"
+            fi
+          done
+
+      - name: Generate documentation report
+        if: always()
+        run: |
+          echo "## Documentation Report" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Statistics" >> $GITHUB_STEP_SUMMARY
+          echo "- Total documentation files: $(find docs -name '*.md' | wc -l)" >> $GITHUB_STEP_SUMMARY
+          echo "- Total lines: $(find docs -name '*.md' -exec wc -l {} + | tail -1 | awk '{print $1}')" >> $GITHUB_STEP_SUMMARY
+          echo "- ADRs: $(find docs/adr -name '*.md' | wc -l)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Recent Changes" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+          git log --oneline --no-decorate -5 -- docs/ mkdocs.yml >> $GITHUB_STEP_SUMMARY || echo "No recent changes" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+

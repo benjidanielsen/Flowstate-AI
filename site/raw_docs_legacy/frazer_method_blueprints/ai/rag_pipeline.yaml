@@ -1,0 +1,24 @@
+version: 1
+description: Vendor-agnostic RAG over SOP/FAQ/scripts/compliance.
+ingestion:
+  sources:
+    - type: filesystem
+      path: ./knowledge_base
+  chunking: { method: semantic_sentence, size: 512, overlap: 64 }
+index:
+  vector_store: YOUR_VECTOR_DB   # e.g. pgvector/faiss/milvus
+  embedding_model: YOUR_EMBEDDING_MODEL
+retrieval:
+  retriever: hybrid
+  rerank: YOUR_RERANK_MODEL
+qa:
+  prompt:
+    system: |
+      Du følger norske GDPR-krav. Svar kun om du har dekning i kildene.
+    template: |
+      Kontekst:
+      {context}
+
+      Spørsmål: {question}
+      Svar (inkluder korte kildehenvisninger):
+observability: { traces: on }

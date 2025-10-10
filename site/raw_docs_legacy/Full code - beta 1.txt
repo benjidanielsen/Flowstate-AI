@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FlowState AI - R10k UltraPolished</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; }
+    .blur-bg { backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
+    .modal { transition: opacity 0.2s ease-in-out; }
+    .modal-content { transition: transform 0.2s ease-in-out; }
+    .fab { position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 50; }
+  </style>
+</head>
+<body class="p-8">
+
+  <h1 class="text-4xl font-bold mb-6">FlowState AI</h1>
+
+  <div id="main-content"></div>
+  <div id="modal-container"></div>
+  <div id="toast-container" class="fixed top-5 right-5 z-50"></div>
+
+  <!-- Global Quick Note Button -->
+  <button class="fab bg-indigo-600 text-white p-4 rounded-full shadow-lg hover:scale-110 transition-transform" data-action="quick-note">
+    ✏️
+  </button>
+
+  <script>
+    // =====================================================
+    // STATE & DATA
+    // =====================================================
+    const pipelineStages = ["Nytt Lead", "Relationship Building", "Invited", "Qualified", "Presentation Sent", "Follow-up", "Team Member"];
+    const stageColors = {
+      "Nytt Lead": "bg-gray-200",
+      "Relationship Building": "bg-blue-200",
+      "Invited": "bg-yellow-200",
+      "Qualified": "bg-orange-300",
+      "Presentation Sent": "bg-indigo-300",
+      "Follow-up": "bg-green-300",
+      "Team Member": "bg-purple-300"
+    };
+    let appState = {
+      prospects: [
+        { id: 1, navn: "Kari Nordmann", stage: "Presentation Sent", why: "Ønsker mer tid med familien.", logs: [{ date: new Date().toISOString(), note: "Første kontakt." }] },
+        { id: 2, navn: "Ola Hansen", stage: "Qualified", why: "Misfornøyd med nåværende jobb.", logs: [] }
+      ],
+      tasks: [
+        { id: 101, prospectId: 1, desc: "Følg opp presentasjon for Kari Nordmann", due: "2025-09-28", context: "Sendt 2025-09-26", completed: false },
+        { id: 102, prospectId: 2, desc: "Inviter Ola Hansen til webinar", due: "2025-09-27", context: "Kvalifisert i går", completed: false }
+      ]
+    };
+    let nbaIndex = 0;
+
+    // =====================================================
+    // CORE LOGIC
+    // =====================================================
+    function addLog(prospectId, note) {
+      const p = appState.prospects.find(x => x.id === prospectId);
+      if (p) {
+        if (!p.logs) p.logs = [];
+        p.logs.unshift({ date: new Date().toISOString(), note });
+      }
+    }
+    function getNextBestAction(prospect) {
+      switch (prospect.stage) {
+        case "Nytt Lead": return "Start en samtale og bygg en relasjon.";
+        case "Relationship Building": return "Still spørsmål for å avdekke 'why'.";
+        case "Invited": return "Bekreft at de har mottatt invitasjonen.";
+        case "Qualified": return "Send presentasjonen eller book et møte.";
+        case "Presentation Sent": return "Følg opp innen 24-48 timer.";
+        case "Follow-up": return "Svar på spørsmål og guide mot en beslutning.";
+        case "Team Member": return "Start onboarding-prosessen.";
+        default: return "Ingen spesifikk handling definert.";
+      }
+    }
+    function moveStage(prospectId, newStage) {
+      const p = appState.prospects.find(x => x.id === prospectId);
+      if (!p) return;
+      if (newStage === "Qualified" && !p.why) {
+        showToast("Du må fylle ut 'Prospect’s Why' før du kan kvalifere.", "error");
+        return;
+      }
+      if (newStage === "Presentation Sent" && p.stage !== "Presentation Sent") {
+        const exists = appState.tasks.some(t => t.prospectId === prospectId && t.desc.includes("Følg opp presentasjon"));
+        if (!exists) {
+          appState.tasks.push({
+            id: Date.now(),
+            prospectId,
+            desc: `Følg opp presentasjon for ${p.navn}`,
+            due: new Date(Date.now() + 86400000 * 2).toISOString().split("T")[0],
+            context: `Sendt ${new Date().toLocaleDateString("nb-NO")}`
+          });
+        }
+      }
+      p.stage = newStage;
+      addLog(prospectId, `Status endret til: ${newStage}`);
+      updateUI();
+    }
+    function showToast(message, type = "success") {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = `p-4 rounded-md shadow-lg text-white mb-2 ${type === 'error' ? 'bg-red-500' : 'bg-green-500'}`;
+      toast.textContent = message;
+      container.appendChild(toast);
+      setTimeout(() => toast.remove(), 3000);
+    }
+
+    // =====================================================
+    // RENDERING
+    // =====================================================
+    function renderDashboard() {
+      const container = document.getElementById("main-content");
+      const tasks = appState.tasks.filter(t => !t.completed);
+      if (tasks.length === 0) {
+        container.innerHTML = `<p class="text-gray-600">Ingen åpne oppgaver. Godt jobbet! 🎉</p>`;
+        return;
+      }
+      if (nbaIndex >= tasks.length) nbaIndex = 0;
+      const task = tasks[nbaIndex];
+      const p = appState.prospects.find(prospect => prospect.id === task.prospectId);
+      if (!p) {
+        container.innerHTML = `<p class="text-red-500">Error: Prospect not found for a task.</p>`;
+        return;
+      }
+      container.innerHTML = `
+        <h1 class="text-3xl font-bold mb-4">Neste Beste Handling</h1>
+        <div class="bg-white p-6 rounded-xl shadow">
+          <p class="text-gray-600 mb-1">Prospekt: <b>${p.navn}</b></p>
+          <p class="text-xl font-semibold text-gray-800">${task.desc}</p>
+          ${task.context ? `<p class="text-sm text-gray-500 mt-1"><i>${task.context}</i></p>` : ''}
+          <div class="flex justify-between mt-4">
+            <button class="bg-gray-200 px-3 py-1 rounded" data-action="prev-nba">◀</button>
+            <button class="bg-indigo-600 text-white px-3 py-1 rounded" data-prospect-id="${p.id}" data-action="view-kundekort">Åpne Kundekort</button>
+            <button class="bg-gray-200 px-3 py-1 rounded" data-action="next-nba">▶</button>
+          </div>
+        </div>`;
+    }
+    function renderKundekort(prospectId) {
+      const p = appState.prospects.find(x => x.id === prospectId);
+      if (!p) return;
+      if (!p.logs) p.logs = [];
+      const steps = pipelineStages.map(stage => `
+        <div class="flex-1 text-center p-2 rounded cursor-pointer ${stageColors[stage]} ${p.stage === stage ? "ring-2 ring-indigo-600" : ""}" 
+             data-action="move-stage" data-prospect-id="${p.id}" data-stage="${stage}">
+          ${stage}
+        </div>`).join("");
+      const logsHTML = p.logs.map(l => `<li class="text-sm text-gray-700">[${new Date(l.date).toLocaleString("nb-NO")}] ${l.note}</li>`).join("");
+      document.getElementById("modal-container").innerHTML = `
+        <div class="modal fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 blur-bg">
+          <div class="modal-content bg-white rounded-xl shadow-xl p-6 w-3/4 max-w-2xl">
+            <h2 class="text-2xl font-bold mb-4">${p.navn}</h2>
+            <div class="flex flex-wrap gap-2 mb-6">${steps}</div>
+            <div class="mb-4">
+              <label class="block font-semibold">Prospect’s Why</label>
+              <div class="flex space-x-2">
+                <input type="text" id="why-input" class="w-full border rounded px-3 py-2" value="${p.why || ''}">
+                <button class="bg-green-500 text-white px-3 py-1 rounded text-sm" data-action="save-why" data-prospect-id="${p.id}">Lagre</button>
+              </div>
+            </div>
+            <div class="bg-gray-50 p-4 rounded mb-4">
+              <h3 class="font-bold mb-2">Neste Beste Handling (Anbefalt)</h3>
+              <p>${getNextBestAction(p)}</p>
+            </div>
+            <div class="bg-gray-50 p-4 rounded mb-4">
+              <h3 class="font-bold mb-2">Interaksjonslogg</h3>
+              <ul class="space-y-1 max-h-40 overflow-y-auto">${logsHTML || "<li class='text-gray-400'>Ingen notater ennå</li>"}</ul>
+              <form class="mt-2 flex space-x-2" data-action="add-log" data-prospect-id="${p.id}">
+                <input type="text" class="flex-1 border rounded px-2 py-1 text-sm" placeholder="Legg til notat...">
+                <button class="bg-indigo-600 text-white px-3 py-1 rounded text-sm">Legg til</button>
+              </form>
+            </div>
+            <div class="mt-6 flex justify-end">
+              <button class="bg-gray-200 px-4 py-2 rounded mr-2" data-action="close-modal">Lukk</button>
+            </div>
+          </div>
+        </div>`;
+    }
+    function updateUI() { renderDashboard(); }
+
+    // =====================================================
+    // EVENT LISTENERS
+    // =====================================================
+    document.addEventListener("DOMContentLoaded", () => {
+      updateUI();
+      document.body.addEventListener("click", e => {
+        const t = e.target.closest("[data-action]");
+        if (!t) return;
+        const action = t.dataset.action;
+        if (action === "view-kundekort") renderKundekort(parseInt(t.dataset.prospectId));
+        if (action === "close-modal") document.getElementById("modal-container").innerHTML = "";
+        if (action === "move-stage") { moveStage(parseInt(t.dataset.prospectId), t.dataset.stage); renderKundekort(parseInt(t.dataset.prospectId)); }
+        if (action === "next-nba") { nbaIndex++; updateUI(); }
+        if (action === "prev-nba") { const tasks = appState.tasks.filter(t => !t.completed); nbaIndex = (nbaIndex - 1 + tasks.length) % tasks.length; updateUI(); }
+        if (action === "add-log") {
+          e.preventDefault();
+          const pid = parseInt(t.dataset.prospectId);
+          const input = t.querySelector("input");
+          if (input && input.value.trim()) { addLog(pid, input.value.trim()); input.value = ""; renderKundekort(pid); }
+        }
+        if (action === "save-why") {
+          const pid = parseInt(t.dataset.prospectId);
+          const p = appState.prospects.find(x => x.id === pid);
+          if (p) {
+            p.why = document.getElementById("why-input").value;
+            addLog(pid, `'Prospect's Why' ble oppdatert.`);
+            showToast("'Why' er lagret!");
+            renderKundekort(pid);
+          }
+        }
+        if (action === "quick-note") {
+          const note = prompt("Skriv et kjapt notat:");
+          if (note) {
+            appState.tasks.push({ id: Date.now(), prospectId: null, desc: note, due: new Date().toISOString().split("T")[0], context: "Quick note", completed: false });
+            showToast("Notat lagret!");
+            updateUI();
+          }
+        }
+      });
+    });
+  </script>
+</body>
+</html>

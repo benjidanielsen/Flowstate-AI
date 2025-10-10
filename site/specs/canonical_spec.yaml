@@ -1,0 +1,199 @@
+meta:
+  id: flowstate-ai-canonical-spec
+  version: 0.1.0
+  status: draft
+  sources:
+    - docs/raw_docs_legacy/ProjectOverview.md
+    - docs/Documentation_Blueprint.md
+    - docs/raw_docs_legacy/FlowstateAI_ProductDescription.md
+    - docs/raw_docs_legacy/FlowstateAI_UnifiedSystemDesign.md
+    - docs/raw_docs_legacy/FlowstateAI_CRM_Phase1_Beta.md
+    - docs/raw_docs_legacy/FrazerMethod_Summary.md
+    - docs/raw_docs_legacy/FrazerMethod_SystemBlueprint.md
+    - docs/raw_docs_legacy/FlowstateAI_Developer_FAQ.md
+    - docs/raw_docs_legacy/FlowstateAI_Technical_QA.md
+    - docs/raw_docs_legacy/FlowstateAI_QA_Testing_Iteration.md
+
+overview:
+  product: >-
+    AI-first CRM operating system for network marketers, enforcing
+    Frazer Brookes’ method (Talk→Invite→Show→Keep Talking).
+  vision: Self-evolving system that maximizes Income-Producing Activity.
+  target_users: ["Network marketing builders", "Solo entrepreneurs"]
+  core_goals:
+    - Enforce structured pipeline & guardrails
+    - Automate reminders/follow-ups from events
+    - Provide actionable dashboard (DMO, KPIs, ticker)
+    - AI improvement loop (v2+)
+
+architecture:
+  frontend:
+    tech: React + Vite + Tailwind
+    primary_views: [Dashboard, Kundekort]
+  backend:
+    tech: Node.js (Express) + TypeScript + SQLite/Postgres
+    modules: [Customers, Interactions, Reminders, Events, Stats]
+  worker:
+    tech: Python (FastAPI)
+    responsibilities: [Reminder processing, NBA recommendations]
+  integrations: ["Google Calendar (future)", "CSV import/export"]
+
+domain_model:
+  customer:
+    fields:
+      id: uuid
+      name: string
+      email: string
+      phone: string
+      status: enum  # canonical pipeline status
+      notes: string
+      next_action: string
+      next_action_date: datetime
+      source: enum  # ig|messenger|whatsapp|web|ads|manual|other
+      handle_ig: string
+      handle_whatsapp: string
+      country: string
+      language: string
+      consent_json: json   # stored; enforcement later
+      utm_json: json       # stored; normalized keys
+      created_at: datetime
+      updated_at: datetime
+  interaction:
+    fields:
+      id: uuid
+      customer_id: uuid
+      type: enum   # note|call|email|meeting|reminder
+      content: string
+      created_at: datetime
+      scheduled_for: datetime
+      completed: boolean
+  reminder:
+    fields:
+      id: uuid
+      customer_id: uuid
+      type: enum   # follow_up_2h|follow_up_1d|follow_up_24h|follow_up_48h|follow_up_7d
+      scheduled_for: datetime
+      message: string
+      completed: boolean
+      created_at: datetime
+  event_log:
+    fields:
+      id: uuid
+      customer_id: uuid
+      event_type: enum   # per events catalog
+      event_data: json
+      timestamp: datetime
+      source: string
+      user_id: string
+
+pipelines:
+  canonical_statuses: [Lead, Relationship, Invited, Qualified, Presentation Sent, Follow-up, SIGNED-UP]
+  frazer_mapping:
+    New Lead: Lead
+    Relationship Building: Relationship
+    Invited: Invited
+    Qualified: Qualified
+    Video Sent: Presentation Sent
+    Follow-up: Follow-up
+    Signed-up: SIGNED-UP
+    Team Member: SIGNED-UP
+  recruiting_sales:
+    Recruiting: [New, Qualified, Booked, Held, Joined, Lost, No-Show]
+    Sales: [New, Qualified, Booked, Held, Won, Lost, No-Show]
+  transition_rules:
+    Lead->Relationship:
+      conditions: [Initial contact logged]
+      actions: []
+    Relationship->Invited:
+      conditions: [Invite sent event]
+      actions: []
+    Invited->Qualified:
+      conditions: [Prospect's Why present]
+      actions: []
+    Qualified->Presentation Sent:
+      actions: [Create follow_up_24h, Create follow_up_48h]
+    Presentation Sent->Follow-up:
+      conditions: [Reminder completed]
+      actions: []
+    Follow-up->SIGNED-UP:
+      conditions: [JOINED_TEAM or PURCHASED]
+      actions: []
+
+events:
+  core_events:
+    - DM_STARTED
+    - INVITE_SENT
+    - VIDEO_SENT
+    - MEETING_BOOKED
+    - MEETING_HELD
+    - NO_SHOW
+    - FOLLOW_UP_DONE
+    - JOINED_TEAM
+    - PURCHASED
+    - UNSUBSCRIBED
+  payload_requirements:
+    event_id: string   # required
+    timestamp: ISO datetime   # required
+    source: enum   # ig|messenger|whatsapp|web|ads|manual|other
+    properties: object
+    utm: { source: string, medium: string, campaign: string, content: string, term: string }
+    consent: { email: boolean, sms: boolean, messaging: boolean, terms_version: string }
+    customer_id: uuid
+    user_id: string
+
+automations:
+  reminder_rules:
+    - trigger: VIDEO_SENT
+      actions: [create follow_up_24h, create follow_up_48h]
+    - trigger: NO_SHOW
+      actions: [create follow_up_2h, create follow_up_1d]
+    - trigger: INACTIVITY_7D
+      actions: [create follow_up_7d]
+    - trigger: JOINED_TEAM
+      actions: [set next_action: Onboarding]
+  nba:
+    sources: [Python worker /nba, Event-derived]
+    output_shape: { title: string, description: string, priority: 0-100, urgency: low|medium|high|critical }
+
+apis:
+  customers:
+    list: { method: GET, path: /api/customers, query: { status: optional } }
+    create: { method: POST, path: /api/customers, validation: Joi(name,status,source,handles,utm) }
+    update: { method: PUT, path: /api/customers/:id }
+    stats: { method: GET, path: /api/customers/stats }
+    next_stage: { method: POST, path: /api/customers/:id/next-stage }
+  interactions:
+    list_by_customer: { method: GET, path: /api/interactions/customer/:id }
+    create: { method: POST, path: /api/interactions }
+    update: { method: PUT, path: /api/interactions/:id }
+  reminders:
+    list_due: { method: GET, path: /api/reminders/due }
+    create: { method: POST, path: /api/reminders }
+    complete: { method: POST, path: /api/reminders/:id/complete }
+  events:
+    list: { method: GET, path: /api/events }
+    create: { method: POST, path: /api/events }
+  webhooks:
+    dm: { method: POST, path: /api/hooks/dm }
+    capi_lead: { method: POST, path: /api/hooks/capi/lead }
+  nba:
+    get: { method: GET, path: /api/nba }
+    analyze: { method: POST, path: /api/nba/analyze }
+
+acceptance_criteria:
+  - AC-FRAZER-001: NO_SHOW → follow_up_2h & follow_up_1d reminders + NBA rebook; idempotent on duplicate webhooks
+  - AC-FRAZER-002: VIDEO_SENT → follow_up_24h & follow_up_48h reminders; Kundekort shows pending actions
+  - AC-FRAZER-003: Stats returns DMO counters (day/week) + pipeline counts (canonical and mapped vocab)
+  - AC-FRAZER-004: Stage mapping accepts Frazer/Recruiting/Sales vocab and persists canonical status
+
+testing:
+  qa_process: docs/raw_docs_legacy/FlowstateAI_QA_Testing_Iteration.md
+  backtest_plan: docs/tests/backtest_plan.md  # to create
+  fixtures: data/fixtures/*.json              # to create
+  ci: GitHub Actions (existing workflows)
+
+nonfunctional:
+  performance: ["<200ms local for primary APIs", "async background processing for reminders/NBA"]
+  iterative_quality: ["Backtest, front-test, cross-check", "Document changes each iteration"]
+  security: ["Secure coding; GDPR deferred to v2"]
+

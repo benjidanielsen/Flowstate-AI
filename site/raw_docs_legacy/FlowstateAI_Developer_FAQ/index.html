@@ -1,0 +1,2833 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="AI-first, self-improving CRM-OS for network marketers and solo founders">
+      
+      
+        <meta name="author" content="Flowstate-AI Team">
+      
+      
+        <link rel="canonical" href="https://benjidanielsen.github.io/Flowstate-AI/raw_docs_legacy/FlowstateAI_Developer_FAQ/">
+      
+      
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.21">
+    
+    
+      
+        <title>FlowstateAI Developer FAQ - Flowstate-AI Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.2a3383ac.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#flowstate-ai-developer-faq-merged-and-consolidated" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Flowstate-AI Documentation" class="md-header__button md-logo" aria-label="Flowstate-AI Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Flowstate-AI Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              FlowstateAI Developer FAQ
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/benjidanielsen/Flowstate-AI" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.0.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    benjidanielsen/Flowstate-AI
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../INDEX/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../.." class="md-tabs__link">
+          
+  
+  
+  Getting Started
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../GOVERNANCE/" class="md-tabs__link">
+          
+  
+  
+  Governance
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../OPS_RUNBOOK/" class="md-tabs__link">
+          
+  
+  
+  Operations
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../CODING_STANDARDS/" class="md-tabs__link">
+          
+  
+  
+  Development
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../RISK_REGISTER/" class="md-tabs__link">
+          
+  
+  
+  Risk & Compliance
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../FEDERATION_CHECKLIST/" class="md-tabs__link">
+          
+  
+  
+  Federation
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../api/" class="md-tabs__link">
+          
+  
+  
+  API Documentation
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../integrations/" class="md-tabs__link">
+          
+  
+  
+  Integrations
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Flowstate-AI Documentation" class="md-nav__button md-logo" aria-label="Flowstate-AI Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Flowstate-AI Documentation
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/benjidanielsen/Flowstate-AI" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.0.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    benjidanielsen/Flowstate-AI
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../INDEX/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Home
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Getting Started
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Getting Started
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Overview
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../DEPLOYMENT_GUIDE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Deployment Guide
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../SYSTEM_ARCHITECTURE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    System Architecture
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Governance
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Governance
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../GOVERNANCE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Governance Framework
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ETHICS/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Ethics Policy
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../FEDERATION_CHARTER/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Federation Charter
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../EMERGENT_BEHAVIOUR_OVERSIGHT_AND_CESSATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Emergent Behaviour Oversight
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Operations
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            Operations
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../OPS_RUNBOOK/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Operations Runbook
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../DR_RUNBOOK/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Disaster Recovery Runbook
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../SLOS/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Service Level Objectives
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../AUDIT_TRAIL/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Audit Trail
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Development
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            Development
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../CODING_STANDARDS/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Coding Standards
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adr/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Architecture Decision Records
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ROADMAP/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Roadmap
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../CHANGELOG/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Changelog
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../QUALITY/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Quality Metrics
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Risk & Compliance
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            Risk & Compliance
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../RISK_REGISTER/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Risk Register
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../SECURITY.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Security Policy
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Federation
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            Federation
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../FEDERATION_CHECKLIST/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Federation Checklist
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../REVOCATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Revocation Process
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    API Documentation
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            API Documentation
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    API Overview
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_9" >
+        
+          
+          <label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Integrations
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_9">
+            <span class="md-nav__icon md-icon"></span>
+            Integrations
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../integrations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Integration Guide
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-core-principles-and-business-logic" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Core Principles and Business Logic
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-system-architecture-and-technology-stack" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. System Architecture and Technology Stack
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-data-model-and-persistence" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Data Model and Persistence
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-user-interface-ui-and-user-experience-ux" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. User Interface (UI) and User Experience (UX)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-ai-engine-and-automation" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. AI Engine and Automation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-performance-and-scalability" class="md-nav__link">
+    <span class="md-ellipsis">
+      6. Performance and Scalability
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-testing-and-quality-assurance" class="md-nav__link">
+    <span class="md-ellipsis">
+      7. Testing and Quality Assurance
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-security-and-compliance" class="md-nav__link">
+    <span class="md-ellipsis">
+      8. Security and Compliance
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-deployment-and-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      9. Deployment and Operations
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-future-development-and-extensibility" class="md-nav__link">
+    <span class="md-ellipsis">
+      10. Future Development and Extensibility
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#11-frazer-brookes-method-specifics-integration-implementation" class="md-nav__link">
+    <span class="md-ellipsis">
+      11. Frazer Brookes Method Specifics (Integration &amp; Implementation)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#12-general-development-practices" class="md-nav__link">
+    <span class="md-ellipsis">
+      12. General Development Practices
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#frazer-brookes-method-deeper-dive-recap-from-1-11" class="md-nav__link">
+    <span class="md-ellipsis">
+      Frazer Brookes Method Deeper Dive (Recap from 1 &amp; 11)
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+    <a href="https://github.com/benjidanielsen/Flowstate-AI/edit/main/docs/raw_docs_legacy/FlowstateAI_Developer_FAQ.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"/></svg>
+    </a>
+  
+  
+
+
+<p># Flowstate-AI: Technical Questions and Answers</p>
+<p>This document compiles a comprehensive set of developer-focused questions and their answers, designed to provide in-depth clarity on the Flowstate-AI system and its integration with the Frazer Brookes method. It covers various aspects including core principles, business logic, system architecture, data models, UI/UX, AI engine, performance, testing, security, deployment, and future extensibility.</p>
+<p>This FAQ aims to serve as a detailed resource for developers, architects, and stakeholders seeking a thorough understanding of the system's design, implementation, and operational considerations.</p>
+<hr />
+<p>The questions below have been merged, categorized, and edited for clarity. Questions that were identical or had highly overlapping intent have been removed.</p>
+<p>Here is an organized, and answered Developer-Focused FAQ for the Flowstate-AI system.</p>
+<hr />
+<h1 id="flowstate-ai-developer-faq-merged-and-consolidated"><strong>Flowstate-AI: Developer FAQ - Merged and Consolidated</strong><a class="headerlink" href="#flowstate-ai-developer-faq-merged-and-consolidated" title="Permanent link">&para;</a></h1>
+<p>This document compiles a comprehensive set of developer-focused questions and their answers, providing in-depth clarity on the <strong>Flowstate-AI system</strong> and its integration with the <strong>Frazer Brookes method</strong>.</p>
+<h2 id="1-core-principles-and-business-logic"><strong>1. Core Principles and Business Logic</strong><a class="headerlink" href="#1-core-principles-and-business-logic" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Question</th>
+<th style="text-align: left;">Answer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>What are the core non-negotiable principles of the Affiliate Network Marketing CRM?</strong></td>
+<td style="text-align: left;">The core principles are: <strong>AI-first</strong> CRM operating system; <strong>Designed for network marketers</strong> and solo entrepreneurs; <strong>Enforces structured activity flows</strong> (Frazer Method); Integrates an <strong>AI improvement loop</strong> for robustness and self-evolution; Focus on minimizing admin and maximizing <strong>Income Producing Activity (IPA)</strong>; 100% <strong>action-oriented Dashboard</strong> ("Action-Board"); Continuous <strong>self-refinement</strong> via stress tests and feedback loops; and a <strong>Built-in AI assistant</strong> without external API costs initially.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>What are the foundational principles or philosophies behind Frazer Brookes' recruitment flow that drive its effectiveness?</strong></td>
+<td style="text-align: left;">The flow is driven by the <strong>Daily Method of Operation (DMO)</strong>: Talk to People, Invite Them, Show Them, Keep Talking to Them. It also emphasizes <strong>Self-Leadership and Time Management</strong>, the <strong>Prospecting System</strong> (Define "Who," Find "Where," Daily Action "What"), the <strong>"Ping-Pong" Method</strong> (3-5 messages for rapport), the <strong>Three-Question Funnel</strong> for qualifying, and a presentation system focusing on three core prospect questions.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>What is the proposed plan for implementing the CRM to minimize work for the user (minimize admin / maximize IPA)?</strong></td>
+<td style="text-align: left;">The plan includes: <strong>Automated reminders and follow-ups</strong>; an <strong>AI-driven improvement engine</strong> that suggests developer actions; an <strong>AI-prioritized task list / Next Best Action (NBA)</strong> on the Dashboard; a "Kundekort" (prospect card) with an <strong>"Analyser &amp; Oppdater"</strong> (Analyze &amp; Update) button for suggestions; and AI-driven coaching and automation like <strong>"No-show" Handling</strong> and <strong>Automatic Video-oppfølging</strong>.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>What are the key benefits and drawbacks of using the existing FlowState OS (custom app) compared to an Airtable solution?</strong></td>
+<td style="text-align: left;"><strong>Benefits (FlowState OS):</strong> AI-first design, structured activity flows (Frazer Method), AI improvement loop, automated reminders/follow-ups, and a self-improving "living system" tailored for network marketers. <strong>Drawbacks (FlowState OS Beta):</strong> Single-user only (no team mode), lightweight AI models (early phase), limited feedback engine, and GDPR compliance not yet fully completed.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="_1"><a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
+<h2 id="2-system-architecture-and-technology-stack"><strong>2. System Architecture and Technology Stack</strong><a class="headerlink" href="#2-system-architecture-and-technology-stack" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Question</th>
+<th style="text-align: left;">Answer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>If a backend is introduced, what architectural patterns and technologies are being considered?</strong></td>
+<td style="text-align: left;"><strong>Backend:</strong> <strong>Node.js</strong> with <strong>Express</strong>. <strong>AI Layer:</strong> <strong>Python</strong> (for scoring, reminders, prioritization). <strong>Automation:</strong> <strong>CronJobs / Task Scheduler</strong>. <strong>Logging:</strong> JSON logs + Markdown reports. <strong>Infrastructure:</strong> <strong>Cloud-ready</strong> with <strong>microservices planned in later phases</strong>. <strong>Policy:</strong> Serverside <strong>TypeScript-only</strong> for new code.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>What is the chosen frontend framework and how is code modularity and reusability maintained?</strong></td>
+<td style="text-align: left;">The frontend is based on <strong>React.js + Tailwind CSS</strong>. React.js inherently promotes <strong>component-based modularity and reusability</strong>, a shift from any earlier Vanilla JS approach.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>What type of database will be used for a potential backend, and what is the high-level persistence plan?</strong></td>
+<td style="text-align: left;"><strong>Database Type:</strong> <strong>PostgreSQL</strong> (for production) and <strong>SQLite</strong> (for beta). The plan for persistence is a shift from client-side localStorage to <strong>server-side persistence</strong> (PostgreSQL/SQLite) to handle larger datasets and future multi-device synchronization.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="_2"><a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
+<h2 id="3-data-model-and-persistence"><strong>3. Data Model and Persistence</strong><a class="headerlink" href="#3-data-model-and-persistence" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Question</th>
+<th style="text-align: left;">Answer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Can you provide a detailed data model for the core entities (Prospects, Tasks, Logs, Goals)?</strong></td>
+<td style="text-align: left;"><strong>Prospect:</strong> id (UUID), name, platform, stage (enum: "Nytt Lead" → "Team Member"), why (required for Qualified), notes, <strong>AI scores</strong> (relationStrength, interest, urgency), updatedAt, createdAt. <strong>Task (Reminder):</strong> id (UUID), prospectId (FK), kind (followup, noshow, inactivity, custom), title, dueAt, completedAt. <strong>Interaction / Logg:</strong> id, prospectId (FK), ts, type (note, status-change, message, call, meeting), payload. <strong>FeedbackEvent:</strong> id, ts, author, level (Error, Bug, etc.), message. <strong>Goals:</strong> Implies a mechanism to track and store <strong>DMO goals</strong> (e.g., 20 new conversations) and their progress, likely linked to user activity.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>How are prospect interactions (calls, emails, meetings) explicitly modeled and stored?</strong></td>
+<td style="text-align: left;">Interactions are stored within the <strong>Interaction / Logg</strong> entity, explicitly using the type attribute: "note", "status-change", "message", "call", or "meeting". Additional details (like stage changes) are included in the payload field.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>How is data integrity ensured when using localStorage, and what is the plan for more robust persistence?</strong></td>
+<td style="text-align: left;">The focus for data integrity appears to be shifting towards the planned database solutions (<strong>PostgreSQL/SQLite</strong>). The document does not explicitly detail how integrity is ensured for the remaining/temporary use of localStorage. Server-side persistence with PostgreSQL is the long-term plan for robustness.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>How will the system differentiate between a prospect's "status" (Phase 1) and their "stage" (Phase 2 Frazer pipeline)?</strong></td>
+<td style="text-align: left;">The Prospect data model uses a dedicated <strong>stage</strong> field with predefined enumerated values ("Nytt Lead", "Relationship Building", etc.) that directly reflect the Frazer pipeline. The user will primarily see <strong>stage</strong>, which implies the old "status" concept will be replaced or mapped during migration.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="_3"><a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
+<h2 id="4-user-interface-ui-and-user-experience-ux"><strong>4. User Interface (UI) and User Experience (UX)</strong><a class="headerlink" href="#4-user-interface-ui-and-user-experience-ux" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Question</th>
+<th style="text-align: left;">Answer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Are there specific UI component libraries, routing, or state management plans beyond the base framework?</strong></td>
+<td style="text-align: left;"><strong>UI Components:</strong> The base is <strong>React.js + Tailwind CSS</strong>. Specific libraries (Material UI, Ant Design) are not explicitly mentioned but are commonly used with React. <strong>Routing:</strong> Not explicitly defined, but a React environment typically uses a library like <strong>React Router</strong> for client-side routing (managing views without full page reloads). <strong>State Management:</strong> Not explicitly defined, but for complex state beyond simple objects, libraries like Redux, Vuex, or Zustand would be considered for global application state.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>What are the plans for form management, validation, and a sophisticated in-app notification system?</strong></td>
+<td style="text-align: left;"><strong>Form/Validation:</strong> No specific libraries are mentioned, but they are planned to streamline complex forms (e.g., dedicated form management and validation libraries). <strong>Notifications:</strong> Beyond simple toasts, a more sophisticated in-app notification system (e.g., a notification center for critical alerts/reminders) is planned to enhance the <strong>Reminder System</strong>.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>How will data visualization be implemented for the dashboard's ticker, goals, and pipeline widgets?</strong></td>
+<td style="text-align: left;"><strong>Data Visualization Libraries:</strong> Specific libraries (e.g., Chart.js, D3.js, ApexCharts) are mentioned as possibilities, but the final choice is not yet specified. The goal is to use them to create <strong>interactive and informative charts</strong> for <strong>DMO Goals</strong> and pipeline metrics.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>What content is in the prospect card's "Info" tab, and what AI-scripts are in the "Handlinger" (Actions) tab?</strong></td>
+<td style="text-align: left;">The "Info" tab will display <strong>"grundinfo"</strong> (basic profile data) including name, platform, why?, notes, and <strong>AI-generated scores</strong> for relationStrength, interest, and urgency. The <strong>"Handlinger"</strong> (Actions) tab will feature an <strong>"Analyser &amp; Oppdater"</strong> (Analyze &amp; Update) button, implying <strong>AI-driven quick actions/scripts</strong> to update scores and guide the user to the prospect's <strong>Next Best Action</strong>.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>How is the visual progression and mapping of the pipeline achieved?</strong></td>
+<td style="text-align: left;">The <strong>pipelineStages array</strong> is defined by the enumerated, ordered values in the Prospect data model's <strong>stage</strong> field ("Nytt Lead" → "Team Member"). This array is directly mapped to the visual representation of the progress bar. Clear visual feedback on stage movement will be provided via the <strong>Dashboard</strong> and the <strong>clickable progress bar</strong> on the "Kundekort." The underlying logic for <strong>stageColors gradient</strong> is not detailed but must ensure clear distinction and accessibility.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>What mechanisms are in place for the sticky topbar and preventing user confusion between the Dashboard and Prospect Card?</strong></td>
+<td style="text-align: left;">The feature for a <strong>"sticky topbar with Quick Search + Quick Note"</strong> is mentioned but its implementation details are not specified. Preventing confusion between the Dashboard's <strong>NBA carousel</strong> and the individual <strong>Prospect Cards</strong> requires <strong>clear UI/UX design</strong> but no specific mechanisms are detailed in the plan.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="_4"><a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
+<h2 id="5-ai-engine-and-automation"><strong>5. AI Engine and Automation</strong><a class="headerlink" href="#5-ai-engine-and-automation" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Question</th>
+<th style="text-align: left;">Answer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Can you detail the specific algorithms or rules used by the "AI hint" in the NBA engine beyond simple stage-based logic?</strong></td>
+<td style="text-align: left;">The <strong>Next Best Action (NBA) Engine</strong> uses <strong>AI-prioritized tasks</strong> and an <strong>AI summary</strong> per prospect, considering data points like <strong>relationStrength</strong>, <strong>interest</strong>, and <strong>urgency</strong> (all AI-generated scores). The logic provides stage-specific suggestions (e.g., "Relationship Building → Avdekk Why," "Follow-up → Avklar spørsmål → mot beslutning").</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>How is the NBA logic and the getNextBestAction() function designed to be extensible?</strong></td>
+<td style="text-align: left;">The logic is designed for extensibility through the <strong>Improvement Engine</strong>, which takes <strong>Logs + Feedback</strong>, performs categorization/clustering/scoring, and outputs <strong>Developer Reports</strong>. This continuous feedback loop and iterative stress-testing allows the underlying Python-based getNextBestAction() function to be <strong>easily updated or extended</strong> as the Frazer method evolves or new best practices emerge.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>How are task priorities determined, and what other types of automated tasks are envisioned?</strong></td>
+<td style="text-align: left;">Task priorities are <strong>AI-determined</strong> (AI-prioritert) and driven by the <strong>NBA engine</strong>. Tasks are created automatically by the <strong>Reminder System</strong> based on triggers and specific timeframes, including: <strong>"Presentation Sent" follow-ups</strong> (24–48h), <strong>"No-show" Handling</strong> (2h/1d follow-ups), and <strong>General reminders for "Inactivity"</strong> (7+ days).</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>How is the "Prospect's Why" field utilized by the NBA engine, and are there plans to analyze this data?</strong></td>
+<td style="text-align: left;">The <strong>"Prospect's Why"</strong> is a <strong>critical qualification gate</strong> (required for the "Qualified" stage). It is actively used by the NBA engine, which suggests <strong>"Avdekk Why"</strong> (Uncover Why) during "Relationship Building." The <strong>Improvement Engine</strong>'s processing capabilities (Categorization, scoring, clustering) could be used to <strong>aggregate and analyze "Why" data</strong> to identify common motivations or patterns among prospects.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="6-performance-and-scalability"><strong>6. Performance and Scalability</strong><a class="headerlink" href="#6-performance-and-scalability" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Question</th>
+<th style="text-align: left;">Answer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>What are the current performance bottlenecks identified, and how will the system scale?</strong></td>
+<td style="text-align: left;"><strong>Bottlenecks:</strong> The <strong>x100 Process Walkthrough</strong> (Recursive process runs: 100×100 → 1M×1M) is the core methodology for <strong>identifying bottlenecks</strong> related to large-scale operations and complex logic. <strong>Scalability:</strong> The system aims to be <strong>"Scalable"</strong> and <strong>"Future-ready"</strong> through this rigorous iterative stress-testing. The use of <strong>PostgreSQL</strong> (prod) and <strong>microservices planned in later phases</strong> supports high scalability for handling thousands of prospects.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>What are the plans for optimizing initial load times and employing performance testing?</strong></td>
+<td style="text-align: left;"><strong>Optimization:</strong> <strong>Code splitting and lazy loading</strong> are common React optimization techniques and would likely be considered, though not explicitly confirmed in the provided text. <strong>Performance Testing:</strong> The core methodology is the iterative <strong>Stress-testing</strong> with <strong>Recursive process runs</strong> (100x100 → 1Mx1M), measuring <strong>robustness</strong> and <strong>scalability</strong>.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="_5"><a class="headerlink" href="#_5" title="Permanent link">&para;</a></h2>
+<h2 id="7-testing-and-quality-assurance"><strong>7. Testing and Quality Assurance</strong><a class="headerlink" href="#7-testing-and-quality-assurance" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Question</th>
+<th style="text-align: left;">Answer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>What is the strategy for automated testing, and what are the key testing environments/methodologies?</strong></td>
+<td style="text-align: left;"><strong>Strategy:</strong> All functionalities must be <strong>error-free and stress-tested</strong> before advancing. Automated CI jobs (build/test/stress) will be implemented via <strong>GitHub Actions</strong>. <strong>Methodologies:</strong> <strong>Stress-testing</strong> (recursive runs), <strong>Backtesting</strong> (historical user journeys), <strong>Front-testing</strong> (edge-cases with synthetic data), and <strong>Cross-checking</strong> (backend logic vs. frontend expectations) are the core methods.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Are there plans to integrate a testing framework, and how are testing environments managed?</strong></td>
+<td style="text-align: left;"><strong>Frameworks:</strong> Specific frameworks (Jest, Cypress) are not confirmed, but the intent for automated testing is clear. <strong>Environments:</strong> The document mentions "development, staging, production" but does not detail how they will be configured and managed.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="_6"><a class="headerlink" href="#_6" title="Permanent link">&para;</a></h2>
+<h2 id="8-security-and-compliance"><strong>8. Security and Compliance</strong><a class="headerlink" href="#8-security-and-compliance" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Question</th>
+<th style="text-align: left;">Answer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>How will user authentication and authorization be handled, and what is the plan for security audits?</strong></td>
+<td style="text-align: left;"><strong>Authentication/Authorization:</strong> The specific methods (e.g., OAuth, JWT) are <strong>not detailed</strong> but are required. <strong>Security Measures:</strong> The plan mentions that <strong>GDPR compliance</strong> is planned for after the beta phase, which implies future focus on protecting sensitive prospect data. <strong>Audits/Pen-testing:</strong> No specific plans are detailed, but regular security audits or penetration testing are crucial and likely to be planned given the sensitive nature of the data.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="9-deployment-and-operations"><strong>9. Deployment and Operations</strong><a class="headerlink" href="#9-deployment-and-operations" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Question</th>
+<th style="text-align: left;">Answer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>What is the planned deployment strategy and CI/CD pipeline?</strong></td>
+<td style="text-align: left;"><strong>Deployment Strategy:</strong> All code execution (build, test, deploy) must be <strong>automated via CI/CD pipelines</strong>, triggered by <strong>explicit human approval</strong>. <strong>CI/CD:</strong> Uses <strong>GitHub Actions</strong> for CI jobs (build/test/stress) and includes a special <strong>"redbull-handler" workflow</strong> for emergency overrides. <strong>Controls:</strong> <strong>Branch protection on main</strong> (requires PR reviews, status checks) and <strong>CODEOWNERS</strong> (requires owner approval for critical folders) are enforced.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>What are the plans for logging, monitoring, and disaster recovery?</strong></td>
+<td style="text-align: left;"><strong>Logging/Monitoring:</strong> Logging is done via <strong>JSON-based logs</strong> and <strong>Markdown reports</strong>. The <strong>Improvement Engine</strong> processes logs and feedback to track system health. <strong>Backup/Recovery:</strong> No specific plans are detailed, but they are a critical requirement for business continuity.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>What is the proposed infrastructure and build process?</strong></td>
+<td style="text-align: left;"><strong>Infrastructure:</strong> <strong>Cloud-ready</strong> is confirmed, with microservices planned later. The specific cloud provider or IaC tools (Terraform, Ansible) are <strong>not mentioned</strong>. <strong>Build Process:</strong> The process is <strong>automated via CI/CD pipelines</strong> using GitHub Actions and involves transpilation, bundling, and optimization steps typical of a modern web application, but is not detailed. <strong>Release Management</strong> includes <strong>versioning</strong> but lacks details on release notes and rollback procedures.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="10-future-development-and-extensibility"><strong>10. Future Development and Extensibility</strong><a class="headerlink" href="#10-future-development-and-extensibility" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Question</th>
+<th style="text-align: left;">Answer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Are there plans for offline capabilities, real-time updates, or mobile development?</strong></td>
+<td style="text-align: left;"><strong>Offline:</strong> No specific plans or technologies (Service Workers, IndexedDB) are detailed. <strong>Real-time:</strong> No specific plans or technologies (WebSockets, SSE) are detailed. <strong>Mobile:</strong> <strong>Mobile + web dashboards</strong> are in the roadmap, indicating a plan for mobile optimization, though the approach (responsive design, PWA, native app) is <strong>not detailed</strong>.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>How will internationalization (i18n), localization (l10n), and accessibility (a11y) be addressed?</strong></td>
+<td style="text-align: left;"><strong>i18n/l10n/a11y:</strong> These are all mentioned as important considerations, but <strong>no specific plans or steps are detailed</strong> for implementation.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>What are the plans for API design, contracts, and external integrations?</strong></td>
+<td style="text-align: left;"><strong>API Design:</strong> Principles (REST, GraphQL) and contract management are <strong>not detailed</strong>. <strong>Integrations:</strong> <strong>"Future Extensions"</strong> include <strong>"External CRM/social integrations,"</strong> implying a public API or integration capabilities with tools like email marketing or calendar apps.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>How will technical debt be managed?</strong></td>
+<td style="text-align: left;"><strong>Technical Debt:</strong> The plan mentions the need for identification, tracking, and prioritization but <strong>does not provide a specific methodology or toolset</strong> for its management.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="11-frazer-brookes-method-specifics-integration-implementation"><strong>11. Frazer Brookes Method Specifics (Integration &amp; Implementation)</strong><a class="headerlink" href="#11-frazer-brookes-method-specifics-integration-implementation" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Question</th>
+<th style="text-align: left;">Answer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>How is the strict linear flow enforced, and what are the key acceptance criteria for stage progression?</strong></td>
+<td style="text-align: left;"><strong>Enforcement:</strong> The <strong>Pipeline Engine</strong> uses <strong>state-machine logic</strong> to prevent deviations, explicitly stating <strong>"Ingen hopp mellom ikke-tilstøtende steg"</strong> (No jumps between non-adjacent steps). <strong>Acceptance Criteria:</strong> <strong>"Qualified" requires a filled-in "Prospect’s Why"</strong>; the first transition to <strong>"Presentation Sent" automatically creates a 24–48h follow-up task</strong>.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>What key KPIs and analytics are available to users to understand their performance?</strong></td>
+<td style="text-align: left;"><strong>KPIs:</strong> The Dashboard tracks <strong>Daily Method of Operation (DMO) Goals</strong> (e.g., 20 conversations, 30 follow-ups), a <strong>Progress bar for goal achievement</strong>, and the <strong>Pipeline View</strong> shows prospects in each stage (allowing for conversion tracking). Individual prospect metrics include <strong>AI scores</strong> (relationStrength, interest, urgency). <strong>Analytics:</strong> The Dashboard provides core metrics, and the <strong>Improvement Engine</strong> will likely feed into more advanced <strong>Reporting &amp; Analytics</strong>.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>How will the system handle the migration of existing Phase 1 "status" data to the new Phase 2 Frazer "stage" data?</strong></td>
+<td style="text-align: left;">The migration plan is <strong>not detailed</strong> but is acknowledged as a crucial requirement for prospects already in the system.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>What specific validation rules are applied to the "Prospect's Why" field beyond just being mandatory?</strong></td>
+<td style="text-align: left;">The field is explicitly <strong>"påkrevd for Qualified"</strong> (required for Qualified). No other validation rules (like minimum length or character types) are specified.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>What specific "onboarding checklist" items are triggered when a prospect reaches the "Team Member" stage?</strong></td>
+<td style="text-align: left;">The NBA for "Team Member" is <strong>"Onboarding,"</strong> implying a checklist, but the <strong>specific items are not detailed</strong>.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="12-general-development-practices"><strong>12. General Development Practices</strong><a class="headerlink" href="#12-general-development-practices" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Question</th>
+<th style="text-align: left;">Answer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>What is the version control system, and what coding standards are enforced?</strong></td>
+<td style="text-align: left;"><strong>Version Control:</strong> <strong>Git</strong> is implied by the use of <strong>GitHub Actions</strong> and <strong>Branch Protection</strong>. <strong>Branching Strategy:</strong> <strong>Branch protection on main</strong> requiring PR reviews, status checks, and disabling direct pushes enforces a high-quality merge process. <strong>Standards:</strong> <strong>"Serverside TypeScript-only for ny kode"</strong> is a specified coding standard.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>What is the comprehensive error handling strategy and how are edge cases like concurrent updates managed?</strong></td>
+<td style="text-align: left;"><strong>Error Handling:</strong> The plan includes structured <strong>Feedback &amp; Logging</strong> with categories like Error/Bug/Critical, which feeds into the <strong>Improvement Engine</strong> for resolution. A comprehensive strategy beyond simple alerts is needed but <strong>not detailed</strong>. <strong>Edge Cases:</strong> Handling of concurrent updates to prevent data loss or inconsistencies (e.g., optimistic locking) is a critical requirement but <strong>not detailed</strong>.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>How is user feedback collected, and how are third-party dependencies managed?</strong></td>
+<td style="text-align: left;"><strong>User Feedback:</strong> Collected via a ubiquitous <strong>Feedback button</strong> categorized as Error, Bug, Suggestion, etc. and fed into the <strong>Improvement Engine</strong>. <strong>Analytics tools</strong> are planned but not named. <strong>Third-Party Dependencies:</strong> A strategy for management, updates, and security vetting is a requirement but <strong>not detailed</strong>.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="_7"><a class="headerlink" href="#_7" title="Permanent link">&para;</a></h2>
+<h2 id="frazer-brookes-method-deeper-dive-recap-from-1-11"><strong>Frazer Brookes Method Deeper Dive (Recap from 1 &amp; 11)</strong><a class="headerlink" href="#frazer-brookes-method-deeper-dive-recap-from-1-11" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Question</th>
+<th style="text-align: left;">Answer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Can you provide a more detailed breakdown of the "Relationship Building" stage within the Frazer pipeline?</strong></td>
+<td style="text-align: left;">The stage is centered on the <strong>"Ping-Pong" Method</strong> (3-5 back-and-forth messages) to build rapport. Successful progression is primarily defined by the AI's suggestion to <strong>"Avdekk Why"</strong> (Uncover Why), which is the key action before inviting them to the next stage.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>What does "continuation" specifically entail in the "Follow-up" stage?</strong></td>
+<td style="text-align: left;">Continuation in the "Follow-up" stage entails <strong>"Avklar spørsmål → mot beslutning"</strong> (Clarify questions → towards decision). This ensures the user actively addresses the prospect's concerns and guides them to a clear next step (decision) rather than letting the conversation stall.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>What are the key "qualifying questions" or criteria used in the "Qualified" stage?</strong></td>
+<td style="text-align: left;">The absolute key criterion is the presence of the <strong>"Prospect's Why"</strong> (required field). The broader process involves the <strong>Three-Question Funnel</strong> (Ask the question, Ask "Why", Ask "What") to efficiently identify qualified leads.</td>
+</tr>
+</tbody>
+</table>
+<p>Here is a list of developer-focused questions, categorized for obtaining clarity and easier understanding of the FlowState AI system and its integration with the Frazer Brookes method:1. Core Principles and Business Logic, can you answer these questions based on the document and all the document tabs (dev// PROD DESCRIPTION:🌐Flowstate-AI, Intelligent), (Beta (FlowState AI CRM v2 – Phase 1)), (Beta (Flowstate-AI) Unified-system-design), (gpt// Old Convo1), (Beta / Q\&amp;A / Tech), (Frazers - System Blueprint (Recruit Challenge)), (FRAZER SUMMARIZE), (BRAINSTORM IDEAS), (KVALITETSSIKRING, TEST &amp; ITERASJON) inside (Raw_docs) document  Here are the questions:</p>
+<ul>
+<li>What are the core non-negotiable principles of the Affiliate Network Marketing CRM?  </li>
+<li>What are the key benefits and drawbacks of using the existing FlowState OS (custom app) compared to an Airtable solution?  </li>
+<li>What is the proposed plan for implementing the CRM to minimize work for the user?  </li>
+<li>What are the foundational principles or philosophies behind Frazer Brookes' recruitment flow that drive its effectiveness?  </li>
+<li>Can you provide a more detailed breakdown of the "Relationship Building" stage within the Frazer pipeline? What specific actions or criteria define successful progression here?  </li>
+<li>What are the key "qualifying questions" or criteria used in the "Qualified" stage to determine if a prospect is a good fit for a presentation?  </li>
+<li>Beyond "What did you like best?", what other follow-up questions or strategies are recommended in the "Follow-up" stage to guide a prospect towards a decision?  </li>
+<li>What does "continuation" specifically entail in the "Follow-up" stage, and how does it ensure a logical next step rather than a dead end?</li>
+</ul>
+<p>2. System Architecture and Technology Stack</p>
+<ul>
+<li>Backend Architecture: If a backend is introduced, what architectural patterns are being considered (e.g., microservices, monolithic)? What technologies are planned for the backend (e.g., Node.js, Python, Java)?</li>
+</ul>
+<p>3. Data Model and Persistence</p>
+<ul>
+<li>Data Model &amp; Relationships: Can you provide a more detailed ERD (Entity-Relationship Diagram) for the core data entities (Prospects, Tasks, Logs, Goals), including all attributes, data types, and explicit relationships between them?  </li>
+<li>How are prospect interactions (calls, emails, meetings) explicitly modeled and stored within the logs or a separate interactions entity?  </li>
+<li>State Management &amp; Persistence: Beyond localStorage, are there any plans for server-side persistence or a more robust client-side database (e.g., IndexedDB) to handle larger datasets and multi-device synchronization in future phases?  </li>
+<li>How is data integrity ensured when using localStorage, especially in scenarios of rapid updates or potential data corruption?  </li>
+<li>Database Design: For a potential backend, what type of database will be used (e.g., SQL, NoSQL)? Can you provide a high-level schema for how data will be stored?  </li>
+<li>How will the system differentiate between a prospect's "status" (Phase 1) and their "stage" (Phase 2 Frazer pipeline) in the data model, and how will this be presented to the user?</li>
+</ul>
+<p>4. User Interface (UI) and User Experience (UX)</p>
+<ul>
+<li>UI/UX Framework Decisions: Are there any specific UI component libraries or design systems (e.g., Material UI, Ant Design) being considered to standardize the look and feel and accelerate UI development?  </li>
+<li>Client-Side Routing: How will client-side routing be implemented to manage different views (Dashboard, Pipeline, Prospect Card) without full page reloads?  </li>
+<li>Form Management &amp; Validation Libraries: For more complex forms (e.g., adding new prospects with many fields), are there plans to use dedicated form management and validation libraries to streamline development and improve user experience?  </li>
+<li>Notification System Enhancements: Beyond simple toasts, are there plans for a more sophisticated in-app notification system (e.g., persistent notifications, notification center) for critical alerts or reminders?  </li>
+<li>Data Visualization Libraries: For the dashboard's ticker, goals, and pipeline widgets, are there any specific data visualization libraries (e.g., Chart.js, D3.js, ApexCharts) being considered to create interactive and informative charts?  </li>
+<li>Frontend Framework &amp; Modularity: Given the use of Vanilla JS, HTML, and Tailwind CSS, how is code modularity and reusability maintained for larger components beyond simple functions? Are there plans to introduce a reactive framework (e.g., React, Vue) in later phases?  </li>
+<li>How are UI components designed to be truly reusable across different views (e.g., a generic modal component, a prospect card component)?  </li>
+<li>How will the "sticky topbar with Quick Search + Quick Note" be implemented to ensure it's always accessible without obstructing the main content?  </li>
+<li>Can you provide more detail on the content and functionality of the "Info" tab within the prospect card? What "grundinfo" (basic info) will it display?  </li>
+<li>What specific "AI-scripts" or "quick actions" are envisioned for the "Handlinger" (Actions) tab in the prospect card to assist users in moving prospects through the pipeline?  </li>
+<li>How will the system provide clear visual feedback when a prospect successfully moves from one stage to another in the clickable progress bar?  </li>
+<li>What mechanisms are in place to prevent user confusion when navigating between the NBA carousel on the dashboard and individual prospect cards?  </li>
+<li>How is the pipelineStages array defined in the code directly mapped to the visual representation of the progress bar in the prospect card?  </li>
+<li>What is the underlying logic for generating the stageColors gradient, and how is it ensured that these colors provide clear visual distinction and accessibility?</li>
+</ul>
+<p>5. AI Engine and Automation</p>
+<ul>
+<li>Next Best Action (NBA) Engine: Can you detail the specific algorithms or rules used by the "AI hint" in the NBA engine to generate suggestions beyond simple stage-based logic?  </li>
+<li>How is the NBA logic designed to be extensible, allowing for new rules or machine learning models to be integrated in the future?  </li>
+<li>Task Management &amp; Automation: How are task priorities determined, and is there a mechanism to re-prioritize tasks dynamically based on prospect stage or due dates?  </li>
+<li>What other types of automated tasks or workflows are envisioned beyond "Presentation Sent" follow-ups?  </li>
+<li>"Prospect's Why" Integration: How is the "Prospect's Why" field utilized by the NBA engine or other parts of the system to provide more personalized guidance or actions?  </li>
+<li>Are there plans to categorize or analyze the "Why" data to identify common motivations or patterns among prospects?  </li>
+<li>How will the "Prospect's Why" field be actively used by the NBA engine to generate more personalized and effective "Next Best Actions"?  </li>
+<li>Can you elaborate on the "AI hint" mechanism within the NBA engine? What data points (beyond stage and tasks) will it consider to provide these hints?  </li>
+<li>How is the getNextBestAction() function designed to be easily updated or extended as the Frazer method evolves or new best practices emerge?</li>
+</ul>
+<p>6. Performance and Scalability</p>
+<ul>
+<li>Performance &amp; Scalability: What are the current performance bottlenecks identified, especially regarding the x100 Process Walkthrough?  </li>
+<li>How will the system scale to handle thousands or tens of thousands of prospects without degrading performance, particularly for search, pipeline rendering, and dashboard updates?  </li>
+<li>Code Splitting &amp; Lazy Loading: To optimize initial load times, are there plans to implement code splitting and lazy loading for different parts of the application?  </li>
+<li>Performance Testing: What specific performance testing methodologies and tools will be employed to ensure the system meets performance requirements under load?</li>
+</ul>
+<p>7. Testing and Quality Assurance</p>
+<ul>
+<li>Automated Testing: What is the strategy for automated unit, integration, and end-to-end testing to ensure the stability and correctness of the codebase, especially after the x100 Process Walkthrough?  </li>
+<li>Are there plans to integrate a testing framework (e.g., Jest, Cypress) into the development workflow?  </li>
+<li>Testing Environments: How are different testing environments (e.g., development, staging, production) configured and managed?</li>
+</ul>
+<p>8. Security and Compliance</p>
+<ul>
+<li>Security &amp; Authentication: How will user authentication and authorization be handled (e.g., OAuth, JWT)? What security measures are in place to protect sensitive prospect data?  </li>
+<li>Security Audits &amp; Penetration Testing: Are there plans for regular security audits or penetration testing to identify and address vulnerabilities?</li>
+</ul>
+<p>9. Deployment and Operations</p>
+<ul>
+<li>Deployment &amp; CI/CD: What is the planned deployment strategy for updates and new features? Is there a Continuous Integration/Continuous Deployment (CI/CD) pipeline in mind?  </li>
+<li>How will different environments (development, staging, production) be managed?  </li>
+<li>Logging &amp; Monitoring: What logging and monitoring tools or strategies will be implemented to track system health, performance, and user activity in a production environment?  </li>
+<li>Backup &amp; Disaster Recovery: What plans are in place for data backup and disaster recovery to ensure business continuity and prevent data loss?  </li>
+<li>Deployment &amp; Infrastructure: What cloud provider or hosting solution is being considered for deployment? How will infrastructure be provisioned and managed (e.g., IaC like Terraform, Ansible)?  </li>
+<li>Build Process: Can you describe the build process for the application, including any transpilation, bundling, or optimization steps?  </li>
+<li>Release Management: What is the release management strategy, including versioning, release notes, and rollback procedures?</li>
+</ul>
+<p>10. Future Development and Extensibility</p>
+<ul>
+<li>Offline Capabilities: Are there any requirements or plans for the CRM to function offline or with limited connectivity, and if so, what technologies are being considered (e.g., Service Workers, IndexedDB for offline data)?  </li>
+<li>Real-time Updates: For features like activity logs or pipeline changes, are there plans to implement real-time updates (e.g., WebSockets, server-sent events) to ensure all users see the most current data instantly?  </li>
+<li>Browser Compatibility: What specific browser compatibility targets (e.g., evergreen browsers, specific versions) are being considered for the desktop/browser-first approach?  </li>
+<li>Internationalization (i18n) &amp; Localization (l10n): Given the Norwegian language in the current document, how will the system support multiple languages and regional formats in the future?  </li>
+<li>Accessibility (a11y): What steps are being taken to ensure the CRM is accessible to users with disabilities, adhering to relevant web accessibility standards?  </li>
+<li>API Design &amp; Contracts: If internal or external APIs are developed, what principles will guide their design (e.g., REST, GraphQL)? How will API contracts be managed and versioned?  </li>
+<li>API &amp; Integrations: Are there plans to expose a public API for FlowState AI, allowing integration with other tools (e.g., email marketing platforms, calendar apps)?  </li>
+<li>What external services or APIs are considered for future integration (e.g., for lead generation, communication, analytics)?  </li>
+<li>Mobile Development: What is the chosen approach for mobile optimization (e.g., responsive design, progressive web app, native app), and what are the key considerations for its implementation?  </li>
+<li>Technical Debt Management: How will technical debt be identified, tracked, and prioritized for resolution within the development roadmap?</li>
+</ul>
+<p>11. Frazer Brookes Method Specifics (Integration &amp; Implementation)</p>
+<ul>
+<li>What specific "onboarding checklist" items are triggered when a prospect reaches the "Team Member" stage, and how will these be managed within FlowState AI?  </li>
+<li>How will the system handle prospects who deviate from the linear Frazer pipeline flow (e.g., a "Team Member" who decides to revert to an earlier stage)?  </li>
+<li>What are the acceptance criteria for successfully moving a prospect from one Frazer pipeline stage to the next within the FlowState AI system?  </li>
+<li>What key performance indicators (KPIs) or metrics will be tracked for each Frazer pipeline stage to measure its effectiveness and identify bottlenecks?  </li>
+<li>How will data from the "Prospect's Why" field be aggregated and analyzed to identify common motivations or pain points among prospects?  </li>
+<li>What kind of reporting and analytics will be available to users to understand their performance within the Frazer pipeline?  </li>
+<li>What data points are considered essential for the "Ticker" and "Goals" widgets on the dashboard to provide meaningful insights into user activity and progress?  </li>
+<li>How will the system handle the migration of existing Phase 1 "status" data to the new Phase 2 Frazer "stage" data, especially for prospects that are already in the system?  </li>
+<li>What specific validation rules are applied to the "Prospect's Why" field beyond just being mandatory (e.g., minimum length, character types)?</li>
+</ul>
+<p>12. General Development Practices</p>
+<ul>
+<li>State Management Patterns: For more complex state, beyond simple appState object, are there plans to adopt specific state management patterns or libraries (e.g., Redux, Vuex, Zustand) to handle global application state?  </li>
+<li>Error Handling &amp; Robustness: Beyond simple alert() and showToast(), what is the comprehensive error handling strategy for unexpected API failures, network issues, or client-side runtime errors?  </li>
+<li>How are edge cases, such as concurrent updates to the same prospect data, handled to prevent data loss or inconsistencies?  </li>
+<li>Code Quality &amp; Standards: What coding standards, linters, and code review processes will be enforced to maintain high code quality and consistency across the development team?  </li>
+<li>Version Control &amp; Collaboration: What version control system is being used (e.g., Git), and what branching strategy will be followed for development?  </li>
+<li>Code Documentation: What are the standards and tools for documenting the codebase (e.g., JSDoc, OpenAPI/Swagger for APIs)?  </li>
+<li>User Feedback &amp; Analytics: How will user feedback be collected and integrated into the development process? What analytics tools will be used to track user engagement and identify areas for improvement?  </li>
+<li>Third-Party Dependencies: How are third-party libraries and dependencies managed, updated, and vetted for security vulnerabilities?</li>
+</ul>
+<p>Here are the answers to your developer-focused questions, based on the provided FlowState AI system design document:1. Core Principles and Business Logic</p>
+<ul>
+<li><strong>Core non-negotiable principles of the Affiliate Network Marketing CRM:</strong>  </li>
+<li>AI-first CRM operating system.  </li>
+<li>Designed for network marketers and solo entrepreneurs.  </li>
+<li>Enforces structured activity flows (Frazer Method).  </li>
+<li>Integrates an AI improvement loop for robustness and self-evolution.  </li>
+<li>Focus on minimizing admin and maximizing Income Producing Activity (IPA).  </li>
+<li>Intuitive design based on principles from leaders like Frazer Brookes.  </li>
+<li>Built-in AI assistant without external API costs initially.  </li>
+<li>100% action-oriented Dashboard ("Action-Board") with daily goals and AI-prioritized tasks.  </li>
+<li>Continuous self-refinement via stress tests and feedback loops.  </li>
+<li><strong>Key benefits and drawbacks of using the existing FlowState OS (custom app) compared to an Airtable solution:</strong>  </li>
+<li><strong>Benefits (FlowState OS):</strong> AI-first design, structured activity flows (Frazer Method), AI improvement loop, automated reminders/follow-ups, AI-driven improvement engine, gamified UI, AI-prioritized tasks, and a self-improving "living system" that continuously learns and adapts. It's a tailored solution for network marketers and solo entrepreneurs.  </li>
+<li><strong>Drawbacks (FlowState OS Beta):</strong> Single-user only (no team mode), lightweight AI models (early phase), limited feedback engine, and GDPR compliance not yet fully implemented. The document doesn't explicitly detail drawbacks compared to Airtable, but the limitations suggest areas where a more mature, off-the-shelf solution like Airtable might currently offer broader functionality or multi-user support.  </li>
+<li><strong>Proposed plan for implementing the CRM to minimize work for the user:</strong>  </li>
+<li>The system is designed to be an all-in-one solution for Network Marketing, minimizing admin and maximizing Income Producing Activity (IPA).  </li>
+<li>Automated reminders and follow-ups.  </li>
+<li>AI-driven improvement engine that analyzes logs and feedback to suggest concrete developer actions, leading to a self-improving system.  </li>
+<li>AI-prioritized task list / Next Best Action (NBA) on the Dashboard.  </li>
+<li>"Kundekort" (pop-up window) with an "Analyser &amp; Oppdater" (Analyze &amp; Update) button to update scores and suggest next actions.  </li>
+<li>AI-driven Coaching (pop-up messages), "No-show" Handling (auto-create follow-up tasks), and Automatic Video-oppfølging (auto-create 48h follow-up task).  </li>
+<li><strong>Foundational principles or philosophies behind Frazer Brookes' recruitment flow that drive its effectiveness:</strong>  </li>
+<li>Daily Method of Operation (DMO): Talk to People, Invite Them, Show Them, Keep Talking to Them.  </li>
+<li>Self-Leadership and Time Management: Set Time, Protect Time, Use Affirmations, Track Progress (activity-based).  </li>
+<li>Prospecting System: Define Ideal Prospect ("Who"), Find Prospects ("Where"), and Daily Action Plan ("What").  </li>
+<li>Four Types of Conversations with specific scripts for each group: Known (never spoken), Known (haven't spoken in a while), Followers, New People (Who, Where system).  </li>
+<li>"Ping-Pong" Method for relationship building (3-5 back-and-forth messages before business discussion).  </li>
+<li>Three-Question Funnel for qualifying prospects: Ask the question, Ask "Why", Ask "What".  </li>
+<li>Transition questions to move from chat to business discussion (e.g., "Just curious...", "Options", "Pain").  </li>
+<li>Presentation system focusing on three core prospect questions: "What do I actually do?", "Can I do it?", "What if I succeed?".  </li>
+<li><strong>Detailed breakdown of the "Relationship Building" stage within the Frazer pipeline and criteria for successful progression:</strong>  </li>
+<li>The document mentions the "Ping-Pong" Method for relationship building, aiming for 3-5 back-and-forth messages before business discussion. This builds rapport and avoids premature sales pitches.  </li>
+<li>The NBA logic for "Relationship Building" suggests "Avdekk Why" (Uncover Why). This implies that understanding the prospect's motivation is a key criterion for progression.  </li>
+<li><strong>Key "qualifying questions" or criteria used in the "Qualified" stage to determine if a prospect is a good fit for a presentation:</strong>  </li>
+<li>The system enforces that the "Qualified" stage requires a filled-in "Prospect's Why." If not, the transition is rejected with user feedback. This is a critical criterion.  </li>
+<li>The "Three-Question Funnel" (Ask the question, Ask "Why", Ask "What") is integrated for qualifying prospects, efficiently identifying qualified leads.  </li>
+<li><strong>Other follow-up questions or strategies recommended in the "Follow-up" stage to guide a prospect towards a decision (beyond "What did you like best?"):</strong>  </li>
+<li>The NBA for "Follow-up" suggests "Avklar spørsmål → mot beslutning" (Clarify questions → towards decision). This implies strategies would involve addressing concerns and guiding the prospect to a clear next step. The document does not explicitly list other specific questions, but the focus is on clarifying and moving towards a decision.  </li>
+<li><strong>What "continuation" specifically entails in the "Follow-up" stage, and how it ensures a logical next step rather than a dead end:</strong>  </li>
+<li>The NBA for "Follow-up" indicates "Avklar spørsmål → mot beslutning" (Clarify questions → towards decision). This suggests that continuation involves actively addressing prospect questions and guiding them through a decision-making process, preventing the conversation from stalling.</li>
+</ul>
+<p>2. System Architecture and Technology Stack</p>
+<ul>
+<li><strong>Backend Architecture and Technologies:</strong>  </li>
+<li><strong>Backend:</strong> Node.js + Express.  </li>
+<li><strong>Database:</strong> PostgreSQL (prod) / SQLite (beta).  </li>
+<li><strong>AI Layer:</strong> Python (scoring, reminders, prioritization).  </li>
+<li><strong>Automation:</strong> CronJobs / Task Scheduler.  </li>
+<li><strong>Logging:</strong> JSON logs + Markdown reports.  </li>
+<li><strong>Infra:</strong> Cloud-ready; microservices planned in later phases.  </li>
+<li><strong>Policy:</strong> Serverside TypeScript-only for new code.</li>
+</ul>
+<p>3. Data Model and Persistence</p>
+<ul>
+<li><strong>Detailed ERD for core data entities (Prospects, Tasks, Logs, Goals), including attributes, data types, and explicit relationships:</strong>  </li>
+<li><strong>Prospect:</strong>  <ul>
+<li>id: string (UUID)  </li>
+<li>name: string  </li>
+<li>platform?: string (e.g., Messenger/IG/Phone)  </li>
+<li>stage: "Nytt Lead" | "Relationship Building" | "Invited" | "Qualified" | "Presentation Sent" | "Follow-up" | "Team Member"  </li>
+<li>why?: string (required for Qualified)  </li>
+<li>notes?: string  </li>
+<li>relationStrength?: "low" | "med" | "high" (AI)  </li>
+<li>interest?: "low" | "med" | "high" (AI)  </li>
+<li>urgency?: "low" | "med" | "high" (AI)  </li>
+<li>updatedAt: string (ISO)  </li>
+<li>createdAt: string (ISO)  </li>
+</ul>
+</li>
+<li><strong>Task (Reminder):</strong>  <ul>
+<li>id: string (UUID)  </li>
+<li>prospectId: string (relationship to Prospect)  </li>
+<li>kind: "followup" | "noshow" | "inactivity" | "custom"  </li>
+<li>title: string (e.g., "Følg opp presentasjon for \&lt;navn&gt;")  </li>
+<li>dueAt: string (ISO, typically +24–48h from Presentation Sent)  </li>
+<li>createdAt: string (ISO)  </li>
+<li>completedAt?: string (ISO)  </li>
+</ul>
+</li>
+<li><strong>Interaction / Logg:</strong>  <ul>
+<li>id: string  </li>
+<li>prospectId: string (relationship to Prospect)  </li>
+<li>ts: string (ISO)  </li>
+<li>type: "note" | "status-change" | "message" | "call" | "meeting"  </li>
+<li>payload?: any (e.g., { from: "stageA", to: "stageB" })  </li>
+</ul>
+</li>
+<li><strong>FeedbackEvent:</strong>  <ul>
+<li>id: string  </li>
+<li>ts: string  </li>
+<li>author: "user" | "system"  </li>
+<li>level: "Error" | "Bug" | "Suggestion" | "Idea" | "Critical"  </li>
+<li>message: string  </li>
+<li>context?: any (optional)  </li>
+</ul>
+</li>
+<li><strong>Goals:</strong> While not explicitly detailed as a data model, the Dashboard section mentions "DMO-mål" (DMO goals) like "20 new conversations," "30 follow-ups," etc., and a "Progress bar for måloppnåelse." This implies a mechanism to track and store these goals and their progress, likely linked to user activity.  </li>
+<li><strong>How prospect interactions (calls, emails, meetings) are explicitly modeled and stored:</strong>  </li>
+<li>Prospect interactions are modeled and stored within the Interaction entity.  </li>
+<li>Attributes include id, prospectId, ts (timestamp), type ("note", "status-change", "message", "call", "meeting"), and an optional payload for additional details (e.g., { from: "stageA", to: "stageB" } for status changes).  </li>
+<li><strong>Plans for server-side persistence or a more robust client-side database beyond</strong> localStorage<strong>:</strong>  </li>
+<li>The document states "Database: PostgreSQL (prod) / SQLite (beta)", indicating server-side persistence with PostgreSQL for production and SQLite for beta. This goes beyond localStorage for robust data handling.  </li>
+<li><strong>How data integrity is ensured when using</strong> localStorage<strong>:</strong>  </li>
+<li>The document does not explicitly detail how data integrity is ensured when using localStorage. Given the plans for PostgreSQL/SQLite, localStorage might be used for temporary or non-critical data, or it might be a remnant from an earlier design phase. The focus for data integrity appears to be shifting towards the database solutions.  </li>
+<li><strong>Database type and high-level schema for a potential backend:</strong>  </li>
+<li><strong>Database Type:</strong> PostgreSQL (for production) and SQLite (for beta). These are both relational (SQL) databases.  </li>
+<li><strong>High-level Schema:</strong> The data models for Prospect, Task, Interaction, and FeedbackEvent (detailed above) provide a high-level schema, outlining the tables and their key attributes. Relationships are implied through prospectId in Task and Interaction.  </li>
+<li><strong>How the system will differentiate between a prospect's "status" (Phase 1) and their "stage" (Phase 2 Frazer pipeline) in the data model and presentation to the user:</strong>  </li>
+<li>The Prospect data model explicitly uses a stage field with predefined values like "Nytt Lead", "Relationship Building", "Invited", etc., which directly reflect the Frazer pipeline stages.  </li>
+<li>The document mentions "How will the system handle the migration of existing Phase 1 "status" data to the new Phase 2 Frazer "stage" data," implying that "status" was an earlier concept that will be replaced or mapped to "stage" in the current design. The user will primarily see "stage" as the representation of a prospect's position in the pipeline.</li>
+</ul>
+<p>4. User Interface (UI) and User Experience (UX)</p>
+<ul>
+<li><strong>UI component libraries or design systems being considered:</strong>  </li>
+<li><strong>Frontend:</strong> React.js + Tailwind CSS. Tailwind CSS is a utility-first CSS framework that helps in building custom designs, and React.js is a JavaScript library for building user interfaces. The document doesn't explicitly mention specific UI component libraries like Material UI or Ant Design, but React.js is often used with such libraries.  </li>
+<li><strong>Client-side routing implementation:</strong>  </li>
+<li>The document mentions "Client-Side Routing: How will client-side routing be implemented to manage different views (Dashboard, Pipeline, Prospect Card) without full page reloads?" but does not provide a specific answer within the provided text. Given the use of React.js, a common approach would be to use a library like React Router.  </li>
+<li><strong>Form management and validation libraries:</strong>  </li>
+<li>The document mentions "Form Management &amp; Validation Libraries: For more complex forms (e.g., adding new prospects with many fields), are there plans to use dedicated form management and validation libraries to streamline development and improve user experience?" but does not provide a specific answer within the provided text.  </li>
+<li><strong>Notification system enhancements:</strong>  </li>
+<li>The document mentions "Notification System Enhancements: Beyond simple toasts, are there plans for a more sophisticated in-app notification system (e.g., persistent notifications, notification center) for critical alerts or reminders?" but does not provide a specific answer within the provided text. The "Reminder System" is powered by cron jobs/schedulers and triggers reminders for "Video Sent," "No-Show," and "Inactivity."  </li>
+<li><strong>Data visualization libraries for the dashboard's ticker, goals, and pipeline widgets:</strong>  </li>
+<li>The document mentions "Data Visualization Libraries: For the dashboard's ticker, goals, and pipeline widgets, are there any specific data visualization libraries (e.g., Chart.js, D3.js, ApexCharts) being considered to create interactive and informative charts?" but does not provide a specific answer within the provided text.  </li>
+<li><strong>Code modularity and reusability with Vanilla JS, HTML, and Tailwind CSS, and plans for a reactive framework:</strong>  </li>
+<li>The document explicitly states "Frontend: React.js + Tailwind CSS", so it is not using Vanilla JS, HTML, and Tailwind CSS for the frontend. React.js inherently promotes component-based modularity and reusability.  </li>
+<li><strong>How UI components are designed to be truly reusable:</strong>  </li>
+<li>Given the use of React.js, UI components would be designed as reusable React components, encapsulating their own logic and rendering. The document doesn't provide specific examples of component design, but the framework itself encourages reusability.  </li>
+<li><strong>Implementation of the "sticky topbar with Quick Search + Quick Note":</strong>  </li>
+<li>The document mentions this feature but does not provide details on its implementation.  </li>
+<li><strong>Content and functionality of the "Info" tab within the prospect card ("grundinfo"):</strong>  </li>
+<li>The "Kundekort" (Customer Card) includes "Profile · Notes · Interactions · Next Step". The "Info" tab would likely display the prospect's basic profile information (name, platform, why?, notes), along with AI-generated scores for relationStrength, interest, and urgency.  </li>
+<li><strong>Specific "AI-scripts" or "quick actions" envisioned for the "Handlinger" (Actions) tab in the prospect card:</strong>  </li>
+<li>The "Kundekort" includes an "Analyser &amp; Oppdater" (Analyze &amp; Update) button to update scores and suggest next actions. This implies AI-driven quick actions to guide the user through the pipeline. The document doesn't list specific "AI-scripts" but focuses on the AI's role in suggesting next steps.  </li>
+<li><strong>How the system provides clear visual feedback when a prospect successfully moves from one stage to another:</strong>  </li>
+<li>The Dashboard features a "Progress bar + AI-prioritized tasks" and the "Pipeline View showing prospects in each stage." The "Kundekort" also has a clickable progress bar. These visual elements would likely provide feedback on stage transitions.  </li>
+<li><strong>Mechanisms in place to prevent user confusion when navigating between the NBA carousel on the dashboard and individual prospect cards:</strong>  </li>
+<li>The document mentions "AI-prioritert oppgaveliste / Next Best Action (NBA)" on the Dashboard and the "Kundekort" for individual prospects. The integration of these two would need clear UI/UX design, but the document does not explicitly detail mechanisms to prevent confusion.  </li>
+<li><strong>How the</strong> pipelineStages <strong>array is defined and mapped to the visual representation of the progress bar:</strong>  </li>
+<li>The Prospect data model explicitly defines the stage as an enumerated type with ordered values: "Nytt Lead" → "Relationship Building" → "Invited" → "Qualified" → "Presentation Sent" → "Follow-up" → "Team Member". This array directly defines the stages, which would then be visually mapped to the progress bar.  </li>
+<li><strong>Underlying logic for generating the</strong> stageColors <strong>gradient and ensuring clear visual distinction and accessibility:</strong>  </li>
+<li>The document mentions stageColors but does not provide the underlying logic for generating the gradient or how accessibility is ensured.</li>
+</ul>
+<p>5. AI Engine and Automation</p>
+<ul>
+<li><strong>Specific algorithms or rules used by the "AI hint" in the NBA engine beyond simple stage-based logic:</strong>  </li>
+<li>The NBA engine uses "AI-prioritized tasks" and "AI-oppsummering pr. prospect (relasjonsstyrke, interesse, hastverk)" (AI summary per prospect: relation strength, interest, urgency).  </li>
+<li>The AI hint considers data points beyond stage and tasks, including relationStrength, interest, and urgency from the prospect's AI summary.  </li>
+<li>The NBA logic provides specific suggestions for each stage:  <ul>
+<li><strong>Nytt Lead</strong> → Start samtale / bygg relasjon  </li>
+<li><strong>Relationship Building</strong> → Avdekk <em>Why</em>  </li>
+<li><strong>Invited</strong> → Bekreft invitasjon  </li>
+<li><strong>Qualified</strong> → Send presentasjon / book møte  </li>
+<li><strong>Presentation Sent</strong> → Følg opp innen 24–48 t  </li>
+<li><strong>Follow-up</strong> → Avklar spørsmål → mot beslutning  </li>
+<li><strong>Team Member</strong> → Onboarding  </li>
+</ul>
+</li>
+<li><strong>How the NBA logic is designed to be extensible:</strong>  </li>
+<li>The "Improvement Engine" takes "Logs + Feedback" as input, performs categorization, scoring, and clustering, and outputs "Developer Reports." It also "Runs mini-stress tests before implementing fixes." This suggests an extensible design where new rules or machine learning models can be integrated based on continuous feedback and testing. The getNextBestAction() function is designed to be easily updated or extended as the Frazer method evolves or new best practices emerge.  </li>
+<li><strong>How task priorities are determined and mechanisms to re-prioritize tasks dynamically:</strong>  </li>
+<li>The Dashboard includes "AI-prioritert oppgaveliste / Next Best Action (NBA)", indicating that task priorities are determined by the AI.  </li>
+<li>The "Reminder System" triggers tasks based on events like "Video Sent," "No-Show," and "Inactivity" with specific timeframes (e.g., 24h/48h, 2h/1d, 7+ days).  </li>
+<li>The Task data model includes dueAt, which suggests tasks can be prioritized by their due dates. The NBA engine's dynamic nature implies re-prioritization.  </li>
+<li><strong>Other types of automated tasks or workflows envisioned beyond "Presentation Sent" follow-ups:</strong>  </li>
+<li>"No-show" Handling (auto-create follow-up tasks).  </li>
+<li>Automatic Video-oppfølging (auto-create 48h follow-up task).  </li>
+<li>General reminders for "Inactivity" (7+ days).  </li>
+<li>The "Improvement Engine" aims to automate refinements from logs.  </li>
+<li><strong>How the "Prospect's Why" field is utilized by the NBA engine or other parts of the system:</strong>  </li>
+<li>The "Prospect's Why" is explicitly required for a prospect to transition to the "Qualified" stage.  </li>
+<li>The NBA logic for "Relationship Building" suggests "Avdekk Why" (Uncover Why).  </li>
+<li>The "Prospect's Why" field is actively used by the NBA engine to generate more personalized and effective "Next Best Actions" by informing the suggestions for relationship building and qualification.  </li>
+<li><strong>Plans to categorize or analyze the "Why" data:</strong>  </li>
+<li>The "Improvement Engine" includes "Processing: Categorization, scoring, clustering" of "Logs + Feedback." While not explicitly stated for "Why" data, this engine could potentially categorize and analyze the "Why" data to identify common motivations or patterns among prospects, especially as the AI layer evolves.  </li>
+<li><strong>How the</strong> getNextBestAction() <strong>function is designed to be easily updated or extended:</strong>  </li>
+<li>The document implies that the getNextBestAction() function is part of the AI layer (Python) and is designed to evolve with the system's iterative process and improvement engine. The continuous feedback loop and stress-testing would allow for updates and extensions to this function as new insights or best practices emerge from the Frazer method.</li>
+</ul>
+<p>6. Performance and Scalability</p>
+<ul>
+<li><strong>Current performance bottlenecks identified, especially regarding the</strong> x100 Process Walkthrough<strong>:</strong>  </li>
+<li>The document mentions "Each iteration stress-tests design and logic" and "Recursive process runs (100×100 → 1M×1M)." This indicates that stress-testing is a core part of identifying bottlenecks related to large-scale operations like the "x100 Process Walkthrough." The document doesn't explicitly list <em>current</em> bottlenecks but highlights the methodology for finding them.  </li>
+<li><strong>How the system will scale to handle thousands or tens of thousands of prospects without degrading performance:</strong>  </li>
+<li>The system aims to be "Scalable" and "Future-ready."  </li>
+<li>The "Iterative Process" involves "Recursive process runs (100×100 → 1M×1M)" and "Stress-test (scalable simulations)" to ensure scalability.  </li>
+<li>The backend uses PostgreSQL (prod), which is a robust and scalable database.  </li>
+<li>"Infra: Cloud-ready; mikrotjenester planlagt i senere faser" (microservices planned in later phases) suggests a microservices architecture for future scalability.  </li>
+<li><strong>Plans to implement code splitting and lazy loading:</strong>  </li>
+<li>The document mentions "Code Splitting &amp; Lazy Loading: To optimize initial load times, are there plans to implement code splitting and lazy loading for different parts of the application?" but does not provide a specific answer within the provided text. Given the use of React.js, these are common optimization techniques that would likely be considered.  </li>
+<li><strong>Specific performance testing methodologies and tools:</strong>  </li>
+<li><strong>Testmetodikk (per iterasjon):</strong>  <ul>
+<li><strong>Stress-testing:</strong> Recursive process runs (100×100 → 1M×1M) measuring robustness, scalability, and pipeline integrity.  </li>
+<li><strong>Backtesting:</strong> Historical, simulated user journeys.  </li>
+<li><strong>Front-testing:</strong> Edge-cases with synthetic data.  </li>
+<li><strong>Cross-checking:</strong> Validate backend logic against frontend expectations.</li>
+</ul>
+</li>
+</ul>
+<p>7. Testing and Quality Assurance</p>
+<ul>
+<li><strong>Strategy for automated unit, integration, and end-to-end testing:</strong>  </li>
+<li><strong>Testmetodikk (per iterasjon):</strong>  <ul>
+<li><strong>Stress-testing:</strong> Recursive process runs (100×100 → 1M×1M) measuring robustness, scalability, and pipeline integrity.  </li>
+<li><strong>Backtesting:</strong> Historical, simulated user journeys.  </li>
+<li><strong>Front-testing:</strong> Edge-cases with synthetic data.  </li>
+<li><strong>Cross-checking:</strong> Validate backend logic against frontend expectations.  </li>
+</ul>
+</li>
+<li>"All functionalities must be error-free and stress-tested before advancing to the next project phase."  </li>
+<li>"Implement GitHub Actions for CI jobs (build/test/stress)."  </li>
+<li><strong>Plans to integrate a testing framework:</strong>  </li>
+<li>The document mentions "Are there plans to integrate a testing framework (e.g., Jest, Cypress) into the development workflow?" but does not provide a specific answer within the provided text.  </li>
+<li><strong>How different testing environments are configured and managed:</strong>  </li>
+<li>The document mentions "How will different environments (development, staging, production) be managed?" but does not provide a specific answer within the provided text.</li>
+</ul>
+<p>8. Security and Compliance</p>
+<ul>
+<li><strong>User authentication and authorization handling and security measures for sensitive prospect data:</strong>  </li>
+<li>The document mentions "Security &amp; Authentication: How will user authentication and authorization be handled (e.g., OAuth, JWT)? What security measures are in place to protect sensitive prospect data?" but does not provide a specific answer within the provided text.  </li>
+<li>It does state "GDPR skipped in beta" (GDPR not completed in beta, planned before production), indicating future plans for compliance, which would include data protection measures.  </li>
+<li><strong>Plans for regular security audits or penetration testing:</strong>  </li>
+<li>The document mentions "Security Audits &amp; Penetration Testing: Are there plans for regular security audits or penetration testing to identify and address vulnerabilities?" but does not provide a specific answer within the provided text.</li>
+</ul>
+<p>9. Deployment and Operations</p>
+<ul>
+<li><strong>Planned deployment strategy for updates and new features, and CI/CD pipeline:</strong>  </li>
+<li>"All code execution (build, test, deploy) must be automated via CI/CD pipelines, triggered by explicit human approval."  </li>
+<li>"Automated pull and push of files should be set up via CI/CD, triggered by human action (push/PR/Approve)."  </li>
+<li>"Implement GitHub Actions for CI jobs (build/test/stress) and a special redbull-handler workflow."  </li>
+<li>"Branch protection on main: require PR reviews, status checks, and disable direct pushes."  </li>
+<li>"CODEOWNERS to require owner approval for specific folders (e.g., docs/, infra/, src/backend)."  </li>
+<li><strong>How different environments (development, staging, production) will be managed:</strong>  </li>
+<li>The document mentions "How will different environments (development, staging, production) be managed?" but does not provide a specific answer within the provided text.  </li>
+<li><strong>Logging and monitoring tools or strategies:</strong>  </li>
+<li><strong>Logging:</strong> JSON-based logs and Markdown reports.  </li>
+<li><strong>Feedback &amp; Logging:</strong> JSON-based event log, feedback button, categories (Error | Bug | Suggestion | Idea | Critical), logged to DB and fed into Improvement Engine.  </li>
+<li>The "Improvement Engine" processes logs and feedback.  </li>
+<li><strong>Plans for data backup and disaster recovery:</strong>  </li>
+<li>The document mentions "Backup &amp; Disaster Recovery: What plans are in place for data backup and disaster recovery to ensure business continuity and prevent data loss?" but does not provide a specific answer within the provided text.  </li>
+<li><strong>Cloud provider or hosting solution and infrastructure provisioning/management:</strong>  </li>
+<li>"Infra: Cloud-ready; mikrotjenester planlagt i senere faser" (microservices planned in later phases) indicates a cloud-based deployment. The specific provider or IaC tools are not mentioned.  </li>
+<li><strong>Build process for the application:</strong>  </li>
+<li>"All code execution (build, test, deploy) must be automated via CI/CD pipelines."  </li>
+<li>"Implement GitHub Actions for CI jobs (build/test/stress)."  </li>
+<li>The document mentions "transpilation, bundling, or optimization steps" but does not detail the specific build process.  </li>
+<li><strong>Release management strategy:</strong>  </li>
+<li>"Release Management: What is the release management strategy, including versioning, release notes, and rollback procedures?" The document mentions "version: 1.0" for the Unified System Design Document and "Versjon: 2025-09-28" for the product description, implying versioning. Release notes and rollback procedures are not explicitly detailed.</li>
+</ul>
+<p>10. Future Development and Extensibility</p>
+<ul>
+<li><strong>Requirements or plans for offline capabilities:</strong>  </li>
+<li>The document mentions "Offline Capabilities: Are there any requirements or plans for the CRM to function offline or with limited connectivity, and if so, what technologies are being considered (e.g., Service Workers, IndexedDB for offline data)?" but does not provide a specific answer within the provided text.  </li>
+<li><strong>Plans for real-time updates:</strong>  </li>
+<li>The document mentions "Real-time Updates: For features like activity logs or pipeline changes, are there plans to implement real-time updates (e.g., WebSockets, server-sent events) to ensure all users see the most current data instantly?" but does not provide a specific answer within the provided text.  </li>
+<li><strong>Browser compatibility targets:</strong>  </li>
+<li>The document mentions "Browser Compatibility: What specific browser compatibility targets (e.g., evergreen browsers, specific versions) are being considered for the desktop/browser-first approach?" but does not provide a specific answer within the provided text.  </li>
+<li><strong>Support for multiple languages and regional formats (internationalization &amp; localization):</strong>  </li>
+<li>The document mentions "Internationalization (i18n) &amp; Localization (l10n): Given the Norwegian language in the current document, how will the system support multiple languages and regional formats in the future?" but does not provide a specific answer within the provided text.  </li>
+<li><strong>Steps taken to ensure accessibility:</strong>  </li>
+<li>The document mentions "Accessibility (a11y): What steps are being taken to ensure the CRM is accessible to users with disabilities, adhering to relevant web accessibility standards?" but does not provide a specific answer within the provided text.  </li>
+<li><strong>Principles guiding API design and management/versioning of API contracts:</strong>  </li>
+<li>The document mentions "API Design &amp; Contracts: If internal or external APIs are developed, what principles will guide their design (e.g., REST, GraphQL)? How will API contracts be managed and versioned?" but does not provide a specific answer within the provided text.  </li>
+<li><strong>Plans to expose a public API for FlowState AI and external services/APIs for future integration:</strong>  </li>
+<li>"Future Extensions" include "External CRM/social integrations," implying a public API or integration capabilities.  </li>
+<li>The document mentions "API &amp; Integrations: Are there plans to expose a public API for FlowState AI, allowing integration with other tools (e.g., email marketing platforms, calendar apps)? What external services or APIs are considered for future integration (e.g., for lead generation, communication, analytics)?" but does not provide specific answers within the provided text.  </li>
+<li><strong>Chosen approach for mobile optimization and key considerations:</strong>  </li>
+<li>"User-Facing Layer" roadmap includes "Mobile + web dashboards," indicating mobile optimization is planned. The specific approach (responsive design, PWA, native app) is not detailed.  </li>
+<li><strong>Technical debt management:</strong>  </li>
+<li>The document mentions "Technical Debt Management: How will technical debt be identified, tracked, and prioritized for resolution within the development roadmap?" but does not provide a specific answer within the provided text.</li>
+</ul>
+<p>11. Frazer Brookes Method Specifics (Integration &amp; Implementation)</p>
+<ul>
+<li><strong>Specific "onboarding checklist" items triggered when a prospect reaches the "Team Member" stage:</strong>  </li>
+<li>The NBA for "Team Member" is "Onboarding," implying an onboarding checklist. The specific items are not detailed in the document.  </li>
+<li><strong>How the system handles prospects who deviate from the linear Frazer pipeline flow:</strong>  </li>
+<li>The "Pipeline Engine" uses "State-machine prevents skipping steps," and "Ingen hopp mellom ikke-tilstøtende steg" (No jumps between non-adjacent steps). This suggests a strict linear flow, and deviations would likely be prevented or require specific actions to revert to an earlier, valid stage.  </li>
+<li><strong>Acceptance criteria for successfully moving a prospect from one Frazer pipeline stage to the next:</strong>  </li>
+<li>"Ingen hopp mellom ikke-tilstøtende steg" (No jumps between non-adjacent steps).  </li>
+<li>"Qualified krever utfylt <em>Prospect’s Why</em>; ellers avvis transisjon med brukerfeedback" (Qualified requires filled-in <em>Prospect's Why</em>; otherwise, reject transition with user feedback).  </li>
+<li>"Første overgang til <em>Presentation Sent</em> skal opprette én (1) follow-up-task (forfall ≈ +24–48h) hvis den ikke allerede finnes for samme prospect" (First transition to <em>Presentation Sent</em> shall create one (1) follow-up task (due ≈ +24–48h) if it doesn't already exist for the same prospect).  </li>
+<li><strong>Key performance indicators (KPIs) or metrics tracked for each Frazer pipeline stage:</strong>  </li>
+<li>The Dashboard shows "DMO-mål" (DMO goals) like "20 new conversations," "30 follow-ups," "5–10 invites," "3–5 presentations," and a "Progress bar for måloppnåelse." These are KPIs for overall activity.  </li>
+<li>The "Pipeline View" shows prospects in each stage, allowing for tracking of conversion rates or bottlenecks between stages.  </li>
+<li>"AI-oppsummering pr. prospect" (relation strength, interest, urgency) provides metrics at the individual prospect level.  </li>
+<li><strong>How data from the "Prospect's Why" field is aggregated and analyzed:</strong>  </li>
+<li>The "Improvement Engine" processes "Logs + Feedback" with "Categorization, scoring, clustering." This engine could be used to aggregate and analyze "Why" data to identify common motivations or pain points.  </li>
+<li><strong>Kind of reporting and analytics available to users:</strong>  </li>
+<li>The Dashboard provides "Progress bar for måloppnåelse" and "AI-prioritert oppgaveliste / Next Best Action (NBA)."  </li>
+<li>"Pipeline View showing prospects in each stage" and an "Activity-feed."  </li>
+<li>The document also mentions "Reporting &amp; Analytics" as part of the backend &amp; AI engine architecture.  </li>
+<li><strong>Data points considered essential for the "Ticker" and "Goals" widgets on the dashboard:</strong>  </li>
+<li><strong>Ticker:</strong> Not explicitly detailed, but likely real-time activity counts or progress updates.  </li>
+<li><strong>Goals:</strong> Daily Method of Operation (DMO) goals: 20 new conversations, 30 follow-ups, 5–10 invites, 3–5 presentations. Progress bars for goal achievement.  </li>
+<li><strong>How the system handles the migration of existing Phase 1 "status" data to the new Phase 2 Frazer "stage" data:</strong>  </li>
+<li>The document mentions "How will the system handle the migration of existing Phase 1 "status" data to the new Phase 2 Frazer "stage" data, especially for prospects that are already in the system?" but does not provide a specific answer within the provided text. This would be a crucial implementation detail.  </li>
+<li><strong>Specific validation rules applied to the "Prospect's Why" field beyond just being mandatory:</strong>  </li>
+<li>The document states that the "why" field is "påkrevd for Qualified" (required for Qualified). It doesn't specify other validation rules like minimum length or character types.</li>
+</ul>
+<p>12. General Development Practices</p>
+<ul>
+<li><strong>Plans to adopt specific state management patterns or libraries for complex state:</strong>  </li>
+<li>The document mentions "State Management Patterns: For more complex state, beyond simple appState object, are there plans to adopt specific state management patterns or libraries (e.g., Redux, Vuex, Zustand) to handle global application state?" but does not provide a specific answer within the provided text. Given the use of React.js, a state management library would be a common consideration.  </li>
+<li><strong>Comprehensive error handling strategy:</strong>  </li>
+<li>The document mentions "Error Handling &amp; Robustness: Beyond simple alert() and showToast(), what is the comprehensive error handling strategy for unexpected API failures, network issues, or client-side runtime errors?" but does not provide a specific answer within the provided text.  </li>
+<li>The "Feedback &amp; Logging" component includes categories like "Error | Bug | Suggestion | Idea | Critical" and feeds into the "Improvement Engine," suggesting a structured approach to error reporting and resolution.  </li>
+<li><strong>Handling of edge cases like concurrent updates to the same prospect data:</strong>  </li>
+<li>The document mentions "How are edge cases, such as concurrent updates to the same prospect data, handled to prevent data loss or inconsistencies?" but does not provide a specific answer within the provided text. This would be a critical aspect of database and backend design.  </li>
+<li><strong>Coding standards, linters, and code review processes:</strong>  </li>
+<li>"Code Quality &amp; Standards: What coding standards, linters, and code review processes will be enforced to maintain high code quality and consistency across the development team?"  </li>
+<li>"Policy: Serverside TypeScript-only for ny kode" (Serverside TypeScript-only for new code) is a coding standard.  </li>
+<li>"Branch protection on main: require PR reviews" enforces code review.  </li>
+<li>"CODEOWNERS to require owner approval for specific folders" also contributes to code quality and review.  </li>
+<li><strong>Version control system and branching strategy:</strong>  </li>
+<li>The document mentions "Version Control &amp; Collaboration: What version control system is being used (e.g., Git), and what branching strategy will be followed for development?" but does not provide a specific</li>
+</ul>
+<p>What are the primary objectives for the Flowstate-AI system as outlined in the developer-oriented product description?</p>
+<p>The primary objectives for the Flowstate-AI system, as outlined in the developer-oriented product description, are:</p>
+<ul>
+<li><strong>Purpose:</strong> To be an AI-first CRM operating system designed for network marketers and solo entrepreneurs. It enforces structured activity flows (Frazer Method) and integrates an AI improvement loop, making the system both robust and self-evolving.  </li>
+<li><strong>Vision:</strong> To evolve into a self-improving living system that continuously learns, adapts, and empowers humans to reach their highest potential.  </li>
+<li><strong>Iterative Process:</strong> To ensure the system becomes idiot-proof, elegant, scalable, and future-ready through recursive process runs, stress-testing design and logic, and continuous refinement.  </li>
+<li><strong>Primary Goals (Developer-focused):</strong>  </li>
+<li>Strict activity/pipeline flow (no skipping steps).  </li>
+<li>Automated reminders and follow-up.  </li>
+<li>AI-driven improvement engine that analyzes logs/feedback and produces developer reports.  </li>
+<li>Continuous self-refinement via stress tests and feedback loops.</li>
+</ul>
+<p>What is the proposed plan for implementing the CRM to minimize work for the user?</p>
+<p>The proposed plan for implementing the CRM to minimize work for the user includes:</p>
+<ul>
+<li><strong>All-in-one solution:</strong> The system is designed to be a comprehensive solution for Network Marketing, aiming to minimize administrative tasks and maximize Income Producing Activity (IPA).  </li>
+<li><strong>Automated reminders and follow-ups:</strong> The system will automatically handle reminders and follow-up tasks.  </li>
+<li><strong>AI-driven improvement engine:</strong> An AI-powered engine will analyze logs and feedback to suggest concrete developer actions, leading to a self-improving system.  </li>
+<li><strong>AI-prioritized tasks:</strong> The Dashboard will feature an AI-prioritized task list, also known as Next Best Action (NBA), to guide user activities.  </li>
+<li><strong>"Analyze &amp; Update" functionality:</strong> The "Kundekort" (prospect card) will include an "Analyser &amp; Oppdater" (Analyze &amp; Update) button to update scores and suggest next actions.  </li>
+<li><strong>AI &amp; Automation features:</strong> This includes AI-driven Coaching (pop-up messages), automated "No-show" handling (auto-creating follow-up tasks), and Automatic Video-oppfølging (auto-creating 48-hour follow-up tasks).</li>
+</ul>
+<p>Is there other descriptions or information I need to put inside the document with the answers you provided to cast light on other areas for outstanders or developers that glance at the project/system and understand 100% what it is and how to make it?</p>
+<p>Based on the questions you've asked and the information available in the document, here are some additional descriptions and information you could include to make the project and system 100% understandable for developers and other stakeholders:1. Enhanced AI and Automation Section</p>
+<ul>
+<li><strong>AI Core Modules (Input, Reasoning, Memory, Output):</strong> Expand on "Phase 2: Blueprinting &amp; Architecture" to detail the design of the AI core modules.  </li>
+<li><strong>Input:</strong> What specific data sources feed into the AI (e.g., prospect notes, interaction logs, feedback events, calendar data)? How is this data pre-processed or vectorized?  </li>
+<li><strong>Reasoning:</strong> Elaborate on the "AI hint" mechanism. What specific algorithms or rule sets are used for generating "Next Best Actions"? How does the AI interpret "Relation-Score," "Interest-Score," and "Urgency"? How does it learn from user tone/style for message suggestions?  </li>
+<li><strong>Memory:</strong> Detail the "Persistent memory (vector DB)" mentioned in Phase 5. What kind of information is stored, and how is it retrieved for personalized guidance?  </li>
+<li><strong>Output:</strong> What are the formats of the AI's output (e.g., developer reports, NBA suggestions, coaching pop-ups, automated tasks)?  </li>
+<li><strong>Self-Evolving AI Improvement Loop:</strong> Provide a dedicated subsection for this.  </li>
+<li><strong>Feedback Integration:</strong> Explain how user feedback (Error, Bug, Suggestion, Idea, Critical) is processed and categorized by the Improvement Engine.  </li>
+<li><strong>Learning Mechanism:</strong> How does the AI learn from stress-test results, user interactions, and win/loss analysis? What machine learning models or reinforcement learning signals are being considered (Phase 5)?  </li>
+<li><strong>Developer Reports:</strong> Detail the structure and content of the Markdown/JSON developer reports generated by the Improvement Engine. How do these reports translate into actionable development tasks?  </li>
+<li><strong>Automated Task Workflows:</strong> Beyond "Presentation Sent" follow-ups, clearly list and describe other automated tasks.  </li>
+<li>"No-show" Handling: Detail the logic for auto-creating follow-up tasks (e.g., 2h/1d reminders).  </li>
+<li>"Video Sent" Reminders: Explain the 24h/48h reminder logic.  </li>
+<li>"Inactivity" Reminders: Describe the 7+ day reminder mechanism.  </li>
+<li>Morning Brief: Detail the content and delivery mechanism (email/dashboard) of critical tasks.</li>
+</ul>
+<p>2. Comprehensive Data Model and Relationships (ERD)</p>
+<ul>
+<li><strong>Detailed ERD:</strong> Create a visual Entity-Relationship Diagram for core entities (Prospect, Task, Interaction, FeedbackEvent, User, System, Goals/Metrics).  </li>
+<li><strong>Attributes:</strong> Include all attributes, their data types (string, UUID, ISO date, enum, etc.), and whether they are mandatory or optional.  </li>
+<li><strong>Relationships:</strong> Clearly define relationships between entities (e.g., one-to-many between Prospect and Task/Interaction/FeedbackEvent).  </li>
+<li><strong>Goals/Metrics Entity:</strong> Formalize the data model for tracking DMO goals, progress bars, and other KPIs. This would include fields for goal type, target value, current value, period, and associated user.</li>
+</ul>
+<p>3. Frontend Architecture and UI/UX Design</p>
+<ul>
+<li><strong>UI/UX Framework Decisions:</strong>  </li>
+<li>Confirm if specific UI component libraries or design systems (e.g., Material UI, Ant Design) are being considered alongside React.js and Tailwind CSS. If not, explain the approach to maintaining a consistent look and feel with Tailwind.  </li>
+<li><strong>Component Reusability:</strong> Provide examples or a strategy for designing truly reusable UI components (e.g., a generic modal, a prospect card component).  </li>
+<li><strong>Client-Side Routing:</strong> Specify the chosen library (e.g., React Router) and how it will manage different views (Dashboard, Pipeline, Prospect Card) without full page reloads.  </li>
+<li><strong>State Management:</strong> Detail the plans for handling global application state beyond localStorage. If Redux, Vuex, Zustand, or React Context API are considered, explain the rationale.  </li>
+<li><strong>Notification System:</strong> Elaborate on the plans for a more sophisticated in-app notification system (e.g., persistent notifications, a notification center) for critical alerts or reminders.  </li>
+<li><strong>Data Visualization:</strong> Specify the data visualization libraries (e.g., Chart.js, D3.js, ApexCharts) being considered for the dashboard's ticker, goals, and pipeline widgets.  </li>
+<li><strong>"Sticky Topbar" Implementation:</strong> Detail the technical approach for the "sticky topbar with Quick Search + Quick Note."  </li>
+<li><strong>"Info" Tab Content:</strong> Provide a mock-up or detailed description of the "grundinfo" (basic info) displayed in the prospect card's "Info" tab.  </li>
+<li><strong>"Handlinger" (Actions) Tab:</strong> Elaborate on the specific "AI-scripts" or "quick actions" envisioned for this tab.</li>
+</ul>
+<p>4. Robustness, Error Handling, and Data Integrity</p>
+<ul>
+<li><strong>Comprehensive Error Handling Strategy:</strong>  </li>
+<li>Detail the strategy for unexpected API failures, network issues, and client-side runtime errors.  </li>
+<li>Explain how errors are logged, reported (via Feedback &amp; Logging), and how users are informed (beyond simple toasts).  </li>
+<li>Outline mechanisms for graceful degradation or retry logic.  </li>
+<li><strong>Concurrent Updates &amp; Data Loss Prevention:</strong> Describe how edge cases like concurrent updates to the same prospect data will be handled to prevent data loss or inconsistencies (e.g., optimistic locking, last-write-wins, conflict resolution strategies).  </li>
+<li><strong>Data Integrity with</strong> localStorage <strong>(if still used):</strong> If localStorage is used for any critical data, explain how its integrity is ensured, especially in scenarios of rapid updates or potential corruption.</li>
+</ul>
+<p>5. Testing, Deployment, and Quality Assurance</p>
+<ul>
+<li><strong>Automated Testing Strategy:</strong>  </li>
+<li>Specify the chosen testing frameworks (e.g., Jest for unit, Cypress for E2E).  </li>
+<li>Outline the strategy for unit, integration, and end-to-end testing, particularly for complex flows like the x100 Process Walkthrough.  </li>
+<li><strong>CI/CD Pipeline Details:</strong>  </li>
+<li>Provide a high-level diagram or description of the CI/CD pipeline (GitHub Actions for build/test/stress, deployment to different environments).  </li>
+<li>Explain the "redbull-handler workflow" in more detail.  </li>
+<li><strong>Environment Management:</strong> Detail how different environments (development, staging, production) will be configured and managed.  </li>
+<li><strong>Performance Testing:</strong> Specify methodologies and tools (e.g., LoadRunner, JMeter) for performance testing under load.</li>
+</ul>
+<p>6. Future and Extensibility</p>
+<ul>
+<li><strong>API &amp; Integrations:</strong>  </li>
+<li>Clarify plans for exposing a public API for FlowState AI (REST, GraphQL, etc.) and how API contracts will be managed and versioned.  </li>
+<li>List specific external services or APIs considered for future integration (e.g., email marketing platforms, calendar apps beyond Google Calendar, lead generation tools, analytics platforms).  </li>
+<li><strong>Mobile Development:</strong> Detail the chosen approach for mobile optimization (responsive design, Progressive Web App (PWA), or native app) and key implementation considerations.  </li>
+<li><strong>Internationalization (i18n) &amp; Localization (l10n):</strong> Outline the strategy for supporting multiple languages and regional formats.  </li>
+<li><strong>Accessibility (a11y):</strong> Detail the steps being taken to ensure the CRM is accessible to users with disabilities, adhering to relevant web accessibility standards.  </li>
+<li><strong>Technical Debt Management:</strong> Describe the process for identifying, tracking, and prioritizing technical debt within the development roadmap.</li>
+</ul>
+<p>7. Frazer Brookes Method - Deeper Dive</p>
+<ul>
+<li><strong>Onboarding Checklist:</strong> Detail the specific items triggered when a prospect reaches the "Team Member" stage.  </li>
+<li><strong>Deviation Handling:</strong> Explain the system's behavior when a prospect attempts to deviate from the linear Frazer pipeline flow. How are these deviations prevented or managed?  </li>
+<li><strong>Migration of "Status" to "Stage":</strong> Provide a clear plan for migrating existing Phase 1 "status" data to the new Phase 2 Frazer "stage" data.  </li>
+<li><strong>"Prospect's Why" Validation:</strong> Beyond being mandatory, specify any additional validation rules (e.g., minimum length, character types, AI-based content analysis).</li>
+</ul>
+<p>8. Glossary and Abbreviations</p>
+<ul>
+<li><strong>Expand Existing Glossary:</strong> Ensure all technical terms, acronyms, and project-specific jargon are clearly defined. This is especially important for terms like "IPA," "DMO," "NBA," and specific Frazer Method terminology.</li>
+</ul>
+<p>By including these additional descriptions, the document will provide a more complete and in-depth understanding of the FlowState AI system, its underlying principles, technical implementation, and future direction, making it highly valuable for anyone involved in or reviewing the project.</p>
+<p>What are the different stages in the Frazer Brookes recruiting flow as enforced by the Pipeline Engine? What are the current limitations of the FlowState-AI system in its beta phase? What specific technologies are planned for the backend and AI layer of the FlowState-AI system?</p>
+<p>Here are the answers to your questions about the FlowState-AI system:</p>
+<p><strong>1. Different stages in the Frazer Brookes recruiting flow as enforced by the Pipeline Engine:</strong></p>
+<p>The Pipeline Engine enforces the Frazer Method with state-machine logic that prevents skipping steps. The valid stages, in order, are:</p>
+<ul>
+<li>Nytt Lead (New Lead)  </li>
+<li>Relationship Building  </li>
+<li>Invited  </li>
+<li>Qualified  </li>
+<li>Presentation Sent  </li>
+<li>Follow-up  </li>
+<li>Team Member</li>
+</ul>
+<p><strong>2. Current limitations of the FlowState-AI system in its beta phase:</strong></p>
+<p>The current limitations of the FlowState-AI system in its beta phase are:</p>
+<ul>
+<li>Single-user only (no team-mode).  </li>
+<li>Lightweight AI models.  </li>
+<li>Limited feedback engine (restricted to categorization and reports).  </li>
+<li>GDPR compliance is not yet fully completed in beta (planned before production).</li>
+</ul>
+<p><strong>3. Specific technologies planned for the backend and AI layer of the FlowState-AI system:</strong></p>
+<ul>
+<li><strong>Backend:</strong> Node.js + Express  </li>
+<li><strong>Database:</strong> PostgreSQL (for production) / SQLite (for beta)  </li>
+<li><strong>AI Layer:</strong> Python (for reminder-scoring, lead-prioritization, AI-coach)  </li>
+<li><strong>Automation:</strong> CronJobs / Task Scheduler  </li>
+<li><strong>Logging:</strong> JSON-eventer + Markdown-reports</li>
+</ul>
+<p>What are the primary goals for the Flowstate-AI system from a developer's perspective? How does the Pipeline Engine enforce the Frazer Method and what does it prevent? What are the three main phases of the Flowstate-AI development roadmap?</p>
+<p>Here are the answers to your questions about the Flowstate-AI system:</p>
+<p><strong>1. Primary goals for the Flowstate-AI system from a developer's perspective:</strong></p>
+<p>The primary goals for the Flowstate-AI system from a developer's perspective are:</p>
+<ul>
+<li>Strict activity/pipeline flow (no skipping steps).  </li>
+<li>Automated reminders and follow-up.  </li>
+<li>An AI-driven improvement engine that analyzes logs/feedback and produces developer reports.  </li>
+<li>Continuous self-refinement via stress tests and feedback loops.</li>
+</ul>
+<p><strong>2. How the Pipeline Engine enforces the Frazer Method and what it prevents:</strong></p>
+<p>The Pipeline Engine enforces the Frazer Method using state-machine logic. This logic ensures that prospects move through a predefined, ordered sequence of stages: "Nytt Lead" → "Relationship Building" → "Invited" → "Qualified" → "Presentation Sent" → "Follow-up" → "Team Member". It prevents users from skipping steps in the pipeline. For example, a prospect cannot move to "Qualified" without the "Prospect's Why" field being filled.</p>
+<p><strong>3. Three main phases of the Flowstate-AI development roadmap:</strong></p>
+<p>The three main phases of the Flowstate-AI development roadmap are:</p>
+<ul>
+<li><strong>Phase 1: Foundation</strong> (completed) - Includes core folder structure, logging and documentation standards, and initial stress-test methodology.  </li>
+<li><strong>Phase 2: Blueprinting &amp; Architecture</strong> - Involves defining AI core modules (input, reasoning, memory, output), designing API integration points (CRM, dashboards), and mapping UX flows.  </li>
+<li><strong>Phase 3: MVP</strong> (Minimum Viable Product) - Focuses on a basic logging system, a simulation engine, and the first CRM-to-AI adapter.</li>
+</ul>
+<p>What are the core components of the Flowstate-AI system?</p>
+<p>The core components of the Flowstate-AI system are:</p>
+<ul>
+<li><strong>Pipeline Engine:</strong> Enforces the Frazer Method (Talk → Invite → Show → Keep Talking) with state-machine logic to prevent skipping steps. It also handles CRUD operations on prospects stored in the database.  </li>
+<li><strong>Prospect Management:</strong> Features minimal input for prospects (Name, Platform), a Customer Card (Profile, Notes, Interactions, Next Step), and AI summaries for relation, interest, and urgency.  </li>
+<li><strong>Reminder System:</strong> Provides automated reminders based on triggers like "Video Sent" (24h/48h), "No-Show" (2h/1d), and "Inactivity" (7+ days), powered by cron jobs/schedulers.  </li>
+<li><strong>Dashboard:</strong> Displays the Daily Method of Operation (DMO) goals (e.g., 20 new conversations, 30 follow-ups), a progress bar for goal achievement, and AI-prioritized tasks.  </li>
+<li><strong>Feedback &amp; Logging:</strong> Uses JSON-based logs and a feedback button for user reports, categorized as Error, Bug, Suggestion, Idea, or Critical. These logs are fed into the Improvement Engine.  </li>
+<li><strong>Improvement Engine:</strong> Takes logs and feedback as input, processes them through categorization, scoring, and clustering, and outputs Developer Reports (Markdown/JSON). It also runs mini-stress tests before implementing fixes.</li>
+</ul>
+<p>How does the Pipeline Engine enforce the Frazer Method, and what specific rules or guardrails are in place to prevent deviations?</p>
+<p>The Pipeline Engine enforces the Frazer Method by using state-machine logic that prevents users from skipping steps in the recruiting flow.</p>
+<p>Specific rules and guardrails in place to prevent deviations include:</p>
+<ul>
+<li><strong>Strict Stage Progression:</strong> The system ensures that prospects move through a predefined, ordered sequence of stages: "Nytt Lead" (New Lead) → "Relationship Building" → "Invited" → "Qualified" → "Presentation Sent" → "Follow-up" → "Team Member." It explicitly states "Ingen hopp mellom ikke-tilstøtende steg" (No jumps between non-adjacent steps).  </li>
+<li><strong>"Prospect's Why" Requirement:</strong> For a prospect to move to the "Qualified" stage, the "Prospect's Why" field must be filled. If it's not, the transition is rejected, and the user receives feedback.  </li>
+<li><strong>Automated Follow-up Task Creation:</strong> The first time a prospect transitions to "Presentation Sent," the system automatically creates a follow-up task (due approximately 24-48 hours later) if one doesn't already exist for that prospect.</li>
+</ul>
+<p>What are the iterative process steps that Flowstate-AI uses to ensure it becomes robust, scalable, and future-ready? What are the key functional requirements related to the Frazer Brookes recruiting plan that need to be implemented in Flowstate-AI? What are the components of the Flowstate-AI system's feedback and logging mechanism?</p>
+<p>Here are the answers to your questions about the Flowstate-AI system:</p>
+<p><strong>1. Iterative process steps that Flowstate-AI uses to ensure it becomes robust, scalable, and future-ready:</strong></p>
+<p>The system evolves through recursive process runs (100×100 → 1M×1M). Each iteration stress-tests design and logic, ensuring the system becomes:</p>
+<ul>
+<li>Idiot-proof  </li>
+<li>Elegant  </li>
+<li>Scalable  </li>
+<li>Future-ready</li>
+</ul>
+<p>Each iteration includes:</p>
+<ul>
+<li>Backtest &amp; Front-test  </li>
+<li>Cross-check (backend &amp; frontend)  </li>
+<li>Stress-test (scalable simulations)  </li>
+<li>Refinement &amp; re-run  </li>
+<li>Documentation update</li>
+</ul>
+<p><strong>2. Key functional requirements related to the Frazer Brookes recruiting plan that need to be implemented in Flowstate-AI:</strong></p>
+<p>The key functional requirements related to the Frazer Brookes recruiting plan are:</p>
+<ul>
+<li>Implement a Daily Method of Operation (DMO) including: Talk to People, Invite Them, Show Them, Keep Talking to Them.  </li>
+<li>Integrate Self-Leadership and Time Management: Set Time, Protect Time, Use Affirmations, Track Progress (activity-based).  </li>
+<li>Implement a Prospecting System: Define Ideal Prospect ("Who"), Find Prospects ("Where"), and Daily Action Plan ("What").  </li>
+<li>Implement Four Types of Conversations with specific scripts for each group: Known (never spoken), Known (haven't spoken in a while), Followers, New People (Who, Where system).  </li>
+<li>Implement the "Ping-Pong" Method for relationship building, aiming for 3-5 back-and-forth messages before business discussion.  </li>
+<li>Integrate a Three-Question Funnel for qualifying prospects: Ask the question, Ask "Why", Ask "What".  </li>
+<li>Provide transition questions to move from chat to business discussion (e.g., "Just curious...", "Options", "Pain").  </li>
+<li>Implement a presentation system focusing on three core prospect questions: "What do I actually do?", "Can I do it?", "What if I succeed?".  </li>
+<li>Rebuild the pipeline to follow Frazer Brookes’ recruiting flow: Conversations (Nytt Lead, Relationship Building) -&gt; Invitations (Invited, Qualified) -&gt; Presentations &amp; Continuations (Presentation Sent, Follow-Up) -&gt; Launch (Team Member).</li>
+</ul>
+<p><strong>3. Components of the Flowstate-AI system's feedback and logging mechanism:</strong></p>
+<p>The Flowstate-AI system's feedback and logging mechanism includes:</p>
+<ul>
+<li><strong>JSON-based logs:</strong> For event logging.  </li>
+<li><strong>Feedback button:</strong> Available everywhere for user reports.  </li>
+<li><strong>Categories:</strong> Feedback is categorized as Error, Bug, Suggestion, Idea, or Critical.  </li>
+<li><strong>Improvement Engine:</strong> Logs and feedback are logged to the database and fed into the Improvement Engine for processing (categorization, scoring, clustering) and outputting Developer Reports.</li>
+</ul>
+<p>What are the AI-generated fields that enhance prospect data in the Flowstate-AI system? How does Flowstate-AI ensure controlled and consistent deployment for updates and new features? What kind of information is stored and processed by the Flowstate-AI system's Feedback &amp; Logging mechanism?</p>
+<p>Here are the answers to your questions about the Flowstate-AI system:</p>
+<p><strong>1. AI-generated fields that enhance prospect data in the Flowstate-AI system:</strong></p>
+<p>The Flowstate-AI system enhances prospect data with the following AI-generated fields:</p>
+<ul>
+<li><strong>Relation-Score:</strong> An AI-calculated score (1-5) indicating the strength of the relationship with the prospect.  </li>
+<li><strong>Interest-Score:</strong> An AI-calculated score (1-5) reflecting the prospect's level of interest.  </li>
+<li><strong>Urgency:</strong> An AI-calculated score (low, med, high) indicating the urgency of the prospect.  </li>
+<li><strong>AI-score:</strong> A field that provides a probability, such as "Probability to book introcall \= 73%."  </li>
+<li><strong>AI summary per prospect:</strong> A brief AI-generated summary of the prospect's relation, interest, and urgency.</li>
+</ul>
+<p><strong>2. How Flowstate-AI ensures controlled and consistent deployment for updates and new features:</strong></p>
+<p>Flowstate-AI ensures controlled and consistent deployment through the following mechanisms:</p>
+<ul>
+<li><strong>Automated CI/CD Pipelines:</strong> All code execution (build, test, deploy) is automated via Continuous Integration/Continuous Deployment (CI/CD) pipelines.  </li>
+<li><strong>Explicit Human Approval:</strong> Automated processes, including code execution and file modifications, are triggered by explicit human approval (e.g., push, Pull Request, Approve).  </li>
+<li><strong>Branch Protection on Main:</strong> The main branch has protection rules requiring Pull Request reviews, status checks, and disabling direct pushes to ensure code quality and stability.  </li>
+<li><strong>CODEOWNERS:</strong> Specific folders (e.g., docs/, infra/, src/backend) require owner approval, designating responsibility and ensuring expert review for critical areas.  </li>
+<li><strong>GitHub Actions:</strong> CI jobs (build/test/stress) are implemented using GitHub Actions, along with a special "redbull-handler" workflow for emergency overrides with strict controls.  </li>
+<li><strong>Stress-Testing:</strong> All functionalities must be error-free and stress-tested before advancing to the next project phase, guaranteeing system stability and reliability.</li>
+</ul>
+<p><strong>3. What kind of information is stored and processed by the Flowstate-AI system's Feedback &amp; Logging mechanism:</strong></p>
+<p>The Flowstate-AI system's Feedback &amp; Logging mechanism stores and processes the following information:</p>
+<ul>
+<li><strong>JSON-based event logs:</strong> These logs record various system events.  </li>
+<li><strong>Feedback from a feedback button:</strong> Users can submit reports through a feedback button, which are categorized.  </li>
+<li><strong>Feedback Categories:</strong> The feedback is categorized into:  </li>
+<li>Error  </li>
+<li>Bug  </li>
+<li>Suggestion  </li>
+<li>Idea  </li>
+<li>Critical  </li>
+<li><strong>Improvement Engine Input:</strong> These logs and feedback are fed into the Improvement Engine, where they are processed through categorization, scoring, and clustering. The output of this engine is Developer Reports (Markdown/JSON) that guide system refinements.</li>
+</ul>
+<p>Is there other descriptions or information I need to put inside the document with the answers you provided to cast light on other areas for outstanders or developers that glance at the project/system and understand 100% what it is and how to make it?</p>
+<p>To make the Flowstate-AI project and system 100% understandable for developers and other stakeholders, you should include the following additional descriptions and information in your document:1. Enhanced AI and Automation Section</p>
+<ul>
+<li><strong>AI Core Modules (Input, Reasoning, Memory, Output):</strong>  </li>
+<li><strong>Input:</strong> Detail the specific data sources feeding the AI (e.g., prospect notes, interaction logs, feedback events, calendar data) and how this data is pre-processed or vectorized.  </li>
+<li><strong>Reasoning:</strong> Elaborate on the "AI hint" mechanism. Explain the specific algorithms or rule sets used for generating "Next Best Actions." Describe how the AI interprets "Relation-Score," "Interest-Score," and "Urgency," and how it learns from user tone/style for message suggestions.  </li>
+<li><strong>Memory:</strong> Detail the "Persistent memory (vector DB)" mentioned in Phase 5. What kind of information is stored, and how is it retrieved for personalized guidance?  </li>
+<li><strong>Output:</strong> Specify the formats of the AI's output (e.g., developer reports, NBA suggestions, coaching pop-ups, automated tasks).  </li>
+<li><strong>Self-Evolving AI Improvement Loop:</strong>  </li>
+<li><strong>Feedback Integration:</strong> Explain how user feedback (Error, Bug, Suggestion, Idea, Critical) is processed and categorized by the Improvement Engine.  </li>
+<li><strong>Learning Mechanism:</strong> Describe how the AI learns from stress-test results, user interactions, and win/loss analysis. Mention any machine learning models or reinforcement learning signals being considered (Phase 5).  </li>
+<li><strong>Developer Reports:</strong> Detail the structure and content of the Markdown/JSON developer reports generated by the Improvement Engine. Explain how these reports translate into actionable development tasks.  </li>
+<li><strong>Automated Task Workflows:</strong>  </li>
+<li><strong>"No-show" Handling:</strong> Detail the logic for auto-creating follow-up tasks (e.g., 2h/1d reminders).  </li>
+<li><strong>"Video Sent" Reminders:</strong> Explain the 24h/48h reminder logic.  </li>
+<li><strong>"Inactivity" Reminders:</strong> Describe the 7+ day reminder mechanism.  </li>
+<li><strong>Morning Brief:</strong> Detail the content and delivery mechanism (email/dashboard) of critical tasks.</li>
+</ul>
+<p>2. Comprehensive Data Model and Relationships (ERD)</p>
+<ul>
+<li><strong>Detailed ERD:</strong> Create a visual Entity-Relationship Diagram for core entities (Prospect, Task, Interaction, FeedbackEvent, User, System, Goals/Metrics).  </li>
+<li><strong>Attributes:</strong> Include all attributes, their data types (string, UUID, ISO date, enum, etc.), and whether they are mandatory or optional.  </li>
+<li><strong>Relationships:</strong> Clearly define relationships between entities (e.g., one-to-many between Prospect and Task/Interaction/FeedbackEvent).  </li>
+<li><strong>Goals/Metrics Entity:</strong> Formalize the data model for tracking DMO goals, progress bars, and other Key Performance Indicators (KPIs). This would include fields for goal type, target value, current value, period, and associated user.</li>
+</ul>
+<p>3. Frontend Architecture and UI/UX Design</p>
+<ul>
+<li><strong>UI/UX Framework Decisions:</strong>  </li>
+<li>Confirm if specific UI component libraries or design systems (e.g., Material UI, Ant Design) are being considered alongside React.js and Tailwind CSS. If not, explain the approach to maintaining a consistent look and feel with Tailwind.  </li>
+<li><strong>Component Reusability:</strong> Provide examples or a strategy for designing truly reusable UI components (e.g., a generic modal, a prospect card component).  </li>
+<li><strong>Client-Side Routing:</strong> Specify the chosen library (e.g., React Router) and how it will manage different views (Dashboard, Pipeline, Prospect Card) without full page reloads.  </li>
+<li><strong>State Management:</strong> Detail the plans for handling global application state beyond localStorage. If Redux, Vuex, Zustand, or React Context API are considered, explain the rationale.  </li>
+<li><strong>Notification System:</strong> Elaborate on the plans for a more sophisticated in-app notification system (e.g., persistent notifications, a notification center) for critical alerts or reminders.  </li>
+<li><strong>Data Visualization:</strong> Specify the data visualization libraries (e.g., Chart.js, D3.js, ApexCharts) being considered for the dashboard's ticker, goals, and pipeline widgets.  </li>
+<li><strong>"Sticky Topbar" Implementation:</strong> Detail the technical approach for the "sticky topbar with Quick Search + Quick Note."  </li>
+<li><strong>"Info" Tab Content:</strong> Provide a mock-up or detailed description of the "grundinfo" (basic info) displayed in the prospect card's "Info" tab.  </li>
+<li><strong>"Handlinger" (Actions) Tab:</strong> Elaborate on the specific "AI-scripts" or "quick actions" envisioned for this tab.</li>
+</ul>
+<p>4. Robustness, Error Handling, and Data Integrity</p>
+<ul>
+<li><strong>Comprehensive Error Handling Strategy:</strong>  </li>
+<li>Detail the strategy for unexpected API failures, network issues, and client-side runtime errors.  </li>
+<li>Explain how errors are logged, reported (via Feedback &amp; Logging), and how users are informed (beyond simple toasts).  </li>
+<li>Outline mechanisms for graceful degradation or retry logic.  </li>
+<li><strong>Concurrent Updates &amp; Data Loss Prevention:</strong> Describe how edge cases like concurrent updates to the same prospect data will be handled to prevent data loss or inconsistencies (e.g., optimistic locking, last-write-wins, conflict resolution strategies).  </li>
+<li><strong>Data Integrity with</strong> localStorage <strong>(if still used):</strong> If localStorage is used for any critical data, explain how its integrity is ensured, especially in scenarios of rapid updates or potential corruption.</li>
+</ul>
+<p>5. Testing, Deployment, and Quality Assurance</p>
+<ul>
+<li><strong>Automated Testing Strategy:</strong>  </li>
+<li>Specify the chosen testing frameworks (e.g., Jest for unit, Cypress for E2E).  </li>
+<li>Outline the strategy for unit, integration, and end-to-end testing, particularly for complex flows like the x100 Process Walkthrough.  </li>
+<li><strong>CI/CD Pipeline Details:</strong>  </li>
+<li>Provide a high-level diagram or description of the CI/CD pipeline (GitHub Actions for build/test/stress, deployment to different environments).  </li>
+<li>Explain the "redbull-handler workflow" in more detail.  </li>
+<li><strong>Environment Management:</strong> Detail how different environments (development, staging, production) will be configured and managed.  </li>
+<li><strong>Performance Testing:</strong> Specify methodologies and tools (e.g., LoadRunner, JMeter) for performance testing under load.</li>
+</ul>
+<p>6. Future and Extensibility</p>
+<ul>
+<li><strong>API &amp; Integrations:</strong>  </li>
+<li>Clarify plans for exposing a public API for FlowState AI (REST, GraphQL, etc.) and how API contracts will be managed and versioned.  </li>
+<li>List specific external services or APIs considered for future integration (e.g., email marketing platforms, calendar apps beyond Google Calendar, lead generation tools, analytics platforms).  </li>
+<li><strong>Mobile Development:</strong> Detail the chosen approach for mobile optimization (responsive design, Progressive Web App (PWA), or native app) and key implementation considerations.  </li>
+<li><strong>Internationalization (i18n) &amp; Localization (l10n):</strong> Outline the strategy for supporting multiple languages and regional formats.  </li>
+<li><strong>Accessibility (a11y):</strong> Detail the steps being taken to ensure the CRM is accessible to users with disabilities, adhering to relevant web accessibility standards.  </li>
+<li><strong>Technical Debt Management:</strong> Describe the process for identifying, tracking, and prioritizing technical debt within the development roadmap.</li>
+</ul>
+<p>7. Frazer Brookes Method - Deeper Dive</p>
+<ul>
+<li><strong>Onboarding Checklist:</strong> Detail the specific items triggered when a prospect reaches the "Team Member" stage.  </li>
+<li><strong>Deviation Handling:</strong> Explain the system's behavior when a prospect attempts to deviate from the linear Frazer pipeline flow. How are these deviations prevented or managed?  </li>
+<li><strong>Migration of "Status" to "Stage":</strong> Provide a clear plan for migrating existing Phase 1 "status" data to the new Phase 2 Frazer "stage" data.  </li>
+<li><strong>"Prospect's Why" Validation:</strong> Beyond being mandatory, specify any additional validation rules (e.g., minimum length, character types, AI-based content analysis).</li>
+</ul>
+<p>8. Glossary and Abbreviations</p>
+<ul>
+<li><strong>Expand Existing Glossary:</strong> Ensure all technical terms, acronyms, and project-specific jargon are clearly defined. This is especially important for terms like "IPA," "DMO," "NBA," and specific Frazer Method terminology.</li>
+</ul>
+<p>By including these additional descriptions, the document will provide a more complete and in-depth understanding of the Flowstate-AI system, its underlying principles, technical implementation, and future direction, making it highly valuable for anyone involved in or reviewing the project.</p>
+
+
+
+
+
+
+
+  
+    
+  
+  
+    
+  
+
+
+  <aside class="md-source-file">
+    
+      
+  <span class="md-source-file__fact">
+    <span class="md-icon" title="Last update">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
+    </span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="September 29, 2025 11:09:46 UTC">September 29, 2025</span>
+  </span>
+
+    
+    
+      
+  <span class="md-source-file__fact">
+    <span class="md-icon" title="Created">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14.47 15.08 11 13V7h1.5v5.25l3.08 1.83c-.41.28-.79.62-1.11 1m-1.39 4.84c-.36.05-.71.08-1.08.08-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8c0 .37-.03.72-.08 1.08.69.1 1.33.32 1.92.64.1-.56.16-1.13.16-1.72 0-5.5-4.5-10-10-10S2 6.5 2 12s4.47 10 10 10c.59 0 1.16-.06 1.72-.16-.32-.59-.54-1.23-.64-1.92M18 15v3h-3v2h3v3h2v-3h3v-2h-3v-3z"/></svg>
+    </span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="September 29, 2025 11:09:46 UTC">September 29, 2025</span>
+  </span>
+
+    
+    
+    
+  </aside>
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2025 Flowstate-AI Team
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/benjidanielsen/Flowstate-AI" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.0.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "content.code.copy", "content.action.edit"], "search": "../../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.f55a23d4.min.js"></script>
+      
+    
+  </body>
+</html>
