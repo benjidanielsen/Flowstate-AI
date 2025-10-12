@@ -1,4 +1,4 @@
-import DatabaseManager from './index';
+import DatabaseManager from '../database';
 import logger from '../utils/logger';
 import { v4 as uuidv4 } from 'uuid';
 import { Reminder } from '../types';
@@ -30,7 +30,7 @@ export class FollowUpService {
           `INSERT INTO reminders (id, customer_id, type, message, scheduled_for, created_at) 
            VALUES (?, ?, ?, ?, ?, CURRENT_TIMESTAMP)`,
           [id, customerId, 'follow_up', message, scheduledFor.toISOString()],
-          function(err) {
+          function(err: Error | null) {
             if (err) return reject(err);
             db.get(`SELECT * FROM reminders WHERE id = ?`, [id], (err, row: any) => {
               if (err) return reject(err);
@@ -78,7 +78,7 @@ export class FollowUpService {
       const customers: any[] = await new Promise((resolve, reject) => {
         db.all(
           'SELECT id, status FROM customers WHERE status != "Closed - Won"',
-          (err, rows) => {
+          (err: Error | null, rows: any[]) => {
             if (err) reject(err);
             else resolve(rows || []);
           }
@@ -115,7 +115,7 @@ export class FollowUpService {
            AND r.completed = 0
            ORDER BY r.scheduled_for ASC`,
           [futureDate.toISOString()],
-          (err, rows) => {
+          (err: Error | null, rows: any[]) => {
             if (err) reject(err);
             else resolve(rows || []);
           }
@@ -124,7 +124,7 @@ export class FollowUpService {
       
       return followUps;
     } catch (error) {
-      console.error('Error getting upcoming follow-ups:', error);
+      logger.error("Error getting upcoming follow-ups:", error);
       throw error;
     }
   }

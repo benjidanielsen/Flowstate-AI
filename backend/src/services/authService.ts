@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken';
 import DatabaseManager from '../database';
 import { User } from '../types';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'supersecretjwtkey'; // TODO: Use a strong, environment-variable-based secret
+const JWT_SECRET = process.env.JWT_SECRET || 'supersecretjwtkey';
 
 export class AuthService {
   private db = DatabaseManager.getInstance().getDb();

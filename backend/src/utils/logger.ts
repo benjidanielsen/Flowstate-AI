@@ -29,9 +29,9 @@ const logger = winston.createLogger({
   ],
 });
 
-// TODO: Implement data retention policies (e.g., log rotation, archival, deletion)
-// For example, using a log rotation library or external log management service.
-// Ensure sensitive logs are retained only for necessary periods and then purged.
+// Data retention policies (e.g., log rotation, archival, deletion) should be implemented in a production environment.
+// Consider using dedicated log management solutions (e.g., ELK stack, Splunk) or a log rotation library like 'winston-daily-rotate-file' for Node.js.
+// Ensure sensitive logs are retained only for necessary periods and then purged according to compliance requirements.
 
 export default logger;
 
