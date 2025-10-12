@@ -15,6 +15,10 @@
         <link rel="canonical" href="https://benjidanielsen.github.io/Flowstate-AI/DEPLOYMENT_RUNBOOK/">
       
       
+        <link rel="prev" href="../DEPLOYMENT_GUIDE/">
+      
+      
+        <link rel="next" href="../SYSTEM_ARCHITECTURE/">
       
       
       <link rel="icon" href="../assets/images/favicon.png">
@@ -242,10 +246,12 @@
   
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
+      <li class="md-tabs__item md-tabs__item--active">
         <a href=".." class="md-tabs__link">
           
   
@@ -469,28 +475,31 @@
       
   
   
+    
   
   
+  
     
     
     
     
+      
+        
+        
       
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
         
           
-        
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
-        
-          
-          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
             
   
   
@@ -503,7 +512,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_2">
             <span class="md-nav__icon md-icon"></span>
             Getting Started
@@ -551,6 +560,662 @@
   
 
       </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Deployment Runbook
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    Deployment Runbook
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      Overview
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#table-of-contents" class="md-nav__link">
+    <span class="md-ellipsis">
+      Table of Contents
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      Prerequisites
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Prerequisites">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#required-secrets" class="md-nav__link">
+    <span class="md-ellipsis">
+      Required Secrets
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#server-requirements" class="md-nav__link">
+    <span class="md-ellipsis">
+      Server Requirements
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#local-requirements" class="md-nav__link">
+    <span class="md-ellipsis">
+      Local Requirements
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deployment-environments" class="md-nav__link">
+    <span class="md-ellipsis">
+      Deployment Environments
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Deployment Environments">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#staging-environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Staging Environment
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#production-environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Production Environment
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#automated-deployments" class="md-nav__link">
+    <span class="md-ellipsis">
+      Automated Deployments
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Automated Deployments">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#staging-deployment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Staging Deployment
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#production-deployment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Production Deployment
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-initial-setup-first-time-deployment" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Initial Setup (First-Time Deployment)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Initial Setup (First-Time Deployment)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-clone-the-repository" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.1. Clone the Repository
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-configure-secrets" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.2. Configure Secrets
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-run-the-deployment" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.3. Run the Deployment
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-routine-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Routine Operations
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Routine Operations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-updating-the-system" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.1. Updating the System
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-checking-system-status" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.2. Checking System Status
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-viewing-logs" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.3. Viewing Logs
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#34-stopping-and-starting-services" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.4. Stopping and Starting Services
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-database-management" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Database Management
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Database Management">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-creating-a-new-migration" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.1. Creating a New Migration
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-running-migrations" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.2. Running Migrations
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-rolling-back-migrations" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.3. Rolling Back Migrations
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-troubleshooting" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Troubleshooting
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-security-best-practices" class="md-nav__link">
+    <span class="md-ellipsis">
+      6. Security Best Practices
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. Security Best Practices">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#prerequisites_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Prerequisites
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#staging-manual-deployment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Staging Manual Deployment
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#production-manual-deployment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Production Manual Deployment
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#health-checks" class="md-nav__link">
+    <span class="md-ellipsis">
+      Health Checks
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Health Checks">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#backend-health-check" class="md-nav__link">
+    <span class="md-ellipsis">
+      Backend Health Check
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#frontend-health-check" class="md-nav__link">
+    <span class="md-ellipsis">
+      Frontend Health Check
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#service-specific-health-checks" class="md-nav__link">
+    <span class="md-ellipsis">
+      Service-Specific Health Checks
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#docker-container-health" class="md-nav__link">
+    <span class="md-ellipsis">
+      Docker Container Health
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#rollback-procedures" class="md-nav__link">
+    <span class="md-ellipsis">
+      Rollback Procedures
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Rollback Procedures">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#staging-rollback" class="md-nav__link">
+    <span class="md-ellipsis">
+      Staging Rollback
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#production-rollback" class="md-nav__link">
+    <span class="md-ellipsis">
+      Production Rollback
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#emergency-rollback-critical" class="md-nav__link">
+    <span class="md-ellipsis">
+      Emergency Rollback (Critical)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#troubleshooting" class="md-nav__link">
+    <span class="md-ellipsis">
+      Troubleshooting
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Troubleshooting">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#common-issues" class="md-nav__link">
+    <span class="md-ellipsis">
+      Common Issues
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Common Issues">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-health-check-failures" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Health Check Failures
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-database-connection-issues" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Database Connection Issues
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-image-pull-failures" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Image Pull Failures
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-ssh-connection-failures" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. SSH Connection Failures
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-high-error-rates-after-deployment" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. High Error Rates After Deployment
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#debug-commands" class="md-nav__link">
+    <span class="md-ellipsis">
+      Debug Commands
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#post-deployment-tasks" class="md-nav__link">
+    <span class="md-ellipsis">
+      Post-Deployment Tasks
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Post-Deployment Tasks">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#immediate-within-1-hour" class="md-nav__link">
+    <span class="md-ellipsis">
+      Immediate (Within 1 hour)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#short-term-within-24-hours" class="md-nav__link">
+    <span class="md-ellipsis">
+      Short-term (Within 24 hours)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#long-term-within-1-week" class="md-nav__link">
+    <span class="md-ellipsis">
+      Long-term (Within 1 week)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deployment-checklist" class="md-nav__link">
+    <span class="md-ellipsis">
+      Deployment Checklist
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Deployment Checklist">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pre-deployment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Pre-Deployment
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#during-deployment" class="md-nav__link">
+    <span class="md-ellipsis">
+      During Deployment
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#post-deployment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Post-Deployment
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#emergency-contacts" class="md-nav__link">
+    <span class="md-ellipsis">
+      Emergency Contacts
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#additional-resources" class="md-nav__link">
+    <span class="md-ellipsis">
+      Additional Resources
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -788,6 +1453,29 @@
   
   <span class="md-ellipsis">
     Operations Runbook
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../OPERATOR_GUIDE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Operator Guide
     
   </span>
   
@@ -1540,13 +2228,157 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#manual-deployments" class="md-nav__link">
+  <a href="#2-initial-setup-first-time-deployment" class="md-nav__link">
     <span class="md-ellipsis">
-      Manual Deployments
+      2. Initial Setup (First-Time Deployment)
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Manual Deployments">
+    <nav class="md-nav" aria-label="2. Initial Setup (First-Time Deployment)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-clone-the-repository" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.1. Clone the Repository
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-configure-secrets" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.2. Configure Secrets
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-run-the-deployment" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.3. Run the Deployment
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-routine-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Routine Operations
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Routine Operations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-updating-the-system" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.1. Updating the System
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-checking-system-status" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.2. Checking System Status
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-viewing-logs" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.3. Viewing Logs
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#34-stopping-and-starting-services" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.4. Stopping and Starting Services
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-database-management" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Database Management
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Database Management">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-creating-a-new-migration" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.1. Creating a New Migration
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-running-migrations" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.2. Running Migrations
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-rolling-back-migrations" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.3. Rolling Back Migrations
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-troubleshooting" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Troubleshooting
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-security-best-practices" class="md-nav__link">
+    <span class="md-ellipsis">
+      6. Security Best Practices
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. Security Best Practices">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -2006,7 +2838,108 @@
 <a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="c1"># Deploy with skipped tests (not recommended)</span>
 <a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>gh<span class="w"> </span>workflow<span class="w"> </span>run<span class="w"> </span>deploy-production.yml<span class="w"> </span>-f<span class="w"> </span><span class="nv">version</span><span class="o">=</span>v1.2.3<span class="w"> </span>-f<span class="w"> </span><span class="nv">skip_tests</span><span class="o">=</span><span class="nb">true</span>
 </code></pre></div></p>
-<h2 id="manual-deployments">Manual Deployments<a class="headerlink" href="#manual-deployments" title="Permanent link">&para;</a></h2>
+<h2 id="2-initial-setup-first-time-deployment">2. Initial Setup (First-Time Deployment)<a class="headerlink" href="#2-initial-setup-first-time-deployment" title="Permanent link">&para;</a></h2>
+<p>This section covers the initial setup and deployment of the Flowstate-AI system.</p>
+<h3 id="21-clone-the-repository">2.1. Clone the Repository<a class="headerlink" href="#21-clone-the-repository" title="Permanent link">&para;</a></h3>
+<p>Clone the project repository to the deployment server:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/benjidanielsen/Flowstate-AI.git
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="nb">cd</span><span class="w"> </span>Flowstate-AI
+</code></pre></div>
+<h3 id="22-configure-secrets">2.2. Configure Secrets<a class="headerlink" href="#22-configure-secrets" title="Permanent link">&para;</a></h3>
+<p>Use the provided script to generate secure secrets and create the <code>.env.production</code> file:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>./scripts/setup-secrets.sh
+</code></pre></div>
+<p>Follow the prompts to configure domain names, ports, and other settings. The script will generate a <code>.env.production</code> file with secure defaults. <strong>Review this file and ensure all settings are correct for your environment.</strong></p>
+<p><strong>IMPORTANT:</strong> Securely back up the <code>.env.production</code> file. It contains sensitive credentials and is critical for system operation.</p>
+<h3 id="23-run-the-deployment">2.3. Run the Deployment<a class="headerlink" href="#23-run-the-deployment" title="Permanent link">&para;</a></h3>
+<p>Execute the deployment script to build and start all services:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>./scripts/deploy-production.sh
+</code></pre></div>
+<p>This script will:</p>
+<ol>
+<li>Check for prerequisites.</li>
+<li>Validate the <code>.env.production</code> file.</li>
+<li>Pull the latest Docker images.</li>
+<li>Build the application images.</li>
+<li>Start the PostgreSQL and Redis services.</li>
+<li>Run database migrations using <code>dbmate</code>.</li>
+<li>Start all application services (backend, frontend, worker).</li>
+<li>Perform a health check on all services.</li>
+</ol>
+<h2 id="3-routine-operations">3. Routine Operations<a class="headerlink" href="#3-routine-operations" title="Permanent link">&para;</a></h2>
+<p>This section describes common operational tasks.</p>
+<h3 id="31-updating-the-system">3.1. Updating the System<a class="headerlink" href="#31-updating-the-system" title="Permanent link">&para;</a></h3>
+<p>To update the system to the latest version:</p>
+<ol>
+<li>
+<p><strong>Pull the latest code:</strong></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>git<span class="w"> </span>pull<span class="w"> </span>origin<span class="w"> </span>main
+</code></pre></div>
+</li>
+<li>
+<p><strong>Run the deployment script:</strong></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>./scripts/deploy-production.sh
+</code></pre></div>
+<p>The script will automatically rebuild images and restart services.</p>
+</li>
+</ol>
+<h3 id="32-checking-system-status">3.2. Checking System Status<a class="headerlink" href="#32-checking-system-status" title="Permanent link">&para;</a></h3>
+<p>To check the health of all services, run the health check script:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>./scripts/health-check.sh
+</code></pre></div>
+<p>To view the status of running containers:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>docker-compose<span class="w"> </span>-f<span class="w"> </span>docker-compose.production.yml<span class="w"> </span>ps
+</code></pre></div>
+<h3 id="33-viewing-logs">3.3. Viewing Logs<a class="headerlink" href="#33-viewing-logs" title="Permanent link">&para;</a></h3>
+<p>To view the logs for all services in real-time:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>docker-compose<span class="w"> </span>-f<span class="w"> </span>docker-compose.production.yml<span class="w"> </span>logs<span class="w"> </span>-f
+</code></pre></div>
+<p>To view the logs for a specific service:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>docker-compose<span class="w"> </span>-f<span class="w"> </span>docker-compose.production.yml<span class="w"> </span>logs<span class="w"> </span>-f<span class="w"> </span>&lt;service_name&gt;
+</code></pre></div>
+<p>(e.g., <code>backend</code>, <code>frontend</code>, <code>postgres</code>)</p>
+<h3 id="34-stopping-and-starting-services">3.4. Stopping and Starting Services<a class="headerlink" href="#34-stopping-and-starting-services" title="Permanent link">&para;</a></h3>
+<ul>
+<li>
+<p><strong>To stop all services:</strong></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>docker-compose<span class="w"> </span>-f<span class="w"> </span>docker-compose.production.yml<span class="w"> </span>down
+</code></pre></div>
+</li>
+<li>
+<p><strong>To start all services:</strong></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>docker-compose<span class="w"> </span>-f<span class="w"> </span>docker-compose.production.yml<span class="w"> </span>up<span class="w"> </span>-d
+</code></pre></div>
+</li>
+</ul>
+<h2 id="4-database-management">4. Database Management<a class="headerlink" href="#4-database-management" title="Permanent link">&para;</a></h2>
+<p>Database migrations are managed using <code>dbmate</code>.</p>
+<h3 id="41-creating-a-new-migration">4.1. Creating a New Migration<a class="headerlink" href="#41-creating-a-new-migration" title="Permanent link">&para;</a></h3>
+<p>To create a new migration file:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>dbmate<span class="w"> </span>new<span class="w"> </span>&lt;migration_name&gt;
+</code></pre></div>
+<p>This will create a new SQL file in the <code>db/migrations</code> directory. Edit this file to define your schema changes.</p>
+<h3 id="42-running-migrations">4.2. Running Migrations<a class="headerlink" href="#42-running-migrations" title="Permanent link">&para;</a></h3>
+<p>To apply all pending migrations:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>dbmate<span class="w"> </span>up
+</code></pre></div>
+<p>The deployment script automatically runs this command.</p>
+<h3 id="43-rolling-back-migrations">4.3. Rolling Back Migrations<a class="headerlink" href="#43-rolling-back-migrations" title="Permanent link">&para;</a></h3>
+<p>To roll back the last migration:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>dbmate<span class="w"> </span>down
+</code></pre></div>
+<h2 id="5-troubleshooting">5. Troubleshooting<a class="headerlink" href="#5-troubleshooting" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Service Not Starting:</strong> Check the service logs (<code>docker-compose logs -f &lt;service_name&gt;</code>) for errors. Common issues include incorrect environment variables or port conflicts.</li>
+<li><strong>Database Connection Issues:</strong> Ensure the <code>DATABASE_URL</code> in <code>.env.production</code> is correct and that the PostgreSQL container is running and healthy.</li>
+<li><strong>Permission Errors:</strong> Ensure all scripts in the <code>scripts/</code> directory are executable (<code>chmod +x scripts/*.sh</code>).</li>
+</ul>
+<h2 id="6-security-best-practices">6. Security Best Practices<a class="headerlink" href="#6-security-best-practices" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Rotate Secrets:</strong> Regularly run <code>./scripts/setup-secrets.sh</code> to generate new secrets and update your <code>.env.production</code> file.</li>
+<li><strong>Restrict Access:</strong> Limit access to the deployment server and the <code>.env.production</code> file.</li>
+<li><strong>Enable HTTPS:</strong> For production deployments, configure Nginx with SSL/TLS certificates to enable HTTPS. The <code>docker/nginx/nginx.conf</code> file includes a template for this.</li>
+<li><strong>Regularly Update:</strong> Keep the system and its dependencies up-to-date by pulling the latest code and re-deploying.</li>
+</ul>
 <h3 id="prerequisites_1">Prerequisites<a class="headerlink" href="#prerequisites_1" title="Permanent link">&para;</a></h3>
 <ol>
 <li>Ensure you have SSH access to the target server</li>
@@ -2014,205 +2947,205 @@
 <li>Backup database before production deployments</li>
 </ol>
 <h3 id="staging-manual-deployment">Staging Manual Deployment<a class="headerlink" href="#staging-manual-deployment" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1"># 1. SSH into staging server</span>
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>ssh<span class="w"> </span>-i<span class="w"> </span>~/.ssh/staging_key<span class="w"> </span>user@staging-host
-<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>
-<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="c1"># 2. Navigate to application directory</span>
-<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="nb">cd</span><span class="w"> </span>/opt/flowstate-ai
-<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>
-<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="c1"># 3. Pull latest images</span>
-<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>docker<span class="w"> </span>pull<span class="w"> </span>ghcr.io/benjidanielsen/flowstate-ai/backend:staging-latest
-<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>docker<span class="w"> </span>pull<span class="w"> </span>ghcr.io/benjidanielsen/flowstate-ai/frontend:staging-latest
-<a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>docker<span class="w"> </span>pull<span class="w"> </span>ghcr.io/benjidanielsen/flowstate-ai/python-worker:staging-latest
-<a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a>
-<a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a><span class="c1"># 4. Stop current containers</span>
-<a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a>docker-compose<span class="w"> </span>-f<span class="w"> </span>docker/compose.yml<span class="w"> </span>down
-<a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a>
-<a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a><span class="c1"># 5. Start new containers</span>
-<a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a>docker-compose<span class="w"> </span>-f<span class="w"> </span>docker/compose.yml<span class="w"> </span>up<span class="w"> </span>-d
-<a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a>
-<a id="__codelineno-4-18" name="__codelineno-4-18" href="#__codelineno-4-18"></a><span class="c1"># 6. Verify health</span>
-<a id="__codelineno-4-19" name="__codelineno-4-19" href="#__codelineno-4-19"></a>docker-compose<span class="w"> </span>-f<span class="w"> </span>docker/compose.yml<span class="w"> </span>ps
-<a id="__codelineno-4-20" name="__codelineno-4-20" href="#__codelineno-4-20"></a>curl<span class="w"> </span>-f<span class="w"> </span>https://staging.flowstate-ai.com/health
+<div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="c1"># 1. SSH into staging server</span>
+<a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a>ssh<span class="w"> </span>-i<span class="w"> </span>~/.ssh/staging_key<span class="w"> </span>user@staging-host
+<a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a>
+<a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a><span class="c1"># 2. Navigate to application directory</span>
+<a id="__codelineno-18-5" name="__codelineno-18-5" href="#__codelineno-18-5"></a><span class="nb">cd</span><span class="w"> </span>/opt/flowstate-ai
+<a id="__codelineno-18-6" name="__codelineno-18-6" href="#__codelineno-18-6"></a>
+<a id="__codelineno-18-7" name="__codelineno-18-7" href="#__codelineno-18-7"></a><span class="c1"># 3. Pull latest images</span>
+<a id="__codelineno-18-8" name="__codelineno-18-8" href="#__codelineno-18-8"></a>docker<span class="w"> </span>pull<span class="w"> </span>ghcr.io/benjidanielsen/flowstate-ai/backend:staging-latest
+<a id="__codelineno-18-9" name="__codelineno-18-9" href="#__codelineno-18-9"></a>docker<span class="w"> </span>pull<span class="w"> </span>ghcr.io/benjidanielsen/flowstate-ai/frontend:staging-latest
+<a id="__codelineno-18-10" name="__codelineno-18-10" href="#__codelineno-18-10"></a>docker<span class="w"> </span>pull<span class="w"> </span>ghcr.io/benjidanielsen/flowstate-ai/python-worker:staging-latest
+<a id="__codelineno-18-11" name="__codelineno-18-11" href="#__codelineno-18-11"></a>
+<a id="__codelineno-18-12" name="__codelineno-18-12" href="#__codelineno-18-12"></a><span class="c1"># 4. Stop current containers</span>
+<a id="__codelineno-18-13" name="__codelineno-18-13" href="#__codelineno-18-13"></a>docker-compose<span class="w"> </span>-f<span class="w"> </span>docker/compose.yml<span class="w"> </span>down
+<a id="__codelineno-18-14" name="__codelineno-18-14" href="#__codelineno-18-14"></a>
+<a id="__codelineno-18-15" name="__codelineno-18-15" href="#__codelineno-18-15"></a><span class="c1"># 5. Start new containers</span>
+<a id="__codelineno-18-16" name="__codelineno-18-16" href="#__codelineno-18-16"></a>docker-compose<span class="w"> </span>-f<span class="w"> </span>docker/compose.yml<span class="w"> </span>up<span class="w"> </span>-d
+<a id="__codelineno-18-17" name="__codelineno-18-17" href="#__codelineno-18-17"></a>
+<a id="__codelineno-18-18" name="__codelineno-18-18" href="#__codelineno-18-18"></a><span class="c1"># 6. Verify health</span>
+<a id="__codelineno-18-19" name="__codelineno-18-19" href="#__codelineno-18-19"></a>docker-compose<span class="w"> </span>-f<span class="w"> </span>docker/compose.yml<span class="w"> </span>ps
+<a id="__codelineno-18-20" name="__codelineno-18-20" href="#__codelineno-18-20"></a>curl<span class="w"> </span>-f<span class="w"> </span>https://staging.flowstate-ai.com/health
 </code></pre></div>
 <h3 id="production-manual-deployment">Production Manual Deployment<a class="headerlink" href="#production-manual-deployment" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1"># 1. SSH into production server</span>
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>ssh<span class="w"> </span>-i<span class="w"> </span>~/.ssh/production_key<span class="w"> </span>user@production-host
-<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>
-<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="c1"># 2. Navigate to application directory</span>
-<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="nb">cd</span><span class="w"> </span>/opt/flowstate-ai
-<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>
-<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="c1"># 3. Create backup</span>
-<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="nv">BACKUP_DIR</span><span class="o">=</span><span class="s2">&quot;/opt/flowstate-ai/backups/</span><span class="k">$(</span>date<span class="w"> </span>+%Y%m%d_%H%M%S<span class="k">)</span><span class="s2">&quot;</span>
-<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a>mkdir<span class="w"> </span>-p<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$BACKUP_DIR</span><span class="s2">&quot;</span>
-<a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a>docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>flowstate-db<span class="w"> </span>pg_dump<span class="w"> </span>-U<span class="w"> </span>flowstate<span class="w"> </span>flowstate<span class="w"> </span>&gt;<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$BACKUP_DIR</span><span class="s2">/database.sql&quot;</span>
-<a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a>
-<a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a><span class="c1"># 4. Pull versioned images</span>
-<a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a><span class="nv">VERSION</span><span class="o">=</span><span class="s2">&quot;v1.2.3&quot;</span>
-<a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a>docker<span class="w"> </span>pull<span class="w"> </span>ghcr.io/benjidanielsen/flowstate-ai/backend:<span class="nv">$VERSION</span>
-<a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a>docker<span class="w"> </span>pull<span class="w"> </span>ghcr.io/benjidanielsen/flowstate-ai/frontend:<span class="nv">$VERSION</span>
-<a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a>docker<span class="w"> </span>pull<span class="w"> </span>ghcr.io/benjidanielsen/flowstate-ai/python-worker:<span class="nv">$VERSION</span>
-<a id="__codelineno-5-17" name="__codelineno-5-17" href="#__codelineno-5-17"></a>
-<a id="__codelineno-5-18" name="__codelineno-5-18" href="#__codelineno-5-18"></a><span class="c1"># 5. Deploy to green environment</span>
-<a id="__codelineno-5-19" name="__codelineno-5-19" href="#__codelineno-5-19"></a>docker-compose<span class="w"> </span>-f<span class="w"> </span>docker/compose.green.yml<span class="w"> </span>up<span class="w"> </span>-d
-<a id="__codelineno-5-20" name="__codelineno-5-20" href="#__codelineno-5-20"></a>
-<a id="__codelineno-5-21" name="__codelineno-5-21" href="#__codelineno-5-21"></a><span class="c1"># 6. Wait for green environment</span>
-<a id="__codelineno-5-22" name="__codelineno-5-22" href="#__codelineno-5-22"></a>sleep<span class="w"> </span><span class="m">30</span>
-<a id="__codelineno-5-23" name="__codelineno-5-23" href="#__codelineno-5-23"></a>
-<a id="__codelineno-5-24" name="__codelineno-5-24" href="#__codelineno-5-24"></a><span class="c1"># 7. Health check green environment</span>
-<a id="__codelineno-5-25" name="__codelineno-5-25" href="#__codelineno-5-25"></a>curl<span class="w"> </span>-f<span class="w"> </span>http://localhost:8081/health
-<a id="__codelineno-5-26" name="__codelineno-5-26" href="#__codelineno-5-26"></a>
-<a id="__codelineno-5-27" name="__codelineno-5-27" href="#__codelineno-5-27"></a><span class="c1"># 8. Switch traffic (update load balancer)</span>
-<a id="__codelineno-5-28" name="__codelineno-5-28" href="#__codelineno-5-28"></a><span class="c1"># This step depends on your load balancer configuration</span>
-<a id="__codelineno-5-29" name="__codelineno-5-29" href="#__codelineno-5-29"></a>
-<a id="__codelineno-5-30" name="__codelineno-5-30" href="#__codelineno-5-30"></a><span class="c1"># 9. Stop blue environment</span>
-<a id="__codelineno-5-31" name="__codelineno-5-31" href="#__codelineno-5-31"></a>docker-compose<span class="w"> </span>-f<span class="w"> </span>docker/compose.yml<span class="w"> </span>down
-<a id="__codelineno-5-32" name="__codelineno-5-32" href="#__codelineno-5-32"></a>
-<a id="__codelineno-5-33" name="__codelineno-5-33" href="#__codelineno-5-33"></a><span class="c1"># 10. Promote green to blue</span>
-<a id="__codelineno-5-34" name="__codelineno-5-34" href="#__codelineno-5-34"></a>docker-compose<span class="w"> </span>-f<span class="w"> </span>docker/compose.green.yml<span class="w"> </span>down
-<a id="__codelineno-5-35" name="__codelineno-5-35" href="#__codelineno-5-35"></a>docker-compose<span class="w"> </span>-f<span class="w"> </span>docker/compose.yml<span class="w"> </span>up<span class="w"> </span>-d
-<a id="__codelineno-5-36" name="__codelineno-5-36" href="#__codelineno-5-36"></a>
-<a id="__codelineno-5-37" name="__codelineno-5-37" href="#__codelineno-5-37"></a><span class="c1"># 11. Verify production health</span>
-<a id="__codelineno-5-38" name="__codelineno-5-38" href="#__codelineno-5-38"></a>curl<span class="w"> </span>-f<span class="w"> </span>https://flowstate-ai.com/health
+<div class="highlight"><pre><span></span><code><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="c1"># 1. SSH into production server</span>
+<a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a>ssh<span class="w"> </span>-i<span class="w"> </span>~/.ssh/production_key<span class="w"> </span>user@production-host
+<a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a>
+<a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a><span class="c1"># 2. Navigate to application directory</span>
+<a id="__codelineno-19-5" name="__codelineno-19-5" href="#__codelineno-19-5"></a><span class="nb">cd</span><span class="w"> </span>/opt/flowstate-ai
+<a id="__codelineno-19-6" name="__codelineno-19-6" href="#__codelineno-19-6"></a>
+<a id="__codelineno-19-7" name="__codelineno-19-7" href="#__codelineno-19-7"></a><span class="c1"># 3. Create backup</span>
+<a id="__codelineno-19-8" name="__codelineno-19-8" href="#__codelineno-19-8"></a><span class="nv">BACKUP_DIR</span><span class="o">=</span><span class="s2">&quot;/opt/flowstate-ai/backups/</span><span class="k">$(</span>date<span class="w"> </span>+%Y%m%d_%H%M%S<span class="k">)</span><span class="s2">&quot;</span>
+<a id="__codelineno-19-9" name="__codelineno-19-9" href="#__codelineno-19-9"></a>mkdir<span class="w"> </span>-p<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$BACKUP_DIR</span><span class="s2">&quot;</span>
+<a id="__codelineno-19-10" name="__codelineno-19-10" href="#__codelineno-19-10"></a>docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>flowstate-db<span class="w"> </span>pg_dump<span class="w"> </span>-U<span class="w"> </span>flowstate<span class="w"> </span>flowstate<span class="w"> </span>&gt;<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$BACKUP_DIR</span><span class="s2">/database.sql&quot;</span>
+<a id="__codelineno-19-11" name="__codelineno-19-11" href="#__codelineno-19-11"></a>
+<a id="__codelineno-19-12" name="__codelineno-19-12" href="#__codelineno-19-12"></a><span class="c1"># 4. Pull versioned images</span>
+<a id="__codelineno-19-13" name="__codelineno-19-13" href="#__codelineno-19-13"></a><span class="nv">VERSION</span><span class="o">=</span><span class="s2">&quot;v1.2.3&quot;</span>
+<a id="__codelineno-19-14" name="__codelineno-19-14" href="#__codelineno-19-14"></a>docker<span class="w"> </span>pull<span class="w"> </span>ghcr.io/benjidanielsen/flowstate-ai/backend:<span class="nv">$VERSION</span>
+<a id="__codelineno-19-15" name="__codelineno-19-15" href="#__codelineno-19-15"></a>docker<span class="w"> </span>pull<span class="w"> </span>ghcr.io/benjidanielsen/flowstate-ai/frontend:<span class="nv">$VERSION</span>
+<a id="__codelineno-19-16" name="__codelineno-19-16" href="#__codelineno-19-16"></a>docker<span class="w"> </span>pull<span class="w"> </span>ghcr.io/benjidanielsen/flowstate-ai/python-worker:<span class="nv">$VERSION</span>
+<a id="__codelineno-19-17" name="__codelineno-19-17" href="#__codelineno-19-17"></a>
+<a id="__codelineno-19-18" name="__codelineno-19-18" href="#__codelineno-19-18"></a><span class="c1"># 5. Deploy to green environment</span>
+<a id="__codelineno-19-19" name="__codelineno-19-19" href="#__codelineno-19-19"></a>docker-compose<span class="w"> </span>-f<span class="w"> </span>docker/compose.green.yml<span class="w"> </span>up<span class="w"> </span>-d
+<a id="__codelineno-19-20" name="__codelineno-19-20" href="#__codelineno-19-20"></a>
+<a id="__codelineno-19-21" name="__codelineno-19-21" href="#__codelineno-19-21"></a><span class="c1"># 6. Wait for green environment</span>
+<a id="__codelineno-19-22" name="__codelineno-19-22" href="#__codelineno-19-22"></a>sleep<span class="w"> </span><span class="m">30</span>
+<a id="__codelineno-19-23" name="__codelineno-19-23" href="#__codelineno-19-23"></a>
+<a id="__codelineno-19-24" name="__codelineno-19-24" href="#__codelineno-19-24"></a><span class="c1"># 7. Health check green environment</span>
+<a id="__codelineno-19-25" name="__codelineno-19-25" href="#__codelineno-19-25"></a>curl<span class="w"> </span>-f<span class="w"> </span>http://localhost:8081/health
+<a id="__codelineno-19-26" name="__codelineno-19-26" href="#__codelineno-19-26"></a>
+<a id="__codelineno-19-27" name="__codelineno-19-27" href="#__codelineno-19-27"></a><span class="c1"># 8. Switch traffic (update load balancer)</span>
+<a id="__codelineno-19-28" name="__codelineno-19-28" href="#__codelineno-19-28"></a><span class="c1"># This step depends on your load balancer configuration</span>
+<a id="__codelineno-19-29" name="__codelineno-19-29" href="#__codelineno-19-29"></a>
+<a id="__codelineno-19-30" name="__codelineno-19-30" href="#__codelineno-19-30"></a><span class="c1"># 9. Stop blue environment</span>
+<a id="__codelineno-19-31" name="__codelineno-19-31" href="#__codelineno-19-31"></a>docker-compose<span class="w"> </span>-f<span class="w"> </span>docker/compose.yml<span class="w"> </span>down
+<a id="__codelineno-19-32" name="__codelineno-19-32" href="#__codelineno-19-32"></a>
+<a id="__codelineno-19-33" name="__codelineno-19-33" href="#__codelineno-19-33"></a><span class="c1"># 10. Promote green to blue</span>
+<a id="__codelineno-19-34" name="__codelineno-19-34" href="#__codelineno-19-34"></a>docker-compose<span class="w"> </span>-f<span class="w"> </span>docker/compose.green.yml<span class="w"> </span>down
+<a id="__codelineno-19-35" name="__codelineno-19-35" href="#__codelineno-19-35"></a>docker-compose<span class="w"> </span>-f<span class="w"> </span>docker/compose.yml<span class="w"> </span>up<span class="w"> </span>-d
+<a id="__codelineno-19-36" name="__codelineno-19-36" href="#__codelineno-19-36"></a>
+<a id="__codelineno-19-37" name="__codelineno-19-37" href="#__codelineno-19-37"></a><span class="c1"># 11. Verify production health</span>
+<a id="__codelineno-19-38" name="__codelineno-19-38" href="#__codelineno-19-38"></a>curl<span class="w"> </span>-f<span class="w"> </span>https://flowstate-ai.com/health
 </code></pre></div>
 <h2 id="health-checks">Health Checks<a class="headerlink" href="#health-checks" title="Permanent link">&para;</a></h2>
 <h3 id="backend-health-check">Backend Health Check<a class="headerlink" href="#backend-health-check" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="c1"># Basic health check</span>
-<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>curl<span class="w"> </span>-f<span class="w"> </span>https://flowstate-ai.com/health
-<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>
-<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="c1"># Expected response:</span>
-<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="c1"># {&quot;status&quot;:&quot;healthy&quot;,&quot;timestamp&quot;:&quot;2025-10-10T12:00:00Z&quot;}</span>
-<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>
-<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="c1"># Detailed health check with components</span>
-<a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>curl<span class="w"> </span>-s<span class="w"> </span>https://flowstate-ai.com/health<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
-<a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a>
-<a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a><span class="c1"># Check database connectivity</span>
-<a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a>curl<span class="w"> </span>-s<span class="w"> </span>https://flowstate-ai.com/health/db<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="c1"># Basic health check</span>
+<a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a>curl<span class="w"> </span>-f<span class="w"> </span>https://flowstate-ai.com/health
+<a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a>
+<a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a><span class="c1"># Expected response:</span>
+<a id="__codelineno-20-5" name="__codelineno-20-5" href="#__codelineno-20-5"></a><span class="c1"># {&quot;status&quot;:&quot;healthy&quot;,&quot;timestamp&quot;:&quot;2025-10-10T12:00:00Z&quot;}</span>
+<a id="__codelineno-20-6" name="__codelineno-20-6" href="#__codelineno-20-6"></a>
+<a id="__codelineno-20-7" name="__codelineno-20-7" href="#__codelineno-20-7"></a><span class="c1"># Detailed health check with components</span>
+<a id="__codelineno-20-8" name="__codelineno-20-8" href="#__codelineno-20-8"></a>curl<span class="w"> </span>-s<span class="w"> </span>https://flowstate-ai.com/health<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
+<a id="__codelineno-20-9" name="__codelineno-20-9" href="#__codelineno-20-9"></a>
+<a id="__codelineno-20-10" name="__codelineno-20-10" href="#__codelineno-20-10"></a><span class="c1"># Check database connectivity</span>
+<a id="__codelineno-20-11" name="__codelineno-20-11" href="#__codelineno-20-11"></a>curl<span class="w"> </span>-s<span class="w"> </span>https://flowstate-ai.com/health/db<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
 </code></pre></div>
 <h3 id="frontend-health-check">Frontend Health Check<a class="headerlink" href="#frontend-health-check" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1"># Check frontend is accessible</span>
-<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>curl<span class="w"> </span>-f<span class="w"> </span>https://flowstate-ai.com
-<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>
-<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="c1"># Check specific routes</span>
-<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>curl<span class="w"> </span>-f<span class="w"> </span>https://flowstate-ai.com/dashboard
-<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>curl<span class="w"> </span>-f<span class="w"> </span>https://flowstate-ai.com/login
+<div class="highlight"><pre><span></span><code><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="c1"># Check frontend is accessible</span>
+<a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a>curl<span class="w"> </span>-f<span class="w"> </span>https://flowstate-ai.com
+<a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a>
+<a id="__codelineno-21-4" name="__codelineno-21-4" href="#__codelineno-21-4"></a><span class="c1"># Check specific routes</span>
+<a id="__codelineno-21-5" name="__codelineno-21-5" href="#__codelineno-21-5"></a>curl<span class="w"> </span>-f<span class="w"> </span>https://flowstate-ai.com/dashboard
+<a id="__codelineno-21-6" name="__codelineno-21-6" href="#__codelineno-21-6"></a>curl<span class="w"> </span>-f<span class="w"> </span>https://flowstate-ai.com/login
 </code></pre></div>
 <h3 id="service-specific-health-checks">Service-Specific Health Checks<a class="headerlink" href="#service-specific-health-checks" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="c1"># Backend API</span>
-<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>curl<span class="w"> </span>-f<span class="w"> </span>https://flowstate-ai.com/api/v1/health
-<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>
-<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="c1"># Authentication service</span>
-<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>curl<span class="w"> </span>-f<span class="w"> </span>https://flowstate-ai.com/api/v1/auth/status
-<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>
-<a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="c1"># Stats service</span>
-<a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a>curl<span class="w"> </span>-f<span class="w"> </span>https://flowstate-ai.com/api/v1/stats
-<a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a>
-<a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a><span class="c1"># Python worker (internal)</span>
-<a id="__codelineno-8-11" name="__codelineno-8-11" href="#__codelineno-8-11"></a>docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>flowstate-python-worker<span class="w"> </span>curl<span class="w"> </span>-f<span class="w"> </span>http://localhost:8000/health
+<div class="highlight"><pre><span></span><code><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a><span class="c1"># Backend API</span>
+<a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a>curl<span class="w"> </span>-f<span class="w"> </span>https://flowstate-ai.com/api/v1/health
+<a id="__codelineno-22-3" name="__codelineno-22-3" href="#__codelineno-22-3"></a>
+<a id="__codelineno-22-4" name="__codelineno-22-4" href="#__codelineno-22-4"></a><span class="c1"># Authentication service</span>
+<a id="__codelineno-22-5" name="__codelineno-22-5" href="#__codelineno-22-5"></a>curl<span class="w"> </span>-f<span class="w"> </span>https://flowstate-ai.com/api/v1/auth/status
+<a id="__codelineno-22-6" name="__codelineno-22-6" href="#__codelineno-22-6"></a>
+<a id="__codelineno-22-7" name="__codelineno-22-7" href="#__codelineno-22-7"></a><span class="c1"># Stats service</span>
+<a id="__codelineno-22-8" name="__codelineno-22-8" href="#__codelineno-22-8"></a>curl<span class="w"> </span>-f<span class="w"> </span>https://flowstate-ai.com/api/v1/stats
+<a id="__codelineno-22-9" name="__codelineno-22-9" href="#__codelineno-22-9"></a>
+<a id="__codelineno-22-10" name="__codelineno-22-10" href="#__codelineno-22-10"></a><span class="c1"># Python worker (internal)</span>
+<a id="__codelineno-22-11" name="__codelineno-22-11" href="#__codelineno-22-11"></a>docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>flowstate-python-worker<span class="w"> </span>curl<span class="w"> </span>-f<span class="w"> </span>http://localhost:8000/health
 </code></pre></div>
 <h3 id="docker-container-health">Docker Container Health<a class="headerlink" href="#docker-container-health" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="c1"># Check container status</span>
-<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>docker-compose<span class="w"> </span>ps
-<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>
-<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="c1"># Check container logs</span>
-<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>docker-compose<span class="w"> </span>logs<span class="w"> </span>backend
-<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a>docker-compose<span class="w"> </span>logs<span class="w"> </span>frontend
-<a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a>docker-compose<span class="w"> </span>logs<span class="w"> </span>python-worker
-<a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a>
-<a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a><span class="c1"># Check container resource usage</span>
-<a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a>docker<span class="w"> </span>stats<span class="w"> </span>--no-stream
+<div class="highlight"><pre><span></span><code><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a><span class="c1"># Check container status</span>
+<a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a>docker-compose<span class="w"> </span>ps
+<a id="__codelineno-23-3" name="__codelineno-23-3" href="#__codelineno-23-3"></a>
+<a id="__codelineno-23-4" name="__codelineno-23-4" href="#__codelineno-23-4"></a><span class="c1"># Check container logs</span>
+<a id="__codelineno-23-5" name="__codelineno-23-5" href="#__codelineno-23-5"></a>docker-compose<span class="w"> </span>logs<span class="w"> </span>backend
+<a id="__codelineno-23-6" name="__codelineno-23-6" href="#__codelineno-23-6"></a>docker-compose<span class="w"> </span>logs<span class="w"> </span>frontend
+<a id="__codelineno-23-7" name="__codelineno-23-7" href="#__codelineno-23-7"></a>docker-compose<span class="w"> </span>logs<span class="w"> </span>python-worker
+<a id="__codelineno-23-8" name="__codelineno-23-8" href="#__codelineno-23-8"></a>
+<a id="__codelineno-23-9" name="__codelineno-23-9" href="#__codelineno-23-9"></a><span class="c1"># Check container resource usage</span>
+<a id="__codelineno-23-10" name="__codelineno-23-10" href="#__codelineno-23-10"></a>docker<span class="w"> </span>stats<span class="w"> </span>--no-stream
 </code></pre></div>
 <h2 id="rollback-procedures">Rollback Procedures<a class="headerlink" href="#rollback-procedures" title="Permanent link">&para;</a></h2>
 <h3 id="staging-rollback">Staging Rollback<a class="headerlink" href="#staging-rollback" title="Permanent link">&para;</a></h3>
 <p>Staging rollbacks are automatic on deployment failure. For manual rollback:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="c1"># 1. SSH into staging server</span>
-<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>ssh<span class="w"> </span>-i<span class="w"> </span>~/.ssh/staging_key<span class="w"> </span>user@staging-host
-<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>
-<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="c1"># 2. Navigate to application directory</span>
-<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="nb">cd</span><span class="w"> </span>/opt/flowstate-ai
-<a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a>
-<a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a><span class="c1"># 3. Stop current containers</span>
-<a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a>docker-compose<span class="w"> </span>-f<span class="w"> </span>docker/compose.yml<span class="w"> </span>down
-<a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a>
-<a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a><span class="c1"># 4. Pull previous version images</span>
-<a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a>docker<span class="w"> </span>pull<span class="w"> </span>ghcr.io/benjidanielsen/flowstate-ai/backend:staging-&lt;previous-sha&gt;
-<a id="__codelineno-10-12" name="__codelineno-10-12" href="#__codelineno-10-12"></a>docker<span class="w"> </span>pull<span class="w"> </span>ghcr.io/benjidanielsen/flowstate-ai/frontend:staging-&lt;previous-sha&gt;
-<a id="__codelineno-10-13" name="__codelineno-10-13" href="#__codelineno-10-13"></a>docker<span class="w"> </span>pull<span class="w"> </span>ghcr.io/benjidanielsen/flowstate-ai/python-worker:staging-&lt;previous-sha&gt;
-<a id="__codelineno-10-14" name="__codelineno-10-14" href="#__codelineno-10-14"></a>
-<a id="__codelineno-10-15" name="__codelineno-10-15" href="#__codelineno-10-15"></a><span class="c1"># 5. Start containers</span>
-<a id="__codelineno-10-16" name="__codelineno-10-16" href="#__codelineno-10-16"></a>docker-compose<span class="w"> </span>-f<span class="w"> </span>docker/compose.yml<span class="w"> </span>up<span class="w"> </span>-d
-<a id="__codelineno-10-17" name="__codelineno-10-17" href="#__codelineno-10-17"></a>
-<a id="__codelineno-10-18" name="__codelineno-10-18" href="#__codelineno-10-18"></a><span class="c1"># 6. Verify health</span>
-<a id="__codelineno-10-19" name="__codelineno-10-19" href="#__codelineno-10-19"></a>curl<span class="w"> </span>-f<span class="w"> </span>https://staging.flowstate-ai.com/health
+<div class="highlight"><pre><span></span><code><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a><span class="c1"># 1. SSH into staging server</span>
+<a id="__codelineno-24-2" name="__codelineno-24-2" href="#__codelineno-24-2"></a>ssh<span class="w"> </span>-i<span class="w"> </span>~/.ssh/staging_key<span class="w"> </span>user@staging-host
+<a id="__codelineno-24-3" name="__codelineno-24-3" href="#__codelineno-24-3"></a>
+<a id="__codelineno-24-4" name="__codelineno-24-4" href="#__codelineno-24-4"></a><span class="c1"># 2. Navigate to application directory</span>
+<a id="__codelineno-24-5" name="__codelineno-24-5" href="#__codelineno-24-5"></a><span class="nb">cd</span><span class="w"> </span>/opt/flowstate-ai
+<a id="__codelineno-24-6" name="__codelineno-24-6" href="#__codelineno-24-6"></a>
+<a id="__codelineno-24-7" name="__codelineno-24-7" href="#__codelineno-24-7"></a><span class="c1"># 3. Stop current containers</span>
+<a id="__codelineno-24-8" name="__codelineno-24-8" href="#__codelineno-24-8"></a>docker-compose<span class="w"> </span>-f<span class="w"> </span>docker/compose.yml<span class="w"> </span>down
+<a id="__codelineno-24-9" name="__codelineno-24-9" href="#__codelineno-24-9"></a>
+<a id="__codelineno-24-10" name="__codelineno-24-10" href="#__codelineno-24-10"></a><span class="c1"># 4. Pull previous version images</span>
+<a id="__codelineno-24-11" name="__codelineno-24-11" href="#__codelineno-24-11"></a>docker<span class="w"> </span>pull<span class="w"> </span>ghcr.io/benjidanielsen/flowstate-ai/backend:staging-&lt;previous-sha&gt;
+<a id="__codelineno-24-12" name="__codelineno-24-12" href="#__codelineno-24-12"></a>docker<span class="w"> </span>pull<span class="w"> </span>ghcr.io/benjidanielsen/flowstate-ai/frontend:staging-&lt;previous-sha&gt;
+<a id="__codelineno-24-13" name="__codelineno-24-13" href="#__codelineno-24-13"></a>docker<span class="w"> </span>pull<span class="w"> </span>ghcr.io/benjidanielsen/flowstate-ai/python-worker:staging-&lt;previous-sha&gt;
+<a id="__codelineno-24-14" name="__codelineno-24-14" href="#__codelineno-24-14"></a>
+<a id="__codelineno-24-15" name="__codelineno-24-15" href="#__codelineno-24-15"></a><span class="c1"># 5. Start containers</span>
+<a id="__codelineno-24-16" name="__codelineno-24-16" href="#__codelineno-24-16"></a>docker-compose<span class="w"> </span>-f<span class="w"> </span>docker/compose.yml<span class="w"> </span>up<span class="w"> </span>-d
+<a id="__codelineno-24-17" name="__codelineno-24-17" href="#__codelineno-24-17"></a>
+<a id="__codelineno-24-18" name="__codelineno-24-18" href="#__codelineno-24-18"></a><span class="c1"># 6. Verify health</span>
+<a id="__codelineno-24-19" name="__codelineno-24-19" href="#__codelineno-24-19"></a>curl<span class="w"> </span>-f<span class="w"> </span>https://staging.flowstate-ai.com/health
 </code></pre></div>
 <h3 id="production-rollback">Production Rollback<a class="headerlink" href="#production-rollback" title="Permanent link">&para;</a></h3>
 <p>Production rollbacks are automatic on deployment failure. For manual rollback:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="c1"># 1. SSH into production server</span>
-<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>ssh<span class="w"> </span>-i<span class="w"> </span>~/.ssh/production_key<span class="w"> </span>user@production-host
-<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>
-<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="c1"># 2. Navigate to application directory</span>
-<a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="nb">cd</span><span class="w"> </span>/opt/flowstate-ai
-<a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a>
-<a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a><span class="c1"># 3. Stop failed green environment</span>
-<a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a>docker-compose<span class="w"> </span>-f<span class="w"> </span>docker/compose.green.yml<span class="w"> </span>down
-<a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a>
-<a id="__codelineno-11-10" name="__codelineno-11-10" href="#__codelineno-11-10"></a><span class="c1"># 4. Identify latest backup</span>
-<a id="__codelineno-11-11" name="__codelineno-11-11" href="#__codelineno-11-11"></a><span class="nv">LATEST_BACKUP</span><span class="o">=</span><span class="k">$(</span>ls<span class="w"> </span>-t<span class="w"> </span>/opt/flowstate-ai/backups/<span class="w"> </span><span class="p">|</span><span class="w"> </span>head<span class="w"> </span>-1<span class="k">)</span>
-<a id="__codelineno-11-12" name="__codelineno-11-12" href="#__codelineno-11-12"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Rolling back to: </span><span class="nv">$LATEST_BACKUP</span><span class="s2">&quot;</span>
-<a id="__codelineno-11-13" name="__codelineno-11-13" href="#__codelineno-11-13"></a>
-<a id="__codelineno-11-14" name="__codelineno-11-14" href="#__codelineno-11-14"></a><span class="c1"># 5. Restore database if needed</span>
-<a id="__codelineno-11-15" name="__codelineno-11-15" href="#__codelineno-11-15"></a>docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>-i<span class="w"> </span>flowstate-db<span class="w"> </span>psql<span class="w"> </span>-U<span class="w"> </span>flowstate<span class="w"> </span>flowstate<span class="w"> </span>&lt;<span class="w"> </span><span class="s2">&quot;/opt/flowstate-ai/backups/</span><span class="nv">$LATEST_BACKUP</span><span class="s2">/database.sql&quot;</span>
-<a id="__codelineno-11-16" name="__codelineno-11-16" href="#__codelineno-11-16"></a>
-<a id="__codelineno-11-17" name="__codelineno-11-17" href="#__codelineno-11-17"></a><span class="c1"># 6. Ensure blue environment is running</span>
-<a id="__codelineno-11-18" name="__codelineno-11-18" href="#__codelineno-11-18"></a>docker-compose<span class="w"> </span>-f<span class="w"> </span>docker/compose.yml<span class="w"> </span>up<span class="w"> </span>-d
-<a id="__codelineno-11-19" name="__codelineno-11-19" href="#__codelineno-11-19"></a>
-<a id="__codelineno-11-20" name="__codelineno-11-20" href="#__codelineno-11-20"></a><span class="c1"># 7. Verify health</span>
-<a id="__codelineno-11-21" name="__codelineno-11-21" href="#__codelineno-11-21"></a>curl<span class="w"> </span>-f<span class="w"> </span>https://flowstate-ai.com/health
-<a id="__codelineno-11-22" name="__codelineno-11-22" href="#__codelineno-11-22"></a>
-<a id="__codelineno-11-23" name="__codelineno-11-23" href="#__codelineno-11-23"></a><span class="c1"># 8. Monitor for errors</span>
-<a id="__codelineno-11-24" name="__codelineno-11-24" href="#__codelineno-11-24"></a><span class="k">for</span><span class="w"> </span>i<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="o">{</span><span class="m">1</span>..10<span class="o">}</span><span class="p">;</span><span class="w"> </span><span class="k">do</span>
-<a id="__codelineno-11-25" name="__codelineno-11-25" href="#__codelineno-11-25"></a><span class="w">  </span>curl<span class="w"> </span>-s<span class="w"> </span>https://flowstate-ai.com/health/errors<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.count&#39;</span>
-<a id="__codelineno-11-26" name="__codelineno-11-26" href="#__codelineno-11-26"></a><span class="w">  </span>sleep<span class="w"> </span><span class="m">10</span>
-<a id="__codelineno-11-27" name="__codelineno-11-27" href="#__codelineno-11-27"></a><span class="k">done</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a><span class="c1"># 1. SSH into production server</span>
+<a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a>ssh<span class="w"> </span>-i<span class="w"> </span>~/.ssh/production_key<span class="w"> </span>user@production-host
+<a id="__codelineno-25-3" name="__codelineno-25-3" href="#__codelineno-25-3"></a>
+<a id="__codelineno-25-4" name="__codelineno-25-4" href="#__codelineno-25-4"></a><span class="c1"># 2. Navigate to application directory</span>
+<a id="__codelineno-25-5" name="__codelineno-25-5" href="#__codelineno-25-5"></a><span class="nb">cd</span><span class="w"> </span>/opt/flowstate-ai
+<a id="__codelineno-25-6" name="__codelineno-25-6" href="#__codelineno-25-6"></a>
+<a id="__codelineno-25-7" name="__codelineno-25-7" href="#__codelineno-25-7"></a><span class="c1"># 3. Stop failed green environment</span>
+<a id="__codelineno-25-8" name="__codelineno-25-8" href="#__codelineno-25-8"></a>docker-compose<span class="w"> </span>-f<span class="w"> </span>docker/compose.green.yml<span class="w"> </span>down
+<a id="__codelineno-25-9" name="__codelineno-25-9" href="#__codelineno-25-9"></a>
+<a id="__codelineno-25-10" name="__codelineno-25-10" href="#__codelineno-25-10"></a><span class="c1"># 4. Identify latest backup</span>
+<a id="__codelineno-25-11" name="__codelineno-25-11" href="#__codelineno-25-11"></a><span class="nv">LATEST_BACKUP</span><span class="o">=</span><span class="k">$(</span>ls<span class="w"> </span>-t<span class="w"> </span>/opt/flowstate-ai/backups/<span class="w"> </span><span class="p">|</span><span class="w"> </span>head<span class="w"> </span>-1<span class="k">)</span>
+<a id="__codelineno-25-12" name="__codelineno-25-12" href="#__codelineno-25-12"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Rolling back to: </span><span class="nv">$LATEST_BACKUP</span><span class="s2">&quot;</span>
+<a id="__codelineno-25-13" name="__codelineno-25-13" href="#__codelineno-25-13"></a>
+<a id="__codelineno-25-14" name="__codelineno-25-14" href="#__codelineno-25-14"></a><span class="c1"># 5. Restore database if needed</span>
+<a id="__codelineno-25-15" name="__codelineno-25-15" href="#__codelineno-25-15"></a>docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>-i<span class="w"> </span>flowstate-db<span class="w"> </span>psql<span class="w"> </span>-U<span class="w"> </span>flowstate<span class="w"> </span>flowstate<span class="w"> </span>&lt;<span class="w"> </span><span class="s2">&quot;/opt/flowstate-ai/backups/</span><span class="nv">$LATEST_BACKUP</span><span class="s2">/database.sql&quot;</span>
+<a id="__codelineno-25-16" name="__codelineno-25-16" href="#__codelineno-25-16"></a>
+<a id="__codelineno-25-17" name="__codelineno-25-17" href="#__codelineno-25-17"></a><span class="c1"># 6. Ensure blue environment is running</span>
+<a id="__codelineno-25-18" name="__codelineno-25-18" href="#__codelineno-25-18"></a>docker-compose<span class="w"> </span>-f<span class="w"> </span>docker/compose.yml<span class="w"> </span>up<span class="w"> </span>-d
+<a id="__codelineno-25-19" name="__codelineno-25-19" href="#__codelineno-25-19"></a>
+<a id="__codelineno-25-20" name="__codelineno-25-20" href="#__codelineno-25-20"></a><span class="c1"># 7. Verify health</span>
+<a id="__codelineno-25-21" name="__codelineno-25-21" href="#__codelineno-25-21"></a>curl<span class="w"> </span>-f<span class="w"> </span>https://flowstate-ai.com/health
+<a id="__codelineno-25-22" name="__codelineno-25-22" href="#__codelineno-25-22"></a>
+<a id="__codelineno-25-23" name="__codelineno-25-23" href="#__codelineno-25-23"></a><span class="c1"># 8. Monitor for errors</span>
+<a id="__codelineno-25-24" name="__codelineno-25-24" href="#__codelineno-25-24"></a><span class="k">for</span><span class="w"> </span>i<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="o">{</span><span class="m">1</span>..10<span class="o">}</span><span class="p">;</span><span class="w"> </span><span class="k">do</span>
+<a id="__codelineno-25-25" name="__codelineno-25-25" href="#__codelineno-25-25"></a><span class="w">  </span>curl<span class="w"> </span>-s<span class="w"> </span>https://flowstate-ai.com/health/errors<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.count&#39;</span>
+<a id="__codelineno-25-26" name="__codelineno-25-26" href="#__codelineno-25-26"></a><span class="w">  </span>sleep<span class="w"> </span><span class="m">10</span>
+<a id="__codelineno-25-27" name="__codelineno-25-27" href="#__codelineno-25-27"></a><span class="k">done</span>
 </code></pre></div>
 <h3 id="emergency-rollback-critical">Emergency Rollback (Critical)<a class="headerlink" href="#emergency-rollback-critical" title="Permanent link">&para;</a></h3>
 <p>If the system is completely down:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="c1"># 1. SSH into production server</span>
-<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>ssh<span class="w"> </span>-i<span class="w"> </span>~/.ssh/production_key<span class="w"> </span>user@production-host
-<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>
-<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="c1"># 2. Stop all containers</span>
-<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="nb">cd</span><span class="w"> </span>/opt/flowstate-ai
-<a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a>docker-compose<span class="w"> </span>-f<span class="w"> </span>docker/compose.yml<span class="w"> </span>down
-<a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a>docker-compose<span class="w"> </span>-f<span class="w"> </span>docker/compose.green.yml<span class="w"> </span>down
-<a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a>
-<a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a><span class="c1"># 3. Restore from latest backup</span>
-<a id="__codelineno-12-10" name="__codelineno-12-10" href="#__codelineno-12-10"></a><span class="nv">LATEST_BACKUP</span><span class="o">=</span><span class="k">$(</span>ls<span class="w"> </span>-t<span class="w"> </span>/opt/flowstate-ai/backups/<span class="w"> </span><span class="p">|</span><span class="w"> </span>head<span class="w"> </span>-1<span class="k">)</span>
-<a id="__codelineno-12-11" name="__codelineno-12-11" href="#__codelineno-12-11"></a>docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>-i<span class="w"> </span>flowstate-db<span class="w"> </span>psql<span class="w"> </span>-U<span class="w"> </span>flowstate<span class="w"> </span>flowstate<span class="w"> </span>&lt;<span class="w"> </span><span class="s2">&quot;/opt/flowstate-ai/backups/</span><span class="nv">$LATEST_BACKUP</span><span class="s2">/database.sql&quot;</span>
-<a id="__codelineno-12-12" name="__codelineno-12-12" href="#__codelineno-12-12"></a>
-<a id="__codelineno-12-13" name="__codelineno-12-13" href="#__codelineno-12-13"></a><span class="c1"># 4. Start with last known good version</span>
-<a id="__codelineno-12-14" name="__codelineno-12-14" href="#__codelineno-12-14"></a>docker<span class="w"> </span>pull<span class="w"> </span>ghcr.io/benjidanielsen/flowstate-ai/backend:v&lt;last-good-version&gt;
-<a id="__codelineno-12-15" name="__codelineno-12-15" href="#__codelineno-12-15"></a>docker<span class="w"> </span>pull<span class="w"> </span>ghcr.io/benjidanielsen/flowstate-ai/frontend:v&lt;last-good-version&gt;
-<a id="__codelineno-12-16" name="__codelineno-12-16" href="#__codelineno-12-16"></a>docker<span class="w"> </span>pull<span class="w"> </span>ghcr.io/benjidanielsen/flowstate-ai/python-worker:v&lt;last-good-version&gt;
-<a id="__codelineno-12-17" name="__codelineno-12-17" href="#__codelineno-12-17"></a>
-<a id="__codelineno-12-18" name="__codelineno-12-18" href="#__codelineno-12-18"></a>docker-compose<span class="w"> </span>-f<span class="w"> </span>docker/compose.yml<span class="w"> </span>up<span class="w"> </span>-d
-<a id="__codelineno-12-19" name="__codelineno-12-19" href="#__codelineno-12-19"></a>
-<a id="__codelineno-12-20" name="__codelineno-12-20" href="#__codelineno-12-20"></a><span class="c1"># 5. Verify and monitor</span>
-<a id="__codelineno-12-21" name="__codelineno-12-21" href="#__codelineno-12-21"></a>curl<span class="w"> </span>-f<span class="w"> </span>https://flowstate-ai.com/health
-<a id="__codelineno-12-22" name="__codelineno-12-22" href="#__codelineno-12-22"></a>docker-compose<span class="w"> </span>logs<span class="w"> </span>-f
+<div class="highlight"><pre><span></span><code><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a><span class="c1"># 1. SSH into production server</span>
+<a id="__codelineno-26-2" name="__codelineno-26-2" href="#__codelineno-26-2"></a>ssh<span class="w"> </span>-i<span class="w"> </span>~/.ssh/production_key<span class="w"> </span>user@production-host
+<a id="__codelineno-26-3" name="__codelineno-26-3" href="#__codelineno-26-3"></a>
+<a id="__codelineno-26-4" name="__codelineno-26-4" href="#__codelineno-26-4"></a><span class="c1"># 2. Stop all containers</span>
+<a id="__codelineno-26-5" name="__codelineno-26-5" href="#__codelineno-26-5"></a><span class="nb">cd</span><span class="w"> </span>/opt/flowstate-ai
+<a id="__codelineno-26-6" name="__codelineno-26-6" href="#__codelineno-26-6"></a>docker-compose<span class="w"> </span>-f<span class="w"> </span>docker/compose.yml<span class="w"> </span>down
+<a id="__codelineno-26-7" name="__codelineno-26-7" href="#__codelineno-26-7"></a>docker-compose<span class="w"> </span>-f<span class="w"> </span>docker/compose.green.yml<span class="w"> </span>down
+<a id="__codelineno-26-8" name="__codelineno-26-8" href="#__codelineno-26-8"></a>
+<a id="__codelineno-26-9" name="__codelineno-26-9" href="#__codelineno-26-9"></a><span class="c1"># 3. Restore from latest backup</span>
+<a id="__codelineno-26-10" name="__codelineno-26-10" href="#__codelineno-26-10"></a><span class="nv">LATEST_BACKUP</span><span class="o">=</span><span class="k">$(</span>ls<span class="w"> </span>-t<span class="w"> </span>/opt/flowstate-ai/backups/<span class="w"> </span><span class="p">|</span><span class="w"> </span>head<span class="w"> </span>-1<span class="k">)</span>
+<a id="__codelineno-26-11" name="__codelineno-26-11" href="#__codelineno-26-11"></a>docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>-i<span class="w"> </span>flowstate-db<span class="w"> </span>psql<span class="w"> </span>-U<span class="w"> </span>flowstate<span class="w"> </span>flowstate<span class="w"> </span>&lt;<span class="w"> </span><span class="s2">&quot;/opt/flowstate-ai/backups/</span><span class="nv">$LATEST_BACKUP</span><span class="s2">/database.sql&quot;</span>
+<a id="__codelineno-26-12" name="__codelineno-26-12" href="#__codelineno-26-12"></a>
+<a id="__codelineno-26-13" name="__codelineno-26-13" href="#__codelineno-26-13"></a><span class="c1"># 4. Start with last known good version</span>
+<a id="__codelineno-26-14" name="__codelineno-26-14" href="#__codelineno-26-14"></a>docker<span class="w"> </span>pull<span class="w"> </span>ghcr.io/benjidanielsen/flowstate-ai/backend:v&lt;last-good-version&gt;
+<a id="__codelineno-26-15" name="__codelineno-26-15" href="#__codelineno-26-15"></a>docker<span class="w"> </span>pull<span class="w"> </span>ghcr.io/benjidanielsen/flowstate-ai/frontend:v&lt;last-good-version&gt;
+<a id="__codelineno-26-16" name="__codelineno-26-16" href="#__codelineno-26-16"></a>docker<span class="w"> </span>pull<span class="w"> </span>ghcr.io/benjidanielsen/flowstate-ai/python-worker:v&lt;last-good-version&gt;
+<a id="__codelineno-26-17" name="__codelineno-26-17" href="#__codelineno-26-17"></a>
+<a id="__codelineno-26-18" name="__codelineno-26-18" href="#__codelineno-26-18"></a>docker-compose<span class="w"> </span>-f<span class="w"> </span>docker/compose.yml<span class="w"> </span>up<span class="w"> </span>-d
+<a id="__codelineno-26-19" name="__codelineno-26-19" href="#__codelineno-26-19"></a>
+<a id="__codelineno-26-20" name="__codelineno-26-20" href="#__codelineno-26-20"></a><span class="c1"># 5. Verify and monitor</span>
+<a id="__codelineno-26-21" name="__codelineno-26-21" href="#__codelineno-26-21"></a>curl<span class="w"> </span>-f<span class="w"> </span>https://flowstate-ai.com/health
+<a id="__codelineno-26-22" name="__codelineno-26-22" href="#__codelineno-26-22"></a>docker-compose<span class="w"> </span>logs<span class="w"> </span>-f
 </code></pre></div>
 <h2 id="troubleshooting">Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permanent link">&para;</a></h2>
 <h3 id="common-issues">Common Issues<a class="headerlink" href="#common-issues" title="Permanent link">&para;</a></h3>
 <h4 id="1-health-check-failures">1. Health Check Failures<a class="headerlink" href="#1-health-check-failures" title="Permanent link">&para;</a></h4>
 <p><strong>Symptom</strong>: Health check endpoint returns 500 or times out</p>
 <p><strong>Diagnosis</strong>:
-<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="c1"># Check container logs</span>
-<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>docker-compose<span class="w"> </span>logs<span class="w"> </span>backend
-<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>
-<a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="c1"># Check database connectivity</span>
-<a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a>docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>flowstate-db<span class="w"> </span>psql<span class="w"> </span>-U<span class="w"> </span>flowstate<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;SELECT 1&quot;</span>
-<a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a>
-<a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a><span class="c1"># Check container status</span>
-<a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a>docker-compose<span class="w"> </span>ps
+<div class="highlight"><pre><span></span><code><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a><span class="c1"># Check container logs</span>
+<a id="__codelineno-27-2" name="__codelineno-27-2" href="#__codelineno-27-2"></a>docker-compose<span class="w"> </span>logs<span class="w"> </span>backend
+<a id="__codelineno-27-3" name="__codelineno-27-3" href="#__codelineno-27-3"></a>
+<a id="__codelineno-27-4" name="__codelineno-27-4" href="#__codelineno-27-4"></a><span class="c1"># Check database connectivity</span>
+<a id="__codelineno-27-5" name="__codelineno-27-5" href="#__codelineno-27-5"></a>docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>flowstate-db<span class="w"> </span>psql<span class="w"> </span>-U<span class="w"> </span>flowstate<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;SELECT 1&quot;</span>
+<a id="__codelineno-27-6" name="__codelineno-27-6" href="#__codelineno-27-6"></a>
+<a id="__codelineno-27-7" name="__codelineno-27-7" href="#__codelineno-27-7"></a><span class="c1"># Check container status</span>
+<a id="__codelineno-27-8" name="__codelineno-27-8" href="#__codelineno-27-8"></a>docker-compose<span class="w"> </span>ps
 </code></pre></div></p>
 <p><strong>Resolution</strong>:
 - Restart affected service: <code>docker-compose restart backend</code>
@@ -2221,14 +3154,14 @@
 <h4 id="2-database-connection-issues">2. Database Connection Issues<a class="headerlink" href="#2-database-connection-issues" title="Permanent link">&para;</a></h4>
 <p><strong>Symptom</strong>: "Connection refused" or "Too many connections"</p>
 <p><strong>Diagnosis</strong>:
-<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="c1"># Check database status</span>
-<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>flowstate-db<span class="w"> </span>pg_isready
-<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>
-<a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="c1"># Check active connections</span>
-<a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a>docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>flowstate-db<span class="w"> </span>psql<span class="w"> </span>-U<span class="w"> </span>flowstate<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;SELECT count(*) FROM pg_stat_activity&quot;</span>
-<a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a>
-<a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a><span class="c1"># Check database logs</span>
-<a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a>docker-compose<span class="w"> </span>logs<span class="w"> </span>db
+<div class="highlight"><pre><span></span><code><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a><span class="c1"># Check database status</span>
+<a id="__codelineno-28-2" name="__codelineno-28-2" href="#__codelineno-28-2"></a>docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>flowstate-db<span class="w"> </span>pg_isready
+<a id="__codelineno-28-3" name="__codelineno-28-3" href="#__codelineno-28-3"></a>
+<a id="__codelineno-28-4" name="__codelineno-28-4" href="#__codelineno-28-4"></a><span class="c1"># Check active connections</span>
+<a id="__codelineno-28-5" name="__codelineno-28-5" href="#__codelineno-28-5"></a>docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>flowstate-db<span class="w"> </span>psql<span class="w"> </span>-U<span class="w"> </span>flowstate<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;SELECT count(*) FROM pg_stat_activity&quot;</span>
+<a id="__codelineno-28-6" name="__codelineno-28-6" href="#__codelineno-28-6"></a>
+<a id="__codelineno-28-7" name="__codelineno-28-7" href="#__codelineno-28-7"></a><span class="c1"># Check database logs</span>
+<a id="__codelineno-28-8" name="__codelineno-28-8" href="#__codelineno-28-8"></a>docker-compose<span class="w"> </span>logs<span class="w"> </span>db
 </code></pre></div></p>
 <p><strong>Resolution</strong>:
 - Increase max_connections in PostgreSQL config
@@ -2237,11 +3170,11 @@
 <h4 id="3-image-pull-failures">3. Image Pull Failures<a class="headerlink" href="#3-image-pull-failures" title="Permanent link">&para;</a></h4>
 <p><strong>Symptom</strong>: "manifest unknown" or "unauthorized"</p>
 <p><strong>Diagnosis</strong>:
-<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="c1"># Verify image exists</span>
-<a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>docker<span class="w"> </span>manifest<span class="w"> </span>inspect<span class="w"> </span>ghcr.io/benjidanielsen/flowstate-ai/backend:v1.2.3
-<a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a>
-<a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="c1"># Check authentication</span>
-<a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a>docker<span class="w"> </span>login<span class="w"> </span>ghcr.io
+<div class="highlight"><pre><span></span><code><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a><span class="c1"># Verify image exists</span>
+<a id="__codelineno-29-2" name="__codelineno-29-2" href="#__codelineno-29-2"></a>docker<span class="w"> </span>manifest<span class="w"> </span>inspect<span class="w"> </span>ghcr.io/benjidanielsen/flowstate-ai/backend:v1.2.3
+<a id="__codelineno-29-3" name="__codelineno-29-3" href="#__codelineno-29-3"></a>
+<a id="__codelineno-29-4" name="__codelineno-29-4" href="#__codelineno-29-4"></a><span class="c1"># Check authentication</span>
+<a id="__codelineno-29-5" name="__codelineno-29-5" href="#__codelineno-29-5"></a>docker<span class="w"> </span>login<span class="w"> </span>ghcr.io
 </code></pre></div></p>
 <p><strong>Resolution</strong>:
 - Verify image tag is correct
@@ -2250,11 +3183,11 @@
 <h4 id="4-ssh-connection-failures">4. SSH Connection Failures<a class="headerlink" href="#4-ssh-connection-failures" title="Permanent link">&para;</a></h4>
 <p><strong>Symptom</strong>: "Permission denied" or "Connection timed out"</p>
 <p><strong>Diagnosis</strong>:
-<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="c1"># Test SSH connection</span>
-<a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>ssh<span class="w"> </span>-v<span class="w"> </span>-i<span class="w"> </span>~/.ssh/deploy_key<span class="w"> </span>user@host
-<a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a>
-<a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a><span class="c1"># Check SSH key permissions</span>
-<a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a>ls<span class="w"> </span>-l<span class="w"> </span>~/.ssh/deploy_key
+<div class="highlight"><pre><span></span><code><a id="__codelineno-30-1" name="__codelineno-30-1" href="#__codelineno-30-1"></a><span class="c1"># Test SSH connection</span>
+<a id="__codelineno-30-2" name="__codelineno-30-2" href="#__codelineno-30-2"></a>ssh<span class="w"> </span>-v<span class="w"> </span>-i<span class="w"> </span>~/.ssh/deploy_key<span class="w"> </span>user@host
+<a id="__codelineno-30-3" name="__codelineno-30-3" href="#__codelineno-30-3"></a>
+<a id="__codelineno-30-4" name="__codelineno-30-4" href="#__codelineno-30-4"></a><span class="c1"># Check SSH key permissions</span>
+<a id="__codelineno-30-5" name="__codelineno-30-5" href="#__codelineno-30-5"></a>ls<span class="w"> </span>-l<span class="w"> </span>~/.ssh/deploy_key
 </code></pre></div></p>
 <p><strong>Resolution</strong>:
 - Verify SSH key has correct permissions: <code>chmod 600 ~/.ssh/deploy_key</code>
@@ -2263,61 +3196,61 @@
 <h4 id="5-high-error-rates-after-deployment">5. High Error Rates After Deployment<a class="headerlink" href="#5-high-error-rates-after-deployment" title="Permanent link">&para;</a></h4>
 <p><strong>Symptom</strong>: Increased error count in monitoring</p>
 <p><strong>Diagnosis</strong>:
-<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="c1"># Check error logs</span>
-<a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a>docker-compose<span class="w"> </span>logs<span class="w"> </span>backend<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>ERROR
-<a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a>
-<a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a><span class="c1"># Check error endpoint</span>
-<a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a>curl<span class="w"> </span>-s<span class="w"> </span>https://flowstate-ai.com/health/errors<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
-<a id="__codelineno-17-6" name="__codelineno-17-6" href="#__codelineno-17-6"></a>
-<a id="__codelineno-17-7" name="__codelineno-17-7" href="#__codelineno-17-7"></a><span class="c1"># Check application metrics</span>
-<a id="__codelineno-17-8" name="__codelineno-17-8" href="#__codelineno-17-8"></a>curl<span class="w"> </span>-s<span class="w"> </span>https://flowstate-ai.com/metrics
+<div class="highlight"><pre><span></span><code><a id="__codelineno-31-1" name="__codelineno-31-1" href="#__codelineno-31-1"></a><span class="c1"># Check error logs</span>
+<a id="__codelineno-31-2" name="__codelineno-31-2" href="#__codelineno-31-2"></a>docker-compose<span class="w"> </span>logs<span class="w"> </span>backend<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>ERROR
+<a id="__codelineno-31-3" name="__codelineno-31-3" href="#__codelineno-31-3"></a>
+<a id="__codelineno-31-4" name="__codelineno-31-4" href="#__codelineno-31-4"></a><span class="c1"># Check error endpoint</span>
+<a id="__codelineno-31-5" name="__codelineno-31-5" href="#__codelineno-31-5"></a>curl<span class="w"> </span>-s<span class="w"> </span>https://flowstate-ai.com/health/errors<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
+<a id="__codelineno-31-6" name="__codelineno-31-6" href="#__codelineno-31-6"></a>
+<a id="__codelineno-31-7" name="__codelineno-31-7" href="#__codelineno-31-7"></a><span class="c1"># Check application metrics</span>
+<a id="__codelineno-31-8" name="__codelineno-31-8" href="#__codelineno-31-8"></a>curl<span class="w"> </span>-s<span class="w"> </span>https://flowstate-ai.com/metrics
 </code></pre></div></p>
 <p><strong>Resolution</strong>:
 - Identify root cause from logs
 - Consider immediate rollback if critical
 - Apply hotfix if issue is minor</p>
 <h3 id="debug-commands">Debug Commands<a class="headerlink" href="#debug-commands" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="c1"># View all running containers</span>
-<a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a>docker<span class="w"> </span>ps
-<a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a>
-<a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a><span class="c1"># View container resource usage</span>
-<a id="__codelineno-18-5" name="__codelineno-18-5" href="#__codelineno-18-5"></a>docker<span class="w"> </span>stats
-<a id="__codelineno-18-6" name="__codelineno-18-6" href="#__codelineno-18-6"></a>
-<a id="__codelineno-18-7" name="__codelineno-18-7" href="#__codelineno-18-7"></a><span class="c1"># Execute command in container</span>
-<a id="__codelineno-18-8" name="__codelineno-18-8" href="#__codelineno-18-8"></a>docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>-it<span class="w"> </span>flowstate-backend<span class="w"> </span>sh
-<a id="__codelineno-18-9" name="__codelineno-18-9" href="#__codelineno-18-9"></a>
-<a id="__codelineno-18-10" name="__codelineno-18-10" href="#__codelineno-18-10"></a><span class="c1"># View container logs (last 100 lines)</span>
-<a id="__codelineno-18-11" name="__codelineno-18-11" href="#__codelineno-18-11"></a>docker<span class="w"> </span>logs<span class="w"> </span>--tail<span class="w"> </span><span class="m">100</span><span class="w"> </span>flowstate-backend
-<a id="__codelineno-18-12" name="__codelineno-18-12" href="#__codelineno-18-12"></a>
-<a id="__codelineno-18-13" name="__codelineno-18-13" href="#__codelineno-18-13"></a><span class="c1"># Follow container logs in real-time</span>
-<a id="__codelineno-18-14" name="__codelineno-18-14" href="#__codelineno-18-14"></a>docker<span class="w"> </span>logs<span class="w"> </span>-f<span class="w"> </span>flowstate-backend
-<a id="__codelineno-18-15" name="__codelineno-18-15" href="#__codelineno-18-15"></a>
-<a id="__codelineno-18-16" name="__codelineno-18-16" href="#__codelineno-18-16"></a><span class="c1"># Inspect container configuration</span>
-<a id="__codelineno-18-17" name="__codelineno-18-17" href="#__codelineno-18-17"></a>docker<span class="w"> </span>inspect<span class="w"> </span>flowstate-backend
-<a id="__codelineno-18-18" name="__codelineno-18-18" href="#__codelineno-18-18"></a>
-<a id="__codelineno-18-19" name="__codelineno-18-19" href="#__codelineno-18-19"></a><span class="c1"># Check Docker network</span>
-<a id="__codelineno-18-20" name="__codelineno-18-20" href="#__codelineno-18-20"></a>docker<span class="w"> </span>network<span class="w"> </span>inspect<span class="w"> </span>flowstate-network
-<a id="__codelineno-18-21" name="__codelineno-18-21" href="#__codelineno-18-21"></a>
-<a id="__codelineno-18-22" name="__codelineno-18-22" href="#__codelineno-18-22"></a><span class="c1"># Check Docker volumes</span>
-<a id="__codelineno-18-23" name="__codelineno-18-23" href="#__codelineno-18-23"></a>docker<span class="w"> </span>volume<span class="w"> </span>ls
-<a id="__codelineno-18-24" name="__codelineno-18-24" href="#__codelineno-18-24"></a>docker<span class="w"> </span>volume<span class="w"> </span>inspect<span class="w"> </span>flowstate_data
+<div class="highlight"><pre><span></span><code><a id="__codelineno-32-1" name="__codelineno-32-1" href="#__codelineno-32-1"></a><span class="c1"># View all running containers</span>
+<a id="__codelineno-32-2" name="__codelineno-32-2" href="#__codelineno-32-2"></a>docker<span class="w"> </span>ps
+<a id="__codelineno-32-3" name="__codelineno-32-3" href="#__codelineno-32-3"></a>
+<a id="__codelineno-32-4" name="__codelineno-32-4" href="#__codelineno-32-4"></a><span class="c1"># View container resource usage</span>
+<a id="__codelineno-32-5" name="__codelineno-32-5" href="#__codelineno-32-5"></a>docker<span class="w"> </span>stats
+<a id="__codelineno-32-6" name="__codelineno-32-6" href="#__codelineno-32-6"></a>
+<a id="__codelineno-32-7" name="__codelineno-32-7" href="#__codelineno-32-7"></a><span class="c1"># Execute command in container</span>
+<a id="__codelineno-32-8" name="__codelineno-32-8" href="#__codelineno-32-8"></a>docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>-it<span class="w"> </span>flowstate-backend<span class="w"> </span>sh
+<a id="__codelineno-32-9" name="__codelineno-32-9" href="#__codelineno-32-9"></a>
+<a id="__codelineno-32-10" name="__codelineno-32-10" href="#__codelineno-32-10"></a><span class="c1"># View container logs (last 100 lines)</span>
+<a id="__codelineno-32-11" name="__codelineno-32-11" href="#__codelineno-32-11"></a>docker<span class="w"> </span>logs<span class="w"> </span>--tail<span class="w"> </span><span class="m">100</span><span class="w"> </span>flowstate-backend
+<a id="__codelineno-32-12" name="__codelineno-32-12" href="#__codelineno-32-12"></a>
+<a id="__codelineno-32-13" name="__codelineno-32-13" href="#__codelineno-32-13"></a><span class="c1"># Follow container logs in real-time</span>
+<a id="__codelineno-32-14" name="__codelineno-32-14" href="#__codelineno-32-14"></a>docker<span class="w"> </span>logs<span class="w"> </span>-f<span class="w"> </span>flowstate-backend
+<a id="__codelineno-32-15" name="__codelineno-32-15" href="#__codelineno-32-15"></a>
+<a id="__codelineno-32-16" name="__codelineno-32-16" href="#__codelineno-32-16"></a><span class="c1"># Inspect container configuration</span>
+<a id="__codelineno-32-17" name="__codelineno-32-17" href="#__codelineno-32-17"></a>docker<span class="w"> </span>inspect<span class="w"> </span>flowstate-backend
+<a id="__codelineno-32-18" name="__codelineno-32-18" href="#__codelineno-32-18"></a>
+<a id="__codelineno-32-19" name="__codelineno-32-19" href="#__codelineno-32-19"></a><span class="c1"># Check Docker network</span>
+<a id="__codelineno-32-20" name="__codelineno-32-20" href="#__codelineno-32-20"></a>docker<span class="w"> </span>network<span class="w"> </span>inspect<span class="w"> </span>flowstate-network
+<a id="__codelineno-32-21" name="__codelineno-32-21" href="#__codelineno-32-21"></a>
+<a id="__codelineno-32-22" name="__codelineno-32-22" href="#__codelineno-32-22"></a><span class="c1"># Check Docker volumes</span>
+<a id="__codelineno-32-23" name="__codelineno-32-23" href="#__codelineno-32-23"></a>docker<span class="w"> </span>volume<span class="w"> </span>ls
+<a id="__codelineno-32-24" name="__codelineno-32-24" href="#__codelineno-32-24"></a>docker<span class="w"> </span>volume<span class="w"> </span>inspect<span class="w"> </span>flowstate_data
 </code></pre></div>
 <h2 id="post-deployment-tasks">Post-Deployment Tasks<a class="headerlink" href="#post-deployment-tasks" title="Permanent link">&para;</a></h2>
 <h3 id="immediate-within-1-hour">Immediate (Within 1 hour)<a class="headerlink" href="#immediate-within-1-hour" title="Permanent link">&para;</a></h3>
 <ol>
 <li>
 <p><strong>Monitor Health Metrics</strong>
-   <div class="highlight"><pre><span></span><code><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="c1"># Check health every 5 minutes for 1 hour</span>
-<a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a><span class="k">for</span><span class="w"> </span>i<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="o">{</span><span class="m">1</span>..12<span class="o">}</span><span class="p">;</span><span class="w"> </span><span class="k">do</span>
-<a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a><span class="w">  </span>curl<span class="w"> </span>-s<span class="w"> </span>https://flowstate-ai.com/health<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
-<a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a><span class="w">  </span>sleep<span class="w"> </span><span class="m">300</span>
-<a id="__codelineno-19-5" name="__codelineno-19-5" href="#__codelineno-19-5"></a><span class="k">done</span>
+   <div class="highlight"><pre><span></span><code><a id="__codelineno-33-1" name="__codelineno-33-1" href="#__codelineno-33-1"></a><span class="c1"># Check health every 5 minutes for 1 hour</span>
+<a id="__codelineno-33-2" name="__codelineno-33-2" href="#__codelineno-33-2"></a><span class="k">for</span><span class="w"> </span>i<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="o">{</span><span class="m">1</span>..12<span class="o">}</span><span class="p">;</span><span class="w"> </span><span class="k">do</span>
+<a id="__codelineno-33-3" name="__codelineno-33-3" href="#__codelineno-33-3"></a><span class="w">  </span>curl<span class="w"> </span>-s<span class="w"> </span>https://flowstate-ai.com/health<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
+<a id="__codelineno-33-4" name="__codelineno-33-4" href="#__codelineno-33-4"></a><span class="w">  </span>sleep<span class="w"> </span><span class="m">300</span>
+<a id="__codelineno-33-5" name="__codelineno-33-5" href="#__codelineno-33-5"></a><span class="k">done</span>
 </code></pre></div></p>
 </li>
 <li>
 <p><strong>Review Error Logs</strong>
-   <div class="highlight"><pre><span></span><code><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="c1"># Check for errors in last hour</span>
-<a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a>docker-compose<span class="w"> </span>logs<span class="w"> </span>--since<span class="w"> </span>1h<span class="w"> </span>backend<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>ERROR
+   <div class="highlight"><pre><span></span><code><a id="__codelineno-34-1" name="__codelineno-34-1" href="#__codelineno-34-1"></a><span class="c1"># Check for errors in last hour</span>
+<a id="__codelineno-34-2" name="__codelineno-34-2" href="#__codelineno-34-2"></a>docker-compose<span class="w"> </span>logs<span class="w"> </span>--since<span class="w"> </span>1h<span class="w"> </span>backend<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>ERROR
 </code></pre></div></p>
 </li>
 <li>
@@ -2332,11 +3265,11 @@
 <ol>
 <li>
 <p><strong>Clear CDN Cache</strong> (if applicable)
-   <div class="highlight"><pre><span></span><code><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="c1"># Example for Cloudflare</span>
-<a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;https://api.cloudflare.com/client/v4/zones/&lt;zone-id&gt;/purge_cache&quot;</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a><span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Authorization: Bearer &lt;api-token&gt;&quot;</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-21-4" name="__codelineno-21-4" href="#__codelineno-21-4"></a><span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-21-5" name="__codelineno-21-5" href="#__codelineno-21-5"></a><span class="w">  </span>--data<span class="w"> </span><span class="s1">&#39;{&quot;purge_everything&quot;:true}&#39;</span>
+   <div class="highlight"><pre><span></span><code><a id="__codelineno-35-1" name="__codelineno-35-1" href="#__codelineno-35-1"></a><span class="c1"># Example for Cloudflare</span>
+<a id="__codelineno-35-2" name="__codelineno-35-2" href="#__codelineno-35-2"></a>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;https://api.cloudflare.com/client/v4/zones/&lt;zone-id&gt;/purge_cache&quot;</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-35-3" name="__codelineno-35-3" href="#__codelineno-35-3"></a><span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Authorization: Bearer &lt;api-token&gt;&quot;</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-35-4" name="__codelineno-35-4" href="#__codelineno-35-4"></a><span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-35-5" name="__codelineno-35-5" href="#__codelineno-35-5"></a><span class="w">  </span>--data<span class="w"> </span><span class="s1">&#39;{&quot;purge_everything&quot;:true}&#39;</span>
 </code></pre></div></p>
 </li>
 <li>

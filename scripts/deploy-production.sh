@@ -44,7 +44,9 @@ fi
 
 # Validate critical environment variables
 echo -e "${YELLOW}Validating environment configuration...${NC}"
+set -a
 source "$ENV_FILE"
+set +a
 
 if [ -z "${DATABASE_URL:-}" ]; then
     echo -e "${RED}Error: DATABASE_URL not set in .env.production${NC}"
@@ -62,19 +64,19 @@ echo ""
 # Pull latest images
 echo -e "${YELLOW}Pulling latest Docker images...${NC}"
 cd "$DOCKER_DIR"
-docker-compose pull || docker compose pull
+docker compose -f "$PROJECT_ROOT/docker-compose.production.yml" pull
 
 # Build custom images
 echo -e "${YELLOW}Building application images...${NC}"
-docker-compose build --no-cache || docker compose build --no-cache
+docker compose -f "$PROJECT_ROOT/docker-compose.production.yml" build --no-cache
 
 # Stop existing containers
 echo -e "${YELLOW}Stopping existing containers...${NC}"
-docker-compose down || docker compose down || true
+docker compose -f "$PROJECT_ROOT/docker-compose.production.yml" down || true
 
 # Start database and wait for it to be ready
 echo -e "${YELLOW}Starting database...${NC}"
-docker-compose up -d postgres redis || docker compose up -d postgres redis
+docker compose -f "$PROJECT_ROOT/docker-compose.production.yml" up -d postgres redis
 
 echo "Waiting for database to be ready..."
 sleep 10
@@ -92,7 +94,7 @@ fi
 # Start all services
 echo -e "${YELLOW}Starting all services...${NC}"
 cd "$DOCKER_DIR"
-docker-compose up -d || docker compose up -d
+docker compose -f "$PROJECT_ROOT/docker-compose.production.yml" up -d
 
 # Wait for services to be healthy
 echo -e "${YELLOW}Waiting for services to be healthy...${NC}"
@@ -118,7 +120,7 @@ fi
 # Display running containers
 echo ""
 echo -e "${YELLOW}Running containers:${NC}"
-docker-compose ps || docker compose ps
+docker compose -f "$PROJECT_ROOT/docker-compose.production.yml" ps
 
 echo ""
 echo -e "${GREEN}=== Deployment Complete ===${NC}"
