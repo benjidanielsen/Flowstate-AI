@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { X, Plus, Calendar as CalendarIcon, Repeat } from 'lucide-react';
+import React, { useState } from 'react';
+import { X } from 'lucide-react';
 import { Reminder, ReminderType } from '../types';
 import { reminderApi } from '../services/api';
 import { useToast } from '../contexts/ToastContext';
@@ -24,7 +24,7 @@ const AddReminderModal: React.FC<AddReminderModalProps> = ({
       ? new Date(existingReminder.scheduled_for).toISOString().slice(0, 16)
       : ''
   );
-  const [type, setType] = useState<ReminderType>(existingReminder?.type || ReminderType.FOLLOW_UP);
+  const [type, setType] = useState<ReminderType>((existingReminder?.type as ReminderType) || ReminderType.FOLLOW_UP);
   const [repeatInterval, setRepeatInterval] = useState(existingReminder?.repeat_interval || '');
   const [loading, setLoading] = useState(false);
 
@@ -42,7 +42,9 @@ const AddReminderModal: React.FC<AddReminderModalProps> = ({
         type,
         message,
         scheduled_for: new Date(scheduledFor),
-        repeat_interval: repeatInterval || null,
+        repeat_interval: repeatInterval || undefined,
+        completed: false,
+        updated_at: new Date().toISOString(),
       };
 
       if (existingReminder) {

@@ -2,9 +2,8 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { ArrowLeft, Edit, Phone, Mail, Calendar, Plus, MessageSquare, ArrowRight, CheckCircle } from 'lucide-react';
 import { customerApi, interactionApi, reminderApi } from '../services/api';
-import AddInteractionModal from '../components/AddInteractionModal';
 import AddReminderModal from '../components/AddReminderModal';
-import { Customer, Interaction, PipelineStatus, InteractionType } from '../types';
+import { Customer, Interaction, PipelineStatus, InteractionType, Reminder } from '../types';
 import { format } from 'date-fns';
 import QualificationQuestionnaire from '../components/QualificationQuestionnaire';
 
@@ -26,7 +25,7 @@ const CustomerDetail: React.FC = () => {
       setLoading(true);
         const [customerData, interactionsData, remindersData] = await Promise.all([
           customerApi.getById(customerId),
-          interactionApi.getByCustomer(customerId),
+          interactionApi.getAll(customerId),
           reminderApi.getAll(customerId)
         ]);
       setCustomer(customerData);
@@ -272,7 +271,7 @@ const CustomerDetail: React.FC = () => {
                         <p className="text-sm text-gray-700 mt-1 whitespace-pre-wrap">{interaction.notes}</p>
                       )}
                       <p className="text-xs text-gray-500 mt-1">
-                        Interaction Date: {format(new Date(interaction.interaction_date), 'PPp')}
+                        Interaction Date: {interaction.interaction_date ? format(new Date(interaction.interaction_date), 'PPp') : 'N/A'}
                       </p>
                     </div>
                   </div>
@@ -327,7 +326,7 @@ const CustomerDetail: React.FC = () => {
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center space-x-2">
                         <span className="text-sm font-medium text-gray-900 capitalize">
-                          {reminder.type.replace(/_/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase())}
+                          {reminder.type?.replace(/_/g, ' ').replace(/\b\w/g, (l: string) => l.toUpperCase()) || 'Reminder'}
                         </span>
                         {reminder.completed && (
                           <span className="px-2 py-0.5 text-xs font-medium bg-green-100 text-green-800 rounded-full">Completed</span>
@@ -338,7 +337,7 @@ const CustomerDetail: React.FC = () => {
                       </div>
                       <p className="text-sm font-medium text-gray-900 mt-1">{reminder.message}</p>
                       <p className="text-xs text-gray-500 mt-1">
-                        Scheduled For: {format(new Date(reminder.scheduled_for), 'PPp')}
+                        Scheduled For: {reminder.scheduled_for ? format(new Date(reminder.scheduled_for), 'PPp') : 'N/A'}
                       </p>
                       {reminder.repeat_interval && (
                         <p className="text-xs text-gray-500 mt-1">
@@ -626,7 +625,7 @@ const AddInteractionModal: React.FC<AddInteractionModalProps> = ({ customerId, o
 
     try {
       setLoading(true);
-      await interactionApi.create({
+      await interactionApi.create(customerId, {
         customer_id: customerId,
         type: formData.type,
         content: formData.content,

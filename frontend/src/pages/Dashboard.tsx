@@ -90,7 +90,7 @@ const Dashboard: React.FC = () => {
             </div>
             <div className="ml-4">
               <h2 className="text-sm font-medium text-gray-500">Signed Up</h2>
-              <p className="text-2xl font-bold text-gray-900">{stats[PipelineStatus.SIGNED_UP] || 0}</p>
+              <p className="text-2xl font-bold text-gray-900">{pipelineStats[PipelineStatus.SIGNED_UP] || 0}</p>
             </div>
           </div>
         </div>
@@ -215,7 +215,7 @@ const Dashboard: React.FC = () => {
                     <span className={`w-3 h-3 rounded-full ${step.color} mr-2`}></span>
                     {step.label}
                   </h3>
-                  <p className="text-2xl font-bold text-gray-900">{stats[step.key] || 0}</p>
+                  <p className="text-2xl font-bold text-gray-900">{pipelineStats[step.key] || 0}</p>
                   <p className="text-sm text-gray-500">customers</p>
                   <Link
                     to={`/customers?status=${step.key}`}

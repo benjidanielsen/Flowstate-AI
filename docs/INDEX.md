@@ -68,7 +68,7 @@ For operational teams managing Flowstate-AI deployments:
 
 For developers contributing to Flowstate-AI:
 
-- [Architecture Decision Records](adr/) - Historical context for architectural decisions
+- [Architecture Decision Records](adr/index.md) - Historical context for architectural decisions
 - [Roadmap](ROADMAP.md) - Future development plans and priorities
 - [Changelog](CHANGELOG.md) - Version history and release notes
 - [Quality Metrics](QUALITY.md) - Code quality standards and measurements
@@ -78,7 +78,7 @@ For developers contributing to Flowstate-AI:
 Understanding and managing risks in AI systems:
 
 - [Risk Register](RISK_REGISTER.md) - Identified risks and mitigation strategies
-- [Security Policy](../SECURITY.md) - Security practices and vulnerability reporting
+- [Security Policy](SECURITY.md) - Security practices and vulnerability reporting
 
 ## Federation
 
@@ -93,7 +93,7 @@ For questions, issues, or contributions:
 
 - **GitHub Repository:** [benjidanielsen/Flowstate-AI](https://github.com/benjidanielsen/Flowstate-AI)
 - **Issues:** Report bugs or request features via GitHub Issues
-- **Security:** Report security vulnerabilities per the [Security Policy](../SECURITY.md)
+- **Security:** Report security vulnerabilities per the [Security Policy](SECURITY.md)
 
 ## Project Philosophy
 

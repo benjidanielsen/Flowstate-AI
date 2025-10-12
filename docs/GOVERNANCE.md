@@ -175,7 +175,7 @@ For governance-related questions or concerns:
 - **System Owner:** [Contact Information]
 - **Technical Lead:** [Contact Information]
 - **Ethics Concerns:** [Contact Information]
-- **Security Issues:** See [Security Policy](../SECURITY.md)
+- **Security Issues:** See [Security Policy](SECURITY.md)
 
 ---
 

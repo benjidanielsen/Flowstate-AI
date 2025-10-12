@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Plus, Search, Filter, ArrowRight, X, Calendar } from 'lucide-react';
+import { Plus, Search, Filter, ArrowRight, X, Calendar, Mail, Phone } from 'lucide-react';
 import { customerApi } from '../services/api';
 import { Customer, PipelineStatus } from '../types';
 import { useDebounce } from '../hooks/useDebounce';

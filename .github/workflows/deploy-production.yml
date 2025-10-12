@@ -74,6 +74,8 @@ jobs:
     name: Deploy to Production Environment
     needs: pre-deployment-checks
     runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.meta.outputs.version }}
     environment:
       name: production
       url: ${{ steps.deploy.outputs.url }}

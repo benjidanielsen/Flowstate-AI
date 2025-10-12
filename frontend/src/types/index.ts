@@ -12,6 +12,7 @@ export interface Customer {
   prospect_why?: string;
   country?: string;
   language?: string;
+  source?: string;
 }
 
 export enum PipelineStatus {
@@ -32,6 +33,9 @@ export interface Interaction {
   created_at: Date | string;
   scheduled_for?: Date | string;
   completed: boolean;
+  summary?: string;
+  notes?: string;
+  interaction_date?: Date | string;
 }
 
 export enum InteractionType {
@@ -73,9 +77,12 @@ export interface Stats {
 export interface Reminder {
   id: string;
   customer_id: string;
-  title: string;
+  title?: string;
   description?: string;
-  due_date: Date | string;
+  message?: string;
+  type?: ReminderType | string;
+  due_date?: Date | string;
+  scheduled_for?: Date | string;
   completed: boolean;
   created_at: Date | string;
   updated_at: Date | string;
@@ -90,5 +97,35 @@ export interface EventLog {
   created_at: Date | string;
   user_id?: string;
   customer_id?: string;
+}
+
+
+
+export interface AIDecisionLog {
+  id: number;
+  decision_type: string;
+  input_data: Record<string, any>;
+  output_decision: Record<string, any>;
+  confidence_score: number;
+  status: string;
+  human_reviewer?: string;
+  created_at: Date | string;
+  updated_at: Date | string;
+  agent_name?: string;
+  agent_id?: string;
+  decision_description?: string;
+  action_taken?: string;
+  metadata?: Record<string, any>;
+}
+
+
+
+export enum ReminderType {
+  FOLLOW_UP = 'follow_up',
+  CALL = 'call',
+  EMAIL = 'email',
+  MEETING = 'meeting',
+  TASK = 'task',
+  OTHER = 'other'
 }
 

@@ -628,6 +628,6 @@ docker volume inspect flowstate_data
 - [System Architecture Documentation](./SYSTEM_ARCHITECTURE.md)
 - [Operations Runbook](./OPS_RUNBOOK.md)
 - [Disaster Recovery Runbook](./DR_RUNBOOK.md)
-- [Security Policy](../SECURITY.md)
-- [API Documentation](./api/README.md)
+- [Security Policy](SECURITY.md)
+- [API Documentation](api/index.md)
 

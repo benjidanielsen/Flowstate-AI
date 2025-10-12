@@ -24,12 +24,14 @@ const AddInteractionModal: React.FC<AddInteractionModalProps> = ({ customerId, o
 
     try {
       setLoading(true);
-      await interactionApi.create({
+      await interactionApi.create(customerId, {
         customer_id: customerId,
         type: formData.type,
+        content: formData.summary || '',
         summary: formData.summary,
         notes: formData.notes || undefined,
         interaction_date: new Date(formData.interaction_date),
+        completed: false,
       });
       onSuccess();
     } catch (error) {

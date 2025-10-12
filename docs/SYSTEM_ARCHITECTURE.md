@@ -68,7 +68,7 @@ Redis provides caching and session management with **in-memory storage** for fas
 
 Synchronous communication between services uses **HTTP/REST** with JSON payloads. The backend exposes RESTful endpoints that the frontend consumes, while the python-worker provides API endpoints for AI processing.
 
-**API versioning** is implemented through URL paths (e.g., /api/v1/) to enable backward compatibility. Each API response includes standard fields for status, data, and error messages.
+**API versioning** is implemented through URL paths (e.g., /api/index.mdv1/) to enable backward compatibility. Each API response includes standard fields for status, data, and error messages.
 
 **Authentication** uses JWT tokens passed in Authorization headers. Tokens are short-lived (15 minutes) with refresh tokens for extended sessions. The backend validates tokens on every request and enforces role-based access control.
 
@@ -182,8 +182,8 @@ The architecture is designed to evolve with the system's needs. **Planned enhanc
 
 - [Deployment Guide](DEPLOYMENT_GUIDE.md)
 - [Operations Runbook](OPS_RUNBOOK.md)
-- [Architecture Decision Records](adr/)
-- [API Documentation](api/)
+- [Architecture Decision Records](adr/index.md)
+- [API Documentation](api/index.md)
 
 ---
 

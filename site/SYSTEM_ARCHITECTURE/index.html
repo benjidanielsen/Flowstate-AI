@@ -2214,7 +2214,7 @@
 <h2 id="communication-patterns">Communication Patterns<a class="headerlink" href="#communication-patterns" title="Permanent link">&para;</a></h2>
 <h3 id="synchronous-communication">Synchronous Communication<a class="headerlink" href="#synchronous-communication" title="Permanent link">&para;</a></h3>
 <p>Synchronous communication between services uses <strong>HTTP/REST</strong> with JSON payloads. The backend exposes RESTful endpoints that the frontend consumes, while the python-worker provides API endpoints for AI processing.</p>
-<p><strong>API versioning</strong> is implemented through URL paths (e.g., /api/v1/) to enable backward compatibility. Each API response includes standard fields for status, data, and error messages.</p>
+<p><strong>API versioning</strong> is implemented through URL paths (e.g., /api/index.mdv1/) to enable backward compatibility. Each API response includes standard fields for status, data, and error messages.</p>
 <p><strong>Authentication</strong> uses JWT tokens passed in Authorization headers. Tokens are short-lived (15 minutes) with refresh tokens for extended sessions. The backend validates tokens on every request and enforces role-based access control.</p>
 <h3 id="asynchronous-communication">Asynchronous Communication<a class="headerlink" href="#asynchronous-communication" title="Permanent link">&para;</a></h3>
 <p>Asynchronous communication uses <strong>message queues</strong> for decoupling services and handling long-running tasks. Celery workers consume tasks from Redis queues and execute them asynchronously.</p>
@@ -2273,8 +2273,8 @@
 <ul>
 <li><a href="../DEPLOYMENT_GUIDE/">Deployment Guide</a></li>
 <li><a href="../OPS_RUNBOOK/">Operations Runbook</a></li>
-<li><a href="adr/">Architecture Decision Records</a></li>
-<li><a href="api/">API Documentation</a></li>
+<li><a href="../adr/">Architecture Decision Records</a></li>
+<li><a href="../api/">API Documentation</a></li>
 </ul>
 <hr />
 <p><strong>Document Owner</strong>: Architecture Team<br />
