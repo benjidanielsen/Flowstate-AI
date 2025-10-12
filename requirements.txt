@@ -63,5 +63,5 @@ mypy==1.10.1
 
 # Evolution Framework dependencies
 sentence-transformers==2.2.2
-qdrant-client==1.7.0
+qdrant-client==1.9.0
 radon==6.0.1
