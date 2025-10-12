@@ -12,6 +12,10 @@ from .code_analyzer import CodeAnalyzer
 from .self_modification_orchestrator import SelfModificationOrchestrator
 from .anomaly_detector import AnomalyDetector
 from .evolution_governor import EvolutionGovernor
+from .cross_domain_learner import CrossDomainLearner
+from .meta_optimizer import MetaOptimizer
+from .edge_case_manager import EdgeCaseManager
+from .predictive_optimizer import PredictiveOptimizer
 
 __all__ = [
     "EvolutionConfig",
@@ -23,6 +27,10 @@ __all__ = [
     "SelfModificationOrchestrator",
     "AnomalyDetector",
     "EvolutionGovernor",
+    "CrossDomainLearner",
+    "MetaOptimizer",
+    "EdgeCaseManager",
+    "PredictiveOptimizer",
 ]
 
 __version__ = "0.2.0"
