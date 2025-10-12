@@ -16,6 +16,7 @@ from .cross_domain_learner import CrossDomainLearner
 from .meta_optimizer import MetaOptimizer
 from .edge_case_manager import EdgeCaseManager
 from .predictive_optimizer import PredictiveOptimizer
+from .xai_nba import XAINBA
 
 __all__ = [
     "EvolutionConfig",
@@ -31,6 +32,7 @@ __all__ = [
     "MetaOptimizer",
     "EdgeCaseManager",
     "PredictiveOptimizer",
+    "XAINBA",
 ]
 
 __version__ = "0.2.0"
