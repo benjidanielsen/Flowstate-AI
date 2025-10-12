@@ -4,11 +4,17 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import helmet from 'helmet';
 import http from 'http';
+import path from 'path';
+import swaggerUi from 'swagger-ui-express';
+import YAML from 'yamljs';
+
 import routes from './routes';
 import performanceMiddleware from './middleware/performanceMiddleware';
 import DatabaseManager from './database';
 import { runMigrations } from './database/migrate';
 import logger from './utils/logger';
+
+const swaggerDocument = YAML.load(path.resolve(__dirname, '../../openapi.yaml'));
 
 dotenv.config();
 
@@ -26,7 +32,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(performanceMiddleware);
 
 // Routes
-app.use('/api', routes);
+app.use("/api", routes);
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // Global Error Handling Middleware
 app.use((err: Error, req: Request, res: Response, _next: NextFunction) => { // eslint-disable-line @typescript-eslint/no-unused-vars
