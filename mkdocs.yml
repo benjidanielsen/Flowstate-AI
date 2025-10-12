@@ -87,6 +87,10 @@ nav:
       - Revocation Process: REVOCATION.md
   - API Documentation:
       - API Overview: api/
+  - Evolution Framework:
+      - Overview: evolution/README.md
+      - Architecture: evolution/ARCHITECTURE.md
+      - Operator Training: evolution/OPERATOR_TRAINING.md
   - Integrations:
       - Integration Guide: integrations/
 
