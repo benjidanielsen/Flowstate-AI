@@ -7,11 +7,23 @@ dist/
 build/
 *.tsbuildinfo
 
-# Environment files
+# Environment files and secrets
 .env
 .env.local
 .env.production
 .env.staging
+.env.*.local
+*.env
+.secrets-summary.txt
+secrets/
+credentials/
+*.credentials
+*.secret
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
 
 # Database files
 *.db
