@@ -17,6 +17,8 @@ from .meta_optimizer import MetaOptimizer
 from .edge_case_manager import EdgeCaseManager
 from .predictive_optimizer import PredictiveOptimizer
 from .xai_nba import XAINBA
+from .multi_agent_coordinator import MultiAgentCoordinator
+from .human_oversight_manager import HumanOversightManager
 
 __all__ = [
     "EvolutionConfig",
@@ -33,6 +35,8 @@ __all__ = [
     "EdgeCaseManager",
     "PredictiveOptimizer",
     "XAINBA",
+    "MultiAgentCoordinator",
+    "HumanOversightManager",
 ]
 
 __version__ = "0.2.0"
