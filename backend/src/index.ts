@@ -10,9 +10,12 @@ import YAML from 'yamljs';
 
 import routes from './routes';
 import performanceMiddleware from './middleware/performanceMiddleware';
+import { correlationIdMiddleware } from './middleware/correlationId'; // Import correlationId middleware
+import { idempotencyMiddleware } from './middleware/idempotency'; // Import idempotency middleware
 import DatabaseManager from './database';
 import { runMigrations } from './database/migrate';
-import logger from './utils/logger';
+import { safeLogger } from './utils/piiRedaction'; // Use safeLogger
+import './utils/tracer'; // Initialize OpenTelemetry tracer
 
 const swaggerDocument = YAML.load(path.resolve(__dirname, '../../openapi.yaml'));
 
@@ -27,8 +30,10 @@ let shutdownPromise: Promise<void> | null = null;
 // Middleware
 app.use(helmet());
 app.use(cors());
+app.use(correlationIdMiddleware); // Add correlation ID middleware early
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(idempotencyMiddleware); // Add idempotency middleware after body parser
 app.use(performanceMiddleware);
 
 // Routes
@@ -37,12 +42,13 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // Global Error Handling Middleware
 app.use((err: Error, req: Request, res: Response, _next: NextFunction) => { // eslint-disable-line @typescript-eslint/no-unused-vars
-  logger.error(`Unhandled error: ${err.message}`, { stack: err.stack, path: req.path, method: req.method });
+  safeLogger.error(`Unhandled error: ${err.message}`, { stack: err.stack, path: req.path, method: req.method, correlationId: req.correlationId });
   res.status(500).json({ message: 'Internal Server Error', error: err.message });
 });
 
 // 404 handler
 app.use((req: Request, res: Response) => {
+  safeLogger.warn(`Route not found: ${req.method} ${req.path}`, { correlationId: req.correlationId });
   res.status(404).json({ error: 'Route not found' });
 });
 
@@ -53,21 +59,21 @@ export function createApp() {
 export async function startServer() {
   try {
     // Initialize database
-    logger.info('Connecting to database...');
+    safeLogger.info('Connecting to database...');
     await DatabaseManager.getInstance().connect();
 
     // Run migrations
-    logger.info('Running database migrations...');
+    safeLogger.info('Running database migrations...');
     await runMigrations();
 
     // Start server
     serverRef = app.listen(process.env.PORT || 3001, () => {
-      logger.info(`Server is running on port ${process.env.PORT || 3001}`);
-      logger.info(`Environment: ${process.env.NODE_ENV || 'development'}`);
+      safeLogger.info(`Server is running on port ${process.env.PORT || 3001}`);
+      safeLogger.info(`Environment: ${process.env.NODE_ENV || 'development'}`);
     });
     return serverRef;
   } catch (error) {
-    logger.error('Failed to start server:', error);
+    safeLogger.error('Failed to start server:', error);
     // Throw instead of process.exit so tests can handle failures
     throw error;
   }
@@ -75,7 +81,7 @@ export async function startServer() {
 
 // Graceful shutdown
 export async function shutdown() {
-  logger.info('Shutting down gracefully');
+  safeLogger.info('Shutting down gracefully');
   if (isShuttingDown && shutdownPromise) {
     return shutdownPromise;
   }
@@ -93,7 +99,7 @@ export async function shutdown() {
             closeTimeout = null;
           }
           if (err) {
-            logger.error('Error closing server:', err);
+            safeLogger.error('Error closing server:', err);
             reject(err);
             return;
           }
@@ -107,7 +113,7 @@ export async function shutdown() {
         closeTimeout = setTimeout(() => {
           try {
             /* istanbul ignore next */
-            logger.warn('Server close timed out after 5s; continuing with DB close');
+            safeLogger.warn('Server close timed out after 5s; continuing with DB close');
           } catch (e) {
             // swallow any logging errors
           }
@@ -128,18 +134,18 @@ export async function shutdown() {
 if (require.main === module) {
   // When run directly, start the server and attach signal handlers that exit the process
   startServer().catch((err) => {
-    logger.error('Fatal error starting server:', err);
+    safeLogger.error('Fatal error starting server:', err);
     process.exit(1);
   });
 
   process.on('SIGTERM', async () => {
-    logger.info('SIGTERM received, shutting down gracefully');
+    safeLogger.info('SIGTERM received, shutting down gracefully');
     await shutdown();
     process.exit(0);
   });
 
   process.on('SIGINT', async () => {
-    logger.info('SIGINT received, shutting down gracefully');
+    safeLogger.info('SIGINT received, shutting down gracefully');
     await shutdown();
     process.exit(0);
   });

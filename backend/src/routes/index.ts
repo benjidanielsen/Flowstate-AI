@@ -11,6 +11,7 @@ import externalIntegrationRoutes from './externalIntegration';
 import statsRoutes from './stats';
 import aiCoordinationRoutes from './aiCoordination';
 import evolutionRoutes from './evolution';
+import kpiRoutes from './kpis'; // Import KPI routes
 import { authenticateToken } from '../middleware/authMiddleware';
 
 const router = Router();
@@ -28,6 +29,7 @@ router.use("/reminders", authenticateToken, reminderRoutes);
 router.use("/integrations", authenticateToken, externalIntegrationRoutes);
 router.use("/ai", authenticateToken, aiCoordinationRoutes);
 router.use("/evolution", authenticateToken, evolutionRoutes);
+router.use("/kpis", authenticateToken, kpiRoutes); // Use KPI routes
 
 // Health check
 router.get('/health', (req, res) => {
@@ -35,3 +37,4 @@ router.get('/health', (req, res) => {
 });
 
 export default router;
+

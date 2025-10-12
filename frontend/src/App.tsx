@@ -5,6 +5,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import Dashboard from './pages/Dashboard';
 import AIDecisionLogs from './pages/AIDecisionLogs';
 import EvolutionDashboard from './pages/EvolutionDashboard';
+import KPIDashboard from './pages/KPIDashboard';
 
 function App() {
   return (
@@ -40,6 +41,14 @@ function App() {
           element={
             <ProtectedRoute>
               <EvolutionDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/kpis"
+          element={
+            <ProtectedRoute>
+              <KPIDashboard />
             </ProtectedRoute>
           }
         />
