@@ -149,7 +149,162 @@ gh workflow run deploy-production.yml -f version=v1.2.3
 gh workflow run deploy-production.yml -f version=v1.2.3 -f skip_tests=true
 ```
 
-## Manual Deployments
+## 2. Initial Setup (First-Time Deployment)
+
+This section covers the initial setup and deployment of the Flowstate-AI system.
+
+### 2.1. Clone the Repository
+
+Clone the project repository to the deployment server:
+
+```bash
+git clone https://github.com/benjidanielsen/Flowstate-AI.git
+cd Flowstate-AI
+```
+
+### 2.2. Configure Secrets
+
+Use the provided script to generate secure secrets and create the `.env.production` file:
+
+```bash
+./scripts/setup-secrets.sh
+```
+
+Follow the prompts to configure domain names, ports, and other settings. The script will generate a `.env.production` file with secure defaults. **Review this file and ensure all settings are correct for your environment.**
+
+**IMPORTANT:** Securely back up the `.env.production` file. It contains sensitive credentials and is critical for system operation.
+
+### 2.3. Run the Deployment
+
+Execute the deployment script to build and start all services:
+
+```bash
+./scripts/deploy-production.sh
+```
+
+This script will:
+
+1.  Check for prerequisites.
+2.  Validate the `.env.production` file.
+3.  Pull the latest Docker images.
+4.  Build the application images.
+5.  Start the PostgreSQL and Redis services.
+6.  Run database migrations using `dbmate`.
+7.  Start all application services (backend, frontend, worker).
+8.  Perform a health check on all services.
+
+## 3. Routine Operations
+
+This section describes common operational tasks.
+
+### 3.1. Updating the System
+
+To update the system to the latest version:
+
+1.  **Pull the latest code:**
+
+    ```bash
+    git pull origin main
+    ```
+
+2.  **Run the deployment script:**
+
+    ```bash
+    ./scripts/deploy-production.sh
+    ```
+
+    The script will automatically rebuild images and restart services.
+
+### 3.2. Checking System Status
+
+To check the health of all services, run the health check script:
+
+```bash
+./scripts/health-check.sh
+```
+
+To view the status of running containers:
+
+```bash
+docker-compose -f docker-compose.production.yml ps
+```
+
+### 3.3. Viewing Logs
+
+To view the logs for all services in real-time:
+
+```bash
+docker-compose -f docker-compose.production.yml logs -f
+```
+
+To view the logs for a specific service:
+
+```bash
+docker-compose -f docker-compose.production.yml logs -f <service_name>
+```
+
+(e.g., `backend`, `frontend`, `postgres`)
+
+### 3.4. Stopping and Starting Services
+
+-   **To stop all services:**
+
+    ```bash
+    docker-compose -f docker-compose.production.yml down
+    ```
+
+-   **To start all services:**
+
+    ```bash
+    docker-compose -f docker-compose.production.yml up -d
+    ```
+
+## 4. Database Management
+
+Database migrations are managed using `dbmate`.
+
+### 4.1. Creating a New Migration
+
+To create a new migration file:
+
+```bash
+dbmate new <migration_name>
+```
+
+This will create a new SQL file in the `db/migrations` directory. Edit this file to define your schema changes.
+
+### 4.2. Running Migrations
+
+To apply all pending migrations:
+
+```bash
+dbmate up
+```
+
+The deployment script automatically runs this command.
+
+### 4.3. Rolling Back Migrations
+
+To roll back the last migration:
+
+```bash
+dbmate down
+```
+
+## 5. Troubleshooting
+
+-   **Service Not Starting:** Check the service logs (`docker-compose logs -f <service_name>`) for errors. Common issues include incorrect environment variables or port conflicts.
+-   **Database Connection Issues:** Ensure the `DATABASE_URL` in `.env.production` is correct and that the PostgreSQL container is running and healthy.
+-   **Permission Errors:** Ensure all scripts in the `scripts/` directory are executable (`chmod +x scripts/*.sh`).
+
+## 6. Security Best Practices
+
+-   **Rotate Secrets:** Regularly run `./scripts/setup-secrets.sh` to generate new secrets and update your `.env.production` file.
+-   **Restrict Access:** Limit access to the deployment server and the `.env.production` file.
+-   **Enable HTTPS:** For production deployments, configure Nginx with SSL/TLS certificates to enable HTTPS. The `docker/nginx/nginx.conf` file includes a template for this.
+-   **Regularly Update:** Keep the system and its dependencies up-to-date by pulling the latest code and re-deploying.
+
+
 
 ### Prerequisites
 

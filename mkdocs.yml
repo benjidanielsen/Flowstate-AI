@@ -60,6 +60,7 @@ nav:
   - Getting Started:
       - Overview: README.md
       - Deployment Guide: DEPLOYMENT_GUIDE.md
+      - Deployment Runbook: DEPLOYMENT_RUNBOOK.md
       - System Architecture: SYSTEM_ARCHITECTURE.md
   - Governance:
       - Governance Framework: GOVERNANCE.md
@@ -68,6 +69,7 @@ nav:
       - Emergent Behaviour Oversight: EMERGENT_BEHAVIOUR_OVERSIGHT_AND_CESSATION.md
   - Operations:
       - Operations Runbook: OPS_RUNBOOK.md
+      - Operator Guide: OPERATOR_GUIDE.md
       - Disaster Recovery Runbook: DR_RUNBOOK.md
       - Service Level Objectives: SLOS.md
       - Audit Trail: AUDIT_TRAIL.md
