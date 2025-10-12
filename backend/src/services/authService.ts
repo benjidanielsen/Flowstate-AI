@@ -53,7 +53,7 @@ export class AuthService {
     const isMatch = await bcrypt.compare(password_plain, (user as any).password);
     if (isMatch) {
       // Remove password hash before returning user object
-      const { password, ...userWithoutPassword } = user as any;
+      const { password: _password, ...userWithoutPassword } = user as any; // eslint-disable-line @typescript-eslint/no-unused-vars
       return userWithoutPassword as User;
     }
     return null;
