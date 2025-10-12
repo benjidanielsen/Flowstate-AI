@@ -17,7 +17,7 @@ export class CacheManager {
 
   constructor(redisUrl?: string) {
     this.redis = new Redis(redisUrl || process.env.REDIS_URL || 'redis://localhost:6379', {
-      retryStrategy: (times) => {
+      retryStrategy: (times: number) => {
         const delay = Math.min(times * 50, 2000);
         return delay;
       },
@@ -26,7 +26,7 @@ export class CacheManager {
       lazyConnect: false,
     });
 
-    this.redis.on('error', (err) => {
+    this.redis.on('error', (err: Error) => {
       console.error('Redis Cache Manager Error:', err);
     });
 
@@ -193,7 +193,7 @@ export class CacheManager {
     const fullKeys = keys.map(k => this.getFullKey(k, options?.prefix));
     const values = await this.redis.mget(...fullKeys);
 
-    return values.map(v => {
+    return values.map((v: string | null) => {
       if (!v) return null;
       try {
         return JSON.parse(v) as T;

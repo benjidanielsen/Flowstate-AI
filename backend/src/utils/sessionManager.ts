@@ -22,7 +22,7 @@ export class SessionManager {
 
   constructor(redisUrl?: string) {
     this.redis = new Redis(redisUrl || process.env.REDIS_URL || 'redis://localhost:6379', {
-      retryStrategy: (times) => {
+      retryStrategy: (times: number) => {
         const delay = Math.min(times * 50, 2000);
         return delay;
       },
@@ -31,7 +31,7 @@ export class SessionManager {
       lazyConnect: false,
     });
 
-    this.redis.on('error', (err) => {
+    this.redis.on('error', (err: Error) => {
       console.error('Redis Session Manager Error:', err);
     });
 
