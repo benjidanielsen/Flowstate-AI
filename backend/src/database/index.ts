@@ -2,6 +2,7 @@ import sqlite3 from 'sqlite3';
 import { Database } from 'sqlite3';
 import path from 'path';
 import fs from 'fs';
+import logger from '../utils/logger';
 
 class DatabaseManager {
   private static instance: DatabaseManager;
@@ -32,10 +33,10 @@ class DatabaseManager {
     return new Promise((resolve, reject) => {
       this.db = new sqlite3.Database(dbPath, (err) => {
         if (err) {
-          console.error('Error connecting to database:', err);
+          logger.error("Error connecting to database:", err);
           reject(err);
         } else {
-          console.log('Connected to SQLite database');
+          logger.debug("Connected to SQLite database");
           resolve(this.db!);
         }
       });

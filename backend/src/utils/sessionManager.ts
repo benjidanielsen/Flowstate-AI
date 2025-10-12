@@ -4,6 +4,7 @@
  */
 
 import Redis from 'ioredis';
+import logger from './logger';
 
 export interface SessionData {
   userId: string;
@@ -32,11 +33,11 @@ export class SessionManager {
     });
 
     this.redis.on('error', (err: Error) => {
-      console.error('Redis Session Manager Error:', err);
+      logger.error("Redis Session Manager Error:", err);
     });
 
     this.redis.on('connect', () => {
-      console.log('Session Manager connected to Redis');
+      logger.info("Session Manager connected to Redis");
     });
   }
 

@@ -4,6 +4,7 @@
  */
 
 import Redis from 'ioredis';
+import logger from './logger';
 
 export interface CacheOptions {
   ttl?: number; // Time to live in seconds
@@ -27,11 +28,11 @@ export class CacheManager {
     });
 
     this.redis.on('error', (err: Error) => {
-      console.error('Redis Cache Manager Error:', err);
+      logger.error("Redis Cache Manager Error:", err);
     });
 
     this.redis.on('connect', () => {
-      console.log('Cache Manager connected to Redis');
+      logger.info('Cache Manager connected to Redis');
     });
   }
 
@@ -49,7 +50,7 @@ export class CacheManager {
     try {
       return JSON.parse(value) as T;
     } catch (error) {
-      console.error('Cache parse error:', error);
+      logger.error("Cache parse error:", error);
       return null;
     }
   }

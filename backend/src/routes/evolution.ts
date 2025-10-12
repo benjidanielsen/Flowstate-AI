@@ -1,4 +1,5 @@
 import express, { Request, Response } from 'express';
+import logger from '../utils/logger';
 import { authenticateToken } from '../middleware/authMiddleware';
 
 const router = express.Router();
@@ -26,7 +27,7 @@ router.get('/metrics', async (req: Request, res: Response) => {
 
     res.json(metrics);
   } catch (error) {
-    console.error('Error fetching evolution metrics:', error);
+    logger.error("Error fetching evolution metrics:", error);
     res.status(500).json({ error: 'Failed to fetch evolution metrics' });
   }
 });
@@ -42,7 +43,7 @@ router.get('/anomalies', async (req: Request, res: Response) => {
 
     res.json(anomalies);
   } catch (error) {
-    console.error('Error fetching anomalies:', error);
+    logger.error("Error fetching anomalies:", error);
     res.status(500).json({ error: 'Failed to fetch anomalies' });
   }
 });
@@ -62,7 +63,7 @@ router.get('/performance', async (req: Request, res: Response) => {
 
     res.json(performance);
   } catch (error) {
-    console.error('Error fetching performance metrics:', error);
+    logger.error("Error fetching performance metrics:", error);
     res.status(500).json({ error: 'Failed to fetch performance metrics' });
   }
 });
@@ -108,7 +109,7 @@ router.get('/events', async (req: Request, res: Response) => {
 
     res.json(events.slice(0, limit));
   } catch (error) {
-    console.error('Error fetching evolution events:', error);
+    logger.error("Error fetching evolution events:", error);
     res.status(500).json({ error: 'Failed to fetch evolution events' });
   }
 });
@@ -122,7 +123,7 @@ router.post('/safe-mode', async (req: Request, res: Response) => {
     const { active, reason } = req.body;
 
     // In production, this would call the Evolution Governor
-    console.log(`Safe mode ${active ? 'activated' : 'deactivated'}: ${reason || 'manual'}`);
+    logger.info(`Safe mode ${active ? 'activated' : 'deactivated'}: ${reason || 'manual'}`);
 
     res.json({
       safe_mode_active: active,
@@ -130,7 +131,7 @@ router.post('/safe-mode', async (req: Request, res: Response) => {
       timestamp: new Date().toISOString()
     });
   } catch (error) {
-    console.error('Error toggling safe mode:', error);
+    logger.error("Error toggling safe mode:", error);
     res.status(500).json({ error: 'Failed to toggle safe mode' });
   }
 });
@@ -144,7 +145,7 @@ router.post('/improvements/:id/approve', async (req: Request, res: Response) => 
     const { id } = req.params;
 
     // In production, this would call the Evolution Manager to apply the improvement
-    console.log(`Approving improvement: ${id}`);
+    logger.info(`Approving improvement: ${id}`);
 
     res.json({
       id,
@@ -152,7 +153,7 @@ router.post('/improvements/:id/approve', async (req: Request, res: Response) => 
       timestamp: new Date().toISOString()
     });
   } catch (error) {
-    console.error('Error approving improvement:', error);
+    logger.error('Error approving improvement:', error);
     res.status(500).json({ error: 'Failed to approve improvement' });
   }
 });
@@ -167,7 +168,7 @@ router.post('/improvements/:id/reject', async (req: Request, res: Response) => {
     const { reason } = req.body;
 
     // In production, this would call the Evolution Manager to reject the improvement
-    console.log(`Rejecting improvement: ${id}, reason: ${reason}`);
+    logger.info(`Rejecting improvement: ${id}, reason: ${reason}`);
 
     res.json({
       id,
@@ -176,7 +177,7 @@ router.post('/improvements/:id/reject', async (req: Request, res: Response) => {
       timestamp: new Date().toISOString()
     });
   } catch (error) {
-    console.error('Error rejecting improvement:', error);
+    logger.error("Error rejecting improvement:", error);
     res.status(500).json({ error: 'Failed to reject improvement' });
   }
 });
@@ -194,7 +195,7 @@ router.get('/knowledge', async (req: Request, res: Response) => {
 
     res.json(results);
   } catch (error) {
-    console.error('Error searching knowledge base:', error);
+    logger.error("Error searching knowledge base:", error);
     res.status(500).json({ error: 'Failed to search knowledge base' });
   }
 });
@@ -224,7 +225,7 @@ router.get('/governance/status', async (req: Request, res: Response) => {
 
     res.json(status);
   } catch (error) {
-    console.error('Error fetching governance status:', error);
+    logger.error('Error fetching governance status:', error);
     res.status(500).json({ error: 'Failed to fetch governance status' });
   }
 });

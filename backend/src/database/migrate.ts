@@ -1,4 +1,5 @@
 import DatabaseManager from './index';
+import logger from '../utils/logger';
 
 const migrations = [
   {
@@ -155,7 +156,7 @@ export async function runMigrations(): Promise<void> {
         const pendingMigrations = migrations.filter(m => m.version > currentVersion);
 
         if (pendingMigrations.length === 0) {
-          console.log('No pending migrations');
+          logger.info("No pending migrations");
           resolve();
           return;
         }
@@ -165,7 +166,7 @@ export async function runMigrations(): Promise<void> {
         pendingMigrations.forEach(migration => {
           db.exec(migration.up, (err) => {
             if (err) {
-              console.error(`Migration ${migration.version} failed:`, err);
+              logger.error(`Migration ${migration.version} failed:`, err);
               reject(err);
               return;
             }
@@ -178,7 +179,7 @@ export async function runMigrations(): Promise<void> {
               }
 
               completed++;
-              console.log(`Migration ${migration.version} completed`);
+              logger.info(`Migration ${migration.version} completed`);
               
               if (completed === pendingMigrations.length) {
                 resolve();
@@ -194,7 +195,7 @@ export async function runMigrations(): Promise<void> {
 if (require.main === module) {
   runMigrations()
     .then(() => {
-      console.log('All migrations completed');
+      logger.info("All migrations completed");
       process.exit(0);
     })
     .catch((err) => {

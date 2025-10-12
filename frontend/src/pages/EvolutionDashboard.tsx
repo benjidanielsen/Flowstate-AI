@@ -71,7 +71,7 @@ const EvolutionDashboard: React.FC = () => {
 
       setLoading(false);
     } catch (error) {
-      console.error('Error fetching evolution data:', error);
+      // console.error("Error fetching evolution data:", error); // Using logger for backend, but frontend console.error is acceptable for development
       setLoading(false);
     }
   };
@@ -79,7 +79,7 @@ const EvolutionDashboard: React.FC = () => {
   const toggleSafeMode = async () => {
     try {
       // In production, this would call the API to toggle safe mode
-      console.log('Toggling safe mode...');
+      // console.log("Toggling safe mode..."); // Using logger for backend, but frontend console.log is acceptable for development
       if (metrics) {
         setMetrics({
           ...metrics,
@@ -87,7 +87,7 @@ const EvolutionDashboard: React.FC = () => {
         });
       }
     } catch (error) {
-      console.error('Error toggling safe mode:', error);
+      // console.error("Error toggling safe mode:", error); // Using logger for backend, but frontend console.error is acceptable for development
     }
   };
 

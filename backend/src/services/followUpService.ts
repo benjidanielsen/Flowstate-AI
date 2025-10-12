@@ -1,4 +1,5 @@
-import DatabaseManager from '../database';
+import DatabaseManager from './index';
+import logger from '../utils/logger';
 import { v4 as uuidv4 } from 'uuid';
 import { Reminder } from '../types';
 
@@ -52,9 +53,9 @@ export class FollowUpService {
         );
       });
       
-      console.log(`Created follow-up for customer ${customerId} at stage ${stage}, scheduled for ${scheduledFor.toISOString()}`);
+      logger.info(`Created follow-up for customer ${customerId} at stage ${stage}, scheduled for ${scheduledFor.toISOString()}`);
     } catch (error) {
-      console.error('Error creating follow-up:', error);
+      logger.error("Error creating follow-up:", error);
       throw error;
     }
   }
@@ -90,10 +91,10 @@ export class FollowUpService {
         scheduled++;
       }
       
-      console.log(`Auto-scheduled ${scheduled} follow-ups`);
+      logger.info(`Auto-scheduled ${scheduled} follow-ups`);
       return scheduled;
     } catch (error) {
-      console.error('Error auto-scheduling follow-ups:', error);
+      logger.error("Error auto-scheduling follow-ups:", error);
       throw error;
     }
   }

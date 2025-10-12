@@ -1,4 +1,5 @@
 import DatabaseManager from './index';
+import logger from '../utils/logger';
 import { v4 as uuidv4 } from 'uuid';
 import { PipelineStatus, InteractionType } from '../types';
 
@@ -59,7 +60,7 @@ export async function seedDatabase(): Promise<void> {
   const dbManager = DatabaseManager.getInstance();
   const db = await dbManager.connect();
 
-  console.log('Starting database seed...');
+  logger.info("Starting database seed...");
 
   return new Promise((resolve, reject) => {
     // Clear existing data
@@ -148,7 +149,7 @@ export async function seedDatabase(): Promise<void> {
 
                     completed++;
                     if (completed === sampleCustomers.length) {
-                      console.log('Database seed completed successfully');
+                      logger.info("Database seed completed successfully");
                       resolve();
                     }
                   });
@@ -171,7 +172,7 @@ export async function seedDatabase(): Promise<void> {
 if (require.main === module) {
   seedDatabase()
     .then(() => {
-      console.log('Seed completed');
+      logger.info("Seed completed");
       process.exit(0);
     })
     .catch((err) => {
