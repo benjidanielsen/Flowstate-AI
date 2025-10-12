@@ -8,6 +8,10 @@ from .config import EvolutionConfig, default_config
 from .metrics_collector import MetricsCollector
 from .evolution_manager import EvolutionManager
 from .knowledge_manager import VectorKnowledgeManager
+from .code_analyzer import CodeAnalyzer
+from .self_modification_orchestrator import SelfModificationOrchestrator
+from .anomaly_detector import AnomalyDetector
+from .evolution_governor import EvolutionGovernor
 
 __all__ = [
     "EvolutionConfig",
@@ -15,7 +19,11 @@ __all__ = [
     "MetricsCollector",
     "EvolutionManager",
     "VectorKnowledgeManager",
+    "CodeAnalyzer",
+    "SelfModificationOrchestrator",
+    "AnomalyDetector",
+    "EvolutionGovernor",
 ]
 
-__version__ = "0.1.0"
+__version__ = "0.2.0"
 
