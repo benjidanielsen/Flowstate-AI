@@ -19,6 +19,8 @@ from .predictive_optimizer import PredictiveOptimizer
 from .xai_nba import XAINBA
 from .multi_agent_coordinator import MultiAgentCoordinator
 from .human_oversight_manager import HumanOversightManager
+from .performance_tuner import PerformanceTuner
+from .cost_optimizer import CostOptimizer
 
 __all__ = [
     "EvolutionConfig",
@@ -37,6 +39,8 @@ __all__ = [
     "XAINBA",
     "MultiAgentCoordinator",
     "HumanOversightManager",
+    "PerformanceTuner",
+    "CostOptimizer",
 ]
 
 __version__ = "0.2.0"
