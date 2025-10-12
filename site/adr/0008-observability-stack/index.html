@@ -12,24 +12,24 @@
         <meta name="author" content="Flowstate-AI Team">
       
       
-        <link rel="canonical" href="https://benjidanielsen.github.io/Flowstate-AI/api/">
+        <link rel="canonical" href="https://benjidanielsen.github.io/Flowstate-AI/adr/0008-observability-stack/">
       
       
       
       
-      <link rel="icon" href="../assets/images/favicon.png">
+      <link rel="icon" href="../../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.21">
     
     
       
-        <title>API Documentation - Flowstate-AI Documentation</title>
+        <title>ADR 0008: Observability Stack - Flowstate-AI Documentation</title>
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.2a3383ac.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.2a3383ac.min.css">
       
         
-        <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
       
       
 
@@ -48,7 +48,7 @@
       
     
     
-    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -74,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#api-documentation" class="md-skip">
+        <a href="#adr-0008-observability-stack" class="md-skip">
           Skip to content
         </a>
       
@@ -92,7 +92,7 @@
 
 <header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href=".." title="Flowstate-AI Documentation" class="md-header__button md-logo" aria-label="Flowstate-AI Documentation" data-md-component="logo">
+    <a href="../.." title="Flowstate-AI Documentation" class="md-header__button md-logo" aria-label="Flowstate-AI Documentation" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -112,7 +112,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              API Documentation
+              ADR 0008: Observability Stack
             
           </span>
         </div>
@@ -225,7 +225,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../INDEX/" class="md-tabs__link">
+      <a href="../../INDEX/" class="md-tabs__link">
         
   
   
@@ -246,7 +246,7 @@
     
     
       <li class="md-tabs__item">
-        <a href=".." class="md-tabs__link">
+        <a href="../.." class="md-tabs__link">
           
   
   
@@ -266,7 +266,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../GOVERNANCE/" class="md-tabs__link">
+        <a href="../../GOVERNANCE/" class="md-tabs__link">
           
   
   
@@ -286,7 +286,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../OPS_RUNBOOK/" class="md-tabs__link">
+        <a href="../../OPS_RUNBOOK/" class="md-tabs__link">
           
   
   
@@ -306,7 +306,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../CODING_STANDARDS/" class="md-tabs__link">
+        <a href="../../CODING_STANDARDS/" class="md-tabs__link">
           
   
   
@@ -326,7 +326,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../RISK_REGISTER/" class="md-tabs__link">
+        <a href="../../RISK_REGISTER/" class="md-tabs__link">
           
   
   
@@ -346,7 +346,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../FEDERATION_CHECKLIST/" class="md-tabs__link">
+        <a href="../../FEDERATION_CHECKLIST/" class="md-tabs__link">
           
   
   
@@ -366,7 +366,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="./" class="md-tabs__link">
+        <a href="../../api/" class="md-tabs__link">
           
   
   
@@ -386,7 +386,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../integrations/" class="md-tabs__link">
+        <a href="../../integrations/" class="md-tabs__link">
           
   
   
@@ -420,7 +420,7 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href=".." title="Flowstate-AI Documentation" class="md-nav__button md-logo" aria-label="Flowstate-AI Documentation" data-md-component="logo">
+    <a href="../.." title="Flowstate-AI Documentation" class="md-nav__button md-logo" aria-label="Flowstate-AI Documentation" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -450,7 +450,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../INDEX/" class="md-nav__link">
+      <a href="../../INDEX/" class="md-nav__link">
         
   
   
@@ -517,7 +517,7 @@
   
   
     <li class="md-nav__item">
-      <a href=".." class="md-nav__link">
+      <a href="../.." class="md-nav__link">
         
   
   
@@ -540,7 +540,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../DEPLOYMENT_GUIDE/" class="md-nav__link">
+      <a href="../../DEPLOYMENT_GUIDE/" class="md-nav__link">
         
   
   
@@ -563,7 +563,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../SYSTEM_ARCHITECTURE/" class="md-nav__link">
+      <a href="../../SYSTEM_ARCHITECTURE/" class="md-nav__link">
         
   
   
@@ -638,7 +638,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../GOVERNANCE/" class="md-nav__link">
+      <a href="../../GOVERNANCE/" class="md-nav__link">
         
   
   
@@ -661,7 +661,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../ETHICS/" class="md-nav__link">
+      <a href="../../ETHICS/" class="md-nav__link">
         
   
   
@@ -684,7 +684,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../FEDERATION_CHARTER/" class="md-nav__link">
+      <a href="../../FEDERATION_CHARTER/" class="md-nav__link">
         
   
   
@@ -707,7 +707,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../EMERGENT_BEHAVIOUR_OVERSIGHT_AND_CESSATION/" class="md-nav__link">
+      <a href="../../EMERGENT_BEHAVIOUR_OVERSIGHT_AND_CESSATION/" class="md-nav__link">
         
   
   
@@ -782,7 +782,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../OPS_RUNBOOK/" class="md-nav__link">
+      <a href="../../OPS_RUNBOOK/" class="md-nav__link">
         
   
   
@@ -805,7 +805,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../DR_RUNBOOK/" class="md-nav__link">
+      <a href="../../DR_RUNBOOK/" class="md-nav__link">
         
   
   
@@ -828,7 +828,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../SLOS/" class="md-nav__link">
+      <a href="../../SLOS/" class="md-nav__link">
         
   
   
@@ -851,7 +851,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../AUDIT_TRAIL/" class="md-nav__link">
+      <a href="../../AUDIT_TRAIL/" class="md-nav__link">
         
   
   
@@ -926,7 +926,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../CODING_STANDARDS/" class="md-nav__link">
+      <a href="../../CODING_STANDARDS/" class="md-nav__link">
         
   
   
@@ -949,7 +949,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../adr/" class="md-nav__link">
+      <a href="../" class="md-nav__link">
         
   
   
@@ -972,7 +972,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../ROADMAP/" class="md-nav__link">
+      <a href="../../ROADMAP/" class="md-nav__link">
         
   
   
@@ -995,7 +995,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../CHANGELOG/" class="md-nav__link">
+      <a href="../../CHANGELOG/" class="md-nav__link">
         
   
   
@@ -1018,7 +1018,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../QUALITY/" class="md-nav__link">
+      <a href="../../QUALITY/" class="md-nav__link">
         
   
   
@@ -1093,7 +1093,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../RISK_REGISTER/" class="md-nav__link">
+      <a href="../../RISK_REGISTER/" class="md-nav__link">
         
   
   
@@ -1116,7 +1116,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../SECURITY.md" class="md-nav__link">
+      <a href="../../../SECURITY.md" class="md-nav__link">
         
   
   
@@ -1191,7 +1191,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../FEDERATION_CHECKLIST/" class="md-nav__link">
+      <a href="../../FEDERATION_CHECKLIST/" class="md-nav__link">
         
   
   
@@ -1214,7 +1214,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../REVOCATION/" class="md-nav__link">
+      <a href="../../REVOCATION/" class="md-nav__link">
         
   
   
@@ -1289,7 +1289,7 @@
   
   
     <li class="md-nav__item">
-      <a href="./" class="md-nav__link">
+      <a href="../../api/" class="md-nav__link">
         
   
   
@@ -1364,7 +1364,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../integrations/" class="md-nav__link">
+      <a href="../../integrations/" class="md-nav__link">
         
   
   
@@ -1414,82 +1414,37 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#overview" class="md-nav__link">
+  <a href="#status" class="md-nav__link">
     <span class="md-ellipsis">
-      Overview
+      Status
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#base-url" class="md-nav__link">
+  <a href="#context" class="md-nav__link">
     <span class="md-ellipsis">
-      Base URL
+      Context
     </span>
   </a>
   
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#authentication" class="md-nav__link">
-    <span class="md-ellipsis">
-      Authentication
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#api-endpoints" class="md-nav__link">
-    <span class="md-ellipsis">
-      API Endpoints
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="API Endpoints">
+    <nav class="md-nav" aria-label="Context">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#authentication_1" class="md-nav__link">
+  <a href="#current-situation" class="md-nav__link">
     <span class="md-ellipsis">
-      Authentication
+      Current Situation
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#users" class="md-nav__link">
+  <a href="#requirements" class="md-nav__link">
     <span class="md-ellipsis">
-      Users
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#contacts" class="md-nav__link">
-    <span class="md-ellipsis">
-      Contacts
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#interactions" class="md-nav__link">
-    <span class="md-ellipsis">
-      Interactions
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#ai-features" class="md-nav__link">
-    <span class="md-ellipsis">
-      AI Features
+      Requirements
     </span>
   </a>
   
@@ -1501,45 +1456,267 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#rate-limiting" class="md-nav__link">
+  <a href="#decision" class="md-nav__link">
     <span class="md-ellipsis">
-      Rate Limiting
+      Decision
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Decision">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#components" class="md-nav__link">
+    <span class="md-ellipsis">
+      Components
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Components">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-prometheus-metrics-collection" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Prometheus - Metrics Collection
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-grafana-visualization" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Grafana - Visualization
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-loki-log-aggregation" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Loki - Log Aggregation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-jaeger-distributed-tracing" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Jaeger - Distributed Tracing
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      Architecture
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#deployment-strategy" class="md-nav__link">
+    <span class="md-ellipsis">
+      Deployment Strategy
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#integration-points" class="md-nav__link">
+    <span class="md-ellipsis">
+      Integration Points
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#consequences" class="md-nav__link">
+    <span class="md-ellipsis">
+      Consequences
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Consequences">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#positive" class="md-nav__link">
+    <span class="md-ellipsis">
+      Positive
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#negative" class="md-nav__link">
+    <span class="md-ellipsis">
+      Negative
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#neutral" class="md-nav__link">
+    <span class="md-ellipsis">
+      Neutral
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#implementation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Implementation
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Implementation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#phase-1-foundation-complete" class="md-nav__link">
+    <span class="md-ellipsis">
+      Phase 1: Foundation (Complete)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-2-instrumentation-next" class="md-nav__link">
+    <span class="md-ellipsis">
+      Phase 2: Instrumentation (Next)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-3-dashboards-next" class="md-nav__link">
+    <span class="md-ellipsis">
+      Phase 3: Dashboards (Next)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-4-alerting-next" class="md-nav__link">
+    <span class="md-ellipsis">
+      Phase 4: Alerting (Next)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-5-production-deployment-next" class="md-nav__link">
+    <span class="md-ellipsis">
+      Phase 5: Production Deployment (Next)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#monitoring-and-metrics" class="md-nav__link">
+    <span class="md-ellipsis">
+      Monitoring and Metrics
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#error-handling" class="md-nav__link">
+  <a href="#retention-and-storage" class="md-nav__link">
     <span class="md-ellipsis">
-      Error Handling
+      Retention and Storage
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#webhooks" class="md-nav__link">
+  <a href="#security-considerations" class="md-nav__link">
     <span class="md-ellipsis">
-      Webhooks
+      Security Considerations
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#sdk-and-client-libraries" class="md-nav__link">
+  <a href="#review-and-evolution" class="md-nav__link">
     <span class="md-ellipsis">
-      SDK and Client Libraries
+      Review and Evolution
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#support" class="md-nav__link">
+  <a href="#references" class="md-nav__link">
     <span class="md-ellipsis">
-      Support
+      References
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#related-adrs" class="md-nav__link">
+    <span class="md-ellipsis">
+      Related ADRs
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#date" class="md-nav__link">
+    <span class="md-ellipsis">
+      Date
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#authors" class="md-nav__link">
+    <span class="md-ellipsis">
+      Authors
     </span>
   </a>
   
@@ -1561,7 +1738,7 @@
 
 
   
-    <a href="https://github.com/benjidanielsen/Flowstate-AI/edit/main/docs/api/README.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+    <a href="https://github.com/benjidanielsen/Flowstate-AI/edit/main/docs/adr/0008-observability-stack.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"/></svg>
     </a>
@@ -1569,89 +1746,294 @@
   
 
 
-<h1 id="api-documentation">API Documentation<a class="headerlink" href="#api-documentation" title="Permanent link">&para;</a></h1>
-<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
-<p>The Flowstate-AI API provides programmatic access to all system functionality. The API follows REST principles with JSON request and response bodies.</p>
-<h2 id="base-url">Base URL<a class="headerlink" href="#base-url" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>Production: https://api.flowstate-ai.com/v1
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>Staging: https://staging-api.flowstate-ai.com/v1
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>Development: http://localhost:3001/api/v1
+<h1 id="adr-0008-observability-stack">ADR 0008: Observability Stack<a class="headerlink" href="#adr-0008-observability-stack" title="Permanent link">&para;</a></h1>
+<h2 id="status">Status<a class="headerlink" href="#status" title="Permanent link">&para;</a></h2>
+<p>Accepted</p>
+<h2 id="context">Context<a class="headerlink" href="#context" title="Permanent link">&para;</a></h2>
+<p>A production system requires comprehensive observability to understand system behavior, diagnose issues, optimize performance, and ensure reliability. Without proper observability, teams operate blind, unable to detect problems before they impact users or diagnose issues quickly when they occur.</p>
+<h3 id="current-situation">Current Situation<a class="headerlink" href="#current-situation" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Limited visibility into system performance and health</li>
+<li>No centralized metrics collection</li>
+<li>No distributed tracing capabilities</li>
+<li>Logs scattered across containers</li>
+<li>Difficult to correlate events across services</li>
+<li>Reactive rather than proactive problem detection</li>
+</ul>
+<h3 id="requirements">Requirements<a class="headerlink" href="#requirements" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong>Metrics</strong>: Collect and visualize system and application metrics</li>
+<li><strong>Logs</strong>: Aggregate and search logs from all services</li>
+<li><strong>Traces</strong>: Track requests across distributed services</li>
+<li><strong>Dashboards</strong>: Visualize system health and performance</li>
+<li><strong>Alerting</strong>: Proactive notification of issues</li>
+<li><strong>Correlation</strong>: Link metrics, logs, and traces</li>
+<li><strong>Retention</strong>: Store data for analysis and compliance</li>
+<li><strong>Performance</strong>: Minimal overhead on application performance</li>
+</ol>
+<h2 id="decision">Decision<a class="headerlink" href="#decision" title="Permanent link">&para;</a></h2>
+<p>We will implement a comprehensive observability stack using the <strong>Prometheus + Grafana + Loki + Jaeger</strong> combination, commonly known as the PLG stack with tracing.</p>
+<h3 id="components">Components<a class="headerlink" href="#components" title="Permanent link">&para;</a></h3>
+<h4 id="1-prometheus-metrics-collection">1. Prometheus - Metrics Collection<a class="headerlink" href="#1-prometheus-metrics-collection" title="Permanent link">&para;</a></h4>
+<p><strong>Purpose</strong>: Time-series metrics collection and alerting</p>
+<p><strong>Why Prometheus</strong>:
+- Industry standard for metrics in cloud-native applications
+- Pull-based model reduces application complexity
+- Powerful query language (PromQL)
+- Built-in alerting capabilities
+- Excellent Kubernetes integration
+- Large ecosystem of exporters
+- Efficient storage format</p>
+<p><strong>Alternatives Considered</strong>:
+- <strong>InfluxDB</strong>: Push-based, more complex setup, less ecosystem
+- <strong>Datadog</strong>: SaaS, expensive, vendor lock-in
+- <strong>New Relic</strong>: SaaS, expensive, less flexibility
+- <strong>CloudWatch</strong>: AWS-specific, limited query capabilities</p>
+<p><strong>Configuration</strong>:
+- 15-second scrape interval
+- Alert rules for common issues
+- Exporters for system, container, and database metrics
+- 31-day retention period</p>
+<h4 id="2-grafana-visualization">2. Grafana - Visualization<a class="headerlink" href="#2-grafana-visualization" title="Permanent link">&para;</a></h4>
+<p><strong>Purpose</strong>: Dashboards and visualization for all observability data</p>
+<p><strong>Why Grafana</strong>:
+- Best-in-class visualization capabilities
+- Supports multiple data sources (Prometheus, Loki, Jaeger)
+- Rich dashboard ecosystem
+- Alerting capabilities
+- Free and open-source
+- Active community and development</p>
+<p><strong>Alternatives Considered</strong>:
+- <strong>Kibana</strong>: Elasticsearch-focused, less flexible
+- <strong>Chronograf</strong>: InfluxDB-specific
+- <strong>Datadog</strong>: SaaS, expensive
+- <strong>Prometheus UI</strong>: Limited visualization capabilities</p>
+<p><strong>Configuration</strong>:
+- Pre-configured dashboards for system and application metrics
+- Datasource provisioning for Prometheus, Loki, and Jaeger
+- Alert rules and notification channels
+- Role-based access control</p>
+<h4 id="3-loki-log-aggregation">3. Loki - Log Aggregation<a class="headerlink" href="#3-loki-log-aggregation" title="Permanent link">&para;</a></h4>
+<p><strong>Purpose</strong>: Centralized log collection and querying</p>
+<p><strong>Why Loki</strong>:
+- Designed to work seamlessly with Grafana
+- Cost-effective (indexes only metadata, not full text)
+- LogQL query language similar to PromQL
+- Efficient storage
+- Easy to operate
+- Native Grafana integration</p>
+<p><strong>Alternatives Considered</strong>:
+- <strong>Elasticsearch</strong>: More powerful but complex and resource-intensive
+- <strong>Splunk</strong>: Expensive, enterprise-focused
+- <strong>CloudWatch Logs</strong>: AWS-specific, limited query capabilities
+- <strong>Fluentd + Elasticsearch</strong>: More complex setup</p>
+<p><strong>Configuration</strong>:
+- Promtail for log shipping from containers and system
+- 31-day retention period
+- Automatic log parsing and labeling
+- Integration with Jaeger for trace correlation</p>
+<h4 id="4-jaeger-distributed-tracing">4. Jaeger - Distributed Tracing<a class="headerlink" href="#4-jaeger-distributed-tracing" title="Permanent link">&para;</a></h4>
+<p><strong>Purpose</strong>: Track requests across microservices</p>
+<p><strong>Why Jaeger</strong>:
+- CNCF graduated project
+- OpenTelemetry compatible
+- Excellent performance
+- Easy to deploy (all-in-one mode)
+- Native Grafana integration
+- Supports multiple storage backends</p>
+<p><strong>Alternatives Considered</strong>:
+- <strong>Zipkin</strong>: Older, less active development
+- <strong>Datadog APM</strong>: SaaS, expensive
+- <strong>New Relic</strong>: SaaS, expensive
+- <strong>AWS X-Ray</strong>: AWS-specific</p>
+<p><strong>Configuration</strong>:
+- All-in-one deployment for simplicity
+- OpenTelemetry protocol support
+- Zipkin compatibility for legacy clients
+- Integration with Loki for log correlation</p>
+<h3 id="architecture">Architecture<a class="headerlink" href="#architecture" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>┌─────────────────────────────────────────────────────────┐
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>│                  Observability Stack                     │
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>└─────────────────────────────────────────────────────────┘
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>Application Services
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    │
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>    ├─ Metrics ──────────► Prometheus ──┐
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>    ├─ Logs ─────────────► Promtail ────► Loki ──┐
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>    └─ Traces ───────────► Jaeger ──────────────┐│
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>                                                  ││
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>System &amp; Infrastructure                           ││
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>    │                                             ││
+<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>    ├─ Node Exporter ────► Prometheus ──────────┐││
+<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>    ├─ cAdvisor ─────────► Prometheus ──────────┤││
+<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>    └─ Postgres Exporter ► Prometheus ──────────┤││
+<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>                                                  │││
+<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>                                                  ▼▼▼
+<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>                                               Grafana
+<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>                                                  │
+<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>                                                  ▼
+<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>                                            Dashboards
+<a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>                                            Alerts
+<a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>                                            Queries
 </code></pre></div>
-<h2 id="authentication">Authentication<a class="headerlink" href="#authentication" title="Permanent link">&para;</a></h2>
-<p>All API requests require authentication using JWT tokens passed in the Authorization header:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>Authorization: Bearer &lt;your_jwt_token&gt;
-</code></pre></div>
-<h2 id="api-endpoints">API Endpoints<a class="headerlink" href="#api-endpoints" title="Permanent link">&para;</a></h2>
-<h3 id="authentication_1">Authentication<a class="headerlink" href="#authentication_1" title="Permanent link">&para;</a></h3>
+<h3 id="deployment-strategy">Deployment Strategy<a class="headerlink" href="#deployment-strategy" title="Permanent link">&para;</a></h3>
+<p><strong>Development</strong>:
+- Docker Compose for local development
+- All services in single compose file
+- Persistent volumes for data retention
+- Default credentials for easy access</p>
+<p><strong>Staging</strong>:
+- Separate observability stack
+- Connected to staging application services
+- Same configuration as production
+- Used for testing alerts and dashboards</p>
+<p><strong>Production</strong>:
+- Dedicated observability infrastructure
+- High availability for critical components
+- Secure credentials and access control
+- Backup and disaster recovery
+- Separate network for security</p>
+<h3 id="integration-points">Integration Points<a class="headerlink" href="#integration-points" title="Permanent link">&para;</a></h3>
+<p><strong>Application Instrumentation</strong>:
+- Backend: prom-client for Node.js metrics
+- Python Worker: prometheus_client for Python metrics
+- Frontend: nginx metrics via stub_status
+- Custom business metrics for key operations</p>
+<p><strong>Log Format</strong>:
+- Structured JSON logging
+- Standard fields: timestamp, level, message, trace_id
+- Correlation IDs for request tracking
+- Sensitive data redaction</p>
+<p><strong>Tracing</strong>:
+- OpenTelemetry SDK in all services
+- Automatic trace propagation
+- Custom spans for key operations
+- Trace sampling for high-volume endpoints</p>
+<h2 id="consequences">Consequences<a class="headerlink" href="#consequences" title="Permanent link">&para;</a></h2>
+<h3 id="positive">Positive<a class="headerlink" href="#positive" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong>Comprehensive Visibility</strong>: Full observability across metrics, logs, and traces</li>
+<li><strong>Proactive Monitoring</strong>: Alerts catch issues before users are impacted</li>
+<li><strong>Fast Diagnosis</strong>: Correlated data enables quick root cause analysis</li>
+<li><strong>Performance Insights</strong>: Identify bottlenecks and optimization opportunities</li>
+<li><strong>Cost Effective</strong>: Open-source stack with no licensing costs</li>
+<li><strong>Scalable</strong>: Can grow with the application</li>
+<li><strong>Standard Tools</strong>: Industry-standard tools with large communities</li>
+<li><strong>Unified Interface</strong>: Single Grafana interface for all observability data</li>
+</ol>
+<h3 id="negative">Negative<a class="headerlink" href="#negative" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong>Operational Overhead</strong>: Additional services to maintain and monitor</li>
+<li><strong>Learning Curve</strong>: Team must learn PromQL, LogQL, and tracing concepts</li>
+<li><strong>Storage Costs</strong>: Metrics, logs, and traces require storage</li>
+<li><strong>Resource Usage</strong>: Observability stack consumes CPU, memory, and disk</li>
+<li><strong>Configuration Complexity</strong>: Proper setup requires careful configuration</li>
+</ol>
+<h3 id="neutral">Neutral<a class="headerlink" href="#neutral" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong>Tool Commitment</strong>: Committed to this observability stack</li>
+<li><strong>Instrumentation Required</strong>: Applications must be instrumented</li>
+<li><strong>Network Traffic</strong>: Metrics and logs generate network traffic</li>
+</ol>
+<h2 id="implementation">Implementation<a class="headerlink" href="#implementation" title="Permanent link">&para;</a></h2>
+<h3 id="phase-1-foundation-complete">Phase 1: Foundation (Complete)<a class="headerlink" href="#phase-1-foundation-complete" title="Permanent link">&para;</a></h3>
 <ul>
-<li><code>POST /auth/login</code> - Authenticate user and receive tokens</li>
-<li><code>POST /auth/refresh</code> - Refresh access token</li>
-<li><code>POST /auth/logout</code> - Invalidate refresh token</li>
+<li>[x] Docker Compose configuration for all services</li>
+<li>[x] Prometheus configuration with scrape targets</li>
+<li>[x] Loki and Promtail configuration</li>
+<li>[x] Jaeger all-in-one deployment</li>
+<li>[x] Grafana with datasource provisioning</li>
 </ul>
-<h3 id="users">Users<a class="headerlink" href="#users" title="Permanent link">&para;</a></h3>
+<h3 id="phase-2-instrumentation-next">Phase 2: Instrumentation (Next)<a class="headerlink" href="#phase-2-instrumentation-next" title="Permanent link">&para;</a></h3>
 <ul>
-<li><code>GET /users/me</code> - Get current user profile</li>
-<li><code>PUT /users/me</code> - Update current user profile</li>
-<li><code>GET /users/:id</code> - Get user by ID (admin only)</li>
+<li>[ ] Add metrics endpoints to backend</li>
+<li>[ ] Add metrics endpoints to python-worker</li>
+<li>[ ] Implement structured logging</li>
+<li>[ ] Add OpenTelemetry tracing</li>
+<li>[ ] Configure log shipping</li>
 </ul>
-<h3 id="contacts">Contacts<a class="headerlink" href="#contacts" title="Permanent link">&para;</a></h3>
+<h3 id="phase-3-dashboards-next">Phase 3: Dashboards (Next)<a class="headerlink" href="#phase-3-dashboards-next" title="Permanent link">&para;</a></h3>
 <ul>
-<li><code>GET /contacts</code> - List all contacts</li>
-<li><code>POST /contacts</code> - Create new contact</li>
-<li><code>GET /contacts/:id</code> - Get contact by ID</li>
-<li><code>PUT /contacts/:id</code> - Update contact</li>
-<li><code>DELETE /contacts/:id</code> - Delete contact</li>
+<li>[ ] System metrics dashboard</li>
+<li>[ ] Application metrics dashboard</li>
+<li>[ ] Business metrics dashboard</li>
+<li>[ ] Log exploration dashboard</li>
+<li>[ ] Trace analysis dashboard</li>
 </ul>
-<h3 id="interactions">Interactions<a class="headerlink" href="#interactions" title="Permanent link">&para;</a></h3>
+<h3 id="phase-4-alerting-next">Phase 4: Alerting (Next)<a class="headerlink" href="#phase-4-alerting-next" title="Permanent link">&para;</a></h3>
 <ul>
-<li><code>GET /interactions</code> - List all interactions</li>
-<li><code>POST /interactions</code> - Create new interaction</li>
-<li><code>GET /interactions/:id</code> - Get interaction by ID</li>
+<li>[ ] Define alert rules</li>
+<li>[ ] Configure notification channels</li>
+<li>[ ] Create runbooks for alerts</li>
+<li>[ ] Test alert delivery</li>
+<li>[ ] Establish on-call rotation</li>
 </ul>
-<h3 id="ai-features">AI Features<a class="headerlink" href="#ai-features" title="Permanent link">&para;</a></h3>
+<h3 id="phase-5-production-deployment-next">Phase 5: Production Deployment (Next)<a class="headerlink" href="#phase-5-production-deployment-next" title="Permanent link">&para;</a></h3>
 <ul>
-<li><code>POST /ai/analyze</code> - Analyze text with AI</li>
-<li><code>POST /ai/recommend</code> - Get AI recommendations</li>
-<li><code>GET /ai/insights</code> - Get AI-generated insights</li>
+<li>[ ] Deploy observability stack to production</li>
+<li>[ ] Configure high availability</li>
+<li>[ ] Set up backup and retention</li>
+<li>[ ] Implement access control</li>
+<li>[ ] Document operational procedures</li>
 </ul>
-<h2 id="rate-limiting">Rate Limiting<a class="headerlink" href="#rate-limiting" title="Permanent link">&para;</a></h2>
-<p>API requests are rate limited to:
-- 100 requests per minute for authenticated users
-- 10 requests per minute for unauthenticated requests</p>
-<h2 id="error-handling">Error Handling<a class="headerlink" href="#error-handling" title="Permanent link">&para;</a></h2>
-<p>The API uses standard HTTP status codes:
-- 200: Success
-- 201: Created
-- 400: Bad Request
-- 401: Unauthorized
-- 403: Forbidden
-- 404: Not Found
-- 429: Too Many Requests
-- 500: Internal Server Error</p>
-<p>Error responses include a JSON body with details:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="p">{</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">  </span><span class="nt">&quot;error&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">    </span><span class="nt">&quot;code&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;INVALID_INPUT&quot;</span><span class="p">,</span>
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">    </span><span class="nt">&quot;message&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Email address is required&quot;</span><span class="p">,</span>
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">    </span><span class="nt">&quot;field&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;email&quot;</span>
-<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="p">}</span>
-</code></pre></div>
-<h2 id="webhooks">Webhooks<a class="headerlink" href="#webhooks" title="Permanent link">&para;</a></h2>
-<p>Flowstate-AI can send webhooks for various events. Configure webhooks in your account settings.</p>
-<p>Supported events:
-- <code>contact.created</code>
-- <code>contact.updated</code>
-- <code>interaction.created</code>
-- <code>ai.insight.generated</code></p>
-<h2 id="sdk-and-client-libraries">SDK and Client Libraries<a class="headerlink" href="#sdk-and-client-libraries" title="Permanent link">&para;</a></h2>
-<p>Official client libraries are available for:
-- JavaScript/TypeScript
-- Python
-- Ruby (coming soon)</p>
-<p>See <a href="https://github.com/benjidanielsen/Flowstate-AI">GitHub repository</a> for installation instructions.</p>
-<h2 id="support">Support<a class="headerlink" href="#support" title="Permanent link">&para;</a></h2>
-<p>For API support, please contact support@flowstate-ai.com or open an issue on GitHub.</p>
+<h2 id="monitoring-and-metrics">Monitoring and Metrics<a class="headerlink" href="#monitoring-and-metrics" title="Permanent link">&para;</a></h2>
+<p>Track the following metrics for the observability stack itself:</p>
+<ol>
+<li><strong>Prometheus</strong>: Scrape duration, sample ingestion rate, storage usage</li>
+<li><strong>Loki</strong>: Ingestion rate, query performance, storage usage</li>
+<li><strong>Jaeger</strong>: Trace ingestion rate, storage usage, query performance</li>
+<li><strong>Grafana</strong>: Dashboard load time, query performance, user activity</li>
+</ol>
+<h2 id="retention-and-storage">Retention and Storage<a class="headerlink" href="#retention-and-storage" title="Permanent link">&para;</a></h2>
+<p><strong>Metrics (Prometheus)</strong>:
+- Retention: 31 days
+- Storage: ~1GB per day (estimated)
+- Downsampling: Not implemented initially</p>
+<p><strong>Logs (Loki)</strong>:
+- Retention: 31 days
+- Storage: ~2GB per day (estimated)
+- Compression: Enabled</p>
+<p><strong>Traces (Jaeger)</strong>:
+- Retention: 7 days
+- Storage: ~500MB per day (estimated)
+- Sampling: 10% of requests</p>
+<p><strong>Total Estimated Storage</strong>: ~100GB per month</p>
+<h2 id="security-considerations">Security Considerations<a class="headerlink" href="#security-considerations" title="Permanent link">&para;</a></h2>
+<ol>
+<li><strong>Access Control</strong>: Grafana authentication and RBAC</li>
+<li><strong>Network Security</strong>: Observability network isolated from public</li>
+<li><strong>Data Sensitivity</strong>: PII redaction in logs</li>
+<li><strong>Credentials</strong>: Secure storage of database and service credentials</li>
+<li><strong>API Security</strong>: Prometheus and Loki APIs protected</li>
+</ol>
+<h2 id="review-and-evolution">Review and Evolution<a class="headerlink" href="#review-and-evolution" title="Permanent link">&para;</a></h2>
+<p>This decision will be reviewed:
+- After 3 months of production operation
+- Quarterly as part of technical review
+- When performance or cost issues arise
+- When new observability requirements emerge</p>
+<h2 id="references">References<a class="headerlink" href="#references" title="Permanent link">&para;</a></h2>
+<ul>
+<li><a href="https://prometheus.io/docs/">Prometheus Documentation</a></li>
+<li><a href="https://grafana.com/docs/">Grafana Documentation</a></li>
+<li><a href="https://grafana.com/docs/loki/">Loki Documentation</a></li>
+<li><a href="https://www.jaegertracing.io/docs/">Jaeger Documentation</a></li>
+<li><a href="https://opentelemetry.io/docs/">OpenTelemetry Documentation</a></li>
+</ul>
+<h2 id="related-adrs">Related ADRs<a class="headerlink" href="#related-adrs" title="Permanent link">&para;</a></h2>
+<ul>
+<li>ADR 0001: Phase 0 Baseline Establishment</li>
+<li>ADR 0003: Container Optimization</li>
+<li>ADR 0006: Automated Deployments</li>
+<li>ADR 0007: Database Migrations</li>
+</ul>
+<h2 id="date">Date<a class="headerlink" href="#date" title="Permanent link">&para;</a></h2>
+<p>2025-01-10</p>
+<h2 id="authors">Authors<a class="headerlink" href="#authors" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Manus AI (Implementation)</li>
+<li>Benji Danielsen (Review and Approval)</li>
+</ul>
 
 
 
@@ -1674,7 +2056,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 10, 2025 09:47:54 UTC">October 10, 2025</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 10, 2025 16:22:51 UTC">October 10, 2025</span>
   </span>
 
     
@@ -1684,7 +2066,7 @@
     <span class="md-icon" title="Created">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14.47 15.08 11 13V7h1.5v5.25l3.08 1.83c-.41.28-.79.62-1.11 1m-1.39 4.84c-.36.05-.71.08-1.08.08-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8c0 .37-.03.72-.08 1.08.69.1 1.33.32 1.92.64.1-.56.16-1.13.16-1.72 0-5.5-4.5-10-10-10S2 6.5 2 12s4.47 10 10 10c.59 0 1.16-.06 1.72-.16-.32-.59-.54-1.23-.64-1.92M18 15v3h-3v2h3v3h2v-3h3v-2h-3v-3z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 10, 2025 09:47:54 UTC">October 10, 2025</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 10, 2025 16:22:51 UTC">October 10, 2025</span>
   </span>
 
     
@@ -1758,10 +2140,10 @@
     
     
       
-      <script id="__config" type="application/json">{"base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "content.code.copy", "content.action.edit"], "search": "../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+      <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "content.code.copy", "content.action.edit"], "search": "../../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
-      <script src="../assets/javascripts/bundle.f55a23d4.min.js"></script>
+      <script src="../../assets/javascripts/bundle.f55a23d4.min.js"></script>
       
     
   </body>

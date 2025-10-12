@@ -176,15 +176,15 @@ export class ReminderService {
     values.push(now);
     values.push(id);
 
-    const self = this;
     return new Promise((resolve, reject) => {
-      db.run(`UPDATE reminders SET ${fields.join(', ')} WHERE id = ?`, values, function(err) {
+      db.run(`UPDATE reminders SET ${fields.join(', ')} WHERE id = ?`, values, (err) => {
         if (err) return reject(err);
-        if (this.changes > 0) {
-          self.getReminderById(id).then(resolve).catch(reject);
-        } else {
-          resolve(null);
-        }
+        // Note: changes count not available with arrow function, fetch to verify
+        this.getReminderById(id)
+          .then(reminder => {
+            resolve(reminder);
+          })
+          .catch(reject);
       });
     });
   }

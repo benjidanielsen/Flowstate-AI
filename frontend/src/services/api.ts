@@ -106,6 +106,18 @@ export const eventLogApi = {
   },
 };
 
+// Stats API
+export const statsApi = {
+  getStats: async (): Promise<Stats> => {
+    const response = await axiosInstance.get('/stats');
+    return response.data;
+  },
+  getPipelineStats: async (): Promise<PipelineStats> => {
+    const response = await axiosInstance.get('/stats/pipeline');
+    return response.data;
+  },
+};
+
 // AI Coordination API
 export const aiCoordinationApi = {
   getDecisionLogs: async (status?: string): Promise<any> => {

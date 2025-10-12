@@ -12,24 +12,24 @@
         <meta name="author" content="Flowstate-AI Team">
       
       
-        <link rel="canonical" href="https://benjidanielsen.github.io/Flowstate-AI/integrations/">
+        <link rel="canonical" href="https://benjidanielsen.github.io/Flowstate-AI/adr/0006-automated-deployments/">
       
       
       
       
-      <link rel="icon" href="../assets/images/favicon.png">
+      <link rel="icon" href="../../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.21">
     
     
       
-        <title>Integration Guide - Flowstate-AI Documentation</title>
+        <title>ADR 0006: Automated Deployment Workflows - Flowstate-AI Documentation</title>
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.2a3383ac.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.2a3383ac.min.css">
       
         
-        <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
       
       
 
@@ -48,7 +48,7 @@
       
     
     
-    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -74,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#integration-guide" class="md-skip">
+        <a href="#adr-0006-automated-deployment-workflows" class="md-skip">
           Skip to content
         </a>
       
@@ -92,7 +92,7 @@
 
 <header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href=".." title="Flowstate-AI Documentation" class="md-header__button md-logo" aria-label="Flowstate-AI Documentation" data-md-component="logo">
+    <a href="../.." title="Flowstate-AI Documentation" class="md-header__button md-logo" aria-label="Flowstate-AI Documentation" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -112,7 +112,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Integration Guide
+              ADR 0006: Automated Deployment Workflows
             
           </span>
         </div>
@@ -225,7 +225,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../INDEX/" class="md-tabs__link">
+      <a href="../../INDEX/" class="md-tabs__link">
         
   
   
@@ -246,7 +246,7 @@
     
     
       <li class="md-tabs__item">
-        <a href=".." class="md-tabs__link">
+        <a href="../.." class="md-tabs__link">
           
   
   
@@ -266,7 +266,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../GOVERNANCE/" class="md-tabs__link">
+        <a href="../../GOVERNANCE/" class="md-tabs__link">
           
   
   
@@ -286,7 +286,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../OPS_RUNBOOK/" class="md-tabs__link">
+        <a href="../../OPS_RUNBOOK/" class="md-tabs__link">
           
   
   
@@ -306,7 +306,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../CODING_STANDARDS/" class="md-tabs__link">
+        <a href="../../CODING_STANDARDS/" class="md-tabs__link">
           
   
   
@@ -326,7 +326,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../RISK_REGISTER/" class="md-tabs__link">
+        <a href="../../RISK_REGISTER/" class="md-tabs__link">
           
   
   
@@ -346,7 +346,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../FEDERATION_CHECKLIST/" class="md-tabs__link">
+        <a href="../../FEDERATION_CHECKLIST/" class="md-tabs__link">
           
   
   
@@ -366,7 +366,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../api/" class="md-tabs__link">
+        <a href="../../api/" class="md-tabs__link">
           
   
   
@@ -386,7 +386,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="./" class="md-tabs__link">
+        <a href="../../integrations/" class="md-tabs__link">
           
   
   
@@ -420,7 +420,7 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href=".." title="Flowstate-AI Documentation" class="md-nav__button md-logo" aria-label="Flowstate-AI Documentation" data-md-component="logo">
+    <a href="../.." title="Flowstate-AI Documentation" class="md-nav__button md-logo" aria-label="Flowstate-AI Documentation" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -450,7 +450,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../INDEX/" class="md-nav__link">
+      <a href="../../INDEX/" class="md-nav__link">
         
   
   
@@ -517,7 +517,7 @@
   
   
     <li class="md-nav__item">
-      <a href=".." class="md-nav__link">
+      <a href="../.." class="md-nav__link">
         
   
   
@@ -540,7 +540,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../DEPLOYMENT_GUIDE/" class="md-nav__link">
+      <a href="../../DEPLOYMENT_GUIDE/" class="md-nav__link">
         
   
   
@@ -563,7 +563,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../SYSTEM_ARCHITECTURE/" class="md-nav__link">
+      <a href="../../SYSTEM_ARCHITECTURE/" class="md-nav__link">
         
   
   
@@ -638,7 +638,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../GOVERNANCE/" class="md-nav__link">
+      <a href="../../GOVERNANCE/" class="md-nav__link">
         
   
   
@@ -661,7 +661,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../ETHICS/" class="md-nav__link">
+      <a href="../../ETHICS/" class="md-nav__link">
         
   
   
@@ -684,7 +684,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../FEDERATION_CHARTER/" class="md-nav__link">
+      <a href="../../FEDERATION_CHARTER/" class="md-nav__link">
         
   
   
@@ -707,7 +707,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../EMERGENT_BEHAVIOUR_OVERSIGHT_AND_CESSATION/" class="md-nav__link">
+      <a href="../../EMERGENT_BEHAVIOUR_OVERSIGHT_AND_CESSATION/" class="md-nav__link">
         
   
   
@@ -782,7 +782,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../OPS_RUNBOOK/" class="md-nav__link">
+      <a href="../../OPS_RUNBOOK/" class="md-nav__link">
         
   
   
@@ -805,7 +805,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../DR_RUNBOOK/" class="md-nav__link">
+      <a href="../../DR_RUNBOOK/" class="md-nav__link">
         
   
   
@@ -828,7 +828,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../SLOS/" class="md-nav__link">
+      <a href="../../SLOS/" class="md-nav__link">
         
   
   
@@ -851,7 +851,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../AUDIT_TRAIL/" class="md-nav__link">
+      <a href="../../AUDIT_TRAIL/" class="md-nav__link">
         
   
   
@@ -926,7 +926,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../CODING_STANDARDS/" class="md-nav__link">
+      <a href="../../CODING_STANDARDS/" class="md-nav__link">
         
   
   
@@ -949,7 +949,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../adr/" class="md-nav__link">
+      <a href="../" class="md-nav__link">
         
   
   
@@ -972,7 +972,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../ROADMAP/" class="md-nav__link">
+      <a href="../../ROADMAP/" class="md-nav__link">
         
   
   
@@ -995,7 +995,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../CHANGELOG/" class="md-nav__link">
+      <a href="../../CHANGELOG/" class="md-nav__link">
         
   
   
@@ -1018,7 +1018,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../QUALITY/" class="md-nav__link">
+      <a href="../../QUALITY/" class="md-nav__link">
         
   
   
@@ -1093,7 +1093,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../RISK_REGISTER/" class="md-nav__link">
+      <a href="../../RISK_REGISTER/" class="md-nav__link">
         
   
   
@@ -1116,7 +1116,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../SECURITY.md" class="md-nav__link">
+      <a href="../../../SECURITY.md" class="md-nav__link">
         
   
   
@@ -1191,7 +1191,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../FEDERATION_CHECKLIST/" class="md-nav__link">
+      <a href="../../FEDERATION_CHECKLIST/" class="md-nav__link">
         
   
   
@@ -1214,7 +1214,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../REVOCATION/" class="md-nav__link">
+      <a href="../../REVOCATION/" class="md-nav__link">
         
   
   
@@ -1289,7 +1289,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api/" class="md-nav__link">
+      <a href="../../api/" class="md-nav__link">
         
   
   
@@ -1364,7 +1364,7 @@
   
   
     <li class="md-nav__item">
-      <a href="./" class="md-nav__link">
+      <a href="../../integrations/" class="md-nav__link">
         
   
   
@@ -1414,73 +1414,64 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#overview" class="md-nav__link">
+  <a href="#context-and-problem-statement" class="md-nav__link">
     <span class="md-ellipsis">
-      Overview
+      Context and Problem Statement
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#available-integrations" class="md-nav__link">
+  <a href="#decision-drivers" class="md-nav__link">
     <span class="md-ellipsis">
-      Available Integrations
+      Decision Drivers
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Available Integrations">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#considered-options" class="md-nav__link">
+    <span class="md-ellipsis">
+      Considered Options
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Considered Options">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#email-services" class="md-nav__link">
+  <a href="#1-github-actions-with-ssh-deployment" class="md-nav__link">
     <span class="md-ellipsis">
-      Email Services
+      1. GitHub Actions with SSH Deployment
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#calendar-services" class="md-nav__link">
+  <a href="#2-gitlab-cicd" class="md-nav__link">
     <span class="md-ellipsis">
-      Calendar Services
+      2. GitLab CI/CD
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#communication-platforms" class="md-nav__link">
+  <a href="#3-jenkins" class="md-nav__link">
     <span class="md-ellipsis">
-      Communication Platforms
+      3. Jenkins
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#crm-systems" class="md-nav__link">
+  <a href="#4-argocd-flux-gitops" class="md-nav__link">
     <span class="md-ellipsis">
-      CRM Systems
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#payment-processors" class="md-nav__link">
-    <span class="md-ellipsis">
-      Payment Processors
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#analytics" class="md-nav__link">
-    <span class="md-ellipsis">
-      Analytics
+      4. ArgoCD / Flux (GitOps)
     </span>
   </a>
   
@@ -1492,28 +1483,73 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#integration-setup" class="md-nav__link">
+  <a href="#decision-outcome" class="md-nav__link">
     <span class="md-ellipsis">
-      Integration Setup
+      Decision Outcome
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Integration Setup">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#implementation-details" class="md-nav__link">
+    <span class="md-ellipsis">
+      Implementation Details
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Implementation Details">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#oauth-based-integrations" class="md-nav__link">
+  <a href="#deployment-strategy" class="md-nav__link">
     <span class="md-ellipsis">
-      OAuth-based Integrations
+      Deployment Strategy
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#api-key-based-integrations" class="md-nav__link">
+  <a href="#workflow-architecture" class="md-nav__link">
     <span class="md-ellipsis">
-      API Key-based Integrations
+      Workflow Architecture
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#health-check-strategy" class="md-nav__link">
+    <span class="md-ellipsis">
+      Health Check Strategy
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rollback-mechanisms" class="md-nav__link">
+    <span class="md-ellipsis">
+      Rollback Mechanisms
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#security-measures" class="md-nav__link">
+    <span class="md-ellipsis">
+      Security Measures
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#monitoring-and-observability" class="md-nav__link">
+    <span class="md-ellipsis">
+      Monitoring and Observability
     </span>
   </a>
   
@@ -1525,46 +1561,37 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#webhook-configuration" class="md-nav__link">
+  <a href="#consequences" class="md-nav__link">
     <span class="md-ellipsis">
-      Webhook Configuration
+      Consequences
     </span>
   </a>
   
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#custom-integrations" class="md-nav__link">
-    <span class="md-ellipsis">
-      Custom Integrations
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#integration-best-practices" class="md-nav__link">
-    <span class="md-ellipsis">
-      Integration Best Practices
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#troubleshooting" class="md-nav__link">
-    <span class="md-ellipsis">
-      Troubleshooting
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Troubleshooting">
+    <nav class="md-nav" aria-label="Consequences">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#common-issues" class="md-nav__link">
+  <a href="#positive" class="md-nav__link">
     <span class="md-ellipsis">
-      Common Issues
+      Positive
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#negative" class="md-nav__link">
+    <span class="md-ellipsis">
+      Negative
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#neutral" class="md-nav__link">
+    <span class="md-ellipsis">
+      Neutral
     </span>
   </a>
   
@@ -1576,9 +1603,129 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#support" class="md-nav__link">
+  <a href="#compliance-and-standards" class="md-nav__link">
     <span class="md-ellipsis">
-      Support
+      Compliance and Standards
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#implementation-plan" class="md-nav__link">
+    <span class="md-ellipsis">
+      Implementation Plan
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Implementation Plan">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#phase-1-staging-deployment-week-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Phase 1: Staging Deployment (Week 1)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-2-production-deployment-week-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      Phase 2: Production Deployment (Week 2)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-3-monitoring-and-optimization-week-3" class="md-nav__link">
+    <span class="md-ellipsis">
+      Phase 3: Monitoring and Optimization (Week 3)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#alternatives-considered-but-rejected" class="md-nav__link">
+    <span class="md-ellipsis">
+      Alternatives Considered But Rejected
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Alternatives Considered But Rejected">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#kubernetes-with-helm" class="md-nav__link">
+    <span class="md-ellipsis">
+      Kubernetes with Helm
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#manual-deployments-with-scripts" class="md-nav__link">
+    <span class="md-ellipsis">
+      Manual Deployments with Scripts
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#continuous-deployment-cd-to-production" class="md-nav__link">
+    <span class="md-ellipsis">
+      Continuous Deployment (CD) to Production
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#related-decisions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Related Decisions
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#references" class="md-nav__link">
+    <span class="md-ellipsis">
+      References
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#review-and-update" class="md-nav__link">
+    <span class="md-ellipsis">
+      Review and Update
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#approval" class="md-nav__link">
+    <span class="md-ellipsis">
+      Approval
     </span>
   </a>
   
@@ -1600,7 +1747,7 @@
 
 
   
-    <a href="https://github.com/benjidanielsen/Flowstate-AI/edit/main/docs/integrations/README.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+    <a href="https://github.com/benjidanielsen/Flowstate-AI/edit/main/docs/adr/0006-automated-deployments.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"/></svg>
     </a>
@@ -1608,110 +1755,289 @@
   
 
 
-<h1 id="integration-guide">Integration Guide<a class="headerlink" href="#integration-guide" title="Permanent link">&para;</a></h1>
-<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
-<p>Flowstate-AI integrates with various third-party services to enhance functionality and provide seamless workflows.</p>
-<h2 id="available-integrations">Available Integrations<a class="headerlink" href="#available-integrations" title="Permanent link">&para;</a></h2>
-<h3 id="email-services">Email Services<a class="headerlink" href="#email-services" title="Permanent link">&para;</a></h3>
+<h1 id="adr-0006-automated-deployment-workflows">ADR 0006: Automated Deployment Workflows<a class="headerlink" href="#adr-0006-automated-deployment-workflows" title="Permanent link">&para;</a></h1>
+<p><strong>Date</strong>: 2025-10-10<br />
+<strong>Status</strong>: Accepted<br />
+<strong>Context</strong>: Phase E - Deployments<br />
+<strong>Decision Makers</strong>: MAIN MANUS, ARCHITECT, DevOps Team</p>
+<h2 id="context-and-problem-statement">Context and Problem Statement<a class="headerlink" href="#context-and-problem-statement" title="Permanent link">&para;</a></h2>
+<p>Flowstate-AI requires reliable, repeatable, and safe deployment processes for both staging and production environments. Manual deployments are error-prone, time-consuming, and lack consistency. We need automated deployment workflows that ensure zero-downtime deployments, comprehensive health checks, automatic rollback capabilities, and clear audit trails.</p>
+<h2 id="decision-drivers">Decision Drivers<a class="headerlink" href="#decision-drivers" title="Permanent link">&para;</a></h2>
 <ul>
-<li><strong>Gmail</strong>: Sync contacts and emails</li>
-<li><strong>Outlook</strong>: Calendar and contact synchronization</li>
-<li><strong>SendGrid</strong>: Transactional email sending</li>
+<li><strong>Reliability</strong>: Deployments must be consistent and predictable</li>
+<li><strong>Safety</strong>: Zero-downtime deployments with automatic rollback on failure</li>
+<li><strong>Speed</strong>: Reduce deployment time from hours to minutes</li>
+<li><strong>Auditability</strong>: Clear records of what was deployed, when, and by whom</li>
+<li><strong>Scalability</strong>: Support multiple environments (staging, production)</li>
+<li><strong>Security</strong>: Secure handling of credentials and sensitive data</li>
+<li><strong>Observability</strong>: Comprehensive monitoring and health checks</li>
 </ul>
-<h3 id="calendar-services">Calendar Services<a class="headerlink" href="#calendar-services" title="Permanent link">&para;</a></h3>
+<h2 id="considered-options">Considered Options<a class="headerlink" href="#considered-options" title="Permanent link">&para;</a></h2>
+<h3 id="1-github-actions-with-ssh-deployment">1. GitHub Actions with SSH Deployment<a class="headerlink" href="#1-github-actions-with-ssh-deployment" title="Permanent link">&para;</a></h3>
+<p><strong>Pros:</strong>
+- Native GitHub integration
+- Free for public repositories
+- Mature ecosystem of actions
+- Built-in secrets management
+- Easy to version control workflows</p>
+<p><strong>Cons:</strong>
+- Requires SSH access to servers
+- Limited to GitHub ecosystem
+- Potential vendor lock-in</p>
+<h3 id="2-gitlab-cicd">2. GitLab CI/CD<a class="headerlink" href="#2-gitlab-cicd" title="Permanent link">&para;</a></h3>
+<p><strong>Pros:</strong>
+- Integrated with GitLab
+- Built-in container registry
+- Kubernetes integration
+- Self-hosted option available</p>
+<p><strong>Cons:</strong>
+- Requires migration from GitHub
+- Additional infrastructure for self-hosted
+- Learning curve for team</p>
+<h3 id="3-jenkins">3. Jenkins<a class="headerlink" href="#3-jenkins" title="Permanent link">&para;</a></h3>
+<p><strong>Pros:</strong>
+- Highly customizable
+- Large plugin ecosystem
+- Self-hosted control</p>
+<p><strong>Cons:</strong>
+- Requires dedicated infrastructure
+- Complex setup and maintenance
+- Steeper learning curve</p>
+<h3 id="4-argocd-flux-gitops">4. ArgoCD / Flux (GitOps)<a class="headerlink" href="#4-argocd-flux-gitops" title="Permanent link">&para;</a></h3>
+<p><strong>Pros:</strong>
+- Declarative deployments
+- Automatic sync from Git
+- Kubernetes-native</p>
+<p><strong>Cons:</strong>
+- Requires Kubernetes
+- More complex infrastructure
+- Overkill for current scale</p>
+<h2 id="decision-outcome">Decision Outcome<a class="headerlink" href="#decision-outcome" title="Permanent link">&para;</a></h2>
+<p><strong>Chosen option</strong>: <strong>GitHub Actions with SSH Deployment</strong></p>
+<p>We chose GitHub Actions because:
+1. <strong>Native Integration</strong>: Already using GitHub for source control
+2. <strong>Cost-Effective</strong>: Free for public repositories, minimal cost for private
+3. <strong>Simplicity</strong>: Straightforward workflow definition and execution
+4. <strong>Ecosystem</strong>: Rich marketplace of pre-built actions
+5. <strong>Security</strong>: Built-in secrets management and OIDC support
+6. <strong>Flexibility</strong>: Can evolve to more complex solutions as needed</p>
+<h2 id="implementation-details">Implementation Details<a class="headerlink" href="#implementation-details" title="Permanent link">&para;</a></h2>
+<h3 id="deployment-strategy">Deployment Strategy<a class="headerlink" href="#deployment-strategy" title="Permanent link">&para;</a></h3>
+<p><strong>Staging Environment:</strong>
+- <strong>Strategy</strong>: Rolling update
+- <strong>Trigger</strong>: Automatic on push to <code>develop</code> branch
+- <strong>Downtime</strong>: Minimal (&lt; 30 seconds)
+- <strong>Rollback</strong>: Automatic on failure</p>
+<p><strong>Production Environment:</strong>
+- <strong>Strategy</strong>: Blue-green deployment
+- <strong>Trigger</strong>: Manual via release or workflow dispatch
+- <strong>Downtime</strong>: Zero downtime
+- <strong>Rollback</strong>: Automatic on failure with database backup restoration</p>
+<h3 id="workflow-architecture">Workflow Architecture<a class="headerlink" href="#workflow-architecture" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>┌─────────────────────────────────────────────────────────┐
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>│                   GitHub Actions                         │
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>├─────────────────────────────────────────────────────────┤
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>│                                                          │
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>│  ┌──────────────┐      ┌──────────────┐                │
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>│  │   Staging    │      │  Production  │                │
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>│  │  Deployment  │      │  Deployment  │                │
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>│  └──────────────┘      └──────────────┘                │
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>│         │                      │                         │
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>│         ├──────────────────────┤                         │
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>│         │                      │                         │
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>│    ┌────▼────┐            ┌───▼────┐                   │
+<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>│    │  Build  │            │ Pre-   │                   │
+<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>│    │ Images  │            │ checks │                   │
+<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>│    └────┬────┘            └───┬────┘                   │
+<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>│         │                      │                         │
+<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>│    ┌────▼────┐            ┌───▼────┐                   │
+<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>│    │  Push   │            │ Backup │                   │
+<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>│    │  GHCR   │            │  DB    │                   │
+<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>│    └────┬────┘            └───┬────┘                   │
+<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>│         │                      │                         │
+<a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>│    ┌────▼────┐            ┌───▼────┐                   │
+<a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>│    │ Deploy  │            │ Deploy │                   │
+<a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>│    │   SSH   │            │ Green  │                   │
+<a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>│    └────┬────┘            └───┬────┘                   │
+<a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a>│         │                      │                         │
+<a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a>│    ┌────▼────┐            ┌───▼────┐                   │
+<a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a>│    │ Health  │            │ Health │                   │
+<a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a>│    │ Checks  │            │ Checks │                   │
+<a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a>│    └────┬────┘            └───┬────┘                   │
+<a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a>│         │                      │                         │
+<a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a>│    ┌────▼────┐            ┌───▼────┐                   │
+<a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a>│    │  Smoke  │            │ Switch │                   │
+<a id="__codelineno-0-34" name="__codelineno-0-34" href="#__codelineno-0-34"></a>│    │  Tests  │            │Traffic │                   │
+<a id="__codelineno-0-35" name="__codelineno-0-35" href="#__codelineno-0-35"></a>│    └─────────┘            └───┬────┘                   │
+<a id="__codelineno-0-36" name="__codelineno-0-36" href="#__codelineno-0-36"></a>│                                │                         │
+<a id="__codelineno-0-37" name="__codelineno-0-37" href="#__codelineno-0-37"></a>│                           ┌────▼────┐                   │
+<a id="__codelineno-0-38" name="__codelineno-0-38" href="#__codelineno-0-38"></a>│                           │  Post-  │                   │
+<a id="__codelineno-0-39" name="__codelineno-0-39" href="#__codelineno-0-39"></a>│                           │  Tasks  │                   │
+<a id="__codelineno-0-40" name="__codelineno-0-40" href="#__codelineno-0-40"></a>│                           └─────────┘                   │
+<a id="__codelineno-0-41" name="__codelineno-0-41" href="#__codelineno-0-41"></a>│                                                          │
+<a id="__codelineno-0-42" name="__codelineno-0-42" href="#__codelineno-0-42"></a>└─────────────────────────────────────────────────────────┘
+</code></pre></div>
+<h3 id="health-check-strategy">Health Check Strategy<a class="headerlink" href="#health-check-strategy" title="Permanent link">&para;</a></h3>
+<p><strong>Multi-Level Health Checks:</strong>
+1. <strong>Container Level</strong>: Docker health checks
+2. <strong>Application Level</strong>: HTTP health endpoints
+3. <strong>Database Level</strong>: Database connectivity checks
+4. <strong>Integration Level</strong>: Critical API endpoint tests
+5. <strong>Business Logic Level</strong>: Smoke tests for key workflows</p>
+<p><strong>Health Check Endpoints:</strong>
+- <code>/health</code> - Basic health status
+- <code>/health/db</code> - Database connectivity
+- <code>/health/errors</code> - Error rate monitoring
+- <code>/api/v1/health</code> - API health
+- <code>/api/v1/auth/status</code> - Authentication service
+- <code>/api/v1/stats</code> - Database query functionality</p>
+<h3 id="rollback-mechanisms">Rollback Mechanisms<a class="headerlink" href="#rollback-mechanisms" title="Permanent link">&para;</a></h3>
+<p><strong>Automatic Rollback Triggers:</strong>
+- Health check failures
+- Smoke test failures
+- High error rates (&gt; 10 errors in 5 minutes)
+- Database connectivity issues
+- Critical service unavailability</p>
+<p><strong>Rollback Process:</strong>
+1. Stop failed deployment
+2. Restore database from backup (production only)
+3. Revert to previous container versions
+4. Verify health of rolled-back system
+5. Notify team of rollback
+6. Create incident report</p>
+<h3 id="security-measures">Security Measures<a class="headerlink" href="#security-measures" title="Permanent link">&para;</a></h3>
+<p><strong>Secrets Management:</strong>
+- SSH keys stored in GitHub Secrets
+- Database credentials in environment variables
+- API keys rotated regularly
+- No secrets in code or logs</p>
+<p><strong>Access Control:</strong>
+- SSH key-based authentication only
+- Principle of least privilege
+- Separate keys for staging and production
+- Regular key rotation</p>
+<p><strong>Audit Trail:</strong>
+- All deployments logged in GitHub Actions
+- Deployment records in AUDIT_TRAIL.md
+- Who deployed, what version, when
+- Success/failure status</p>
+<h3 id="monitoring-and-observability">Monitoring and Observability<a class="headerlink" href="#monitoring-and-observability" title="Permanent link">&para;</a></h3>
+<p><strong>Deployment Metrics:</strong>
+- Deployment frequency
+- Deployment success rate
+- Mean time to deploy (MTTD)
+- Mean time to recovery (MTTR)
+- Rollback frequency</p>
+<p><strong>Health Monitoring:</strong>
+- Continuous health checks post-deployment
+- Error rate monitoring
+- Response time tracking
+- Resource utilization monitoring</p>
+<p><strong>Alerting:</strong>
+- Deployment failures
+- Health check failures
+- High error rates
+- Resource exhaustion
+- Security incidents</p>
+<h2 id="consequences">Consequences<a class="headerlink" href="#consequences" title="Permanent link">&para;</a></h2>
+<h3 id="positive">Positive<a class="headerlink" href="#positive" title="Permanent link">&para;</a></h3>
 <ul>
-<li><strong>Google Calendar</strong>: Event synchronization</li>
-<li><strong>Outlook Calendar</strong>: Meeting scheduling</li>
+<li><strong>Increased Deployment Frequency</strong>: From weekly to daily (or on-demand)</li>
+<li><strong>Reduced Deployment Time</strong>: From 2-3 hours to 10-15 minutes</li>
+<li><strong>Improved Reliability</strong>: Automated processes reduce human error</li>
+<li><strong>Zero Downtime</strong>: Blue-green deployment eliminates production downtime</li>
+<li><strong>Faster Rollback</strong>: Automatic rollback in &lt; 5 minutes</li>
+<li><strong>Better Auditability</strong>: Complete deployment history in GitHub</li>
+<li><strong>Enhanced Security</strong>: Centralized secrets management</li>
+<li><strong>Improved Confidence</strong>: Comprehensive health checks and smoke tests</li>
 </ul>
-<h3 id="communication-platforms">Communication Platforms<a class="headerlink" href="#communication-platforms" title="Permanent link">&para;</a></h3>
+<h3 id="negative">Negative<a class="headerlink" href="#negative" title="Permanent link">&para;</a></h3>
 <ul>
-<li><strong>Slack</strong>: Notifications and bot interactions</li>
-<li><strong>Discord</strong>: Community management</li>
-<li><strong>Telegram</strong>: Automated messaging</li>
+<li><strong>Initial Setup Complexity</strong>: Requires SSH configuration and secret management</li>
+<li><strong>GitHub Dependency</strong>: Tied to GitHub Actions availability</li>
+<li><strong>SSH Overhead</strong>: Requires maintaining SSH access to servers</li>
+<li><strong>Learning Curve</strong>: Team needs to understand GitHub Actions workflows</li>
+<li><strong>Monitoring Overhead</strong>: Requires active monitoring of deployments</li>
 </ul>
-<h3 id="crm-systems">CRM Systems<a class="headerlink" href="#crm-systems" title="Permanent link">&para;</a></h3>
+<h3 id="neutral">Neutral<a class="headerlink" href="#neutral" title="Permanent link">&para;</a></h3>
 <ul>
-<li><strong>Salesforce</strong>: Contact and lead synchronization</li>
-<li><strong>HubSpot</strong>: Marketing automation integration</li>
-<li><strong>Pipedrive</strong>: Sales pipeline management</li>
+<li><strong>Infrastructure Requirements</strong>: Servers must support Docker and SSH</li>
+<li><strong>Maintenance</strong>: Workflows need occasional updates</li>
+<li><strong>Cost</strong>: Minimal for public repos, scales with usage for private repos</li>
 </ul>
-<h3 id="payment-processors">Payment Processors<a class="headerlink" href="#payment-processors" title="Permanent link">&para;</a></h3>
+<h2 id="compliance-and-standards">Compliance and Standards<a class="headerlink" href="#compliance-and-standards" title="Permanent link">&para;</a></h2>
 <ul>
-<li><strong>Stripe</strong>: Payment processing</li>
-<li><strong>PayPal</strong>: Alternative payment method</li>
+<li><strong>CI/CD Best Practices</strong>: Follows industry-standard CI/CD patterns</li>
+<li><strong>Security Standards</strong>: Implements secure deployment practices</li>
+<li><strong>GitOps Principles</strong>: Infrastructure and deployments as code</li>
+<li><strong>Observability</strong>: Comprehensive monitoring and logging</li>
+<li><strong>Disaster Recovery</strong>: Backup and rollback procedures</li>
 </ul>
-<h3 id="analytics">Analytics<a class="headerlink" href="#analytics" title="Permanent link">&para;</a></h3>
-<ul>
-<li><strong>Google Analytics</strong>: Web analytics</li>
-<li><strong>Mixpanel</strong>: Product analytics</li>
-<li><strong>Segment</strong>: Customer data platform</li>
-</ul>
-<h2 id="integration-setup">Integration Setup<a class="headerlink" href="#integration-setup" title="Permanent link">&para;</a></h2>
-<h3 id="oauth-based-integrations">OAuth-based Integrations<a class="headerlink" href="#oauth-based-integrations" title="Permanent link">&para;</a></h3>
+<h2 id="implementation-plan">Implementation Plan<a class="headerlink" href="#implementation-plan" title="Permanent link">&para;</a></h2>
+<h3 id="phase-1-staging-deployment-week-1">Phase 1: Staging Deployment (Week 1)<a class="headerlink" href="#phase-1-staging-deployment-week-1" title="Permanent link">&para;</a></h3>
 <ol>
-<li>Navigate to Settings &gt; Integrations</li>
-<li>Select the service you want to integrate</li>
-<li>Click "Connect" and authorize access</li>
-<li>Configure integration settings</li>
-<li>Save and test the connection</li>
+<li>Create staging deployment workflow</li>
+<li>Configure staging server</li>
+<li>Set up SSH access and secrets</li>
+<li>Test deployment process</li>
+<li>Document procedures</li>
 </ol>
-<h3 id="api-key-based-integrations">API Key-based Integrations<a class="headerlink" href="#api-key-based-integrations" title="Permanent link">&para;</a></h3>
+<h3 id="phase-2-production-deployment-week-2">Phase 2: Production Deployment (Week 2)<a class="headerlink" href="#phase-2-production-deployment-week-2" title="Permanent link">&para;</a></h3>
 <ol>
-<li>Obtain API key from the third-party service</li>
-<li>Navigate to Settings &gt; Integrations</li>
-<li>Select the service</li>
-<li>Enter your API key</li>
-<li>Configure integration settings</li>
-<li>Save and test the connection</li>
+<li>Create production deployment workflow</li>
+<li>Configure production servers (blue-green)</li>
+<li>Set up SSH access and secrets</li>
+<li>Implement backup procedures</li>
+<li>Test deployment and rollback</li>
+<li>Document procedures</li>
 </ol>
-<h2 id="webhook-configuration">Webhook Configuration<a class="headerlink" href="#webhook-configuration" title="Permanent link">&para;</a></h2>
-<p>Many integrations support webhooks for real-time updates:</p>
+<h3 id="phase-3-monitoring-and-optimization-week-3">Phase 3: Monitoring and Optimization (Week 3)<a class="headerlink" href="#phase-3-monitoring-and-optimization-week-3" title="Permanent link">&para;</a></h3>
 <ol>
-<li>Copy your Flowstate-AI webhook URL from Settings &gt; Webhooks</li>
-<li>Configure the webhook in the third-party service</li>
-<li>Select events you want to receive</li>
-<li>Test the webhook connection</li>
-<li>Monitor webhook logs for issues</li>
+<li>Set up deployment monitoring</li>
+<li>Configure alerting</li>
+<li>Optimize deployment speed</li>
+<li>Refine health checks</li>
+<li>Train team on procedures</li>
 </ol>
-<h2 id="custom-integrations">Custom Integrations<a class="headerlink" href="#custom-integrations" title="Permanent link">&para;</a></h2>
-<p>Developers can create custom integrations using the Flowstate-AI API:</p>
-<ol>
-<li>Review the <a href="../api/">API Documentation</a></li>
-<li>Obtain API credentials</li>
-<li>Implement OAuth flow or API key authentication</li>
-<li>Build your integration logic</li>
-<li>Test thoroughly in staging environment</li>
-<li>Deploy to production</li>
-</ol>
-<h2 id="integration-best-practices">Integration Best Practices<a class="headerlink" href="#integration-best-practices" title="Permanent link">&para;</a></h2>
+<h2 id="alternatives-considered-but-rejected">Alternatives Considered But Rejected<a class="headerlink" href="#alternatives-considered-but-rejected" title="Permanent link">&para;</a></h2>
+<h3 id="kubernetes-with-helm">Kubernetes with Helm<a class="headerlink" href="#kubernetes-with-helm" title="Permanent link">&para;</a></h3>
+<p><strong>Reason for Rejection</strong>: Overkill for current scale. Adds significant complexity without proportional benefits at this stage. Can be revisited when scaling requirements increase.</p>
+<h3 id="manual-deployments-with-scripts">Manual Deployments with Scripts<a class="headerlink" href="#manual-deployments-with-scripts" title="Permanent link">&para;</a></h3>
+<p><strong>Reason for Rejection</strong>: Error-prone, not auditable, lacks rollback automation, and doesn't scale with team growth.</p>
+<h3 id="continuous-deployment-cd-to-production">Continuous Deployment (CD) to Production<a class="headerlink" href="#continuous-deployment-cd-to-production" title="Permanent link">&para;</a></h3>
+<p><strong>Reason for Rejection</strong>: Too risky for production without extensive testing. Prefer manual trigger with automated execution for production deployments.</p>
+<h2 id="related-decisions">Related Decisions<a class="headerlink" href="#related-decisions" title="Permanent link">&para;</a></h2>
 <ul>
-<li><strong>Security</strong>: Always use HTTPS for webhook endpoints</li>
-<li><strong>Error Handling</strong>: Implement retry logic with exponential backoff</li>
-<li><strong>Rate Limiting</strong>: Respect rate limits of both Flowstate-AI and third-party services</li>
-<li><strong>Monitoring</strong>: Set up alerts for integration failures</li>
-<li><strong>Testing</strong>: Test integrations in staging before production deployment</li>
+<li><strong>ADR 0002</strong>: Supply Chain Security - Integrates with image signing and SBOM generation</li>
+<li><strong>ADR 0003</strong>: Container Optimization - Leverages optimized container images</li>
+<li><strong>ADR 0004</strong>: Documentation Portal - Deployment procedures documented</li>
+<li><strong>ADR 0005</strong>: Security Scanning - Pre-deployment security validation</li>
 </ul>
-<h2 id="troubleshooting">Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permanent link">&para;</a></h2>
-<h3 id="common-issues">Common Issues<a class="headerlink" href="#common-issues" title="Permanent link">&para;</a></h3>
-<p><strong>Authentication Failures</strong>:
-- Verify API keys or OAuth tokens are current
-- Check token expiration and refresh if needed
-- Ensure correct scopes/permissions are granted</p>
-<p><strong>Webhook Not Receiving Data</strong>:
-- Verify webhook URL is accessible from internet
-- Check firewall rules allow incoming connections
-- Review webhook logs for error messages
-- Test webhook endpoint with curl or Postman</p>
-<p><strong>Rate Limit Errors</strong>:
-- Implement exponential backoff
-- Cache responses when possible
-- Batch requests where supported</p>
-<h2 id="support">Support<a class="headerlink" href="#support" title="Permanent link">&para;</a></h2>
-<p>For integration support:
-- Email: integrations@flowstate-ai.com
-- Documentation: https://docs.flowstate-ai.com
-- Community Forum: https://community.flowstate-ai.com
-- GitHub Issues: https://github.com/benjidanielsen/Flowstate-AI/issues</p>
+<h2 id="references">References<a class="headerlink" href="#references" title="Permanent link">&para;</a></h2>
+<ul>
+<li><a href="https://docs.github.com/en/actions">GitHub Actions Documentation</a></li>
+<li><a href="https://martinfowler.com/bliki/BlueGreenDeployment.html">Blue-Green Deployment Pattern</a></li>
+<li><a href="../../DEPLOYMENT_RUNBOOK/">Deployment Runbook</a></li>
+<li><a href="../../OPS_RUNBOOK/">Operations Runbook</a></li>
+<li><a href="../../DR_RUNBOOK/">Disaster Recovery Runbook</a></li>
+</ul>
+<h2 id="review-and-update">Review and Update<a class="headerlink" href="#review-and-update" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Next Review Date</strong>: 2026-01-10 (3 months)</li>
+<li><strong>Review Triggers</strong>: </li>
+<li>Deployment failures &gt; 10%</li>
+<li>Rollback frequency &gt; 5% of deployments</li>
+<li>Team feedback on process pain points</li>
+<li>Infrastructure changes (e.g., Kubernetes adoption)</li>
+<li>Security incidents related to deployments</li>
+</ul>
+<h2 id="approval">Approval<a class="headerlink" href="#approval" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Proposed by</strong>: MAIN MANUS</li>
+<li><strong>Reviewed by</strong>: ARCHITECT, DevOps Team</li>
+<li><strong>Approved by</strong>: Project Lead</li>
+<li><strong>Date</strong>: 2025-10-10</li>
+</ul>
 
 
 
@@ -1734,7 +2060,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 10, 2025 09:47:54 UTC">October 10, 2025</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 10, 2025 10:09:58 UTC">October 10, 2025</span>
   </span>
 
     
@@ -1744,7 +2070,7 @@
     <span class="md-icon" title="Created">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14.47 15.08 11 13V7h1.5v5.25l3.08 1.83c-.41.28-.79.62-1.11 1m-1.39 4.84c-.36.05-.71.08-1.08.08-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8c0 .37-.03.72-.08 1.08.69.1 1.33.32 1.92.64.1-.56.16-1.13.16-1.72 0-5.5-4.5-10-10-10S2 6.5 2 12s4.47 10 10 10c.59 0 1.16-.06 1.72-.16-.32-.59-.54-1.23-.64-1.92M18 15v3h-3v2h3v3h2v-3h3v-2h-3v-3z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 10, 2025 09:47:54 UTC">October 10, 2025</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 10, 2025 10:09:58 UTC">October 10, 2025</span>
   </span>
 
     
@@ -1818,10 +2144,10 @@
     
     
       
-      <script id="__config" type="application/json">{"base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "content.code.copy", "content.action.edit"], "search": "../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+      <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "content.code.copy", "content.action.edit"], "search": "../../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
-      <script src="../assets/javascripts/bundle.f55a23d4.min.js"></script>
+      <script src="../../assets/javascripts/bundle.f55a23d4.min.js"></script>
       
     
   </body>

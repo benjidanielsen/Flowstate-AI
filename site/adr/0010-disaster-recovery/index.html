@@ -12,24 +12,24 @@
         <meta name="author" content="Flowstate-AI Team">
       
       
-        <link rel="canonical" href="https://benjidanielsen.github.io/Flowstate-AI/api/">
+        <link rel="canonical" href="https://benjidanielsen.github.io/Flowstate-AI/adr/0010-disaster-recovery/">
       
       
       
       
-      <link rel="icon" href="../assets/images/favicon.png">
+      <link rel="icon" href="../../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.21">
     
     
       
-        <title>API Documentation - Flowstate-AI Documentation</title>
+        <title>ADR 0010: Disaster Recovery Strategy - Flowstate-AI Documentation</title>
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.2a3383ac.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.2a3383ac.min.css">
       
         
-        <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
       
       
 
@@ -48,7 +48,7 @@
       
     
     
-    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -74,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#api-documentation" class="md-skip">
+        <a href="#adr-0010-disaster-recovery-strategy" class="md-skip">
           Skip to content
         </a>
       
@@ -92,7 +92,7 @@
 
 <header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href=".." title="Flowstate-AI Documentation" class="md-header__button md-logo" aria-label="Flowstate-AI Documentation" data-md-component="logo">
+    <a href="../.." title="Flowstate-AI Documentation" class="md-header__button md-logo" aria-label="Flowstate-AI Documentation" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -112,7 +112,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              API Documentation
+              ADR 0010: Disaster Recovery Strategy
             
           </span>
         </div>
@@ -225,7 +225,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../INDEX/" class="md-tabs__link">
+      <a href="../../INDEX/" class="md-tabs__link">
         
   
   
@@ -246,7 +246,7 @@
     
     
       <li class="md-tabs__item">
-        <a href=".." class="md-tabs__link">
+        <a href="../.." class="md-tabs__link">
           
   
   
@@ -266,7 +266,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../GOVERNANCE/" class="md-tabs__link">
+        <a href="../../GOVERNANCE/" class="md-tabs__link">
           
   
   
@@ -286,7 +286,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../OPS_RUNBOOK/" class="md-tabs__link">
+        <a href="../../OPS_RUNBOOK/" class="md-tabs__link">
           
   
   
@@ -306,7 +306,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../CODING_STANDARDS/" class="md-tabs__link">
+        <a href="../../CODING_STANDARDS/" class="md-tabs__link">
           
   
   
@@ -326,7 +326,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../RISK_REGISTER/" class="md-tabs__link">
+        <a href="../../RISK_REGISTER/" class="md-tabs__link">
           
   
   
@@ -346,7 +346,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../FEDERATION_CHECKLIST/" class="md-tabs__link">
+        <a href="../../FEDERATION_CHECKLIST/" class="md-tabs__link">
           
   
   
@@ -366,7 +366,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="./" class="md-tabs__link">
+        <a href="../../api/" class="md-tabs__link">
           
   
   
@@ -386,7 +386,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../integrations/" class="md-tabs__link">
+        <a href="../../integrations/" class="md-tabs__link">
           
   
   
@@ -420,7 +420,7 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href=".." title="Flowstate-AI Documentation" class="md-nav__button md-logo" aria-label="Flowstate-AI Documentation" data-md-component="logo">
+    <a href="../.." title="Flowstate-AI Documentation" class="md-nav__button md-logo" aria-label="Flowstate-AI Documentation" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -450,7 +450,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../INDEX/" class="md-nav__link">
+      <a href="../../INDEX/" class="md-nav__link">
         
   
   
@@ -517,7 +517,7 @@
   
   
     <li class="md-nav__item">
-      <a href=".." class="md-nav__link">
+      <a href="../.." class="md-nav__link">
         
   
   
@@ -540,7 +540,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../DEPLOYMENT_GUIDE/" class="md-nav__link">
+      <a href="../../DEPLOYMENT_GUIDE/" class="md-nav__link">
         
   
   
@@ -563,7 +563,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../SYSTEM_ARCHITECTURE/" class="md-nav__link">
+      <a href="../../SYSTEM_ARCHITECTURE/" class="md-nav__link">
         
   
   
@@ -638,7 +638,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../GOVERNANCE/" class="md-nav__link">
+      <a href="../../GOVERNANCE/" class="md-nav__link">
         
   
   
@@ -661,7 +661,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../ETHICS/" class="md-nav__link">
+      <a href="../../ETHICS/" class="md-nav__link">
         
   
   
@@ -684,7 +684,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../FEDERATION_CHARTER/" class="md-nav__link">
+      <a href="../../FEDERATION_CHARTER/" class="md-nav__link">
         
   
   
@@ -707,7 +707,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../EMERGENT_BEHAVIOUR_OVERSIGHT_AND_CESSATION/" class="md-nav__link">
+      <a href="../../EMERGENT_BEHAVIOUR_OVERSIGHT_AND_CESSATION/" class="md-nav__link">
         
   
   
@@ -782,7 +782,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../OPS_RUNBOOK/" class="md-nav__link">
+      <a href="../../OPS_RUNBOOK/" class="md-nav__link">
         
   
   
@@ -805,7 +805,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../DR_RUNBOOK/" class="md-nav__link">
+      <a href="../../DR_RUNBOOK/" class="md-nav__link">
         
   
   
@@ -828,7 +828,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../SLOS/" class="md-nav__link">
+      <a href="../../SLOS/" class="md-nav__link">
         
   
   
@@ -851,7 +851,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../AUDIT_TRAIL/" class="md-nav__link">
+      <a href="../../AUDIT_TRAIL/" class="md-nav__link">
         
   
   
@@ -926,7 +926,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../CODING_STANDARDS/" class="md-nav__link">
+      <a href="../../CODING_STANDARDS/" class="md-nav__link">
         
   
   
@@ -949,7 +949,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../adr/" class="md-nav__link">
+      <a href="../" class="md-nav__link">
         
   
   
@@ -972,7 +972,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../ROADMAP/" class="md-nav__link">
+      <a href="../../ROADMAP/" class="md-nav__link">
         
   
   
@@ -995,7 +995,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../CHANGELOG/" class="md-nav__link">
+      <a href="../../CHANGELOG/" class="md-nav__link">
         
   
   
@@ -1018,7 +1018,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../QUALITY/" class="md-nav__link">
+      <a href="../../QUALITY/" class="md-nav__link">
         
   
   
@@ -1093,7 +1093,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../RISK_REGISTER/" class="md-nav__link">
+      <a href="../../RISK_REGISTER/" class="md-nav__link">
         
   
   
@@ -1116,7 +1116,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../SECURITY.md" class="md-nav__link">
+      <a href="../../../SECURITY.md" class="md-nav__link">
         
   
   
@@ -1191,7 +1191,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../FEDERATION_CHECKLIST/" class="md-nav__link">
+      <a href="../../FEDERATION_CHECKLIST/" class="md-nav__link">
         
   
   
@@ -1214,7 +1214,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../REVOCATION/" class="md-nav__link">
+      <a href="../../REVOCATION/" class="md-nav__link">
         
   
   
@@ -1289,7 +1289,7 @@
   
   
     <li class="md-nav__item">
-      <a href="./" class="md-nav__link">
+      <a href="../../api/" class="md-nav__link">
         
   
   
@@ -1364,7 +1364,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../integrations/" class="md-nav__link">
+      <a href="../../integrations/" class="md-nav__link">
         
   
   
@@ -1414,82 +1414,37 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#overview" class="md-nav__link">
+  <a href="#status" class="md-nav__link">
     <span class="md-ellipsis">
-      Overview
+      Status
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#base-url" class="md-nav__link">
+  <a href="#context" class="md-nav__link">
     <span class="md-ellipsis">
-      Base URL
+      Context
     </span>
   </a>
   
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#authentication" class="md-nav__link">
-    <span class="md-ellipsis">
-      Authentication
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#api-endpoints" class="md-nav__link">
-    <span class="md-ellipsis">
-      API Endpoints
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="API Endpoints">
+    <nav class="md-nav" aria-label="Context">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#authentication_1" class="md-nav__link">
+  <a href="#current-situation" class="md-nav__link">
     <span class="md-ellipsis">
-      Authentication
+      Current Situation
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#users" class="md-nav__link">
+  <a href="#requirements" class="md-nav__link">
     <span class="md-ellipsis">
-      Users
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#contacts" class="md-nav__link">
-    <span class="md-ellipsis">
-      Contacts
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#interactions" class="md-nav__link">
-    <span class="md-ellipsis">
-      Interactions
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#ai-features" class="md-nav__link">
-    <span class="md-ellipsis">
-      AI Features
+      Requirements
     </span>
   </a>
   
@@ -1501,45 +1456,327 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#rate-limiting" class="md-nav__link">
+  <a href="#decision" class="md-nav__link">
     <span class="md-ellipsis">
-      Rate Limiting
+      Decision
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Decision">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#recovery-objectives" class="md-nav__link">
+    <span class="md-ellipsis">
+      Recovery Objectives
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#disaster-scenarios" class="md-nav__link">
+    <span class="md-ellipsis">
+      Disaster Scenarios
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Disaster Scenarios">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-database-failure" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Database Failure
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-application-server-failure" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Application Server Failure
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-complete-data-center-outage" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Complete Data Center Outage
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-data-corruption" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Data Corruption
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-security-breach" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Security Breach
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#backup-strategy" class="md-nav__link">
+    <span class="md-ellipsis">
+      Backup Strategy
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#recovery-procedures" class="md-nav__link">
+    <span class="md-ellipsis">
+      Recovery Procedures
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#testing-schedule" class="md-nav__link">
+    <span class="md-ellipsis">
+      Testing Schedule
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#communication-plan" class="md-nav__link">
+    <span class="md-ellipsis">
+      Communication Plan
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#roles-and-responsibilities" class="md-nav__link">
+    <span class="md-ellipsis">
+      Roles and Responsibilities
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#alternatives-considered" class="md-nav__link">
+    <span class="md-ellipsis">
+      Alternatives Considered
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Alternatives Considered">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#alternative-1-no-formal-dr-plan" class="md-nav__link">
+    <span class="md-ellipsis">
+      Alternative 1: No Formal DR Plan
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#alternative-2-manual-dr-procedures-only" class="md-nav__link">
+    <span class="md-ellipsis">
+      Alternative 2: Manual DR Procedures Only
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#alternative-3-fully-automated-dr" class="md-nav__link">
+    <span class="md-ellipsis">
+      Alternative 3: Fully Automated DR
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#alternative-4-documented-semi-automated-dr-chosen" class="md-nav__link">
+    <span class="md-ellipsis">
+      Alternative 4: Documented + Semi-Automated DR (Chosen)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#consequences" class="md-nav__link">
+    <span class="md-ellipsis">
+      Consequences
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Consequences">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#positive" class="md-nav__link">
+    <span class="md-ellipsis">
+      Positive
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#negative" class="md-nav__link">
+    <span class="md-ellipsis">
+      Negative
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#neutral" class="md-nav__link">
+    <span class="md-ellipsis">
+      Neutral
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#implementation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Implementation
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Implementation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#phase-1-documentation-complete" class="md-nav__link">
+    <span class="md-ellipsis">
+      Phase 1: Documentation (Complete)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-2-automation-next" class="md-nav__link">
+    <span class="md-ellipsis">
+      Phase 2: Automation (Next)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-3-testing-next" class="md-nav__link">
+    <span class="md-ellipsis">
+      Phase 3: Testing (Next)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-4-continuous-improvement-ongoing" class="md-nav__link">
+    <span class="md-ellipsis">
+      Phase 4: Continuous Improvement (Ongoing)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#metrics" class="md-nav__link">
+    <span class="md-ellipsis">
+      Metrics
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#error-handling" class="md-nav__link">
+  <a href="#review-and-evolution" class="md-nav__link">
     <span class="md-ellipsis">
-      Error Handling
+      Review and Evolution
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#webhooks" class="md-nav__link">
+  <a href="#references" class="md-nav__link">
     <span class="md-ellipsis">
-      Webhooks
+      References
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#sdk-and-client-libraries" class="md-nav__link">
+  <a href="#related-adrs" class="md-nav__link">
     <span class="md-ellipsis">
-      SDK and Client Libraries
+      Related ADRs
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#support" class="md-nav__link">
+  <a href="#date" class="md-nav__link">
     <span class="md-ellipsis">
-      Support
+      Date
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#authors" class="md-nav__link">
+    <span class="md-ellipsis">
+      Authors
     </span>
   </a>
   
@@ -1561,7 +1798,7 @@
 
 
   
-    <a href="https://github.com/benjidanielsen/Flowstate-AI/edit/main/docs/api/README.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+    <a href="https://github.com/benjidanielsen/Flowstate-AI/edit/main/docs/adr/0010-disaster-recovery.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"/></svg>
     </a>
@@ -1569,89 +1806,229 @@
   
 
 
-<h1 id="api-documentation">API Documentation<a class="headerlink" href="#api-documentation" title="Permanent link">&para;</a></h1>
-<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
-<p>The Flowstate-AI API provides programmatic access to all system functionality. The API follows REST principles with JSON request and response bodies.</p>
-<h2 id="base-url">Base URL<a class="headerlink" href="#base-url" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>Production: https://api.flowstate-ai.com/v1
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>Staging: https://staging-api.flowstate-ai.com/v1
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>Development: http://localhost:3001/api/v1
-</code></pre></div>
-<h2 id="authentication">Authentication<a class="headerlink" href="#authentication" title="Permanent link">&para;</a></h2>
-<p>All API requests require authentication using JWT tokens passed in the Authorization header:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>Authorization: Bearer &lt;your_jwt_token&gt;
-</code></pre></div>
-<h2 id="api-endpoints">API Endpoints<a class="headerlink" href="#api-endpoints" title="Permanent link">&para;</a></h2>
-<h3 id="authentication_1">Authentication<a class="headerlink" href="#authentication_1" title="Permanent link">&para;</a></h3>
+<h1 id="adr-0010-disaster-recovery-strategy">ADR 0010: Disaster Recovery Strategy<a class="headerlink" href="#adr-0010-disaster-recovery-strategy" title="Permanent link">&para;</a></h1>
+<h2 id="status">Status<a class="headerlink" href="#status" title="Permanent link">&para;</a></h2>
+<p>Accepted</p>
+<h2 id="context">Context<a class="headerlink" href="#context" title="Permanent link">&para;</a></h2>
+<p>Production systems require comprehensive disaster recovery (DR) planning to ensure business continuity in the event of system failures, data loss, or catastrophic events. Without proper DR procedures, organizations face extended downtime, data loss, and potential business failure.</p>
+<h3 id="current-situation">Current Situation<a class="headerlink" href="#current-situation" title="Permanent link">&para;</a></h3>
+<p>The Flowstate-AI project has basic backup procedures but lacks:
+- Comprehensive disaster recovery runbook
+- Defined recovery time and point objectives
+- Tested recovery procedures
+- Automated backup and restoration scripts
+- Communication plans for incidents
+- Regular DR testing schedule</p>
+<h3 id="requirements">Requirements<a class="headerlink" href="#requirements" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong>Recovery Time Objective (RTO)</strong>: Maximum acceptable downtime</li>
+<li><strong>Recovery Point Objective (RPO)</strong>: Maximum acceptable data loss</li>
+<li><strong>Backup Strategy</strong>: Automated, tested, and reliable backups</li>
+<li><strong>Recovery Procedures</strong>: Step-by-step runbooks for all scenarios</li>
+<li><strong>Testing</strong>: Regular validation of DR procedures</li>
+<li><strong>Communication</strong>: Clear plans for internal and external communication</li>
+</ol>
+<h2 id="decision">Decision<a class="headerlink" href="#decision" title="Permanent link">&para;</a></h2>
+<p>We will implement a comprehensive disaster recovery strategy with RTO of 4 hours and RPO of 1 hour, covering all critical failure scenarios with tested procedures and automated tooling.</p>
+<h3 id="recovery-objectives">Recovery Objectives<a class="headerlink" href="#recovery-objectives" title="Permanent link">&para;</a></h3>
+<p><strong>RTO (Recovery Time Objective)</strong>: 4 hours maximum<br />
+- Database failure: 2 hours
+- Application failure: 30 minutes
+- Complete outage: 4 hours</p>
+<p><strong>RPO (Recovery Point Objective)</strong>: 1 hour maximum<br />
+- Database: 15 minutes (continuous transaction logs)
+- Files: 1 hour (hourly sync)
+- Configuration: 0 (stored in Git)</p>
+<p>These objectives balance business requirements with technical feasibility and cost.</p>
+<h3 id="disaster-scenarios">Disaster Scenarios<a class="headerlink" href="#disaster-scenarios" title="Permanent link">&para;</a></h3>
+<p>We define and document recovery procedures for five primary scenarios:</p>
+<h4 id="1-database-failure">1. Database Failure<a class="headerlink" href="#1-database-failure" title="Permanent link">&para;</a></h4>
+<p>Complete loss of database service due to hardware failure, corruption, or misconfiguration.</p>
+<p><strong>Recovery</strong>: Promote standby replica or restore from backup within 2 hours.</p>
+<h4 id="2-application-server-failure">2. Application Server Failure<a class="headerlink" href="#2-application-server-failure" title="Permanent link">&para;</a></h4>
+<p>Loss of application servers due to hardware failure, software bugs, or resource exhaustion.</p>
+<p><strong>Recovery</strong>: Automatic failover to healthy servers within 30 minutes.</p>
+<h4 id="3-complete-data-center-outage">3. Complete Data Center Outage<a class="headerlink" href="#3-complete-data-center-outage" title="Permanent link">&para;</a></h4>
+<p>Loss of entire primary data center due to natural disaster, power outage, or network failure.</p>
+<p><strong>Recovery</strong>: Activate DR site in secondary region within 4 hours.</p>
+<h4 id="4-data-corruption">4. Data Corruption<a class="headerlink" href="#4-data-corruption" title="Permanent link">&para;</a></h4>
+<p>Logical corruption of data due to software bugs, human error, or malicious activity.</p>
+<p><strong>Recovery</strong>: Restore from last known good backup within 2 hours.</p>
+<h4 id="5-security-breach">5. Security Breach<a class="headerlink" href="#5-security-breach" title="Permanent link">&para;</a></h4>
+<p>Unauthorized access, data exposure, or system compromise.</p>
+<p><strong>Recovery</strong>: Immediate containment, full recovery within 8 hours.</p>
+<h3 id="backup-strategy">Backup Strategy<a class="headerlink" href="#backup-strategy" title="Permanent link">&para;</a></h3>
+<p><strong>Database Backups</strong>:
+- Full backup: Daily at 2 AM UTC
+- Incremental backup: Every 6 hours
+- Transaction logs: Continuous streaming
+- Retention: 30 days daily, 90 days weekly, 1 year monthly
+- Storage: Primary and secondary regions plus long-term archival</p>
+<p><strong>Application Backups</strong>:
+- Configuration: Git repository with tags
+- Container images: GitHub Container Registry
+- User files: Object storage with versioning and replication</p>
+<p><strong>Backup Verification</strong>:
+- Automated restore test: Weekly
+- Manual verification: Monthly
+- Integrity checks: Daily</p>
+<h3 id="recovery-procedures">Recovery Procedures<a class="headerlink" href="#recovery-procedures" title="Permanent link">&para;</a></h3>
+<p>Each disaster scenario has detailed step-by-step procedures including:
+- Assessment and diagnosis
+- Recovery actions with commands
+- Verification steps
+- Post-recovery tasks
+- Communication requirements</p>
+<p>All procedures are documented in the DR Runbook with executable commands and scripts.</p>
+<h3 id="testing-schedule">Testing Schedule<a class="headerlink" href="#testing-schedule" title="Permanent link">&para;</a></h3>
+<p><strong>Monthly</strong>: Backup restoration test to verify backups are valid<br />
+<strong>Quarterly</strong>: Failover test to standby systems<br />
+<strong>Annually</strong>: Full DR site activation and failback</p>
+<p>Test results are documented and procedures are updated based on lessons learned.</p>
+<h3 id="communication-plan">Communication Plan<a class="headerlink" href="#communication-plan" title="Permanent link">&para;</a></h3>
+<p><strong>Internal</strong>:
+- Automated alerts to on-call engineer
+- Status updates every 30 minutes during incidents
+- Post-mortem within 1 week</p>
+<p><strong>External</strong>:
+- Status page updates
+- User notifications via email and in-app
+- Incident reports published within 24 hours</p>
+<h3 id="roles-and-responsibilities">Roles and Responsibilities<a class="headerlink" href="#roles-and-responsibilities" title="Permanent link">&para;</a></h3>
 <ul>
-<li><code>POST /auth/login</code> - Authenticate user and receive tokens</li>
-<li><code>POST /auth/refresh</code> - Refresh access token</li>
-<li><code>POST /auth/logout</code> - Invalidate refresh token</li>
+<li><strong>Incident Commander</strong>: Overall responsibility and decision-making</li>
+<li><strong>Technical Lead</strong>: Executes recovery procedures</li>
+<li><strong>Communications Lead</strong>: Manages all communications</li>
+<li><strong>On-Call Engineer</strong>: First responder and initial assessment</li>
 </ul>
-<h3 id="users">Users<a class="headerlink" href="#users" title="Permanent link">&para;</a></h3>
+<h2 id="alternatives-considered">Alternatives Considered<a class="headerlink" href="#alternatives-considered" title="Permanent link">&para;</a></h2>
+<h3 id="alternative-1-no-formal-dr-plan">Alternative 1: No Formal DR Plan<a class="headerlink" href="#alternative-1-no-formal-dr-plan" title="Permanent link">&para;</a></h3>
+<p><strong>Pros</strong>:
+- No upfront investment
+- No ongoing maintenance</p>
+<p><strong>Cons</strong>:
+- Extended downtime during incidents
+- Potential data loss
+- Uncoordinated recovery efforts
+- Business risk</p>
+<p><strong>Decision</strong>: Rejected - Unacceptable business risk.</p>
+<h3 id="alternative-2-manual-dr-procedures-only">Alternative 2: Manual DR Procedures Only<a class="headerlink" href="#alternative-2-manual-dr-procedures-only" title="Permanent link">&para;</a></h3>
+<p><strong>Pros</strong>:
+- Flexibility
+- Lower initial cost</p>
+<p><strong>Cons</strong>:
+- Slow recovery
+- Error-prone
+- Requires expert knowledge
+- Not scalable</p>
+<p><strong>Decision</strong>: Rejected - Too slow and unreliable.</p>
+<h3 id="alternative-3-fully-automated-dr">Alternative 3: Fully Automated DR<a class="headerlink" href="#alternative-3-fully-automated-dr" title="Permanent link">&para;</a></h3>
+<p><strong>Pros</strong>:
+- Fastest recovery
+- Minimal human intervention
+- Consistent execution</p>
+<p><strong>Cons</strong>:
+- Very expensive
+- Complex to implement
+- May not handle all scenarios
+- Requires significant infrastructure</p>
+<p><strong>Decision</strong>: Rejected - Cost not justified for current scale.</p>
+<h3 id="alternative-4-documented-semi-automated-dr-chosen">Alternative 4: Documented + Semi-Automated DR (Chosen)<a class="headerlink" href="#alternative-4-documented-semi-automated-dr-chosen" title="Permanent link">&para;</a></h3>
+<p><strong>Pros</strong>:
+- Balance of speed and cost
+- Automated where it matters most
+- Human oversight for critical decisions
+- Scalable and maintainable</p>
+<p><strong>Cons</strong>:
+- Requires regular testing
+- Some manual steps remain</p>
+<p><strong>Decision</strong>: Accepted - Best balance for our needs.</p>
+<h2 id="consequences">Consequences<a class="headerlink" href="#consequences" title="Permanent link">&para;</a></h2>
+<h3 id="positive">Positive<a class="headerlink" href="#positive" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong>Business Continuity</strong>: Minimize downtime and data loss</li>
+<li><strong>Confidence</strong>: Team knows what to do during incidents</li>
+<li><strong>Compliance</strong>: Meets regulatory and contractual requirements</li>
+<li><strong>Customer Trust</strong>: Demonstrates commitment to reliability</li>
+<li><strong>Reduced Stress</strong>: Clear procedures reduce panic during incidents</li>
+<li><strong>Continuous Improvement</strong>: Regular testing identifies weaknesses</li>
+</ol>
+<h3 id="negative">Negative<a class="headerlink" href="#negative" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong>Cost</strong>: Infrastructure for backups, DR site, and testing</li>
+<li><strong>Maintenance</strong>: Procedures must be kept up-to-date</li>
+<li><strong>Testing Overhead</strong>: Regular DR tests consume resources</li>
+<li><strong>Complexity</strong>: More systems and procedures to manage</li>
+</ol>
+<h3 id="neutral">Neutral<a class="headerlink" href="#neutral" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong>RTO/RPO Targets</strong>: May need adjustment based on business needs</li>
+<li><strong>Backup Retention</strong>: Balance between cost and compliance</li>
+<li><strong>Testing Frequency</strong>: May increase as system criticality grows</li>
+</ol>
+<h2 id="implementation">Implementation<a class="headerlink" href="#implementation" title="Permanent link">&para;</a></h2>
+<h3 id="phase-1-documentation-complete">Phase 1: Documentation (Complete)<a class="headerlink" href="#phase-1-documentation-complete" title="Permanent link">&para;</a></h3>
 <ul>
-<li><code>GET /users/me</code> - Get current user profile</li>
-<li><code>PUT /users/me</code> - Update current user profile</li>
-<li><code>GET /users/:id</code> - Get user by ID (admin only)</li>
+<li>[x] DR Runbook with all scenarios</li>
+<li>[x] Recovery procedures with commands</li>
+<li>[x] Communication plans</li>
+<li>[x] Roles and responsibilities</li>
+<li>[x] ADR documentation</li>
 </ul>
-<h3 id="contacts">Contacts<a class="headerlink" href="#contacts" title="Permanent link">&para;</a></h3>
+<h3 id="phase-2-automation-next">Phase 2: Automation (Next)<a class="headerlink" href="#phase-2-automation-next" title="Permanent link">&para;</a></h3>
 <ul>
-<li><code>GET /contacts</code> - List all contacts</li>
-<li><code>POST /contacts</code> - Create new contact</li>
-<li><code>GET /contacts/:id</code> - Get contact by ID</li>
-<li><code>PUT /contacts/:id</code> - Update contact</li>
-<li><code>DELETE /contacts/:id</code> - Delete contact</li>
+<li>[ ] Backup automation scripts</li>
+<li>[ ] Restore automation scripts</li>
+<li>[ ] DR site deployment automation</li>
+<li>[ ] Health check and verification scripts</li>
 </ul>
-<h3 id="interactions">Interactions<a class="headerlink" href="#interactions" title="Permanent link">&para;</a></h3>
+<h3 id="phase-3-testing-next">Phase 3: Testing (Next)<a class="headerlink" href="#phase-3-testing-next" title="Permanent link">&para;</a></h3>
 <ul>
-<li><code>GET /interactions</code> - List all interactions</li>
-<li><code>POST /interactions</code> - Create new interaction</li>
-<li><code>GET /interactions/:id</code> - Get interaction by ID</li>
+<li>[ ] Monthly backup restoration tests</li>
+<li>[ ] Quarterly failover tests</li>
+<li>[ ] Annual full DR test</li>
+<li>[ ] Document test results</li>
 </ul>
-<h3 id="ai-features">AI Features<a class="headerlink" href="#ai-features" title="Permanent link">&para;</a></h3>
+<h3 id="phase-4-continuous-improvement-ongoing">Phase 4: Continuous Improvement (Ongoing)<a class="headerlink" href="#phase-4-continuous-improvement-ongoing" title="Permanent link">&para;</a></h3>
 <ul>
-<li><code>POST /ai/analyze</code> - Analyze text with AI</li>
-<li><code>POST /ai/recommend</code> - Get AI recommendations</li>
-<li><code>GET /ai/insights</code> - Get AI-generated insights</li>
+<li>[ ] Review and update procedures quarterly</li>
+<li>[ ] Incorporate lessons learned from incidents</li>
+<li>[ ] Improve automation based on test results</li>
+<li>[ ] Train team on DR procedures</li>
 </ul>
-<h2 id="rate-limiting">Rate Limiting<a class="headerlink" href="#rate-limiting" title="Permanent link">&para;</a></h2>
-<p>API requests are rate limited to:
-- 100 requests per minute for authenticated users
-- 10 requests per minute for unauthenticated requests</p>
-<h2 id="error-handling">Error Handling<a class="headerlink" href="#error-handling" title="Permanent link">&para;</a></h2>
-<p>The API uses standard HTTP status codes:
-- 200: Success
-- 201: Created
-- 400: Bad Request
-- 401: Unauthorized
-- 403: Forbidden
-- 404: Not Found
-- 429: Too Many Requests
-- 500: Internal Server Error</p>
-<p>Error responses include a JSON body with details:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="p">{</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">  </span><span class="nt">&quot;error&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">    </span><span class="nt">&quot;code&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;INVALID_INPUT&quot;</span><span class="p">,</span>
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">    </span><span class="nt">&quot;message&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Email address is required&quot;</span><span class="p">,</span>
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">    </span><span class="nt">&quot;field&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;email&quot;</span>
-<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="p">}</span>
-</code></pre></div>
-<h2 id="webhooks">Webhooks<a class="headerlink" href="#webhooks" title="Permanent link">&para;</a></h2>
-<p>Flowstate-AI can send webhooks for various events. Configure webhooks in your account settings.</p>
-<p>Supported events:
-- <code>contact.created</code>
-- <code>contact.updated</code>
-- <code>interaction.created</code>
-- <code>ai.insight.generated</code></p>
-<h2 id="sdk-and-client-libraries">SDK and Client Libraries<a class="headerlink" href="#sdk-and-client-libraries" title="Permanent link">&para;</a></h2>
-<p>Official client libraries are available for:
-- JavaScript/TypeScript
-- Python
-- Ruby (coming soon)</p>
-<p>See <a href="https://github.com/benjidanielsen/Flowstate-AI">GitHub repository</a> for installation instructions.</p>
-<h2 id="support">Support<a class="headerlink" href="#support" title="Permanent link">&para;</a></h2>
-<p>For API support, please contact support@flowstate-ai.com or open an issue on GitHub.</p>
+<h2 id="metrics">Metrics<a class="headerlink" href="#metrics" title="Permanent link">&para;</a></h2>
+<p>Track and improve:
+- <strong>RTO Achievement</strong>: Actual vs. target recovery time
+- <strong>RPO Achievement</strong>: Actual vs. target data loss
+- <strong>Backup Success Rate</strong>: Percentage of successful backups
+- <strong>Restore Success Rate</strong>: Percentage of successful restores
+- <strong>Test Completion</strong>: Percentage of scheduled tests completed</p>
+<h2 id="review-and-evolution">Review and Evolution<a class="headerlink" href="#review-and-evolution" title="Permanent link">&para;</a></h2>
+<p>This strategy will be reviewed:
+- After every disaster recovery event
+- Quarterly as part of operational review
+- Annually as part of business continuity planning
+- When RTO/RPO requirements change</p>
+<h2 id="references">References<a class="headerlink" href="#references" title="Permanent link">&para;</a></h2>
+<ul>
+<li><a href="https://aws.amazon.com/disaster-recovery/">AWS Disaster Recovery</a></li>
+<li><a href="https://cloud.google.com/architecture/dr-scenarios-planning-guide">Google Cloud DR Planning</a></li>
+<li><a href="https://csrc.nist.gov/publications/detail/sp/800-34/rev-1/final">NIST Contingency Planning Guide</a></li>
+</ul>
+<h2 id="related-adrs">Related ADRs<a class="headerlink" href="#related-adrs" title="Permanent link">&para;</a></h2>
+<ul>
+<li>ADR 0001: Phase 0 Baseline Establishment</li>
+<li>ADR 0006: Automated Deployments</li>
+<li>ADR 0007: Database Migrations</li>
+<li>ADR 0008: Observability Stack</li>
+</ul>
+<h2 id="date">Date<a class="headerlink" href="#date" title="Permanent link">&para;</a></h2>
+<p>2025-01-10</p>
+<h2 id="authors">Authors<a class="headerlink" href="#authors" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Manus AI (Implementation)</li>
+<li>Benji Danielsen (Review and Approval)</li>
+</ul>
 
 
 
@@ -1674,7 +2051,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 10, 2025 09:47:54 UTC">October 10, 2025</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 10, 2025 16:33:24 UTC">October 10, 2025</span>
   </span>
 
     
@@ -1684,7 +2061,7 @@
     <span class="md-icon" title="Created">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14.47 15.08 11 13V7h1.5v5.25l3.08 1.83c-.41.28-.79.62-1.11 1m-1.39 4.84c-.36.05-.71.08-1.08.08-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8c0 .37-.03.72-.08 1.08.69.1 1.33.32 1.92.64.1-.56.16-1.13.16-1.72 0-5.5-4.5-10-10-10S2 6.5 2 12s4.47 10 10 10c.59 0 1.16-.06 1.72-.16-.32-.59-.54-1.23-.64-1.92M18 15v3h-3v2h3v3h2v-3h3v-2h-3v-3z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 10, 2025 09:47:54 UTC">October 10, 2025</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 10, 2025 16:33:24 UTC">October 10, 2025</span>
   </span>
 
     
@@ -1758,10 +2135,10 @@
     
     
       
-      <script id="__config" type="application/json">{"base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "content.code.copy", "content.action.edit"], "search": "../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+      <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "content.code.copy", "content.action.edit"], "search": "../../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
-      <script src="../assets/javascripts/bundle.f55a23d4.min.js"></script>
+      <script src="../../assets/javascripts/bundle.f55a23d4.min.js"></script>
       
     
   </body>

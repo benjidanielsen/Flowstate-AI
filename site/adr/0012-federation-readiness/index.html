@@ -12,24 +12,24 @@
         <meta name="author" content="Flowstate-AI Team">
       
       
-        <link rel="canonical" href="https://benjidanielsen.github.io/Flowstate-AI/api/">
+        <link rel="canonical" href="https://benjidanielsen.github.io/Flowstate-AI/adr/0012-federation-readiness/">
       
       
       
       
-      <link rel="icon" href="../assets/images/favicon.png">
+      <link rel="icon" href="../../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.21">
     
     
       
-        <title>API Documentation - Flowstate-AI Documentation</title>
+        <title>ADR 0012: Federation Readiness for Multi-Tenant Architecture - Flowstate-AI Documentation</title>
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.2a3383ac.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.2a3383ac.min.css">
       
         
-        <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
       
       
 
@@ -48,7 +48,7 @@
       
     
     
-    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -74,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#api-documentation" class="md-skip">
+        <a href="#adr-0012-federation-readiness-for-multi-tenant-architecture" class="md-skip">
           Skip to content
         </a>
       
@@ -92,7 +92,7 @@
 
 <header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href=".." title="Flowstate-AI Documentation" class="md-header__button md-logo" aria-label="Flowstate-AI Documentation" data-md-component="logo">
+    <a href="../.." title="Flowstate-AI Documentation" class="md-header__button md-logo" aria-label="Flowstate-AI Documentation" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -112,7 +112,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              API Documentation
+              ADR 0012: Federation Readiness for Multi-Tenant Architecture
             
           </span>
         </div>
@@ -225,7 +225,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../INDEX/" class="md-tabs__link">
+      <a href="../../INDEX/" class="md-tabs__link">
         
   
   
@@ -246,7 +246,7 @@
     
     
       <li class="md-tabs__item">
-        <a href=".." class="md-tabs__link">
+        <a href="../.." class="md-tabs__link">
           
   
   
@@ -266,7 +266,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../GOVERNANCE/" class="md-tabs__link">
+        <a href="../../GOVERNANCE/" class="md-tabs__link">
           
   
   
@@ -286,7 +286,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../OPS_RUNBOOK/" class="md-tabs__link">
+        <a href="../../OPS_RUNBOOK/" class="md-tabs__link">
           
   
   
@@ -306,7 +306,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../CODING_STANDARDS/" class="md-tabs__link">
+        <a href="../../CODING_STANDARDS/" class="md-tabs__link">
           
   
   
@@ -326,7 +326,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../RISK_REGISTER/" class="md-tabs__link">
+        <a href="../../RISK_REGISTER/" class="md-tabs__link">
           
   
   
@@ -346,7 +346,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../FEDERATION_CHECKLIST/" class="md-tabs__link">
+        <a href="../../FEDERATION_CHECKLIST/" class="md-tabs__link">
           
   
   
@@ -366,7 +366,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="./" class="md-tabs__link">
+        <a href="../../api/" class="md-tabs__link">
           
   
   
@@ -386,7 +386,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../integrations/" class="md-tabs__link">
+        <a href="../../integrations/" class="md-tabs__link">
           
   
   
@@ -420,7 +420,7 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href=".." title="Flowstate-AI Documentation" class="md-nav__button md-logo" aria-label="Flowstate-AI Documentation" data-md-component="logo">
+    <a href="../.." title="Flowstate-AI Documentation" class="md-nav__button md-logo" aria-label="Flowstate-AI Documentation" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -450,7 +450,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../INDEX/" class="md-nav__link">
+      <a href="../../INDEX/" class="md-nav__link">
         
   
   
@@ -517,7 +517,7 @@
   
   
     <li class="md-nav__item">
-      <a href=".." class="md-nav__link">
+      <a href="../.." class="md-nav__link">
         
   
   
@@ -540,7 +540,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../DEPLOYMENT_GUIDE/" class="md-nav__link">
+      <a href="../../DEPLOYMENT_GUIDE/" class="md-nav__link">
         
   
   
@@ -563,7 +563,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../SYSTEM_ARCHITECTURE/" class="md-nav__link">
+      <a href="../../SYSTEM_ARCHITECTURE/" class="md-nav__link">
         
   
   
@@ -638,7 +638,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../GOVERNANCE/" class="md-nav__link">
+      <a href="../../GOVERNANCE/" class="md-nav__link">
         
   
   
@@ -661,7 +661,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../ETHICS/" class="md-nav__link">
+      <a href="../../ETHICS/" class="md-nav__link">
         
   
   
@@ -684,7 +684,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../FEDERATION_CHARTER/" class="md-nav__link">
+      <a href="../../FEDERATION_CHARTER/" class="md-nav__link">
         
   
   
@@ -707,7 +707,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../EMERGENT_BEHAVIOUR_OVERSIGHT_AND_CESSATION/" class="md-nav__link">
+      <a href="../../EMERGENT_BEHAVIOUR_OVERSIGHT_AND_CESSATION/" class="md-nav__link">
         
   
   
@@ -782,7 +782,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../OPS_RUNBOOK/" class="md-nav__link">
+      <a href="../../OPS_RUNBOOK/" class="md-nav__link">
         
   
   
@@ -805,7 +805,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../DR_RUNBOOK/" class="md-nav__link">
+      <a href="../../DR_RUNBOOK/" class="md-nav__link">
         
   
   
@@ -828,7 +828,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../SLOS/" class="md-nav__link">
+      <a href="../../SLOS/" class="md-nav__link">
         
   
   
@@ -851,7 +851,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../AUDIT_TRAIL/" class="md-nav__link">
+      <a href="../../AUDIT_TRAIL/" class="md-nav__link">
         
   
   
@@ -926,7 +926,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../CODING_STANDARDS/" class="md-nav__link">
+      <a href="../../CODING_STANDARDS/" class="md-nav__link">
         
   
   
@@ -949,7 +949,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../adr/" class="md-nav__link">
+      <a href="../" class="md-nav__link">
         
   
   
@@ -972,7 +972,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../ROADMAP/" class="md-nav__link">
+      <a href="../../ROADMAP/" class="md-nav__link">
         
   
   
@@ -995,7 +995,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../CHANGELOG/" class="md-nav__link">
+      <a href="../../CHANGELOG/" class="md-nav__link">
         
   
   
@@ -1018,7 +1018,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../QUALITY/" class="md-nav__link">
+      <a href="../../QUALITY/" class="md-nav__link">
         
   
   
@@ -1093,7 +1093,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../RISK_REGISTER/" class="md-nav__link">
+      <a href="../../RISK_REGISTER/" class="md-nav__link">
         
   
   
@@ -1116,7 +1116,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../SECURITY.md" class="md-nav__link">
+      <a href="../../../SECURITY.md" class="md-nav__link">
         
   
   
@@ -1191,7 +1191,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../FEDERATION_CHECKLIST/" class="md-nav__link">
+      <a href="../../FEDERATION_CHECKLIST/" class="md-nav__link">
         
   
   
@@ -1214,7 +1214,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../REVOCATION/" class="md-nav__link">
+      <a href="../../REVOCATION/" class="md-nav__link">
         
   
   
@@ -1289,7 +1289,7 @@
   
   
     <li class="md-nav__item">
-      <a href="./" class="md-nav__link">
+      <a href="../../api/" class="md-nav__link">
         
   
   
@@ -1364,7 +1364,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../integrations/" class="md-nav__link">
+      <a href="../../integrations/" class="md-nav__link">
         
   
   
@@ -1414,82 +1414,37 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#overview" class="md-nav__link">
+  <a href="#status" class="md-nav__link">
     <span class="md-ellipsis">
-      Overview
+      Status
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#base-url" class="md-nav__link">
+  <a href="#context" class="md-nav__link">
     <span class="md-ellipsis">
-      Base URL
+      Context
     </span>
   </a>
   
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#authentication" class="md-nav__link">
-    <span class="md-ellipsis">
-      Authentication
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#api-endpoints" class="md-nav__link">
-    <span class="md-ellipsis">
-      API Endpoints
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="API Endpoints">
+    <nav class="md-nav" aria-label="Context">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#authentication_1" class="md-nav__link">
+  <a href="#current-situation" class="md-nav__link">
     <span class="md-ellipsis">
-      Authentication
+      Current Situation
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#users" class="md-nav__link">
+  <a href="#requirements" class="md-nav__link">
     <span class="md-ellipsis">
-      Users
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#contacts" class="md-nav__link">
-    <span class="md-ellipsis">
-      Contacts
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#interactions" class="md-nav__link">
-    <span class="md-ellipsis">
-      Interactions
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#ai-features" class="md-nav__link">
-    <span class="md-ellipsis">
-      AI Features
+      Requirements
     </span>
   </a>
   
@@ -1501,45 +1456,222 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#rate-limiting" class="md-nav__link">
+  <a href="#decision" class="md-nav__link">
     <span class="md-ellipsis">
-      Rate Limiting
+      Decision
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Decision">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#federation-architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      Federation Architecture
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#security-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      Security Model
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#governance-for-federation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Governance for Federation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#implementation-phases" class="md-nav__link">
+    <span class="md-ellipsis">
+      Implementation Phases
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#alternatives-considered" class="md-nav__link">
+    <span class="md-ellipsis">
+      Alternatives Considered
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Alternatives Considered">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#alternative-1-no-federation-support" class="md-nav__link">
+    <span class="md-ellipsis">
+      Alternative 1: No Federation Support
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#alternative-2-full-federation-from-day-one" class="md-nav__link">
+    <span class="md-ellipsis">
+      Alternative 2: Full Federation from Day One
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#alternative-3-gradual-federation-readiness-chosen" class="md-nav__link">
+    <span class="md-ellipsis">
+      Alternative 3: Gradual Federation Readiness (Chosen)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#consequences" class="md-nav__link">
+    <span class="md-ellipsis">
+      Consequences
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Consequences">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#positive" class="md-nav__link">
+    <span class="md-ellipsis">
+      Positive
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#negative" class="md-nav__link">
+    <span class="md-ellipsis">
+      Negative
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#neutral" class="md-nav__link">
+    <span class="md-ellipsis">
+      Neutral
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#implementation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Implementation
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Implementation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#phase-k-deliverables-current" class="md-nav__link">
+    <span class="md-ellipsis">
+      Phase K Deliverables (Current)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#future-phases-post-k" class="md-nav__link">
+    <span class="md-ellipsis">
+      Future Phases (Post-K)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#metrics" class="md-nav__link">
+    <span class="md-ellipsis">
+      Metrics
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#error-handling" class="md-nav__link">
+  <a href="#review-and-evolution" class="md-nav__link">
     <span class="md-ellipsis">
-      Error Handling
+      Review and Evolution
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#webhooks" class="md-nav__link">
+  <a href="#references" class="md-nav__link">
     <span class="md-ellipsis">
-      Webhooks
+      References
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#sdk-and-client-libraries" class="md-nav__link">
+  <a href="#related-adrs" class="md-nav__link">
     <span class="md-ellipsis">
-      SDK and Client Libraries
+      Related ADRs
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#support" class="md-nav__link">
+  <a href="#date" class="md-nav__link">
     <span class="md-ellipsis">
-      Support
+      Date
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#authors" class="md-nav__link">
+    <span class="md-ellipsis">
+      Authors
     </span>
   </a>
   
@@ -1561,7 +1693,7 @@
 
 
   
-    <a href="https://github.com/benjidanielsen/Flowstate-AI/edit/main/docs/api/README.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+    <a href="https://github.com/benjidanielsen/Flowstate-AI/edit/main/docs/adr/0012-federation-readiness.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"/></svg>
     </a>
@@ -1569,89 +1701,252 @@
   
 
 
-<h1 id="api-documentation">API Documentation<a class="headerlink" href="#api-documentation" title="Permanent link">&para;</a></h1>
-<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
-<p>The Flowstate-AI API provides programmatic access to all system functionality. The API follows REST principles with JSON request and response bodies.</p>
-<h2 id="base-url">Base URL<a class="headerlink" href="#base-url" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>Production: https://api.flowstate-ai.com/v1
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>Staging: https://staging-api.flowstate-ai.com/v1
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>Development: http://localhost:3001/api/v1
-</code></pre></div>
-<h2 id="authentication">Authentication<a class="headerlink" href="#authentication" title="Permanent link">&para;</a></h2>
-<p>All API requests require authentication using JWT tokens passed in the Authorization header:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>Authorization: Bearer &lt;your_jwt_token&gt;
-</code></pre></div>
-<h2 id="api-endpoints">API Endpoints<a class="headerlink" href="#api-endpoints" title="Permanent link">&para;</a></h2>
-<h3 id="authentication_1">Authentication<a class="headerlink" href="#authentication_1" title="Permanent link">&para;</a></h3>
+<h1 id="adr-0012-federation-readiness-for-multi-tenant-architecture">ADR 0012: Federation Readiness for Multi-Tenant Architecture<a class="headerlink" href="#adr-0012-federation-readiness-for-multi-tenant-architecture" title="Permanent link">&para;</a></h1>
+<h2 id="status">Status<a class="headerlink" href="#status" title="Permanent link">&para;</a></h2>
+<p>Accepted</p>
+<h2 id="context">Context<a class="headerlink" href="#context" title="Permanent link">&para;</a></h2>
+<p>Flowstate-AI is designed to operate as an autonomous AI system that can evolve and adapt independently. As the system matures, there is potential value in enabling it to participate in federated AI networks where multiple autonomous instances can collaborate, share learnings, and coordinate actions while maintaining independence and security.</p>
+<h3 id="current-situation">Current Situation<a class="headerlink" href="#current-situation" title="Permanent link">&para;</a></h3>
+<p>The system currently operates as a standalone instance with:
+- Autonomous operation capabilities
+- Self-modification and evolution features
+- Comprehensive governance framework
+- Security and audit mechanisms
+- Supply chain security (SLSA Level 3)</p>
+<p>However, it lacks:
+- Multi-tenant architecture support
+- Federation protocols and APIs
+- Inter-instance communication mechanisms
+- Shared learning infrastructure
+- Federated governance models
+- Cross-instance security verification</p>
+<h3 id="requirements">Requirements<a class="headerlink" href="#requirements" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong>Multi-Tenant Support</strong>: Enable multiple isolated instances within a single deployment</li>
+<li><strong>Federation Protocols</strong>: Define how instances discover, authenticate, and communicate</li>
+<li><strong>Shared Learning</strong>: Enable knowledge sharing while preserving privacy</li>
+<li><strong>Security</strong>: Ensure federated operations don't compromise security</li>
+<li><strong>Governance</strong>: Extend governance framework to federated scenarios</li>
+<li><strong>Gradual Adoption</strong>: Support both standalone and federated modes</li>
+</ol>
+<h2 id="decision">Decision<a class="headerlink" href="#decision" title="Permanent link">&para;</a></h2>
+<p>We will prepare Flowstate-AI for federation readiness by implementing a multi-tenant architecture foundation, defining federation protocols, and establishing the governance framework for federated operations. Initial implementation will focus on preparation rather than active federation, allowing the system to participate when appropriate.</p>
+<h3 id="federation-architecture">Federation Architecture<a class="headerlink" href="#federation-architecture" title="Permanent link">&para;</a></h3>
+<p><strong>Multi-Tenant Foundation</strong>:
+- Tenant isolation at database, application, and resource levels
+- Tenant-specific configuration and customization
+- Shared infrastructure with isolated data
+- Per-tenant metrics and monitoring
+- Tenant lifecycle management (provisioning, suspension, deletion)</p>
+<p><strong>Federation Protocols</strong>:
+- Instance discovery and registration
+- Mutual authentication using cryptographic signing
+- Secure communication channels (mTLS)
+- API contracts for inter-instance communication
+- Versioned protocol support for compatibility</p>
+<p><strong>Shared Learning Infrastructure</strong>:
+- Federated learning capabilities for model training
+- Privacy-preserving knowledge sharing (differential privacy)
+- Aggregated insights without raw data exposure
+- Opt-in/opt-out mechanisms per tenant
+- Learning contribution attribution</p>
+<h3 id="security-model">Security Model<a class="headerlink" href="#security-model" title="Permanent link">&para;</a></h3>
+<p><strong>Trust Establishment</strong>:
+- Cryptographic signing of all releases (cosign)
+- SLSA Level 3 provenance verification
+- SBOM validation for dependency transparency
+- Continuous security monitoring
+- Revocation mechanisms for compromised instances</p>
+<p><strong>Isolation Guarantees</strong>:
+- Network isolation between tenants
+- Data encryption at rest and in transit
+- Access control and authentication per tenant
+- Resource quotas and rate limiting
+- Audit logging of all cross-tenant interactions</p>
+<p><strong>Threat Model</strong>:
+- Malicious tenant attempting to access other tenant data
+- Compromised instance in federation
+- Man-in-the-middle attacks on federation communication
+- Data poisoning in federated learning
+- Resource exhaustion attacks</p>
+<h3 id="governance-for-federation">Governance for Federation<a class="headerlink" href="#governance-for-federation" title="Permanent link">&para;</a></h3>
+<p><strong>Federation Participation Criteria</strong>:
+- System Owner approval required
+- Security audit completion
+- Governance framework compliance
+- Ethics policy adherence
+- Technical requirements met (SLSA, SBOM, signing)</p>
+<p><strong>Federated Decision-Making</strong>:
+- Local autonomy preserved for tenant-specific decisions
+- Federated consensus for shared resources or policies
+- Escalation paths for conflicts
+- Emergency disconnect procedures</p>
+<p><strong>Compliance and Audit</strong>:
+- Per-tenant compliance tracking
+- Federation-wide audit trail
+- Cross-instance activity logging
+- Regular security assessments
+- Incident response coordination</p>
+<h3 id="implementation-phases">Implementation Phases<a class="headerlink" href="#implementation-phases" title="Permanent link">&para;</a></h3>
+<p><strong>Phase 1: Multi-Tenant Foundation</strong> (Current Phase K):
+- Database schema with tenant isolation
+- Tenant management APIs
+- Configuration per tenant
+- Resource isolation and quotas
+- Tenant-specific monitoring</p>
+<p><strong>Phase 2: Federation Protocols</strong> (Future):
+- Instance discovery service
+- Authentication and authorization
+- Secure communication channels
+- API contracts and versioning
+- Health checking and monitoring</p>
+<p><strong>Phase 3: Shared Learning</strong> (Future):
+- Federated learning infrastructure
+- Privacy-preserving aggregation
+- Knowledge sharing APIs
+- Contribution tracking
+- Opt-in/opt-out management</p>
+<p><strong>Phase 4: Production Federation</strong> (Future):
+- Live federation with trusted partners
+- Cross-instance coordination
+- Shared resource management
+- Federated governance implementation
+- Continuous improvement based on learnings</p>
+<h2 id="alternatives-considered">Alternatives Considered<a class="headerlink" href="#alternatives-considered" title="Permanent link">&para;</a></h2>
+<h3 id="alternative-1-no-federation-support">Alternative 1: No Federation Support<a class="headerlink" href="#alternative-1-no-federation-support" title="Permanent link">&para;</a></h3>
+<p><strong>Pros</strong>:
+- Simpler architecture
+- No federation complexity
+- Easier to secure
+- Lower operational overhead</p>
+<p><strong>Cons</strong>:
+- Missed collaboration opportunities
+- No shared learning benefits
+- Limited scalability options
+- Isolated evolution</p>
+<p><strong>Decision</strong>: Rejected - Federation provides significant long-term value for autonomous AI systems.</p>
+<h3 id="alternative-2-full-federation-from-day-one">Alternative 2: Full Federation from Day One<a class="headerlink" href="#alternative-2-full-federation-from-day-one" title="Permanent link">&para;</a></h3>
+<p><strong>Pros</strong>:
+- Maximum collaboration potential
+- Immediate shared learning
+- Network effects from start</p>
+<p><strong>Cons</strong>:
+- High complexity upfront
+- Security risks before maturity
+- Premature standardization
+- Resource intensive</p>
+<p><strong>Decision</strong>: Rejected - Too risky without proven standalone operation.</p>
+<h3 id="alternative-3-gradual-federation-readiness-chosen">Alternative 3: Gradual Federation Readiness (Chosen)<a class="headerlink" href="#alternative-3-gradual-federation-readiness-chosen" title="Permanent link">&para;</a></h3>
+<p><strong>Pros</strong>:
+- Balanced approach
+- Reduces risk through phases
+- Allows learning and adaptation
+- Maintains standalone viability</p>
+<p><strong>Cons</strong>:
+- Longer timeline to full federation
+- Some rework may be needed
+- Requires ongoing investment</p>
+<p><strong>Decision</strong>: Accepted - Best balance of risk and opportunity.</p>
+<h2 id="consequences">Consequences<a class="headerlink" href="#consequences" title="Permanent link">&para;</a></h2>
+<h3 id="positive">Positive<a class="headerlink" href="#positive" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong>Future-Proof Architecture</strong>: System ready for federation when appropriate</li>
+<li><strong>Multi-Tenant Capability</strong>: Enables SaaS deployment model</li>
+<li><strong>Shared Learning Potential</strong>: Can benefit from collective intelligence</li>
+<li><strong>Scalability</strong>: Federation enables horizontal scaling beyond single instance</li>
+<li><strong>Collaboration</strong>: Multiple instances can coordinate on complex tasks</li>
+<li><strong>Resilience</strong>: Federation provides redundancy and fault tolerance</li>
+</ol>
+<h3 id="negative">Negative<a class="headerlink" href="#negative" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong>Increased Complexity</strong>: Multi-tenant and federation add architectural complexity</li>
+<li><strong>Security Surface</strong>: More attack vectors to protect against</li>
+<li><strong>Operational Overhead</strong>: More monitoring, management, and coordination required</li>
+<li><strong>Performance Impact</strong>: Isolation and security mechanisms add overhead</li>
+<li><strong>Governance Complexity</strong>: Federated decision-making is more complex</li>
+</ol>
+<h3 id="neutral">Neutral<a class="headerlink" href="#neutral" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong>Optional Feature</strong>: Federation is opt-in, not required</li>
+<li><strong>Gradual Adoption</strong>: Can be implemented incrementally</li>
+<li><strong>Standards Evolution</strong>: Federation protocols will evolve over time</li>
+</ol>
+<h2 id="implementation">Implementation<a class="headerlink" href="#implementation" title="Permanent link">&para;</a></h2>
+<h3 id="phase-k-deliverables-current">Phase K Deliverables (Current)<a class="headerlink" href="#phase-k-deliverables-current" title="Permanent link">&para;</a></h3>
+<p><strong>Documentation</strong>:
+- [x] Federation Charter (enhanced)
+- [x] ADR 0012 (this document)
+- [x] Multi-tenant architecture design
+- [x] Federation security model
+- [x] Governance framework extension</p>
+<p><strong>Technical Foundation</strong>:
+- [ ] Database schema with tenant_id
+- [ ] Tenant management service
+- [ ] Tenant isolation middleware
+- [ ] Per-tenant configuration
+- [ ] Tenant metrics and monitoring</p>
+<p><strong>Security</strong>:
+- [ ] Tenant authentication mechanisms
+- [ ] Resource quotas and rate limiting
+- [ ] Audit logging for multi-tenant operations
+- [ ] Tenant data encryption</p>
+<p><strong>Governance</strong>:
+- [ ] Federation participation approval process
+- [ ] Tenant onboarding procedures
+- [ ] Compliance tracking per tenant
+- [ ] Emergency procedures for tenant issues</p>
+<h3 id="future-phases-post-k">Future Phases (Post-K)<a class="headerlink" href="#future-phases-post-k" title="Permanent link">&para;</a></h3>
+<p><strong>Phase K+1: Federation Protocols</strong>:
+- Instance discovery service
+- Mutual authentication
+- Secure communication (mTLS)
+- API contracts
+- Health monitoring</p>
+<p><strong>Phase K+2: Shared Learning</strong>:
+- Federated learning framework
+- Privacy-preserving aggregation
+- Knowledge sharing APIs
+- Contribution attribution</p>
+<p><strong>Phase K+3: Production Federation</strong>:
+- Live federation deployment
+- Partner onboarding
+- Cross-instance coordination
+- Continuous improvement</p>
+<h2 id="metrics">Metrics<a class="headerlink" href="#metrics" title="Permanent link">&para;</a></h2>
+<p>Track and improve:
+- <strong>Tenant Isolation Score</strong>: Measure of data and resource isolation effectiveness
+- <strong>Federation Readiness</strong>: Percentage of requirements met for federation participation
+- <strong>Multi-Tenant Performance</strong>: Overhead of multi-tenancy vs single-tenant
+- <strong>Security Incidents</strong>: Tenant-related security events
+- <strong>Tenant Satisfaction</strong>: Feedback from multi-tenant deployments
+- <strong>Federation Participation</strong>: Number of instances in federation (when active)</p>
+<h2 id="review-and-evolution">Review and Evolution<a class="headerlink" href="#review-and-evolution" title="Permanent link">&para;</a></h2>
+<p>This federation readiness framework will be reviewed:
+- Quarterly as part of architecture review
+- Before any federation participation
+- After significant security or governance changes
+- Based on multi-tenant deployment experience
+- When federation standards evolve</p>
+<h2 id="references">References<a class="headerlink" href="#references" title="Permanent link">&para;</a></h2>
 <ul>
-<li><code>POST /auth/login</code> - Authenticate user and receive tokens</li>
-<li><code>POST /auth/refresh</code> - Refresh access token</li>
-<li><code>POST /auth/logout</code> - Invalidate refresh token</li>
+<li><a href="https://ai.googleblog.com/2017/04/federated-learning-collaborative.html">Federated Learning: Collaborative Machine Learning without Centralized Training Data</a></li>
+<li><a href="https://www.nist.gov/privacy-framework">NIST Privacy Framework</a></li>
+<li><a href="https://docs.microsoft.com/en-us/azure/architecture/guide/multitenant/overview">Multi-Tenancy Architecture Patterns</a></li>
+<li><a href="https://slsa.dev/">SLSA Supply Chain Security</a></li>
 </ul>
-<h3 id="users">Users<a class="headerlink" href="#users" title="Permanent link">&para;</a></h3>
+<h2 id="related-adrs">Related ADRs<a class="headerlink" href="#related-adrs" title="Permanent link">&para;</a></h2>
 <ul>
-<li><code>GET /users/me</code> - Get current user profile</li>
-<li><code>PUT /users/me</code> - Update current user profile</li>
-<li><code>GET /users/:id</code> - Get user by ID (admin only)</li>
+<li>ADR 0002: Supply Chain Security</li>
+<li>ADR 0008: Observability Stack</li>
+<li>ADR 0011: Governance Framework</li>
 </ul>
-<h3 id="contacts">Contacts<a class="headerlink" href="#contacts" title="Permanent link">&para;</a></h3>
+<h2 id="date">Date<a class="headerlink" href="#date" title="Permanent link">&para;</a></h2>
+<p>2025-01-10</p>
+<h2 id="authors">Authors<a class="headerlink" href="#authors" title="Permanent link">&para;</a></h2>
 <ul>
-<li><code>GET /contacts</code> - List all contacts</li>
-<li><code>POST /contacts</code> - Create new contact</li>
-<li><code>GET /contacts/:id</code> - Get contact by ID</li>
-<li><code>PUT /contacts/:id</code> - Update contact</li>
-<li><code>DELETE /contacts/:id</code> - Delete contact</li>
+<li>Manus AI (Implementation)</li>
+<li>Benji Danielsen (Review and Approval)</li>
 </ul>
-<h3 id="interactions">Interactions<a class="headerlink" href="#interactions" title="Permanent link">&para;</a></h3>
-<ul>
-<li><code>GET /interactions</code> - List all interactions</li>
-<li><code>POST /interactions</code> - Create new interaction</li>
-<li><code>GET /interactions/:id</code> - Get interaction by ID</li>
-</ul>
-<h3 id="ai-features">AI Features<a class="headerlink" href="#ai-features" title="Permanent link">&para;</a></h3>
-<ul>
-<li><code>POST /ai/analyze</code> - Analyze text with AI</li>
-<li><code>POST /ai/recommend</code> - Get AI recommendations</li>
-<li><code>GET /ai/insights</code> - Get AI-generated insights</li>
-</ul>
-<h2 id="rate-limiting">Rate Limiting<a class="headerlink" href="#rate-limiting" title="Permanent link">&para;</a></h2>
-<p>API requests are rate limited to:
-- 100 requests per minute for authenticated users
-- 10 requests per minute for unauthenticated requests</p>
-<h2 id="error-handling">Error Handling<a class="headerlink" href="#error-handling" title="Permanent link">&para;</a></h2>
-<p>The API uses standard HTTP status codes:
-- 200: Success
-- 201: Created
-- 400: Bad Request
-- 401: Unauthorized
-- 403: Forbidden
-- 404: Not Found
-- 429: Too Many Requests
-- 500: Internal Server Error</p>
-<p>Error responses include a JSON body with details:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="p">{</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">  </span><span class="nt">&quot;error&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">    </span><span class="nt">&quot;code&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;INVALID_INPUT&quot;</span><span class="p">,</span>
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">    </span><span class="nt">&quot;message&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Email address is required&quot;</span><span class="p">,</span>
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">    </span><span class="nt">&quot;field&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;email&quot;</span>
-<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="p">}</span>
-</code></pre></div>
-<h2 id="webhooks">Webhooks<a class="headerlink" href="#webhooks" title="Permanent link">&para;</a></h2>
-<p>Flowstate-AI can send webhooks for various events. Configure webhooks in your account settings.</p>
-<p>Supported events:
-- <code>contact.created</code>
-- <code>contact.updated</code>
-- <code>interaction.created</code>
-- <code>ai.insight.generated</code></p>
-<h2 id="sdk-and-client-libraries">SDK and Client Libraries<a class="headerlink" href="#sdk-and-client-libraries" title="Permanent link">&para;</a></h2>
-<p>Official client libraries are available for:
-- JavaScript/TypeScript
-- Python
-- Ruby (coming soon)</p>
-<p>See <a href="https://github.com/benjidanielsen/Flowstate-AI">GitHub repository</a> for installation instructions.</p>
-<h2 id="support">Support<a class="headerlink" href="#support" title="Permanent link">&para;</a></h2>
-<p>For API support, please contact support@flowstate-ai.com or open an issue on GitHub.</p>
 
 
 
@@ -1674,7 +1969,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 10, 2025 09:47:54 UTC">October 10, 2025</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 10, 2025 16:36:33 UTC">October 10, 2025</span>
   </span>
 
     
@@ -1684,7 +1979,7 @@
     <span class="md-icon" title="Created">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14.47 15.08 11 13V7h1.5v5.25l3.08 1.83c-.41.28-.79.62-1.11 1m-1.39 4.84c-.36.05-.71.08-1.08.08-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8c0 .37-.03.72-.08 1.08.69.1 1.33.32 1.92.64.1-.56.16-1.13.16-1.72 0-5.5-4.5-10-10-10S2 6.5 2 12s4.47 10 10 10c.59 0 1.16-.06 1.72-.16-.32-.59-.54-1.23-.64-1.92M18 15v3h-3v2h3v3h2v-3h3v-2h-3v-3z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 10, 2025 09:47:54 UTC">October 10, 2025</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 10, 2025 16:36:33 UTC">October 10, 2025</span>
   </span>
 
     
@@ -1758,10 +2053,10 @@
     
     
       
-      <script id="__config" type="application/json">{"base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "content.code.copy", "content.action.edit"], "search": "../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+      <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "content.code.copy", "content.action.edit"], "search": "../../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
-      <script src="../assets/javascripts/bundle.f55a23d4.min.js"></script>
+      <script src="../../assets/javascripts/bundle.f55a23d4.min.js"></script>
       
     
   </body>

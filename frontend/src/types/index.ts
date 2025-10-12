@@ -10,6 +10,8 @@ export interface Customer {
   next_action?: string;
   next_action_date?: Date | string;
   prospect_why?: string;
+  country?: string;
+  language?: string;
 }
 
 export enum PipelineStatus {
@@ -67,3 +69,26 @@ export interface Stats {
   };
   pipelineConversionRates: Record<string, number>;
 }
+
+export interface Reminder {
+  id: string;
+  customer_id: string;
+  title: string;
+  description?: string;
+  due_date: Date | string;
+  completed: boolean;
+  created_at: Date | string;
+  updated_at: Date | string;
+  repeat_interval?: string;
+}
+
+export interface EventLog {
+  id: string;
+  event_type: string;
+  description: string;
+  metadata?: Record<string, any>;
+  created_at: Date | string;
+  user_id?: string;
+  customer_id?: string;
+}
+

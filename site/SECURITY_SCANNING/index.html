@@ -12,13 +12,9 @@
         <meta name="author" content="Flowstate-AI Team">
       
       
-        <link rel="canonical" href="https://benjidanielsen.github.io/Flowstate-AI/SYSTEM_ARCHITECTURE/">
+        <link rel="canonical" href="https://benjidanielsen.github.io/Flowstate-AI/SECURITY_SCANNING/">
       
       
-        <link rel="prev" href="../DEPLOYMENT_GUIDE/">
-      
-      
-        <link rel="next" href="../GOVERNANCE/">
       
       
       <link rel="icon" href="../assets/images/favicon.png">
@@ -26,7 +22,7 @@
     
     
       
-        <title>System Architecture - Flowstate-AI Documentation</title>
+        <title>Security Scanning Guide - Flowstate-AI Documentation</title>
       
     
     
@@ -78,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#flowstate-ai-system-architecture" class="md-skip">
+        <a href="#security-scanning-guide" class="md-skip">
           Skip to content
         </a>
       
@@ -116,7 +112,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              System Architecture
+              Security Scanning Guide
             
           </span>
         </div>
@@ -246,12 +242,10 @@
   
   
   
-    
-  
   
     
     
-      <li class="md-tabs__item md-tabs__item--active">
+      <li class="md-tabs__item">
         <a href=".." class="md-tabs__link">
           
   
@@ -475,31 +469,28 @@
       
   
   
-    
   
   
-  
     
     
     
     
-      
-        
-        
       
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
         
           
-          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
             
   
   
@@ -512,7 +503,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_2">
             <span class="md-nav__icon md-icon"></span>
             Getting Started
@@ -569,32 +560,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    System Architecture
-    
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../SYSTEM_ARCHITECTURE/" class="md-nav__link">
         
   
   
@@ -605,371 +574,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#overview" class="md-nav__link">
-    <span class="md-ellipsis">
-      Overview
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#architecture-principles" class="md-nav__link">
-    <span class="md-ellipsis">
-      Architecture Principles
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#system-components" class="md-nav__link">
-    <span class="md-ellipsis">
-      System Components
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="System Components">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#frontend-reactvite" class="md-nav__link">
-    <span class="md-ellipsis">
-      Frontend (React/Vite)
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#backend-nodejstypescript" class="md-nav__link">
-    <span class="md-ellipsis">
-      Backend (Node.js/TypeScript)
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#python-worker-fastapi" class="md-nav__link">
-    <span class="md-ellipsis">
-      Python Worker (FastAPI)
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#database-layer" class="md-nav__link">
-    <span class="md-ellipsis">
-      Database Layer
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Database Layer">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#postgresql" class="md-nav__link">
-    <span class="md-ellipsis">
-      PostgreSQL
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#redis" class="md-nav__link">
-    <span class="md-ellipsis">
-      Redis
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#communication-patterns" class="md-nav__link">
-    <span class="md-ellipsis">
-      Communication Patterns
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Communication Patterns">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#synchronous-communication" class="md-nav__link">
-    <span class="md-ellipsis">
-      Synchronous Communication
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#asynchronous-communication" class="md-nav__link">
-    <span class="md-ellipsis">
-      Asynchronous Communication
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#data-flow" class="md-nav__link">
-    <span class="md-ellipsis">
-      Data Flow
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Data Flow">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#user-request-flow" class="md-nav__link">
-    <span class="md-ellipsis">
-      User Request Flow
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#data-persistence-flow" class="md-nav__link">
-    <span class="md-ellipsis">
-      Data Persistence Flow
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#security-architecture" class="md-nav__link">
-    <span class="md-ellipsis">
-      Security Architecture
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Security Architecture">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#authentication-and-authorization" class="md-nav__link">
-    <span class="md-ellipsis">
-      Authentication and Authorization
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#network-security" class="md-nav__link">
-    <span class="md-ellipsis">
-      Network Security
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#data-security" class="md-nav__link">
-    <span class="md-ellipsis">
-      Data Security
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#observability-stack" class="md-nav__link">
-    <span class="md-ellipsis">
-      Observability Stack
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Observability Stack">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#metrics-prometheus" class="md-nav__link">
-    <span class="md-ellipsis">
-      Metrics (Prometheus)
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#logging-loki" class="md-nav__link">
-    <span class="md-ellipsis">
-      Logging (Loki)
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#tracing-jaeger" class="md-nav__link">
-    <span class="md-ellipsis">
-      Tracing (Jaeger)
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#deployment-architecture" class="md-nav__link">
-    <span class="md-ellipsis">
-      Deployment Architecture
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Deployment Architecture">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#container-orchestration" class="md-nav__link">
-    <span class="md-ellipsis">
-      Container Orchestration
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#cicd-pipeline" class="md-nav__link">
-    <span class="md-ellipsis">
-      CI/CD Pipeline
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#infrastructure" class="md-nav__link">
-    <span class="md-ellipsis">
-      Infrastructure
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#scalability-considerations" class="md-nav__link">
-    <span class="md-ellipsis">
-      Scalability Considerations
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Scalability Considerations">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#horizontal-scaling" class="md-nav__link">
-    <span class="md-ellipsis">
-      Horizontal Scaling
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#vertical-scaling" class="md-nav__link">
-    <span class="md-ellipsis">
-      Vertical Scaling
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#caching-strategy" class="md-nav__link">
-    <span class="md-ellipsis">
-      Caching Strategy
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#future-architecture-evolution" class="md-nav__link">
-    <span class="md-ellipsis">
-      Future Architecture Evolution
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#references" class="md-nav__link">
-    <span class="md-ellipsis">
-      References
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1819,112 +1423,64 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#architecture-principles" class="md-nav__link">
+  <a href="#security-scanning-tools" class="md-nav__link">
     <span class="md-ellipsis">
-      Architecture Principles
+      Security Scanning Tools
     </span>
   </a>
   
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#system-components" class="md-nav__link">
-    <span class="md-ellipsis">
-      System Components
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="System Components">
+    <nav class="md-nav" aria-label="Security Scanning Tools">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#frontend-reactvite" class="md-nav__link">
+  <a href="#1-codeql-github-native" class="md-nav__link">
     <span class="md-ellipsis">
-      Frontend (React/Vite)
+      1. CodeQL (GitHub Native)
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#backend-nodejstypescript" class="md-nav__link">
+  <a href="#2-eslint-security-scan" class="md-nav__link">
     <span class="md-ellipsis">
-      Backend (Node.js/TypeScript)
+      2. ESLint Security Scan
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#python-worker-fastapi" class="md-nav__link">
+  <a href="#3-bandit-security-scan" class="md-nav__link">
     <span class="md-ellipsis">
-      Python Worker (FastAPI)
+      3. Bandit Security Scan
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#database-layer" class="md-nav__link">
+  <a href="#4-gitleaks-secret-scanning" class="md-nav__link">
     <span class="md-ellipsis">
-      Database Layer
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Database Layer">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#postgresql" class="md-nav__link">
-    <span class="md-ellipsis">
-      PostgreSQL
+      4. Gitleaks (Secret Scanning)
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#redis" class="md-nav__link">
+  <a href="#5-trivy-container-scanning" class="md-nav__link">
     <span class="md-ellipsis">
-      Redis
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#communication-patterns" class="md-nav__link">
-    <span class="md-ellipsis">
-      Communication Patterns
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Communication Patterns">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#synchronous-communication" class="md-nav__link">
-    <span class="md-ellipsis">
-      Synchronous Communication
+      5. Trivy (Container Scanning)
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#asynchronous-communication" class="md-nav__link">
+  <a href="#6-dependabot-dependency-scanning" class="md-nav__link">
     <span class="md-ellipsis">
-      Asynchronous Communication
+      6. Dependabot (Dependency Scanning)
     </span>
   </a>
   
@@ -1936,28 +1492,64 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#data-flow" class="md-nav__link">
+  <a href="#security-scanning-architecture" class="md-nav__link">
     <span class="md-ellipsis">
-      Data Flow
+      Security Scanning Architecture
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Data Flow">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#working-with-security-findings" class="md-nav__link">
+    <span class="md-ellipsis">
+      Working with Security Findings
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Working with Security Findings">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#user-request-flow" class="md-nav__link">
+  <a href="#viewing-security-findings" class="md-nav__link">
     <span class="md-ellipsis">
-      User Request Flow
+      Viewing Security Findings
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#data-persistence-flow" class="md-nav__link">
+  <a href="#triaging-security-findings" class="md-nav__link">
     <span class="md-ellipsis">
-      Data Persistence Flow
+      Triaging Security Findings
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fixing-security-issues" class="md-nav__link">
+    <span class="md-ellipsis">
+      Fixing Security Issues
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dismissing-false-positives" class="md-nav__link">
+    <span class="md-ellipsis">
+      Dismissing False Positives
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configuring-exclusions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configuring Exclusions
     </span>
   </a>
   
@@ -1969,37 +1561,37 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#security-architecture" class="md-nav__link">
+  <a href="#cicd-integration" class="md-nav__link">
     <span class="md-ellipsis">
-      Security Architecture
+      CI/CD Integration
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Security Architecture">
+    <nav class="md-nav" aria-label="CI/CD Integration">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#authentication-and-authorization" class="md-nav__link">
+  <a href="#pull-request-checks" class="md-nav__link">
     <span class="md-ellipsis">
-      Authentication and Authorization
+      Pull Request Checks
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#network-security" class="md-nav__link">
+  <a href="#branch-protection" class="md-nav__link">
     <span class="md-ellipsis">
-      Network Security
+      Branch Protection
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#data-security" class="md-nav__link">
+  <a href="#manual-workflow-triggers" class="md-nav__link">
     <span class="md-ellipsis">
-      Data Security
+      Manual Workflow Triggers
     </span>
   </a>
   
@@ -2011,37 +1603,46 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#observability-stack" class="md-nav__link">
+  <a href="#security-scan-schedule" class="md-nav__link">
     <span class="md-ellipsis">
-      Observability Stack
+      Security Scan Schedule
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Observability Stack">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#best-practices" class="md-nav__link">
+    <span class="md-ellipsis">
+      Best Practices
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Best Practices">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#metrics-prometheus" class="md-nav__link">
+  <a href="#for-developers" class="md-nav__link">
     <span class="md-ellipsis">
-      Metrics (Prometheus)
+      For Developers
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#logging-loki" class="md-nav__link">
+  <a href="#for-reviewers" class="md-nav__link">
     <span class="md-ellipsis">
-      Logging (Loki)
+      For Reviewers
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#tracing-jaeger" class="md-nav__link">
+  <a href="#for-maintainers" class="md-nav__link">
     <span class="md-ellipsis">
-      Tracing (Jaeger)
+      For Maintainers
     </span>
   </a>
   
@@ -2053,37 +1654,37 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#deployment-architecture" class="md-nav__link">
+  <a href="#troubleshooting" class="md-nav__link">
     <span class="md-ellipsis">
-      Deployment Architecture
+      Troubleshooting
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Deployment Architecture">
+    <nav class="md-nav" aria-label="Troubleshooting">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#container-orchestration" class="md-nav__link">
+  <a href="#scan-failures" class="md-nav__link">
     <span class="md-ellipsis">
-      Container Orchestration
+      Scan Failures
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#cicd-pipeline" class="md-nav__link">
+  <a href="#false-positives" class="md-nav__link">
     <span class="md-ellipsis">
-      CI/CD Pipeline
+      False Positives
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#infrastructure" class="md-nav__link">
+  <a href="#performance-issues" class="md-nav__link">
     <span class="md-ellipsis">
-      Infrastructure
+      Performance Issues
     </span>
   </a>
   
@@ -2095,60 +1696,27 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#scalability-considerations" class="md-nav__link">
+  <a href="#security-metrics" class="md-nav__link">
     <span class="md-ellipsis">
-      Scalability Considerations
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Scalability Considerations">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#horizontal-scaling" class="md-nav__link">
-    <span class="md-ellipsis">
-      Horizontal Scaling
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#vertical-scaling" class="md-nav__link">
-    <span class="md-ellipsis">
-      Vertical Scaling
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#caching-strategy" class="md-nav__link">
-    <span class="md-ellipsis">
-      Caching Strategy
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#future-architecture-evolution" class="md-nav__link">
-    <span class="md-ellipsis">
-      Future Architecture Evolution
+      Security Metrics
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#references" class="md-nav__link">
+  <a href="#additional-resources" class="md-nav__link">
     <span class="md-ellipsis">
-      References
+      Additional Resources
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#support" class="md-nav__link">
+    <span class="md-ellipsis">
+      Support
     </span>
   </a>
   
@@ -2170,7 +1738,7 @@
 
 
   
-    <a href="https://github.com/benjidanielsen/Flowstate-AI/edit/main/docs/SYSTEM_ARCHITECTURE.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+    <a href="https://github.com/benjidanielsen/Flowstate-AI/edit/main/docs/SECURITY_SCANNING.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"/></svg>
     </a>
@@ -2178,107 +1746,420 @@
   
 
 
-<h1 id="flowstate-ai-system-architecture">Flowstate-AI System Architecture<a class="headerlink" href="#flowstate-ai-system-architecture" title="Permanent link">&para;</a></h1>
-<p><strong>Version</strong>: 1.1.0<br />
-<strong>Last Updated</strong>: 2025-10-10<br />
-<strong>Status</strong>: Production</p>
+<h1 id="security-scanning-guide">Security Scanning Guide<a class="headerlink" href="#security-scanning-guide" title="Permanent link">&para;</a></h1>
+<p><strong>Last Updated</strong>: 2025-10-10<br />
+<strong>Maintained By</strong>: Flowstate-AI Development Team</p>
 <h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
-<p>Flowstate-AI is an AI-first, self-improving CRM-OS designed for network marketers and solo founders. The system architecture follows a microservices pattern with containerized components, comprehensive observability, and production-ready security practices.</p>
-<h2 id="architecture-principles">Architecture Principles<a class="headerlink" href="#architecture-principles" title="Permanent link">&para;</a></h2>
-<p>The Flowstate-AI architecture is guided by several core principles that ensure scalability, maintainability, and reliability. The system embraces a <strong>modular design</strong> where each component has a single, well-defined responsibility and communicates through standard interfaces. This modularity enables independent development, testing, and deployment of services.</p>
-<p><strong>Security by design</strong> is fundamental to the architecture. All services run as non-root users in containers, communication between services is encrypted, secrets are managed through secure vaults, and the principle of least privilege is enforced throughout. Regular security scanning and vulnerability management ensure ongoing protection.</p>
-<p>The architecture is designed for <strong>scalability</strong>, with stateless services that can scale horizontally, database connection pooling and query optimization, caching strategies to reduce database load, and asynchronous processing for long-running tasks. This enables the system to grow with user demand.</p>
-<p><strong>Observability</strong> is built into every layer, providing comprehensive metrics collection with Prometheus, distributed tracing with Jaeger, centralized logging with Loki, and health checks for all services. This visibility enables rapid problem diagnosis and resolution.</p>
-<h2 id="system-components">System Components<a class="headerlink" href="#system-components" title="Permanent link">&para;</a></h2>
-<h3 id="frontend-reactvite">Frontend (React/Vite)<a class="headerlink" href="#frontend-reactvite" title="Permanent link">&para;</a></h3>
-<p>The frontend is a modern single-page application built with React and Vite, served through nginx in production. The architecture provides a responsive user interface with real-time updates, state management using React Context and hooks, and API communication through Axios with interceptors for authentication and error handling.</p>
-<p>The frontend implements <strong>progressive enhancement</strong> to ensure core functionality works even with JavaScript disabled or on slower connections. The build process uses Vite for fast development and optimized production builds with code splitting and lazy loading.</p>
-<p><strong>Security features</strong> include Content Security Policy headers, XSS protection, CSRF token validation, and secure cookie handling. The nginx configuration provides gzip compression, static asset caching, and security headers.</p>
-<h3 id="backend-nodejstypescript">Backend (Node.js/TypeScript)<a class="headerlink" href="#backend-nodejstypescript" title="Permanent link">&para;</a></h3>
-<p>The backend is built with Node.js and TypeScript, providing a robust API layer with type safety and modern JavaScript features. The architecture follows a <strong>layered pattern</strong> with clear separation between routes, controllers, services, and data access layers.</p>
-<p><strong>Key features</strong> include RESTful API design with consistent endpoint structure, JWT-based authentication and authorization, input validation and sanitization, comprehensive error handling with proper HTTP status codes, and rate limiting to prevent abuse.</p>
-<p>The backend uses <strong>dependency injection</strong> for better testability and maintainability. Services are loosely coupled and can be easily mocked for testing. The TypeScript compiler provides compile-time type checking to catch errors early.</p>
-<p><strong>Database access</strong> is managed through a data access layer that provides connection pooling, query optimization, and transaction management. The backend supports both PostgreSQL for relational data and Redis for caching and session management.</p>
-<h3 id="python-worker-fastapi">Python Worker (FastAPI)<a class="headerlink" href="#python-worker-fastapi" title="Permanent link">&para;</a></h3>
-<p>The Python worker handles AI processing and machine learning tasks using FastAPI for high-performance async operations. This component provides <strong>AI capabilities</strong> including natural language processing, sentiment analysis, recommendation engines, and predictive analytics.</p>
-<p>The worker architecture uses <strong>asynchronous processing</strong> with Celery for task queuing, Redis as a message broker, and worker processes that can scale independently. This enables long-running AI tasks to execute without blocking the main application.</p>
-<p><strong>Model management</strong> includes versioned model storage, A/B testing capabilities, model performance monitoring, and automatic fallback to previous versions if performance degrades. Models are loaded on worker startup and cached in memory for fast inference.</p>
-<h3 id="database-layer">Database Layer<a class="headerlink" href="#database-layer" title="Permanent link">&para;</a></h3>
-<h4 id="postgresql">PostgreSQL<a class="headerlink" href="#postgresql" title="Permanent link">&para;</a></h4>
-<p>PostgreSQL serves as the primary relational database, storing user data, CRM records, and transactional information. The database architecture includes <strong>normalized schemas</strong> for data integrity, <strong>indexes</strong> for query performance, <strong>foreign key constraints</strong> for referential integrity, and <strong>triggers</strong> for audit logging.</p>
-<p><strong>High availability</strong> is achieved through streaming replication with a primary and standby server, automatic failover with pg_auto_failover or Patroni, and regular backups with point-in-time recovery capability.</p>
-<p><strong>Performance optimization</strong> includes connection pooling through PgBouncer, query optimization with EXPLAIN ANALYZE, partitioning for large tables, and vacuum and analyze scheduling for maintenance.</p>
-<h4 id="redis">Redis<a class="headerlink" href="#redis" title="Permanent link">&para;</a></h4>
-<p>Redis provides caching and session management with <strong>in-memory storage</strong> for fast access. The architecture uses Redis for session storage, API response caching, rate limiting counters, and pub/sub for real-time features.</p>
-<p><strong>Data persistence</strong> is configured with AOF (Append-Only File) for durability and RDB snapshots for backup. The maxmemory policy is set to allkeys-lru to automatically evict least recently used keys when memory is full.</p>
-<h2 id="communication-patterns">Communication Patterns<a class="headerlink" href="#communication-patterns" title="Permanent link">&para;</a></h2>
-<h3 id="synchronous-communication">Synchronous Communication<a class="headerlink" href="#synchronous-communication" title="Permanent link">&para;</a></h3>
-<p>Synchronous communication between services uses <strong>HTTP/REST</strong> with JSON payloads. The backend exposes RESTful endpoints that the frontend consumes, while the python-worker provides API endpoints for AI processing.</p>
-<p><strong>API versioning</strong> is implemented through URL paths (e.g., /api/v1/) to enable backward compatibility. Each API response includes standard fields for status, data, and error messages.</p>
-<p><strong>Authentication</strong> uses JWT tokens passed in Authorization headers. Tokens are short-lived (15 minutes) with refresh tokens for extended sessions. The backend validates tokens on every request and enforces role-based access control.</p>
-<h3 id="asynchronous-communication">Asynchronous Communication<a class="headerlink" href="#asynchronous-communication" title="Permanent link">&para;</a></h3>
-<p>Asynchronous communication uses <strong>message queues</strong> for decoupling services and handling long-running tasks. Celery workers consume tasks from Redis queues and execute them asynchronously.</p>
-<p><strong>Task patterns</strong> include fire-and-forget for non-critical tasks, request-reply for tasks that need results, and pub-sub for event broadcasting. Tasks are idempotent to handle retries safely.</p>
-<p><strong>Error handling</strong> includes automatic retries with exponential backoff, dead letter queues for failed tasks, and alerting for critical failures. Task status is tracked in the database for monitoring.</p>
-<h2 id="data-flow">Data Flow<a class="headerlink" href="#data-flow" title="Permanent link">&para;</a></h2>
-<h3 id="user-request-flow">User Request Flow<a class="headerlink" href="#user-request-flow" title="Permanent link">&para;</a></h3>
-<p>A typical user request follows this path through the system. The user interacts with the React frontend, which sends an HTTP request to the backend API. The backend validates the JWT token and checks permissions before processing the request through the appropriate service layer. Services interact with the database or cache as needed, and the response is returned through the same path with appropriate status codes and data.</p>
-<p>For AI-powered features, the backend may queue a task to the python-worker and return immediately with a task ID. The frontend can poll for task completion or receive updates through WebSocket connections.</p>
-<h3 id="data-persistence-flow">Data Persistence Flow<a class="headerlink" href="#data-persistence-flow" title="Permanent link">&para;</a></h3>
-<p>Data persistence follows a structured pattern to ensure consistency and durability. User actions trigger API calls to the backend, which validates input and enforces business rules. The service layer transforms data into database models and executes transactions with proper error handling. Database triggers log changes to audit tables for compliance and debugging.</p>
-<p><strong>Caching strategy</strong> includes cache-aside pattern where the application checks cache first, reads from database on cache miss, and updates cache with the result. Cache invalidation occurs on data updates to prevent stale data.</p>
-<h2 id="security-architecture">Security Architecture<a class="headerlink" href="#security-architecture" title="Permanent link">&para;</a></h2>
-<h3 id="authentication-and-authorization">Authentication and Authorization<a class="headerlink" href="#authentication-and-authorization" title="Permanent link">&para;</a></h3>
-<p>The system implements <strong>multi-layered security</strong> starting with authentication. Users authenticate with email and password, receiving a JWT access token and refresh token. The access token is short-lived (15 minutes) and contains user ID and roles. The refresh token is long-lived (7 days) and stored securely in HTTP-only cookies.</p>
-<p><strong>Authorization</strong> uses role-based access control (RBAC) with roles defined in the database. Each API endpoint specifies required roles, and the backend middleware validates tokens and checks permissions before allowing access.</p>
-<h3 id="network-security">Network Security<a class="headerlink" href="#network-security" title="Permanent link">&para;</a></h3>
-<p>Network security is enforced at multiple levels. All external communication uses HTTPS with TLS 1.3, internal service communication occurs on a private Docker network, and the database is not exposed to the public internet. Firewall rules restrict access to only necessary ports.</p>
-<p><strong>API security</strong> includes rate limiting to prevent abuse, input validation to prevent injection attacks, output encoding to prevent XSS, and CORS configuration to restrict allowed origins.</p>
-<h3 id="data-security">Data Security<a class="headerlink" href="#data-security" title="Permanent link">&para;</a></h3>
-<p>Data security protects sensitive information at rest and in transit. Passwords are hashed with bcrypt (cost factor 12), sensitive data is encrypted in the database using application-level encryption, and database backups are encrypted before storage. API keys and secrets are stored in environment variables or secret management systems, never in code.</p>
-<h2 id="observability-stack">Observability Stack<a class="headerlink" href="#observability-stack" title="Permanent link">&para;</a></h2>
-<h3 id="metrics-prometheus">Metrics (Prometheus)<a class="headerlink" href="#metrics-prometheus" title="Permanent link">&para;</a></h3>
-<p>Prometheus collects metrics from all services through /metrics endpoints. <strong>System metrics</strong> include CPU usage, memory usage, disk I/O, and network traffic. <strong>Application metrics</strong> track request rates, error rates, response times, and active connections. <strong>Business metrics</strong> monitor user signups, API usage, and feature adoption.</p>
-<p>Metrics are stored in Prometheus with configurable retention periods. Grafana provides visualization through dashboards for different audiences including operations, development, and business stakeholders.</p>
-<h3 id="logging-loki">Logging (Loki)<a class="headerlink" href="#logging-loki" title="Permanent link">&para;</a></h3>
-<p>Loki provides centralized logging with efficient storage and querying. All services send structured logs in JSON format with standard fields including timestamp, level, service, and message. <strong>Log levels</strong> follow standard conventions: ERROR for failures, WARN for potential issues, INFO for significant events, and DEBUG for detailed troubleshooting.</p>
-<p>Logs are retained for 30 days in Loki and archived to object storage for compliance. Log aggregation enables correlation across services using request IDs.</p>
-<h3 id="tracing-jaeger">Tracing (Jaeger)<a class="headerlink" href="#tracing-jaeger" title="Permanent link">&para;</a></h3>
-<p>Jaeger provides distributed tracing to understand request flow across services. Each request generates a trace with spans for each service interaction. <strong>Trace data</strong> includes service name, operation name, start time and duration, tags for metadata, and logs for events within spans.</p>
-<p>Sampling is configured to balance observability with performance impact. Critical paths are always traced while routine operations are sampled at lower rates.</p>
-<h2 id="deployment-architecture">Deployment Architecture<a class="headerlink" href="#deployment-architecture" title="Permanent link">&para;</a></h2>
-<h3 id="container-orchestration">Container Orchestration<a class="headerlink" href="#container-orchestration" title="Permanent link">&para;</a></h3>
-<p>Services are containerized using Docker with multi-stage builds for optimization. <strong>Container features</strong> include non-root user execution, health checks for automatic recovery, resource limits to prevent resource exhaustion, and security scanning in CI/CD pipelines.</p>
-<p>The docker-compose configuration defines service dependencies, networking, and volumes. For production, Kubernetes can be used for advanced orchestration with features like auto-scaling, rolling updates, and self-healing.</p>
-<h3 id="cicd-pipeline">CI/CD Pipeline<a class="headerlink" href="#cicd-pipeline" title="Permanent link">&para;</a></h3>
-<p>The CI/CD pipeline automates testing and deployment with multiple stages. <strong>Build stage</strong> checks out code, runs linters and type checkers, executes unit tests, and builds Docker images. <strong>Security stage</strong> scans for vulnerabilities, checks for secrets in code, and validates dependencies. <strong>Deploy stage</strong> pushes images to registry, updates deployment configuration, and performs health checks.</p>
-<p>Deployments follow blue-green or canary patterns to minimize downtime and risk. Rollback procedures are automated and tested regularly.</p>
-<h3 id="infrastructure">Infrastructure<a class="headerlink" href="#infrastructure" title="Permanent link">&para;</a></h3>
-<p>Infrastructure is managed as code using tools like Terraform or CloudFormation. <strong>Production environment</strong> includes load balancers for traffic distribution, auto-scaling groups for compute resources, managed databases with automatic backups, and CDN for static asset delivery.</p>
-<p><strong>Disaster recovery</strong> capabilities include regular database backups with point-in-time recovery, infrastructure as code for rapid rebuilding, documented runbooks for common scenarios, and tested recovery procedures with defined RTO and RPO.</p>
-<h2 id="scalability-considerations">Scalability Considerations<a class="headerlink" href="#scalability-considerations" title="Permanent link">&para;</a></h2>
-<h3 id="horizontal-scaling">Horizontal Scaling<a class="headerlink" href="#horizontal-scaling" title="Permanent link">&para;</a></h3>
-<p>Services are designed for horizontal scaling with stateless application servers that can be added or removed dynamically. <strong>Load balancing</strong> distributes traffic across instances using round-robin or least-connections algorithms. Session data is stored in Redis rather than application memory to enable any server to handle any request.</p>
-<p><strong>Database scaling</strong> uses read replicas for query load distribution, connection pooling to maximize connection reuse, and query optimization to reduce database load. For extreme scale, sharding can partition data across multiple database instances.</p>
-<h3 id="vertical-scaling">Vertical Scaling<a class="headerlink" href="#vertical-scaling" title="Permanent link">&para;</a></h3>
-<p>Vertical scaling provides additional resources to existing instances. <strong>Resource tuning</strong> includes adjusting Node.js heap size, configuring database memory buffers, optimizing Redis maxmemory, and tuning worker process counts.</p>
-<p><strong>Performance monitoring</strong> identifies bottlenecks and guides scaling decisions. Metrics track resource utilization and application performance to determine whether horizontal or vertical scaling is more appropriate.</p>
-<h3 id="caching-strategy">Caching Strategy<a class="headerlink" href="#caching-strategy" title="Permanent link">&para;</a></h3>
-<p>Caching reduces load on backend systems and improves response times. <strong>Multi-level caching</strong> includes browser caching for static assets, CDN caching for public content, Redis caching for API responses, and database query result caching.</p>
-<p><strong>Cache invalidation</strong> uses time-to-live (TTL) for automatic expiration and event-based invalidation for immediate updates. Cache warming preloads frequently accessed data during deployment.</p>
-<h2 id="future-architecture-evolution">Future Architecture Evolution<a class="headerlink" href="#future-architecture-evolution" title="Permanent link">&para;</a></h2>
-<p>The architecture is designed to evolve with the system's needs. <strong>Planned enhancements</strong> include migrating to Kubernetes for advanced orchestration, implementing service mesh for advanced networking, adding GraphQL for flexible API queries, and introducing event sourcing for audit and replay capabilities.</p>
-<p><strong>AI evolution</strong> will expand machine learning capabilities, add real-time model training, implement federated learning for privacy, and develop self-improving algorithms that learn from system behavior.</p>
-<h2 id="references">References<a class="headerlink" href="#references" title="Permanent link">&para;</a></h2>
+<p>Flowstate-AI implements comprehensive, multi-layered security scanning to identify and prevent security vulnerabilities across the entire codebase. This document describes the security scanning tools, their configuration, and how to work with security findings.</p>
+<h2 id="security-scanning-tools">Security Scanning Tools<a class="headerlink" href="#security-scanning-tools" title="Permanent link">&para;</a></h2>
+<h3 id="1-codeql-github-native">1. CodeQL (GitHub Native)<a class="headerlink" href="#1-codeql-github-native" title="Permanent link">&para;</a></h3>
+<p><strong>Purpose</strong>: Broad multi-language semantic security analysis<br />
+<strong>Languages</strong>: JavaScript, TypeScript, Python<br />
+<strong>Frequency</strong>: On push to main/develop, on PRs, weekly schedule<br />
+<strong>Location</strong>: <code>.github/workflows/codeql.yml</code></p>
+<p><strong>What it scans</strong>:
+- Semantic code analysis across multiple languages
+- Complex security patterns and data flow analysis
+- SQL injection, XSS, path traversal, and more
+- CWE (Common Weakness Enumeration) patterns</p>
+<p><strong>Viewing results</strong>: GitHub Security tab → Code scanning alerts → Filter by "CodeQL"</p>
+<h3 id="2-eslint-security-scan">2. ESLint Security Scan<a class="headerlink" href="#2-eslint-security-scan" title="Permanent link">&para;</a></h3>
+<p><strong>Purpose</strong>: JavaScript/TypeScript-specific security and quality analysis<br />
+<strong>Languages</strong>: JavaScript, TypeScript, JSX, TSX<br />
+<strong>Frequency</strong>: On push to main/develop, on PRs, weekly schedule<br />
+<strong>Location</strong>: <code>.github/workflows/eslint.yml</code></p>
+<p><strong>What it scans</strong>:
+- Backend (Node.js/Express/TypeScript)
+- Frontend (React/TypeScript/Vite)
+- Security vulnerabilities (eslint-plugin-security)
+- TypeScript type safety issues
+- React best practices and security</p>
+<p><strong>Viewing results</strong>: GitHub Security tab → Code scanning alerts → Filter by "eslint-backend" or "eslint-frontend"</p>
+<h3 id="3-bandit-security-scan">3. Bandit Security Scan<a class="headerlink" href="#3-bandit-security-scan" title="Permanent link">&para;</a></h3>
+<p><strong>Purpose</strong>: Python-specific security analysis<br />
+<strong>Languages</strong>: Python<br />
+<strong>Frequency</strong>: On push to main/develop, on PRs, weekly schedule<br />
+<strong>Location</strong>: <code>.github/workflows/bandit.yml</code></p>
+<p><strong>What it scans</strong>:
+- Root-level Python files
+- Python worker (FastAPI application)
+- Hardcoded passwords/secrets
+- SQL injection vulnerabilities
+- Command injection risks
+- Insecure cryptography usage
+- Unsafe deserialization</p>
+<p><strong>Viewing results</strong>: GitHub Security tab → Code scanning alerts → Filter by "bandit-root" or "bandit-worker"</p>
+<h3 id="4-gitleaks-secret-scanning">4. Gitleaks (Secret Scanning)<a class="headerlink" href="#4-gitleaks-secret-scanning" title="Permanent link">&para;</a></h3>
+<p><strong>Purpose</strong>: Detect hardcoded secrets and credentials<br />
+<strong>Languages</strong>: All (text-based scanning)<br />
+<strong>Frequency</strong>: On every push<br />
+<strong>Location</strong>: <code>.github/workflows/codeql.yml</code> (integrated)</p>
+<p><strong>What it scans</strong>:
+- API keys, tokens, passwords
+- AWS credentials, database connection strings
+- Private keys, certificates
+- Any pattern matching secret formats</p>
+<p><strong>Viewing results</strong>: GitHub Security tab → Secret scanning alerts</p>
+<h3 id="5-trivy-container-scanning">5. Trivy (Container Scanning)<a class="headerlink" href="#5-trivy-container-scanning" title="Permanent link">&para;</a></h3>
+<p><strong>Purpose</strong>: Container image vulnerability scanning<br />
+<strong>Target</strong>: Docker images<br />
+<strong>Frequency</strong>: On Docker image builds<br />
+<strong>Location</strong>: <code>.github/workflows/docker.yml</code></p>
+<p><strong>What it scans</strong>:
+- OS package vulnerabilities
+- Application dependency vulnerabilities
+- Misconfigurations in Dockerfiles
+- Known CVEs in base images</p>
+<p><strong>Viewing results</strong>: GitHub Security tab → Code scanning alerts → Filter by "trivy"</p>
+<h3 id="6-dependabot-dependency-scanning">6. Dependabot (Dependency Scanning)<a class="headerlink" href="#6-dependabot-dependency-scanning" title="Permanent link">&para;</a></h3>
+<p><strong>Purpose</strong>: Automated dependency vulnerability detection and updates<br />
+<strong>Languages</strong>: npm (JavaScript/TypeScript), pip (Python)<br />
+<strong>Frequency</strong>: Daily checks<br />
+<strong>Configuration</strong>: <code>.github/dependabot.yml</code></p>
+<p><strong>What it scans</strong>:
+- npm package vulnerabilities (backend, frontend)
+- Python package vulnerabilities (root, python-worker)
+- Outdated dependencies with security fixes</p>
+<p><strong>Viewing results</strong>: GitHub Security tab → Dependabot alerts</p>
+<h2 id="security-scanning-architecture">Security Scanning Architecture<a class="headerlink" href="#security-scanning-architecture" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>┌─────────────────────────────────────────────────────────────┐
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>│                    Code Push / Pull Request                  │
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>└────────────────────────┬────────────────────────────────────┘
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>                         │
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>         ┌───────────────┼───────────────┐
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>         │               │               │
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>         ▼               ▼               ▼
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>    ┌────────┐      ┌────────┐     ┌────────┐
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>    │ CodeQL │      │ ESLint │     │ Bandit │
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>    │  Scan  │      │  Scan  │     │  Scan  │
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>    └────┬───┘      └────┬───┘     └────┬───┘
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>         │               │               │
+<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>         └───────────────┼───────────────┘
+<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>                         │
+<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>                         ▼
+<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>              ┌──────────────────────┐
+<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>              │  SARIF Results       │
+<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>              │  Upload to GitHub    │
+<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>              └──────────┬───────────┘
+<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>                         │
+<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>                         ▼
+<a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>              ┌──────────────────────┐
+<a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>              │  GitHub Security Tab │
+<a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>              │  - Code Scanning     │
+<a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>              │  - Secret Scanning   │
+<a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a>              │  - Dependabot        │
+<a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a>              └──────────────────────┘
+</code></pre></div>
+<h2 id="working-with-security-findings">Working with Security Findings<a class="headerlink" href="#working-with-security-findings" title="Permanent link">&para;</a></h2>
+<h3 id="viewing-security-findings">Viewing Security Findings<a class="headerlink" href="#viewing-security-findings" title="Permanent link">&para;</a></h3>
+<ol>
+<li>Navigate to the <strong>Security</strong> tab in the GitHub repository</li>
+<li>Select the appropriate category:</li>
+<li><strong>Code scanning</strong> - CodeQL, ESLint, Bandit, Trivy findings</li>
+<li><strong>Secret scanning</strong> - Gitleaks findings</li>
+<li>
+<p><strong>Dependabot</strong> - Dependency vulnerabilities</p>
+</li>
+<li>
+<p>Filter by:</p>
+</li>
+<li><strong>Tool</strong> - CodeQL, eslint-backend, eslint-frontend, bandit-root, bandit-worker</li>
+<li><strong>Severity</strong> - Critical, High, Medium, Low</li>
+<li><strong>Status</strong> - Open, Fixed, Dismissed</li>
+<li><strong>Branch</strong> - main, develop, feature branches</li>
+</ol>
+<h3 id="triaging-security-findings">Triaging Security Findings<a class="headerlink" href="#triaging-security-findings" title="Permanent link">&para;</a></h3>
+<p>When a security finding is reported, follow this process:</p>
+<ol>
+<li><strong>Assess Severity</strong>:</li>
+<li><strong>Critical/High</strong>: Address immediately, block PR if necessary</li>
+<li><strong>Medium</strong>: Address before merging to main</li>
+<li>
+<p><strong>Low</strong>: Address in next sprint or dismiss if false positive</p>
+</li>
+<li>
+<p><strong>Verify the Finding</strong>:</p>
+</li>
+<li>Review the code location</li>
+<li>Understand the vulnerability</li>
+<li>
+<p>Check if it's a true positive or false positive</p>
+</li>
+<li>
+<p><strong>Take Action</strong>:</p>
+</li>
+<li><strong>Fix</strong>: Modify code to address the vulnerability</li>
+<li><strong>Dismiss</strong>: If false positive, dismiss with reason</li>
+<li>
+<p><strong>Create Issue</strong>: If can't fix immediately, create tracking issue</p>
+</li>
+<li>
+<p><strong>Document</strong>:</p>
+</li>
+<li>Add comments explaining the fix or dismissal</li>
+<li>Update security documentation if needed</li>
+<li>Share learnings with the team</li>
+</ol>
+<h3 id="fixing-security-issues">Fixing Security Issues<a class="headerlink" href="#fixing-security-issues" title="Permanent link">&para;</a></h3>
+<p><strong>For CodeQL/ESLint/Bandit findings</strong>:</p>
+<ol>
+<li>Click on the finding in the Security tab</li>
+<li>Review the <strong>Description</strong> and <strong>Recommendation</strong></li>
+<li>Click <strong>Show paths</strong> to see the data flow (for CodeQL)</li>
+<li>Navigate to the code location</li>
+<li>Implement the recommended fix</li>
+<li>Commit and push the fix</li>
+<li>Verify the finding is resolved in the next scan</li>
+</ol>
+<p><strong>For Dependabot findings</strong>:</p>
+<ol>
+<li>Review the Dependabot alert</li>
+<li>Check the <strong>Patched versions</strong> section</li>
+<li>Option A: Accept Dependabot's automatic PR</li>
+<li>Option B: Manually update the dependency</li>
+<li>Test thoroughly before merging</li>
+<li>Verify the alert is closed after merge</li>
+</ol>
+<h3 id="dismissing-false-positives">Dismissing False Positives<a class="headerlink" href="#dismissing-false-positives" title="Permanent link">&para;</a></h3>
+<p>If a finding is a false positive:</p>
+<ol>
+<li>Click on the finding in the Security tab</li>
+<li>Click <strong>Dismiss alert</strong></li>
+<li>Select a reason:</li>
+<li><strong>False positive</strong> - Not actually a vulnerability</li>
+<li><strong>Won't fix</strong> - Accepted risk</li>
+<li><strong>Used in tests</strong> - Only in test code</li>
+<li>Add a comment explaining why</li>
+<li>Click <strong>Dismiss alert</strong></li>
+</ol>
+<h3 id="configuring-exclusions">Configuring Exclusions<a class="headerlink" href="#configuring-exclusions" title="Permanent link">&para;</a></h3>
+<p><strong>ESLint exclusions</strong>:</p>
+<p>Create or modify <code>.eslintrc.json</code> in backend or frontend:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="p">{</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">  </span><span class="nt">&quot;rules&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">    </span><span class="nt">&quot;security/detect-object-injection&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;off&quot;</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">  </span><span class="p">},</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">  </span><span class="nt">&quot;ignorePatterns&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;dist/&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;build/&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;*.test.ts&quot;</span><span class="p">]</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="p">}</span>
+</code></pre></div>
+<p><strong>Bandit exclusions</strong>:</p>
+<p>Create <code>.bandit</code> file in project root:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nt">exclude_dirs</span><span class="p">:</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/venv/</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/tests/</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/node_modules/</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="nt">skips</span><span class="p">:</span>
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">B101</span><span class="w">  </span><span class="c1"># assert_used</span>
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">B601</span><span class="w">  </span><span class="c1"># paramiko_calls</span>
+</code></pre></div>
+<p><strong>CodeQL exclusions</strong>:</p>
+<p>Modify <code>.github/workflows/codeql.yml</code>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Initialize CodeQL</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">  </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">github/codeql-action/init@v3</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">  </span><span class="nt">with</span><span class="p">:</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">    </span><span class="nt">queries</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">+security-extended</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">    </span><span class="nt">paths-ignore</span><span class="p">:</span>
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;**/test/**&#39;</span>
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;**/tests/**&#39;</span>
+</code></pre></div>
+<h2 id="cicd-integration">CI/CD Integration<a class="headerlink" href="#cicd-integration" title="Permanent link">&para;</a></h2>
+<h3 id="pull-request-checks">Pull Request Checks<a class="headerlink" href="#pull-request-checks" title="Permanent link">&para;</a></h3>
+<p>Security scans run automatically on all pull requests:</p>
 <ul>
-<li><a href="../DEPLOYMENT_GUIDE/">Deployment Guide</a></li>
-<li><a href="../OPS_RUNBOOK/">Operations Runbook</a></li>
-<li><a href="adr/">Architecture Decision Records</a></li>
-<li><a href="api/">API Documentation</a></li>
+<li><strong>CodeQL</strong>: Scans changed files and dependencies</li>
+<li><strong>ESLint</strong>: Scans changed JavaScript/TypeScript files</li>
+<li><strong>Bandit</strong>: Scans changed Python files</li>
+<li><strong>Gitleaks</strong>: Scans for new secrets</li>
 </ul>
+<p><strong>PR will be blocked if</strong>:
+- Critical or High severity findings are introduced
+- Secrets are detected in the code
+- Required security checks fail</p>
+<h3 id="branch-protection">Branch Protection<a class="headerlink" href="#branch-protection" title="Permanent link">&para;</a></h3>
+<p>Main and develop branches have required status checks:</p>
+<ul>
+<li>CodeQL analysis must pass</li>
+<li>ESLint scan must complete</li>
+<li>Bandit scan must complete</li>
+<li>No new high-severity findings</li>
+</ul>
+<h3 id="manual-workflow-triggers">Manual Workflow Triggers<a class="headerlink" href="#manual-workflow-triggers" title="Permanent link">&para;</a></h3>
+<p>You can manually trigger security scans:</p>
+<ol>
+<li>Go to <strong>Actions</strong> tab</li>
+<li>Select the workflow (CodeQL, ESLint, or Bandit)</li>
+<li>Click <strong>Run workflow</strong></li>
+<li>Select branch and click <strong>Run workflow</strong></li>
+</ol>
+<h2 id="security-scan-schedule">Security Scan Schedule<a class="headerlink" href="#security-scan-schedule" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Trigger</th>
+<th>Frequency</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CodeQL</td>
+<td>Push, PR, Schedule</td>
+<td>Weekly (Monday 3 AM UTC)</td>
+</tr>
+<tr>
+<td>ESLint</td>
+<td>Push, PR, Schedule</td>
+<td>Weekly (Monday 3 AM UTC)</td>
+</tr>
+<tr>
+<td>Bandit</td>
+<td>Push, PR, Schedule</td>
+<td>Weekly (Monday 3 AM UTC)</td>
+</tr>
+<tr>
+<td>Gitleaks</td>
+<td>Push</td>
+<td>Every push</td>
+</tr>
+<tr>
+<td>Trivy</td>
+<td>Docker build</td>
+<td>On image builds</td>
+</tr>
+<tr>
+<td>Dependabot</td>
+<td>Automatic</td>
+<td>Daily</td>
+</tr>
+</tbody>
+</table>
+<h2 id="best-practices">Best Practices<a class="headerlink" href="#best-practices" title="Permanent link">&para;</a></h2>
+<h3 id="for-developers">For Developers<a class="headerlink" href="#for-developers" title="Permanent link">&para;</a></h3>
+<ol>
+<li>
+<p><strong>Run scans locally</strong> before pushing:
+   <div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1"># ESLint</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="nb">cd</span><span class="w"> </span>backend<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>npx<span class="w"> </span>eslint<span class="w"> </span>.
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="nb">cd</span><span class="w"> </span>frontend<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>npx<span class="w"> </span>eslint<span class="w"> </span>.
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="c1"># Bandit</span>
+<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>bandit<span class="w"> </span>-r<span class="w"> </span>.<span class="w"> </span>--exclude<span class="w"> </span>./venv,./node_modules
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Address findings promptly</strong>:</p>
+</li>
+<li>Don't let security findings accumulate</li>
+<li>Fix high-severity issues before merging</li>
+<li>
+<p>Document any dismissals with clear reasoning</p>
+</li>
+<li>
+<p><strong>Learn from findings</strong>:</p>
+</li>
+<li>Understand why the issue was flagged</li>
+<li>Apply learnings to future code</li>
+<li>
+<p>Share knowledge with the team</p>
+</li>
+<li>
+<p><strong>Keep dependencies updated</strong>:</p>
+</li>
+<li>Review Dependabot PRs regularly</li>
+<li>Test dependency updates thoroughly</li>
+<li>Don't ignore security patches</li>
+</ol>
+<h3 id="for-reviewers">For Reviewers<a class="headerlink" href="#for-reviewers" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong>Check security tab</strong> before approving PRs</li>
+<li><strong>Verify fixes</strong> for security findings</li>
+<li><strong>Question dismissals</strong> - ensure they're justified</li>
+<li><strong>Educate contributors</strong> on security best practices</li>
+</ol>
+<h3 id="for-maintainers">For Maintainers<a class="headerlink" href="#for-maintainers" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong>Monitor security trends</strong>:</li>
+<li>Track number of findings over time</li>
+<li>Identify recurring vulnerability patterns</li>
+<li>
+<p>Adjust scanning configuration as needed</p>
+</li>
+<li>
+<p><strong>Keep tools updated</strong>:</p>
+</li>
+<li>Update ESLint and plugins regularly</li>
+<li>Update Bandit version</li>
+<li>
+<p>Review CodeQL query updates</p>
+</li>
+<li>
+<p><strong>Tune configurations</strong>:</p>
+</li>
+<li>Reduce false positives through configuration</li>
+<li>Add project-specific rules as needed</li>
+<li>Balance security with developer productivity</li>
+</ol>
+<h2 id="troubleshooting">Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permanent link">&para;</a></h2>
+<h3 id="scan-failures">Scan Failures<a class="headerlink" href="#scan-failures" title="Permanent link">&para;</a></h3>
+<p><strong>ESLint fails with "Cannot find module"</strong>:
+- Ensure dependencies are installed: <code>npm install</code>
+- Check cache is working correctly
+- Verify package.json is up to date</p>
+<p><strong>Bandit fails with "No Python files found"</strong>:
+- Check path exclusions aren't too broad
+- Verify Python files exist in scanned directories
+- Check file permissions</p>
+<p><strong>CodeQL fails with timeout</strong>:
+- CodeQL can be slow on large codebases
+- Consider increasing timeout in workflow
+- Optimize queries if possible</p>
+<h3 id="false-positives">False Positives<a class="headerlink" href="#false-positives" title="Permanent link">&para;</a></h3>
+<p><strong>Too many false positives</strong>:
+1. Review common patterns causing false positives
+2. Configure tool-specific exclusions
+3. Consider dismissing categories of false positives
+4. Document exclusion rationale in ADR</p>
+<p><strong>Legitimate code flagged as vulnerable</strong>:
+1. Verify the code is actually safe
+2. Add inline comments explaining safety
+3. Use tool-specific ignore comments if appropriate
+4. Dismiss with detailed explanation</p>
+<h3 id="performance-issues">Performance Issues<a class="headerlink" href="#performance-issues" title="Permanent link">&para;</a></h3>
+<p><strong>Scans taking too long</strong>:
+1. Check if scans are running on correct paths only
+2. Optimize exclusion patterns
+3. Consider splitting large components
+4. Review caching configuration</p>
+<h2 id="security-metrics">Security Metrics<a class="headerlink" href="#security-metrics" title="Permanent link">&para;</a></h2>
+<p>Track these metrics to measure security posture:</p>
+<ul>
+<li><strong>Total open findings</strong> by severity</li>
+<li><strong>Mean time to remediation</strong> for security issues</li>
+<li><strong>False positive rate</strong> per tool</li>
+<li><strong>Scan success rate</strong> (% of scans that complete)</li>
+<li><strong>Dependency update lag</strong> (time between release and update)</li>
+</ul>
+<h2 id="additional-resources">Additional Resources<a class="headerlink" href="#additional-resources" title="Permanent link">&para;</a></h2>
+<ul>
+<li><a href="https://docs.github.com/en/code-security/code-scanning">GitHub Code Scanning Documentation</a></li>
+<li><a href="https://github.com/eslint-community/eslint-plugin-security#rules">ESLint Security Plugin Rules</a></li>
+<li><a href="https://bandit.readthedocs.io/">Bandit Documentation</a></li>
+<li><a href="https://owasp.org/www-project-top-ten/">OWASP Top 10</a></li>
+<li><a href="https://cwe.mitre.org/top25/">CWE Top 25</a></li>
+</ul>
+<h2 id="support">Support<a class="headerlink" href="#support" title="Permanent link">&para;</a></h2>
+<p>For questions or issues with security scanning:</p>
+<ol>
+<li>Check this documentation first</li>
+<li>Review ADR 0005: Security Scanning</li>
+<li>Check GitHub Actions workflow logs</li>
+<li>Open an issue in the repository</li>
+<li>Contact the security team</li>
+</ol>
 <hr />
-<p><strong>Document Owner</strong>: Architecture Team<br />
-<strong>Review Cycle</strong>: Quarterly<br />
+<p><strong>Document Owner</strong>: Flowstate-AI Development Team<br />
+<strong>Last Review</strong>: 2025-10-10<br />
 <strong>Next Review</strong>: 2026-01-10</p>
 
 
@@ -2302,7 +2183,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 10, 2025 09:47:54 UTC">October 10, 2025</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 10, 2025 10:01:15 UTC">October 10, 2025</span>
   </span>
 
     
@@ -2312,7 +2193,7 @@
     <span class="md-icon" title="Created">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14.47 15.08 11 13V7h1.5v5.25l3.08 1.83c-.41.28-.79.62-1.11 1m-1.39 4.84c-.36.05-.71.08-1.08.08-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8c0 .37-.03.72-.08 1.08.69.1 1.33.32 1.92.64.1-.56.16-1.13.16-1.72 0-5.5-4.5-10-10-10S2 6.5 2 12s4.47 10 10 10c.59 0 1.16-.06 1.72-.16-.32-.59-.54-1.23-.64-1.92M18 15v3h-3v2h3v3h2v-3h3v-2h-3v-3z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 10, 2025 09:47:54 UTC">October 10, 2025</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 10, 2025 10:01:15 UTC">October 10, 2025</span>
   </span>
 
     

@@ -12,24 +12,24 @@
         <meta name="author" content="Flowstate-AI Team">
       
       
-        <link rel="canonical" href="https://benjidanielsen.github.io/Flowstate-AI/api/">
+        <link rel="canonical" href="https://benjidanielsen.github.io/Flowstate-AI/adr/0009-testing-strategy/">
       
       
       
       
-      <link rel="icon" href="../assets/images/favicon.png">
+      <link rel="icon" href="../../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.21">
     
     
       
-        <title>API Documentation - Flowstate-AI Documentation</title>
+        <title>ADR 0009: Comprehensive Testing Strategy - Flowstate-AI Documentation</title>
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.2a3383ac.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.2a3383ac.min.css">
       
         
-        <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
       
       
 
@@ -48,7 +48,7 @@
       
     
     
-    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -74,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#api-documentation" class="md-skip">
+        <a href="#adr-0009-comprehensive-testing-strategy" class="md-skip">
           Skip to content
         </a>
       
@@ -92,7 +92,7 @@
 
 <header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href=".." title="Flowstate-AI Documentation" class="md-header__button md-logo" aria-label="Flowstate-AI Documentation" data-md-component="logo">
+    <a href="../.." title="Flowstate-AI Documentation" class="md-header__button md-logo" aria-label="Flowstate-AI Documentation" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -112,7 +112,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              API Documentation
+              ADR 0009: Comprehensive Testing Strategy
             
           </span>
         </div>
@@ -225,7 +225,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../INDEX/" class="md-tabs__link">
+      <a href="../../INDEX/" class="md-tabs__link">
         
   
   
@@ -246,7 +246,7 @@
     
     
       <li class="md-tabs__item">
-        <a href=".." class="md-tabs__link">
+        <a href="../.." class="md-tabs__link">
           
   
   
@@ -266,7 +266,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../GOVERNANCE/" class="md-tabs__link">
+        <a href="../../GOVERNANCE/" class="md-tabs__link">
           
   
   
@@ -286,7 +286,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../OPS_RUNBOOK/" class="md-tabs__link">
+        <a href="../../OPS_RUNBOOK/" class="md-tabs__link">
           
   
   
@@ -306,7 +306,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../CODING_STANDARDS/" class="md-tabs__link">
+        <a href="../../CODING_STANDARDS/" class="md-tabs__link">
           
   
   
@@ -326,7 +326,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../RISK_REGISTER/" class="md-tabs__link">
+        <a href="../../RISK_REGISTER/" class="md-tabs__link">
           
   
   
@@ -346,7 +346,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../FEDERATION_CHECKLIST/" class="md-tabs__link">
+        <a href="../../FEDERATION_CHECKLIST/" class="md-tabs__link">
           
   
   
@@ -366,7 +366,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="./" class="md-tabs__link">
+        <a href="../../api/" class="md-tabs__link">
           
   
   
@@ -386,7 +386,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../integrations/" class="md-tabs__link">
+        <a href="../../integrations/" class="md-tabs__link">
           
   
   
@@ -420,7 +420,7 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href=".." title="Flowstate-AI Documentation" class="md-nav__button md-logo" aria-label="Flowstate-AI Documentation" data-md-component="logo">
+    <a href="../.." title="Flowstate-AI Documentation" class="md-nav__button md-logo" aria-label="Flowstate-AI Documentation" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -450,7 +450,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../INDEX/" class="md-nav__link">
+      <a href="../../INDEX/" class="md-nav__link">
         
   
   
@@ -517,7 +517,7 @@
   
   
     <li class="md-nav__item">
-      <a href=".." class="md-nav__link">
+      <a href="../.." class="md-nav__link">
         
   
   
@@ -540,7 +540,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../DEPLOYMENT_GUIDE/" class="md-nav__link">
+      <a href="../../DEPLOYMENT_GUIDE/" class="md-nav__link">
         
   
   
@@ -563,7 +563,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../SYSTEM_ARCHITECTURE/" class="md-nav__link">
+      <a href="../../SYSTEM_ARCHITECTURE/" class="md-nav__link">
         
   
   
@@ -638,7 +638,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../GOVERNANCE/" class="md-nav__link">
+      <a href="../../GOVERNANCE/" class="md-nav__link">
         
   
   
@@ -661,7 +661,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../ETHICS/" class="md-nav__link">
+      <a href="../../ETHICS/" class="md-nav__link">
         
   
   
@@ -684,7 +684,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../FEDERATION_CHARTER/" class="md-nav__link">
+      <a href="../../FEDERATION_CHARTER/" class="md-nav__link">
         
   
   
@@ -707,7 +707,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../EMERGENT_BEHAVIOUR_OVERSIGHT_AND_CESSATION/" class="md-nav__link">
+      <a href="../../EMERGENT_BEHAVIOUR_OVERSIGHT_AND_CESSATION/" class="md-nav__link">
         
   
   
@@ -782,7 +782,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../OPS_RUNBOOK/" class="md-nav__link">
+      <a href="../../OPS_RUNBOOK/" class="md-nav__link">
         
   
   
@@ -805,7 +805,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../DR_RUNBOOK/" class="md-nav__link">
+      <a href="../../DR_RUNBOOK/" class="md-nav__link">
         
   
   
@@ -828,7 +828,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../SLOS/" class="md-nav__link">
+      <a href="../../SLOS/" class="md-nav__link">
         
   
   
@@ -851,7 +851,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../AUDIT_TRAIL/" class="md-nav__link">
+      <a href="../../AUDIT_TRAIL/" class="md-nav__link">
         
   
   
@@ -926,7 +926,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../CODING_STANDARDS/" class="md-nav__link">
+      <a href="../../CODING_STANDARDS/" class="md-nav__link">
         
   
   
@@ -949,7 +949,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../adr/" class="md-nav__link">
+      <a href="../" class="md-nav__link">
         
   
   
@@ -972,7 +972,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../ROADMAP/" class="md-nav__link">
+      <a href="../../ROADMAP/" class="md-nav__link">
         
   
   
@@ -995,7 +995,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../CHANGELOG/" class="md-nav__link">
+      <a href="../../CHANGELOG/" class="md-nav__link">
         
   
   
@@ -1018,7 +1018,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../QUALITY/" class="md-nav__link">
+      <a href="../../QUALITY/" class="md-nav__link">
         
   
   
@@ -1093,7 +1093,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../RISK_REGISTER/" class="md-nav__link">
+      <a href="../../RISK_REGISTER/" class="md-nav__link">
         
   
   
@@ -1116,7 +1116,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../SECURITY.md" class="md-nav__link">
+      <a href="../../../SECURITY.md" class="md-nav__link">
         
   
   
@@ -1191,7 +1191,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../FEDERATION_CHECKLIST/" class="md-nav__link">
+      <a href="../../FEDERATION_CHECKLIST/" class="md-nav__link">
         
   
   
@@ -1214,7 +1214,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../REVOCATION/" class="md-nav__link">
+      <a href="../../REVOCATION/" class="md-nav__link">
         
   
   
@@ -1289,7 +1289,7 @@
   
   
     <li class="md-nav__item">
-      <a href="./" class="md-nav__link">
+      <a href="../../api/" class="md-nav__link">
         
   
   
@@ -1364,7 +1364,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../integrations/" class="md-nav__link">
+      <a href="../../integrations/" class="md-nav__link">
         
   
   
@@ -1414,82 +1414,37 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#overview" class="md-nav__link">
+  <a href="#status" class="md-nav__link">
     <span class="md-ellipsis">
-      Overview
+      Status
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#base-url" class="md-nav__link">
+  <a href="#context" class="md-nav__link">
     <span class="md-ellipsis">
-      Base URL
+      Context
     </span>
   </a>
   
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#authentication" class="md-nav__link">
-    <span class="md-ellipsis">
-      Authentication
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#api-endpoints" class="md-nav__link">
-    <span class="md-ellipsis">
-      API Endpoints
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="API Endpoints">
+    <nav class="md-nav" aria-label="Context">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#authentication_1" class="md-nav__link">
+  <a href="#current-situation" class="md-nav__link">
     <span class="md-ellipsis">
-      Authentication
+      Current Situation
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#users" class="md-nav__link">
+  <a href="#requirements" class="md-nav__link">
     <span class="md-ellipsis">
-      Users
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#contacts" class="md-nav__link">
-    <span class="md-ellipsis">
-      Contacts
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#interactions" class="md-nav__link">
-    <span class="md-ellipsis">
-      Interactions
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#ai-features" class="md-nav__link">
-    <span class="md-ellipsis">
-      AI Features
+      Requirements
     </span>
   </a>
   
@@ -1501,45 +1456,309 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#rate-limiting" class="md-nav__link">
+  <a href="#decision" class="md-nav__link">
     <span class="md-ellipsis">
-      Rate Limiting
+      Decision
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Decision">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#testing-pyramid" class="md-nav__link">
+    <span class="md-ellipsis">
+      Testing Pyramid
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#testing-levels" class="md-nav__link">
+    <span class="md-ellipsis">
+      Testing Levels
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Testing Levels">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-unit-tests" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Unit Tests
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-integration-tests" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Integration Tests
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-end-to-end-tests" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. End-to-End Tests
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cicd-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      CI/CD Integration
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#test-infrastructure" class="md-nav__link">
+    <span class="md-ellipsis">
+      Test Infrastructure
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#performance-testing" class="md-nav__link">
+    <span class="md-ellipsis">
+      Performance Testing
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#security-testing" class="md-nav__link">
+    <span class="md-ellipsis">
+      Security Testing
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#alternatives-considered" class="md-nav__link">
+    <span class="md-ellipsis">
+      Alternatives Considered
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Alternatives Considered">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#alternative-1-manual-testing-only" class="md-nav__link">
+    <span class="md-ellipsis">
+      Alternative 1: Manual Testing Only
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#alternative-2-100-e2e-tests" class="md-nav__link">
+    <span class="md-ellipsis">
+      Alternative 2: 100% E2E Tests
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#alternative-3-only-unit-tests" class="md-nav__link">
+    <span class="md-ellipsis">
+      Alternative 3: Only Unit Tests
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#alternative-4-testing-pyramid-chosen" class="md-nav__link">
+    <span class="md-ellipsis">
+      Alternative 4: Testing Pyramid (Chosen)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#consequences" class="md-nav__link">
+    <span class="md-ellipsis">
+      Consequences
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Consequences">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#positive" class="md-nav__link">
+    <span class="md-ellipsis">
+      Positive
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#negative" class="md-nav__link">
+    <span class="md-ellipsis">
+      Negative
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#neutral" class="md-nav__link">
+    <span class="md-ellipsis">
+      Neutral
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#implementation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Implementation
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Implementation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#phase-1-foundation-complete" class="md-nav__link">
+    <span class="md-ellipsis">
+      Phase 1: Foundation (Complete)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-2-unit-tests-next" class="md-nav__link">
+    <span class="md-ellipsis">
+      Phase 2: Unit Tests (Next)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-3-integration-tests-next" class="md-nav__link">
+    <span class="md-ellipsis">
+      Phase 3: Integration Tests (Next)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-4-e2e-tests-next" class="md-nav__link">
+    <span class="md-ellipsis">
+      Phase 4: E2E Tests (Next)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-5-advanced-testing-future" class="md-nav__link">
+    <span class="md-ellipsis">
+      Phase 5: Advanced Testing (Future)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#metrics" class="md-nav__link">
+    <span class="md-ellipsis">
+      Metrics
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#error-handling" class="md-nav__link">
+  <a href="#review-and-evolution" class="md-nav__link">
     <span class="md-ellipsis">
-      Error Handling
+      Review and Evolution
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#webhooks" class="md-nav__link">
+  <a href="#references" class="md-nav__link">
     <span class="md-ellipsis">
-      Webhooks
+      References
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#sdk-and-client-libraries" class="md-nav__link">
+  <a href="#related-adrs" class="md-nav__link">
     <span class="md-ellipsis">
-      SDK and Client Libraries
+      Related ADRs
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#support" class="md-nav__link">
+  <a href="#date" class="md-nav__link">
     <span class="md-ellipsis">
-      Support
+      Date
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#authors" class="md-nav__link">
+    <span class="md-ellipsis">
+      Authors
     </span>
   </a>
   
@@ -1561,7 +1780,7 @@
 
 
   
-    <a href="https://github.com/benjidanielsen/Flowstate-AI/edit/main/docs/api/README.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+    <a href="https://github.com/benjidanielsen/Flowstate-AI/edit/main/docs/adr/0009-testing-strategy.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"/></svg>
     </a>
@@ -1569,89 +1788,255 @@
   
 
 
-<h1 id="api-documentation">API Documentation<a class="headerlink" href="#api-documentation" title="Permanent link">&para;</a></h1>
-<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
-<p>The Flowstate-AI API provides programmatic access to all system functionality. The API follows REST principles with JSON request and response bodies.</p>
-<h2 id="base-url">Base URL<a class="headerlink" href="#base-url" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>Production: https://api.flowstate-ai.com/v1
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>Staging: https://staging-api.flowstate-ai.com/v1
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>Development: http://localhost:3001/api/v1
-</code></pre></div>
-<h2 id="authentication">Authentication<a class="headerlink" href="#authentication" title="Permanent link">&para;</a></h2>
-<p>All API requests require authentication using JWT tokens passed in the Authorization header:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>Authorization: Bearer &lt;your_jwt_token&gt;
-</code></pre></div>
-<h2 id="api-endpoints">API Endpoints<a class="headerlink" href="#api-endpoints" title="Permanent link">&para;</a></h2>
-<h3 id="authentication_1">Authentication<a class="headerlink" href="#authentication_1" title="Permanent link">&para;</a></h3>
+<h1 id="adr-0009-comprehensive-testing-strategy">ADR 0009: Comprehensive Testing Strategy<a class="headerlink" href="#adr-0009-comprehensive-testing-strategy" title="Permanent link">&para;</a></h1>
+<h2 id="status">Status<a class="headerlink" href="#status" title="Permanent link">&para;</a></h2>
+<p>Accepted</p>
+<h2 id="context">Context<a class="headerlink" href="#context" title="Permanent link">&para;</a></h2>
+<p>A production-ready system requires a comprehensive testing strategy to ensure reliability, maintainability, and confidence in deployments. Without proper testing infrastructure, teams face slow development cycles, frequent production bugs, and fear of making changes.</p>
+<h3 id="current-situation">Current Situation<a class="headerlink" href="#current-situation" title="Permanent link">&para;</a></h3>
+<p>The Flowstate-AI project has basic testing infrastructure but lacks:
+- Comprehensive test coverage across all components
+- Clear testing standards and best practices
+- Automated test execution in CI/CD
+- Performance and security testing
+- Test data management strategy</p>
+<h3 id="requirements">Requirements<a class="headerlink" href="#requirements" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong>Fast Feedback</strong>: Tests must run quickly to enable rapid iteration</li>
+<li><strong>High Confidence</strong>: Tests must catch bugs before production</li>
+<li><strong>Maintainability</strong>: Test code must be easy to understand and update</li>
+<li><strong>Automation</strong>: Tests must run automatically on every change</li>
+<li><strong>Coverage</strong>: Critical paths and business logic must be thoroughly tested</li>
+<li><strong>Performance</strong>: System performance must be validated</li>
+<li><strong>Security</strong>: Security vulnerabilities must be detected early</li>
+</ol>
+<h2 id="decision">Decision<a class="headerlink" href="#decision" title="Permanent link">&para;</a></h2>
+<p>We will implement a comprehensive testing strategy based on the <strong>Testing Pyramid</strong> principle, with automated execution in CI/CD and clear standards for all types of testing.</p>
+<h3 id="testing-pyramid">Testing Pyramid<a class="headerlink" href="#testing-pyramid" title="Permanent link">&para;</a></h3>
+<p>Our test distribution follows the pyramid model:</p>
 <ul>
-<li><code>POST /auth/login</code> - Authenticate user and receive tokens</li>
-<li><code>POST /auth/refresh</code> - Refresh access token</li>
-<li><code>POST /auth/logout</code> - Invalidate refresh token</li>
+<li><strong>70% Unit Tests</strong>: Fast, isolated tests of individual components</li>
+<li><strong>20% Integration Tests</strong>: Tests of component interactions and database operations</li>
+<li><strong>10% End-to-End Tests</strong>: Full user journey tests through the browser</li>
 </ul>
-<h3 id="users">Users<a class="headerlink" href="#users" title="Permanent link">&para;</a></h3>
+<p>This distribution ensures fast feedback while maintaining high confidence in system behavior.</p>
+<h3 id="testing-levels">Testing Levels<a class="headerlink" href="#testing-levels" title="Permanent link">&para;</a></h3>
+<h4 id="1-unit-tests">1. Unit Tests<a class="headerlink" href="#1-unit-tests" title="Permanent link">&para;</a></h4>
+<p><strong>Purpose</strong>: Verify individual functions and classes in isolation</p>
+<p><strong>Tools</strong>:
+- <strong>Backend</strong>: Jest with ts-jest for TypeScript
+- <strong>Frontend</strong>: Jest with React Testing Library
+- <strong>Python</strong>: pytest with pytest-cov</p>
+<p><strong>Coverage Target</strong>: 80%+ overall, 90%+ for business logic</p>
+<p><strong>Characteristics</strong>:
+- Run in &lt; 100ms per test
+- No external dependencies (mocked)
+- Test one thing per test
+- Descriptive names (Given-When-Then)</p>
+<h4 id="2-integration-tests">2. Integration Tests<a class="headerlink" href="#2-integration-tests" title="Permanent link">&para;</a></h4>
+<p><strong>Purpose</strong>: Verify component interactions and database operations</p>
+<p><strong>Tools</strong>:
+- <strong>API Testing</strong>: Jest with supertest
+- <strong>Database</strong>: PostgreSQL test database
+- <strong>Fixtures</strong>: Test data factories</p>
+<p><strong>Coverage Target</strong>: All critical integration points</p>
+<p><strong>Characteristics</strong>:
+- Run in &lt; 5s per test
+- Real database, mocked external APIs
+- Reset state between tests
+- Test realistic scenarios</p>
+<h4 id="3-end-to-end-tests">3. End-to-End Tests<a class="headerlink" href="#3-end-to-end-tests" title="Permanent link">&para;</a></h4>
+<p><strong>Purpose</strong>: Verify complete user workflows</p>
+<p><strong>Tools</strong>:
+- <strong>Framework</strong>: Playwright
+- <strong>Browsers</strong>: Chromium, Firefox, WebKit
+- <strong>Pattern</strong>: Page Object Model</p>
+<p><strong>Coverage Target</strong>: Critical user journeys only</p>
+<p><strong>Characteristics</strong>:
+- Run in &lt; 30s per test
+- Full application stack
+- Resilient to UI changes
+- Run in parallel</p>
+<h3 id="cicd-integration">CI/CD Integration<a class="headerlink" href="#cicd-integration" title="Permanent link">&para;</a></h3>
+<p>All tests run automatically on:
+- Every push to feature branches
+- Every pull request
+- Before merging to main
+- Before deployment</p>
+<p><strong>GitHub Actions Workflow</strong>:
+- Separate jobs for unit, integration, and E2E tests
+- Parallel execution for speed
+- Coverage reporting to Codecov
+- Test artifacts uploaded for debugging</p>
+<h3 id="test-infrastructure">Test Infrastructure<a class="headerlink" href="#test-infrastructure" title="Permanent link">&para;</a></h3>
+<p><strong>Test Databases</strong>:
+- SQLite in-memory for fast unit tests
+- PostgreSQL test database for integration tests
+- Automated migrations and resets</p>
+<p><strong>Test Data</strong>:
+- Factories for generating test data
+- Fixtures for consistent scenarios
+- Seeders for realistic data sets</p>
+<p><strong>Coverage Reporting</strong>:
+- Jest coverage for JavaScript/TypeScript
+- pytest-cov for Python
+- Codecov for tracking and visualization</p>
+<h3 id="performance-testing">Performance Testing<a class="headerlink" href="#performance-testing" title="Permanent link">&para;</a></h3>
+<p><strong>Load Testing</strong> with k6:
+- Normal load: 100 concurrent users
+- Peak load: 500 concurrent users
+- Stress test: 1000+ concurrent users</p>
+<p><strong>Benchmarking</strong>:
+- API response times
+- Database query performance
+- AI model inference time
+- Memory usage</p>
+<h3 id="security-testing">Security Testing<a class="headerlink" href="#security-testing" title="Permanent link">&para;</a></h3>
+<p><strong>Static Analysis</strong>:
+- ESLint security rules
+- Bandit for Python
+- npm audit for dependencies
+- Snyk for continuous monitoring</p>
+<p><strong>Dynamic Analysis</strong>:
+- OWASP ZAP automated scanning
+- Quarterly penetration testing
+- Daily dependency scans</p>
+<h2 id="alternatives-considered">Alternatives Considered<a class="headerlink" href="#alternatives-considered" title="Permanent link">&para;</a></h2>
+<h3 id="alternative-1-manual-testing-only">Alternative 1: Manual Testing Only<a class="headerlink" href="#alternative-1-manual-testing-only" title="Permanent link">&para;</a></h3>
+<p><strong>Pros</strong>:
+- No initial setup cost
+- Flexible to changing requirements</p>
+<p><strong>Cons</strong>:
+- Slow feedback loops
+- Human error prone
+- Not scalable
+- Fear of making changes</p>
+<p><strong>Decision</strong>: Rejected - Manual testing alone is insufficient for a production system.</p>
+<h3 id="alternative-2-100-e2e-tests">Alternative 2: 100% E2E Tests<a class="headerlink" href="#alternative-2-100-e2e-tests" title="Permanent link">&para;</a></h3>
+<p><strong>Pros</strong>:
+- High confidence in user workflows
+- Tests real system behavior</p>
+<p><strong>Cons</strong>:
+- Very slow (minutes per test)
+- Flaky and brittle
+- Expensive to maintain
+- Poor feedback on root cause</p>
+<p><strong>Decision</strong>: Rejected - E2E tests are valuable but should be a small percentage of total tests.</p>
+<h3 id="alternative-3-only-unit-tests">Alternative 3: Only Unit Tests<a class="headerlink" href="#alternative-3-only-unit-tests" title="Permanent link">&para;</a></h3>
+<p><strong>Pros</strong>:
+- Very fast
+- Easy to maintain
+- Good isolation</p>
+<p><strong>Cons</strong>:
+- Doesn't catch integration issues
+- Doesn't verify real system behavior
+- False confidence</p>
+<p><strong>Decision</strong>: Rejected - Unit tests alone miss critical integration and system-level bugs.</p>
+<h3 id="alternative-4-testing-pyramid-chosen">Alternative 4: Testing Pyramid (Chosen)<a class="headerlink" href="#alternative-4-testing-pyramid-chosen" title="Permanent link">&para;</a></h3>
+<p><strong>Pros</strong>:
+- Fast feedback (mostly unit tests)
+- High confidence (integration + E2E)
+- Scalable and maintainable
+- Industry best practice</p>
+<p><strong>Cons</strong>:
+- Requires discipline and setup
+- Initial learning curve</p>
+<p><strong>Decision</strong>: Accepted - Best balance of speed, confidence, and maintainability.</p>
+<h2 id="consequences">Consequences<a class="headerlink" href="#consequences" title="Permanent link">&para;</a></h2>
+<h3 id="positive">Positive<a class="headerlink" href="#positive" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong>Fast Feedback</strong>: Developers get test results in seconds, not minutes</li>
+<li><strong>High Confidence</strong>: Comprehensive coverage catches bugs early</li>
+<li><strong>Refactoring Safety</strong>: Tests enable confident code improvements</li>
+<li><strong>Documentation</strong>: Tests serve as executable documentation</li>
+<li><strong>Regression Prevention</strong>: Automated tests catch regressions immediately</li>
+<li><strong>Faster Development</strong>: Less time debugging, more time building</li>
+<li><strong>Better Design</strong>: Testable code tends to be better designed</li>
+</ol>
+<h3 id="negative">Negative<a class="headerlink" href="#negative" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong>Initial Investment</strong>: Setting up testing infrastructure takes time</li>
+<li><strong>Maintenance Overhead</strong>: Tests must be maintained alongside code</li>
+<li><strong>Learning Curve</strong>: Team must learn testing best practices</li>
+<li><strong>CI Time</strong>: Running all tests adds time to CI pipeline</li>
+<li><strong>Flaky Tests</strong>: Poorly written tests can be unreliable</li>
+</ol>
+<h3 id="neutral">Neutral<a class="headerlink" href="#neutral" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong>Coverage Targets</strong>: 80% coverage is a goal, not a guarantee of quality</li>
+<li><strong>Test Code Quality</strong>: Test code requires the same care as production code</li>
+<li><strong>Continuous Improvement</strong>: Testing strategy will evolve with the project</li>
+</ol>
+<h2 id="implementation">Implementation<a class="headerlink" href="#implementation" title="Permanent link">&para;</a></h2>
+<h3 id="phase-1-foundation-complete">Phase 1: Foundation (Complete)<a class="headerlink" href="#phase-1-foundation-complete" title="Permanent link">&para;</a></h3>
 <ul>
-<li><code>GET /users/me</code> - Get current user profile</li>
-<li><code>PUT /users/me</code> - Update current user profile</li>
-<li><code>GET /users/:id</code> - Get user by ID (admin only)</li>
+<li>[x] Testing strategy document</li>
+<li>[x] CI/CD test workflows</li>
+<li>[x] Test infrastructure setup</li>
+<li>[x] ADR documentation</li>
 </ul>
-<h3 id="contacts">Contacts<a class="headerlink" href="#contacts" title="Permanent link">&para;</a></h3>
+<h3 id="phase-2-unit-tests-next">Phase 2: Unit Tests (Next)<a class="headerlink" href="#phase-2-unit-tests-next" title="Permanent link">&para;</a></h3>
 <ul>
-<li><code>GET /contacts</code> - List all contacts</li>
-<li><code>POST /contacts</code> - Create new contact</li>
-<li><code>GET /contacts/:id</code> - Get contact by ID</li>
-<li><code>PUT /contacts/:id</code> - Update contact</li>
-<li><code>DELETE /contacts/:id</code> - Delete contact</li>
+<li>[ ] Backend unit tests for services</li>
+<li>[ ] Frontend unit tests for components</li>
+<li>[ ] Python unit tests for AI worker</li>
+<li>[ ] Achieve 80% coverage</li>
 </ul>
-<h3 id="interactions">Interactions<a class="headerlink" href="#interactions" title="Permanent link">&para;</a></h3>
+<h3 id="phase-3-integration-tests-next">Phase 3: Integration Tests (Next)<a class="headerlink" href="#phase-3-integration-tests-next" title="Permanent link">&para;</a></h3>
 <ul>
-<li><code>GET /interactions</code> - List all interactions</li>
-<li><code>POST /interactions</code> - Create new interaction</li>
-<li><code>GET /interactions/:id</code> - Get interaction by ID</li>
+<li>[ ] API integration tests</li>
+<li>[ ] Database integration tests</li>
+<li>[ ] Service integration tests</li>
+<li>[ ] Test data factories</li>
 </ul>
-<h3 id="ai-features">AI Features<a class="headerlink" href="#ai-features" title="Permanent link">&para;</a></h3>
+<h3 id="phase-4-e2e-tests-next">Phase 4: E2E Tests (Next)<a class="headerlink" href="#phase-4-e2e-tests-next" title="Permanent link">&para;</a></h3>
 <ul>
-<li><code>POST /ai/analyze</code> - Analyze text with AI</li>
-<li><code>POST /ai/recommend</code> - Get AI recommendations</li>
-<li><code>GET /ai/insights</code> - Get AI-generated insights</li>
+<li>[ ] Critical user journey tests</li>
+<li>[ ] Playwright configuration</li>
+<li>[ ] Page object models</li>
+<li>[ ] Visual regression testing</li>
 </ul>
-<h2 id="rate-limiting">Rate Limiting<a class="headerlink" href="#rate-limiting" title="Permanent link">&para;</a></h2>
-<p>API requests are rate limited to:
-- 100 requests per minute for authenticated users
-- 10 requests per minute for unauthenticated requests</p>
-<h2 id="error-handling">Error Handling<a class="headerlink" href="#error-handling" title="Permanent link">&para;</a></h2>
-<p>The API uses standard HTTP status codes:
-- 200: Success
-- 201: Created
-- 400: Bad Request
-- 401: Unauthorized
-- 403: Forbidden
-- 404: Not Found
-- 429: Too Many Requests
-- 500: Internal Server Error</p>
-<p>Error responses include a JSON body with details:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="p">{</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">  </span><span class="nt">&quot;error&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">    </span><span class="nt">&quot;code&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;INVALID_INPUT&quot;</span><span class="p">,</span>
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">    </span><span class="nt">&quot;message&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Email address is required&quot;</span><span class="p">,</span>
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">    </span><span class="nt">&quot;field&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;email&quot;</span>
-<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="p">}</span>
-</code></pre></div>
-<h2 id="webhooks">Webhooks<a class="headerlink" href="#webhooks" title="Permanent link">&para;</a></h2>
-<p>Flowstate-AI can send webhooks for various events. Configure webhooks in your account settings.</p>
-<p>Supported events:
-- <code>contact.created</code>
-- <code>contact.updated</code>
-- <code>interaction.created</code>
-- <code>ai.insight.generated</code></p>
-<h2 id="sdk-and-client-libraries">SDK and Client Libraries<a class="headerlink" href="#sdk-and-client-libraries" title="Permanent link">&para;</a></h2>
-<p>Official client libraries are available for:
-- JavaScript/TypeScript
-- Python
-- Ruby (coming soon)</p>
-<p>See <a href="https://github.com/benjidanielsen/Flowstate-AI">GitHub repository</a> for installation instructions.</p>
-<h2 id="support">Support<a class="headerlink" href="#support" title="Permanent link">&para;</a></h2>
-<p>For API support, please contact support@flowstate-ai.com or open an issue on GitHub.</p>
+<h3 id="phase-5-advanced-testing-future">Phase 5: Advanced Testing (Future)<a class="headerlink" href="#phase-5-advanced-testing-future" title="Permanent link">&para;</a></h3>
+<ul>
+<li>[ ] Performance testing with k6</li>
+<li>[ ] Security testing automation</li>
+<li>[ ] Mutation testing</li>
+<li>[ ] Contract testing</li>
+</ul>
+<h2 id="metrics">Metrics<a class="headerlink" href="#metrics" title="Permanent link">&para;</a></h2>
+<p>Track and improve:
+- <strong>Test Execution Time</strong>: Keep under 5 minutes for full suite
+- <strong>Test Flakiness Rate</strong>: Target &lt; 1%
+- <strong>Code Coverage</strong>: Maintain 80%+
+- <strong>Bug Escape Rate</strong>: Bugs found in production vs. tests
+- <strong>Time to Detect Bugs</strong>: How quickly tests catch issues</p>
+<h2 id="review-and-evolution">Review and Evolution<a class="headerlink" href="#review-and-evolution" title="Permanent link">&para;</a></h2>
+<p>This strategy will be reviewed:
+- After 3 months of implementation
+- Quarterly as part of technical review
+- When test execution time becomes problematic
+- When coverage or quality issues arise</p>
+<h2 id="references">References<a class="headerlink" href="#references" title="Permanent link">&para;</a></h2>
+<ul>
+<li><a href="https://martinfowler.com/articles/practical-test-pyramid.html">Testing Pyramid</a></li>
+<li><a href="https://jestjs.io/">Jest Documentation</a></li>
+<li><a href="https://playwright.dev/">Playwright Documentation</a></li>
+<li><a href="https://testing-library.com/react">React Testing Library</a></li>
+<li><a href="https://docs.pytest.org/">pytest Documentation</a></li>
+</ul>
+<h2 id="related-adrs">Related ADRs<a class="headerlink" href="#related-adrs" title="Permanent link">&para;</a></h2>
+<ul>
+<li>ADR 0001: Phase 0 Baseline Establishment</li>
+<li>ADR 0006: Automated Deployments</li>
+<li>ADR 0008: Observability Stack</li>
+</ul>
+<h2 id="date">Date<a class="headerlink" href="#date" title="Permanent link">&para;</a></h2>
+<p>2025-01-10</p>
+<h2 id="authors">Authors<a class="headerlink" href="#authors" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Manus AI (Implementation)</li>
+<li>Benji Danielsen (Review and Approval)</li>
+</ul>
 
 
 
@@ -1674,7 +2059,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 10, 2025 09:47:54 UTC">October 10, 2025</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 10, 2025 16:26:18 UTC">October 10, 2025</span>
   </span>
 
     
@@ -1684,7 +2069,7 @@
     <span class="md-icon" title="Created">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14.47 15.08 11 13V7h1.5v5.25l3.08 1.83c-.41.28-.79.62-1.11 1m-1.39 4.84c-.36.05-.71.08-1.08.08-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8c0 .37-.03.72-.08 1.08.69.1 1.33.32 1.92.64.1-.56.16-1.13.16-1.72 0-5.5-4.5-10-10-10S2 6.5 2 12s4.47 10 10 10c.59 0 1.16-.06 1.72-.16-.32-.59-.54-1.23-.64-1.92M18 15v3h-3v2h3v3h2v-3h3v-2h-3v-3z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 10, 2025 09:47:54 UTC">October 10, 2025</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 10, 2025 16:26:18 UTC">October 10, 2025</span>
   </span>
 
     
@@ -1758,10 +2143,10 @@
     
     
       
-      <script id="__config" type="application/json">{"base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "content.code.copy", "content.action.edit"], "search": "../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+      <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "content.code.copy", "content.action.edit"], "search": "../../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
-      <script src="../assets/javascripts/bundle.f55a23d4.min.js"></script>
+      <script src="../../assets/javascripts/bundle.f55a23d4.min.js"></script>
       
     
   </body>

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Users, TrendingUp, Calendar, AlertCircle } from 'lucide-react';
+import { Users, TrendingUp, Calendar, AlertCircle, ArrowRight } from 'lucide-react';
 import { customerApi, interactionApi, statsApi } from '../services/api';
 import { useToast } from '../contexts/ToastContext';
 import { PipelineStats, Interaction, PipelineStatus, Stats } from '../types';

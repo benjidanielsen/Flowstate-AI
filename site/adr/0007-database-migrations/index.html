@@ -12,24 +12,24 @@
         <meta name="author" content="Flowstate-AI Team">
       
       
-        <link rel="canonical" href="https://benjidanielsen.github.io/Flowstate-AI/api/">
+        <link rel="canonical" href="https://benjidanielsen.github.io/Flowstate-AI/adr/0007-database-migrations/">
       
       
       
       
-      <link rel="icon" href="../assets/images/favicon.png">
+      <link rel="icon" href="../../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.21">
     
     
       
-        <title>API Documentation - Flowstate-AI Documentation</title>
+        <title>ADR 0007: Database Migrations Framework - Flowstate-AI Documentation</title>
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.2a3383ac.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.2a3383ac.min.css">
       
         
-        <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
       
       
 
@@ -48,7 +48,7 @@
       
     
     
-    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -74,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#api-documentation" class="md-skip">
+        <a href="#adr-0007-database-migrations-framework" class="md-skip">
           Skip to content
         </a>
       
@@ -92,7 +92,7 @@
 
 <header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href=".." title="Flowstate-AI Documentation" class="md-header__button md-logo" aria-label="Flowstate-AI Documentation" data-md-component="logo">
+    <a href="../.." title="Flowstate-AI Documentation" class="md-header__button md-logo" aria-label="Flowstate-AI Documentation" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -112,7 +112,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              API Documentation
+              ADR 0007: Database Migrations Framework
             
           </span>
         </div>
@@ -225,7 +225,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../INDEX/" class="md-tabs__link">
+      <a href="../../INDEX/" class="md-tabs__link">
         
   
   
@@ -246,7 +246,7 @@
     
     
       <li class="md-tabs__item">
-        <a href=".." class="md-tabs__link">
+        <a href="../.." class="md-tabs__link">
           
   
   
@@ -266,7 +266,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../GOVERNANCE/" class="md-tabs__link">
+        <a href="../../GOVERNANCE/" class="md-tabs__link">
           
   
   
@@ -286,7 +286,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../OPS_RUNBOOK/" class="md-tabs__link">
+        <a href="../../OPS_RUNBOOK/" class="md-tabs__link">
           
   
   
@@ -306,7 +306,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../CODING_STANDARDS/" class="md-tabs__link">
+        <a href="../../CODING_STANDARDS/" class="md-tabs__link">
           
   
   
@@ -326,7 +326,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../RISK_REGISTER/" class="md-tabs__link">
+        <a href="../../RISK_REGISTER/" class="md-tabs__link">
           
   
   
@@ -346,7 +346,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../FEDERATION_CHECKLIST/" class="md-tabs__link">
+        <a href="../../FEDERATION_CHECKLIST/" class="md-tabs__link">
           
   
   
@@ -366,7 +366,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="./" class="md-tabs__link">
+        <a href="../../api/" class="md-tabs__link">
           
   
   
@@ -386,7 +386,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../integrations/" class="md-tabs__link">
+        <a href="../../integrations/" class="md-tabs__link">
           
   
   
@@ -420,7 +420,7 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href=".." title="Flowstate-AI Documentation" class="md-nav__button md-logo" aria-label="Flowstate-AI Documentation" data-md-component="logo">
+    <a href="../.." title="Flowstate-AI Documentation" class="md-nav__button md-logo" aria-label="Flowstate-AI Documentation" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -450,7 +450,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../INDEX/" class="md-nav__link">
+      <a href="../../INDEX/" class="md-nav__link">
         
   
   
@@ -517,7 +517,7 @@
   
   
     <li class="md-nav__item">
-      <a href=".." class="md-nav__link">
+      <a href="../.." class="md-nav__link">
         
   
   
@@ -540,7 +540,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../DEPLOYMENT_GUIDE/" class="md-nav__link">
+      <a href="../../DEPLOYMENT_GUIDE/" class="md-nav__link">
         
   
   
@@ -563,7 +563,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../SYSTEM_ARCHITECTURE/" class="md-nav__link">
+      <a href="../../SYSTEM_ARCHITECTURE/" class="md-nav__link">
         
   
   
@@ -638,7 +638,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../GOVERNANCE/" class="md-nav__link">
+      <a href="../../GOVERNANCE/" class="md-nav__link">
         
   
   
@@ -661,7 +661,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../ETHICS/" class="md-nav__link">
+      <a href="../../ETHICS/" class="md-nav__link">
         
   
   
@@ -684,7 +684,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../FEDERATION_CHARTER/" class="md-nav__link">
+      <a href="../../FEDERATION_CHARTER/" class="md-nav__link">
         
   
   
@@ -707,7 +707,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../EMERGENT_BEHAVIOUR_OVERSIGHT_AND_CESSATION/" class="md-nav__link">
+      <a href="../../EMERGENT_BEHAVIOUR_OVERSIGHT_AND_CESSATION/" class="md-nav__link">
         
   
   
@@ -782,7 +782,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../OPS_RUNBOOK/" class="md-nav__link">
+      <a href="../../OPS_RUNBOOK/" class="md-nav__link">
         
   
   
@@ -805,7 +805,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../DR_RUNBOOK/" class="md-nav__link">
+      <a href="../../DR_RUNBOOK/" class="md-nav__link">
         
   
   
@@ -828,7 +828,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../SLOS/" class="md-nav__link">
+      <a href="../../SLOS/" class="md-nav__link">
         
   
   
@@ -851,7 +851,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../AUDIT_TRAIL/" class="md-nav__link">
+      <a href="../../AUDIT_TRAIL/" class="md-nav__link">
         
   
   
@@ -926,7 +926,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../CODING_STANDARDS/" class="md-nav__link">
+      <a href="../../CODING_STANDARDS/" class="md-nav__link">
         
   
   
@@ -949,7 +949,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../adr/" class="md-nav__link">
+      <a href="../" class="md-nav__link">
         
   
   
@@ -972,7 +972,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../ROADMAP/" class="md-nav__link">
+      <a href="../../ROADMAP/" class="md-nav__link">
         
   
   
@@ -995,7 +995,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../CHANGELOG/" class="md-nav__link">
+      <a href="../../CHANGELOG/" class="md-nav__link">
         
   
   
@@ -1018,7 +1018,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../QUALITY/" class="md-nav__link">
+      <a href="../../QUALITY/" class="md-nav__link">
         
   
   
@@ -1093,7 +1093,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../RISK_REGISTER/" class="md-nav__link">
+      <a href="../../RISK_REGISTER/" class="md-nav__link">
         
   
   
@@ -1116,7 +1116,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../SECURITY.md" class="md-nav__link">
+      <a href="../../../SECURITY.md" class="md-nav__link">
         
   
   
@@ -1191,7 +1191,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../FEDERATION_CHECKLIST/" class="md-nav__link">
+      <a href="../../FEDERATION_CHECKLIST/" class="md-nav__link">
         
   
   
@@ -1214,7 +1214,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../REVOCATION/" class="md-nav__link">
+      <a href="../../REVOCATION/" class="md-nav__link">
         
   
   
@@ -1289,7 +1289,7 @@
   
   
     <li class="md-nav__item">
-      <a href="./" class="md-nav__link">
+      <a href="../../api/" class="md-nav__link">
         
   
   
@@ -1364,7 +1364,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../integrations/" class="md-nav__link">
+      <a href="../../integrations/" class="md-nav__link">
         
   
   
@@ -1414,82 +1414,37 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#overview" class="md-nav__link">
+  <a href="#status" class="md-nav__link">
     <span class="md-ellipsis">
-      Overview
+      Status
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#base-url" class="md-nav__link">
+  <a href="#context" class="md-nav__link">
     <span class="md-ellipsis">
-      Base URL
+      Context
     </span>
   </a>
   
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#authentication" class="md-nav__link">
-    <span class="md-ellipsis">
-      Authentication
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#api-endpoints" class="md-nav__link">
-    <span class="md-ellipsis">
-      API Endpoints
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="API Endpoints">
+    <nav class="md-nav" aria-label="Context">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#authentication_1" class="md-nav__link">
+  <a href="#current-situation" class="md-nav__link">
     <span class="md-ellipsis">
-      Authentication
+      Current Situation
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#users" class="md-nav__link">
+  <a href="#requirements" class="md-nav__link">
     <span class="md-ellipsis">
-      Users
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#contacts" class="md-nav__link">
-    <span class="md-ellipsis">
-      Contacts
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#interactions" class="md-nav__link">
-    <span class="md-ellipsis">
-      Interactions
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#ai-features" class="md-nav__link">
-    <span class="md-ellipsis">
-      AI Features
+      Requirements
     </span>
   </a>
   
@@ -1501,45 +1456,225 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#rate-limiting" class="md-nav__link">
+  <a href="#decision" class="md-nav__link">
     <span class="md-ellipsis">
-      Rate Limiting
+      Decision
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Decision">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-migration-tool-dbmate" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Migration Tool: dbmate
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-migration-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Migration Structure
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-automated-workflows" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Automated Workflows
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-environment-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Environment Configuration
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-migration-best-practices" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Migration Best Practices
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-deployment-process" class="md-nav__link">
+    <span class="md-ellipsis">
+      6. Deployment Process
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#7-documentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      7. Documentation
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#consequences" class="md-nav__link">
+    <span class="md-ellipsis">
+      Consequences
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Consequences">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#positive" class="md-nav__link">
+    <span class="md-ellipsis">
+      Positive
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#negative" class="md-nav__link">
+    <span class="md-ellipsis">
+      Negative
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#neutral" class="md-nav__link">
+    <span class="md-ellipsis">
+      Neutral
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#implementation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Implementation
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Implementation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#phase-1-foundation-complete" class="md-nav__link">
+    <span class="md-ellipsis">
+      Phase 1: Foundation (Complete)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-2-automation-complete" class="md-nav__link">
+    <span class="md-ellipsis">
+      Phase 2: Automation (Complete)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-3-documentation-complete" class="md-nav__link">
+    <span class="md-ellipsis">
+      Phase 3: Documentation (Complete)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-4-integration-next-steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      Phase 4: Integration (Next Steps)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#monitoring-and-metrics" class="md-nav__link">
+    <span class="md-ellipsis">
+      Monitoring and Metrics
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#error-handling" class="md-nav__link">
+  <a href="#review-and-evolution" class="md-nav__link">
     <span class="md-ellipsis">
-      Error Handling
+      Review and Evolution
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#webhooks" class="md-nav__link">
+  <a href="#references" class="md-nav__link">
     <span class="md-ellipsis">
-      Webhooks
+      References
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#sdk-and-client-libraries" class="md-nav__link">
+  <a href="#related-adrs" class="md-nav__link">
     <span class="md-ellipsis">
-      SDK and Client Libraries
+      Related ADRs
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#support" class="md-nav__link">
+  <a href="#date" class="md-nav__link">
     <span class="md-ellipsis">
-      Support
+      Date
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#authors" class="md-nav__link">
+    <span class="md-ellipsis">
+      Authors
     </span>
   </a>
   
@@ -1561,7 +1696,7 @@
 
 
   
-    <a href="https://github.com/benjidanielsen/Flowstate-AI/edit/main/docs/api/README.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+    <a href="https://github.com/benjidanielsen/Flowstate-AI/edit/main/docs/adr/0007-database-migrations.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"/></svg>
     </a>
@@ -1569,89 +1704,228 @@
   
 
 
-<h1 id="api-documentation">API Documentation<a class="headerlink" href="#api-documentation" title="Permanent link">&para;</a></h1>
-<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
-<p>The Flowstate-AI API provides programmatic access to all system functionality. The API follows REST principles with JSON request and response bodies.</p>
-<h2 id="base-url">Base URL<a class="headerlink" href="#base-url" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>Production: https://api.flowstate-ai.com/v1
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>Staging: https://staging-api.flowstate-ai.com/v1
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>Development: http://localhost:3001/api/v1
+<h1 id="adr-0007-database-migrations-framework">ADR 0007: Database Migrations Framework<a class="headerlink" href="#adr-0007-database-migrations-framework" title="Permanent link">&para;</a></h1>
+<h2 id="status">Status<a class="headerlink" href="#status" title="Permanent link">&para;</a></h2>
+<p>Accepted</p>
+<h2 id="context">Context<a class="headerlink" href="#context" title="Permanent link">&para;</a></h2>
+<p>As the Flowstate-AI project evolves, the database schema must change to support new features, optimize performance, and fix issues. Without a robust migration framework, these changes are error-prone, difficult to track, and challenging to roll back if problems occur.</p>
+<h3 id="current-situation">Current Situation<a class="headerlink" href="#current-situation" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Database schema changes are manual and undocumented</li>
+<li>No version control for database structure</li>
+<li>Difficult to synchronize schema across environments (dev, staging, production)</li>
+<li>No standardized rollback procedures</li>
+<li>Risk of data loss during schema changes</li>
+<li>Inconsistent database state across team members' local environments</li>
+</ul>
+<h3 id="requirements">Requirements<a class="headerlink" href="#requirements" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong>Version Control</strong>: All schema changes must be tracked in Git</li>
+<li><strong>Reversibility</strong>: Every change must be reversible with a rollback procedure</li>
+<li><strong>Environment Consistency</strong>: Same schema across all environments</li>
+<li><strong>Automation</strong>: Migrations should be automated in CI/CD</li>
+<li><strong>Safety</strong>: Minimize risk of data loss or corruption</li>
+<li><strong>Auditability</strong>: Complete history of all schema changes</li>
+<li><strong>Performance</strong>: Migrations should complete quickly (&lt; 30s for production)</li>
+<li><strong>Simplicity</strong>: Easy for developers to create and test migrations</li>
+</ol>
+<h2 id="decision">Decision<a class="headerlink" href="#decision" title="Permanent link">&para;</a></h2>
+<p>We will implement a database migration framework using <strong>dbmate</strong> with the following components:</p>
+<h3 id="1-migration-tool-dbmate">1. Migration Tool: dbmate<a class="headerlink" href="#1-migration-tool-dbmate" title="Permanent link">&para;</a></h3>
+<p><strong>Rationale for dbmate</strong>:
+- Simple, language-agnostic approach
+- Uses plain SQL (no DSL to learn)
+- Strong PostgreSQL support
+- Built-in rollback support
+- Fast and reliable
+- Active maintenance and community
+- Easy to integrate with CI/CD</p>
+<p><strong>Alternatives Considered</strong>:
+- <strong>Flyway</strong>: More enterprise-focused, Java-based, heavier
+- <strong>Liquibase</strong>: XML/YAML-based, more complex, steeper learning curve
+- <strong>Alembic</strong>: Python-specific, not language-agnostic
+- <strong>Knex.js</strong>: JavaScript-specific, tied to Node.js ecosystem
+- <strong>Sequelize Migrations</strong>: ORM-specific, less flexible</p>
+<h3 id="2-migration-structure">2. Migration Structure<a class="headerlink" href="#2-migration-structure" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>db/
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>├── migrations/
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>│   ├── YYYYMMDDHHMMSS_description.sql
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>│   └── ...
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>├── schema.sql (auto-generated)
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>└── .env.dbmate (environment configs)
 </code></pre></div>
-<h2 id="authentication">Authentication<a class="headerlink" href="#authentication" title="Permanent link">&para;</a></h2>
-<p>All API requests require authentication using JWT tokens passed in the Authorization header:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>Authorization: Bearer &lt;your_jwt_token&gt;
-</code></pre></div>
-<h2 id="api-endpoints">API Endpoints<a class="headerlink" href="#api-endpoints" title="Permanent link">&para;</a></h2>
-<h3 id="authentication_1">Authentication<a class="headerlink" href="#authentication_1" title="Permanent link">&para;</a></h3>
+<p>Each migration file contains:
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1">-- migrate:up</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="c1">-- SQL for applying the migration</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="c1">-- migrate:down</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="c1">-- SQL for rolling back the migration</span>
+</code></pre></div></p>
+<h3 id="3-automated-workflows">3. Automated Workflows<a class="headerlink" href="#3-automated-workflows" title="Permanent link">&para;</a></h3>
+<p><strong>GitHub Actions Workflow</strong> (<code>db-migrate.yml</code>):
+- Manual trigger with environment selection (dev, staging, production)
+- Actions: up (apply), status (check), rollback
+- Dry run mode for reviewing SQL before execution
+- Automatic backup before production migrations
+- Health checks after migration
+- Automatic rollback on failure
+- Issue creation on failure</p>
+<h3 id="4-environment-configuration">4. Environment Configuration<a class="headerlink" href="#4-environment-configuration" title="Permanent link">&para;</a></h3>
+<p>Separate database URLs for each environment:
+- Development: Local PostgreSQL or SQLite
+- Staging: Staging database server
+- Production: Production database cluster</p>
+<p>Configuration stored in <code>.env.dbmate</code> (not committed to Git):
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nv">DEV_DATABASE_URL</span><span class="o">=</span><span class="s2">&quot;postgresql://...&quot;</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="nv">STAGING_DATABASE_URL</span><span class="o">=</span><span class="s2">&quot;postgresql://...&quot;</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="nv">PRODUCTION_DATABASE_URL</span><span class="o">=</span><span class="s2">&quot;postgresql://...&quot;</span>
+</code></pre></div></p>
+<h3 id="5-migration-best-practices">5. Migration Best Practices<a class="headerlink" href="#5-migration-best-practices" title="Permanent link">&para;</a></h3>
+<p><strong>Design Principles</strong>:
+1. One logical change per migration
+2. Always include rollback SQL
+3. Make migrations idempotent (safe to run multiple times)
+4. Use transactions for data migrations
+5. Add indexes for foreign keys
+6. Test rollback before deploying</p>
+<p><strong>Performance Guidelines</strong>:
+1. Target &lt; 30 seconds for production migrations
+2. Create indexes concurrently (PostgreSQL)
+3. Add columns without defaults, then update
+4. Batch large data migrations</p>
+<p><strong>Security Guidelines</strong>:
+1. Never include sensitive data in migrations
+2. Review permissions and grants
+3. Validate input data with constraints
+4. Use parameterized queries for data migrations</p>
+<h3 id="6-deployment-process">6. Deployment Process<a class="headerlink" href="#6-deployment-process" title="Permanent link">&para;</a></h3>
+<p><strong>Development</strong>:
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># Create migration</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>dbmate<span class="w"> </span>new<span class="w"> </span>add_feature
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="c1"># Apply locally</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>dbmate<span class="w"> </span>up
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="c1"># Test rollback</span>
+<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>dbmate<span class="w"> </span>rollback
+<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>
+<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="c1"># Re-apply</span>
+<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>dbmate<span class="w"> </span>up
+</code></pre></div></p>
+<p><strong>Staging</strong> (automatic on develop push):
+- Migrations applied automatically via deployment workflow
+- Health checks verify application functionality</p>
+<p><strong>Production</strong> (manual with approval):
+1. Dry run to review SQL
+2. Create automatic backup
+3. Apply migration
+4. Health checks
+5. Automatic rollback on failure</p>
+<h3 id="7-documentation">7. Documentation<a class="headerlink" href="#7-documentation" title="Permanent link">&para;</a></h3>
+<p>Comprehensive documentation in <code>docs/DATABASE_MIGRATIONS.md</code> covering:
+- Creating migrations
+- Testing procedures
+- Deployment process
+- Rollback procedures
+- Best practices
+- Common patterns
+- Troubleshooting guide</p>
+<h2 id="consequences">Consequences<a class="headerlink" href="#consequences" title="Permanent link">&para;</a></h2>
+<h3 id="positive">Positive<a class="headerlink" href="#positive" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong>Version Control</strong>: All schema changes tracked in Git with full history</li>
+<li><strong>Consistency</strong>: Identical schema across all environments</li>
+<li><strong>Safety</strong>: Automatic backups and rollback on failure</li>
+<li><strong>Automation</strong>: Integrated with CI/CD for seamless deployments</li>
+<li><strong>Auditability</strong>: Complete audit trail of all schema changes</li>
+<li><strong>Developer Experience</strong>: Simple SQL-based migrations, easy to learn</li>
+<li><strong>Reversibility</strong>: Every migration has a tested rollback procedure</li>
+<li><strong>Performance</strong>: Fast migrations with optimization guidelines</li>
+<li><strong>Documentation</strong>: Comprehensive guides for all scenarios</li>
+</ol>
+<h3 id="negative">Negative<a class="headerlink" href="#negative" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong>Learning Curve</strong>: Team must learn dbmate and migration best practices</li>
+<li><strong>Discipline Required</strong>: Developers must write good rollback SQL</li>
+<li><strong>Testing Overhead</strong>: Migrations must be tested locally before deployment</li>
+<li><strong>Coordination Needed</strong>: Large migrations require coordination across team</li>
+<li><strong>Manual Production</strong>: Production migrations require manual trigger (by design for safety)</li>
+</ol>
+<h3 id="neutral">Neutral<a class="headerlink" href="#neutral" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong>Tool Dependency</strong>: Committed to dbmate as migration tool</li>
+<li><strong>SQL Knowledge</strong>: Developers need SQL proficiency (already required)</li>
+<li><strong>Process Change</strong>: New workflow for schema changes</li>
+</ol>
+<h2 id="implementation">Implementation<a class="headerlink" href="#implementation" title="Permanent link">&para;</a></h2>
+<h3 id="phase-1-foundation-complete">Phase 1: Foundation (Complete)<a class="headerlink" href="#phase-1-foundation-complete" title="Permanent link">&para;</a></h3>
 <ul>
-<li><code>POST /auth/login</code> - Authenticate user and receive tokens</li>
-<li><code>POST /auth/refresh</code> - Refresh access token</li>
-<li><code>POST /auth/logout</code> - Invalidate refresh token</li>
+<li>[x] Install and configure dbmate</li>
+<li>[x] Create initial migration (0001_init.sql)</li>
+<li>[x] Set up directory structure</li>
+<li>[x] Create environment configuration template</li>
 </ul>
-<h3 id="users">Users<a class="headerlink" href="#users" title="Permanent link">&para;</a></h3>
+<h3 id="phase-2-automation-complete">Phase 2: Automation (Complete)<a class="headerlink" href="#phase-2-automation-complete" title="Permanent link">&para;</a></h3>
 <ul>
-<li><code>GET /users/me</code> - Get current user profile</li>
-<li><code>PUT /users/me</code> - Update current user profile</li>
-<li><code>GET /users/:id</code> - Get user by ID (admin only)</li>
+<li>[x] Create GitHub Actions workflow (db-migrate.yml)</li>
+<li>[x] Implement dry run capability</li>
+<li>[x] Add automatic backup for production</li>
+<li>[x] Implement health checks</li>
+<li>[x] Add automatic rollback on failure</li>
+<li>[x] Create issue on failure</li>
 </ul>
-<h3 id="contacts">Contacts<a class="headerlink" href="#contacts" title="Permanent link">&para;</a></h3>
+<h3 id="phase-3-documentation-complete">Phase 3: Documentation (Complete)<a class="headerlink" href="#phase-3-documentation-complete" title="Permanent link">&para;</a></h3>
 <ul>
-<li><code>GET /contacts</code> - List all contacts</li>
-<li><code>POST /contacts</code> - Create new contact</li>
-<li><code>GET /contacts/:id</code> - Get contact by ID</li>
-<li><code>PUT /contacts/:id</code> - Update contact</li>
-<li><code>DELETE /contacts/:id</code> - Delete contact</li>
+<li>[x] Create comprehensive migration guide (DATABASE_MIGRATIONS.md)</li>
+<li>[x] Document best practices</li>
+<li>[x] Provide common patterns and examples</li>
+<li>[x] Create troubleshooting guide</li>
+<li>[x] Document rollback procedures</li>
 </ul>
-<h3 id="interactions">Interactions<a class="headerlink" href="#interactions" title="Permanent link">&para;</a></h3>
+<h3 id="phase-4-integration-next-steps">Phase 4: Integration (Next Steps)<a class="headerlink" href="#phase-4-integration-next-steps" title="Permanent link">&para;</a></h3>
 <ul>
-<li><code>GET /interactions</code> - List all interactions</li>
-<li><code>POST /interactions</code> - Create new interaction</li>
-<li><code>GET /interactions/:id</code> - Get interaction by ID</li>
+<li>[ ] Integrate with deployment workflows</li>
+<li>[ ] Add migration status to health checks</li>
+<li>[ ] Create migration dashboard in Godmode</li>
+<li>[ ] Set up migration notifications</li>
+<li>[ ] Train team on migration process</li>
 </ul>
-<h3 id="ai-features">AI Features<a class="headerlink" href="#ai-features" title="Permanent link">&para;</a></h3>
+<h2 id="monitoring-and-metrics">Monitoring and Metrics<a class="headerlink" href="#monitoring-and-metrics" title="Permanent link">&para;</a></h2>
+<p>Track the following metrics:
+1. <strong>Migration Success Rate</strong>: Percentage of successful migrations
+2. <strong>Migration Duration</strong>: Time to complete migrations
+3. <strong>Rollback Frequency</strong>: How often rollbacks are needed
+4. <strong>Migration Coverage</strong>: Percentage of schema changes using migrations
+5. <strong>Time to Recovery</strong>: Time to recover from failed migration</p>
+<h2 id="review-and-evolution">Review and Evolution<a class="headerlink" href="#review-and-evolution" title="Permanent link">&para;</a></h2>
+<p>This decision will be reviewed:
+- After first 10 production migrations
+- Quarterly as part of technical review
+- When significant issues arise
+- When new migration patterns emerge</p>
+<h2 id="references">References<a class="headerlink" href="#references" title="Permanent link">&para;</a></h2>
 <ul>
-<li><code>POST /ai/analyze</code> - Analyze text with AI</li>
-<li><code>POST /ai/recommend</code> - Get AI recommendations</li>
-<li><code>GET /ai/insights</code> - Get AI-generated insights</li>
+<li><a href="https://github.com/amacneil/dbmate">dbmate Documentation</a></li>
+<li><a href="https://www.postgresql.org/docs/">PostgreSQL Documentation</a></li>
+<li><a href="https://www.postgresql.org/docs/current/ddl.html">Database Migration Best Practices</a></li>
+<li><a href="../../DEPLOYMENT_RUNBOOK/">Deployment Runbook</a></li>
+<li><a href="../../DATABASE_MIGRATIONS/">Database Migrations Guide</a></li>
 </ul>
-<h2 id="rate-limiting">Rate Limiting<a class="headerlink" href="#rate-limiting" title="Permanent link">&para;</a></h2>
-<p>API requests are rate limited to:
-- 100 requests per minute for authenticated users
-- 10 requests per minute for unauthenticated requests</p>
-<h2 id="error-handling">Error Handling<a class="headerlink" href="#error-handling" title="Permanent link">&para;</a></h2>
-<p>The API uses standard HTTP status codes:
-- 200: Success
-- 201: Created
-- 400: Bad Request
-- 401: Unauthorized
-- 403: Forbidden
-- 404: Not Found
-- 429: Too Many Requests
-- 500: Internal Server Error</p>
-<p>Error responses include a JSON body with details:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="p">{</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">  </span><span class="nt">&quot;error&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">    </span><span class="nt">&quot;code&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;INVALID_INPUT&quot;</span><span class="p">,</span>
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">    </span><span class="nt">&quot;message&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Email address is required&quot;</span><span class="p">,</span>
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">    </span><span class="nt">&quot;field&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;email&quot;</span>
-<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="p">}</span>
-</code></pre></div>
-<h2 id="webhooks">Webhooks<a class="headerlink" href="#webhooks" title="Permanent link">&para;</a></h2>
-<p>Flowstate-AI can send webhooks for various events. Configure webhooks in your account settings.</p>
-<p>Supported events:
-- <code>contact.created</code>
-- <code>contact.updated</code>
-- <code>interaction.created</code>
-- <code>ai.insight.generated</code></p>
-<h2 id="sdk-and-client-libraries">SDK and Client Libraries<a class="headerlink" href="#sdk-and-client-libraries" title="Permanent link">&para;</a></h2>
-<p>Official client libraries are available for:
-- JavaScript/TypeScript
-- Python
-- Ruby (coming soon)</p>
-<p>See <a href="https://github.com/benjidanielsen/Flowstate-AI">GitHub repository</a> for installation instructions.</p>
-<h2 id="support">Support<a class="headerlink" href="#support" title="Permanent link">&para;</a></h2>
-<p>For API support, please contact support@flowstate-ai.com or open an issue on GitHub.</p>
+<h2 id="related-adrs">Related ADRs<a class="headerlink" href="#related-adrs" title="Permanent link">&para;</a></h2>
+<ul>
+<li>ADR 0001: Phase 0 Baseline Establishment</li>
+<li>ADR 0002: Supply Chain Security</li>
+<li>ADR 0003: Container Optimization</li>
+<li>ADR 0004: Documentation Portal</li>
+<li>ADR 0006: Automated Deployments</li>
+</ul>
+<h2 id="date">Date<a class="headerlink" href="#date" title="Permanent link">&para;</a></h2>
+<p>2025-01-10</p>
+<h2 id="authors">Authors<a class="headerlink" href="#authors" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Manus AI (Implementation)</li>
+<li>Benji Danielsen (Review and Approval)</li>
+</ul>
 
 
 
@@ -1674,7 +1948,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 10, 2025 09:47:54 UTC">October 10, 2025</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 10, 2025 10:19:21 UTC">October 10, 2025</span>
   </span>
 
     
@@ -1684,7 +1958,7 @@
     <span class="md-icon" title="Created">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14.47 15.08 11 13V7h1.5v5.25l3.08 1.83c-.41.28-.79.62-1.11 1m-1.39 4.84c-.36.05-.71.08-1.08.08-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8c0 .37-.03.72-.08 1.08.69.1 1.33.32 1.92.64.1-.56.16-1.13.16-1.72 0-5.5-4.5-10-10-10S2 6.5 2 12s4.47 10 10 10c.59 0 1.16-.06 1.72-.16-.32-.59-.54-1.23-.64-1.92M18 15v3h-3v2h3v3h2v-3h3v-2h-3v-3z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 10, 2025 09:47:54 UTC">October 10, 2025</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 10, 2025 10:19:21 UTC">October 10, 2025</span>
   </span>
 
     
@@ -1758,10 +2032,10 @@
     
     
       
-      <script id="__config" type="application/json">{"base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "content.code.copy", "content.action.edit"], "search": "../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+      <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "content.code.copy", "content.action.edit"], "search": "../../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
-      <script src="../assets/javascripts/bundle.f55a23d4.min.js"></script>
+      <script src="../../assets/javascripts/bundle.f55a23d4.min.js"></script>
       
     
   </body>
