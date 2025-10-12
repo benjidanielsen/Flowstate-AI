@@ -10,6 +10,7 @@ import reminderRoutes from './reminder';
 import externalIntegrationRoutes from './externalIntegration';
 import statsRoutes from './stats';
 import aiCoordinationRoutes from './aiCoordination';
+import evolutionRoutes from './evolution';
 import { authenticateToken } from '../middleware/authMiddleware';
 
 const router = Router();
@@ -26,6 +27,7 @@ router.use('/nba', authenticateToken, nbaRoutes);
 router.use("/reminders", authenticateToken, reminderRoutes);
 router.use("/integrations", authenticateToken, externalIntegrationRoutes);
 router.use("/ai", authenticateToken, aiCoordinationRoutes);
+router.use("/evolution", authenticateToken, evolutionRoutes);
 
 // Health check
 router.get('/health', (req, res) => {

@@ -4,6 +4,7 @@ import Home from './pages/Home';
 import ProtectedRoute from './components/ProtectedRoute';
 import Dashboard from './pages/Dashboard';
 import AIDecisionLogs from './pages/AIDecisionLogs';
+import EvolutionDashboard from './pages/EvolutionDashboard';
 
 function App() {
   return (
@@ -31,6 +32,14 @@ function App() {
           element={
             <ProtectedRoute>
               <AIDecisionLogs />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/evolution"
+          element={
+            <ProtectedRoute>
+              <EvolutionDashboard />
             </ProtectedRoute>
           }
         />
