@@ -211,6 +211,26 @@ services:
         max-size: "50m"
         max-file: "5"
 
+  # Vector Database for Knowledge Management
+  qdrant:
+    image: qdrant/qdrant:v1.9.0
+    container_name: flowstate-qdrant
+    restart: unless-stopped
+    ports:
+      - "6333:6333"
+      - "6334:6334"
+    volumes:
+      - qdrant_data:/qdrant/storage
+    environment:
+      - QDRANT__SERVICE__GRPC_PORT=6334
+    networks:
+      - flowstate-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:6333/healthz"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
   # Nginx Reverse Proxy (Optional but recommended for production)
   nginx:
     image: nginx:alpine
@@ -271,6 +291,9 @@ volumes:
   nginx_logs:
     driver: local
     name: flowstate_nginx_logs
+  qdrant_data:
+    driver: local
+    name: flowstate_qdrant_data
 
 networks:
   flowstate-network:
@@ -280,28 +303,3 @@ networks:
       config:
         - subnet: 172.20.0.0/16
           gateway: 172.20.0.1
-
-
-  # Vector Database for Knowledge Management
-  qdrant:
-    image: qdrant/qdrant:v1.7.0
-    container_name: flowstate-qdrant
-    restart: unless-stopped
-    ports:
-      - "6333:6333"
-      - "6334:6334"
-    volumes:
-      - qdrant_data:/qdrant/storage
-    environment:
-      - QDRANT__SERVICE__GRPC_PORT=6334
-    networks:
-      - flowstate-network
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:6333/healthz"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-
-volumes:
-  qdrant_data:
-    driver: local
