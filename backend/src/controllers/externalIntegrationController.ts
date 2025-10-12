@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { ExternalIntegrationService } from '../services/externalIntegrationService';
-import DatabaseManager from '../database';
+
 import logger from '../utils/logger';
 
 const externalIntegrationService = new ExternalIntegrationService();

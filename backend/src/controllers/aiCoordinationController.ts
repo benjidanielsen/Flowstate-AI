@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { AICoordinationService } from '../services/aiCoordinationService';
-import DatabaseManager from '../database';
+
 import logger from '../utils/logger';
 
 const aiCoordinationService = new AICoordinationService();

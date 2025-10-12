@@ -1,6 +1,6 @@
 import { AuthService } from '../services/authService';
 import DatabaseManager from '../database';
-import bcrypt from 'bcryptjs';
+
 import jwt from 'jsonwebtoken';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'supersecretjwtkey';

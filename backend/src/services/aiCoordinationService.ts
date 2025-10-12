@@ -1,4 +1,4 @@
-import { Database } from '../types';
+
 import logger from '../utils/logger';
 import axios from 'axios';
 

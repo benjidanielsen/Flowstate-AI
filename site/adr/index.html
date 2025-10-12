@@ -15,6 +15,10 @@
         <link rel="canonical" href="https://benjidanielsen.github.io/Flowstate-AI/adr/">
       
       
+        <link rel="prev" href="../CODING_STANDARDS/">
+      
+      
+        <link rel="next" href="../ROADMAP/">
       
       
       <link rel="icon" href="../assets/images/favicon.png">
@@ -302,10 +306,12 @@
   
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
+      <li class="md-tabs__item md-tabs__item--active">
         <a href="../CODING_STANDARDS/" class="md-tabs__link">
           
   
@@ -944,28 +950,31 @@
       
   
   
+    
   
   
+  
     
     
     
     
+      
+        
+        
       
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
         
           
-        
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5" >
-        
-          
-          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
             
   
   
@@ -978,7 +987,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_5">
             <span class="md-nav__icon md-icon"></span>
             Development
@@ -1012,10 +1021,32 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="./" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Architecture Decision Records
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -1026,6 +1057,35 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#available-adrs" class="md-nav__link">
+    <span class="md-ellipsis">
+      Available ADRs
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1182,7 +1242,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../SECURITY.md" class="md-nav__link">
+      <a href="../SECURITY/" class="md-nav__link">
         
   
   
@@ -1567,6 +1627,29 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../integrations/VSCode_Guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    VS Code Setup Guide
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1594,6 +1677,23 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#available-adrs" class="md-nav__link">
+    <span class="md-ellipsis">
+      Available ADRs
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -1617,7 +1717,11 @@
 
 
 <h1 id="architecture-decision-records">Architecture Decision Records<a class="headerlink" href="#architecture-decision-records" title="Permanent link">&para;</a></h1>
-<p>This directory contains all ADRs for the Flowstate-AI project.</p>
+<p>This section contains a collection of Architecture Decision Records (ADRs) that document significant architectural decisions made during the Flowstate-AI project. Each ADR describes a design choice, its context, the options considered, and the rationale behind the chosen solution.</p>
+<h2 id="available-adrs">Available ADRs<a class="headerlink" href="#available-adrs" title="Permanent link">&para;</a></h2>
+<ul>
+<li><a href="0001-phase-0-baseline-establishment/">0001 - Phase 0 Baseline Establishment</a></li>
+</ul>
 
 
 

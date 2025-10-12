@@ -1,5 +1,5 @@
 import DatabaseManager from '../database';
-import { PipelineStatus, InteractionType } from '../types';
+import { PipelineStatus } from '../types';
 
 interface CacheEntry<T> {
   data: T;
@@ -43,7 +43,7 @@ export class StatsService {
     return result;
   }
 
-  private dateRange(_daySpan: number = 7) {
+  private dateRange() {
     const now = new Date();
     const start = new Date();
     start.setHours(0, 0, 0, 0);
@@ -61,7 +61,7 @@ export class StatsService {
     }
 
     const db = DatabaseManager.getInstance().getDb();
-    const { todayStart, weekStart } = this.dateRange(7);
+    const { todayStart, weekStart } = this.dateRange();
     function countEvent(name: string, from: Date): Promise<number> {
       return new Promise((resolve, reject) => {
         db.get(

@@ -188,7 +188,7 @@ router.post('/improvements/:id/reject', async (req: Request, res: Response) => {
  */
 router.get('/knowledge', async (req: Request, res: Response) => {
   try {
-    const { query, category, limit } = req.query;
+    // const { query, category, limit } = req.query; // query, category, limit are not used in mock implementation
 
     // In production, this would call the Knowledge Manager
     const results: any[] = [];

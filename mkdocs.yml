@@ -75,24 +75,25 @@ nav:
       - Audit Trail: AUDIT_TRAIL.md
   - Development:
       - Coding Standards: CODING_STANDARDS.md
-      - Architecture Decision Records: adr/
+      - Architecture Decision Records: adr/index.md
       - Roadmap: ROADMAP.md
       - Changelog: CHANGELOG.md
       - Quality Metrics: QUALITY.md
   - Risk & Compliance:
       - Risk Register: RISK_REGISTER.md
-      - Security Policy: ../SECURITY.md
+      - Security Policy: SECURITY.md
   - Federation:
       - Federation Checklist: FEDERATION_CHECKLIST.md
       - Revocation Process: REVOCATION.md
   - API Documentation:
-      - API Overview: api/
+      - API Overview: api/index.md
   - Evolution Framework:
       - Overview: evolution/README.md
       - Architecture: evolution/ARCHITECTURE.md
       - Operator Training: evolution/OPERATOR_TRAINING.md
   - Integrations:
-      - Integration Guide: integrations/
+      - Integration Guide: integrations/index.md
+      - VS Code Setup Guide: integrations/VSCode_Guide.md
 
 extra:
   social:
