@@ -5,15 +5,58 @@
 🎯 Mission: Provide visual interface for system interaction
 """
 
-from flask import Flask, render_template_string, jsonify, request
+from flask import Flask, render_template_string, jsonify
 import sqlite3
-import json
 from pathlib import Path
-from datetime import datetime
+from contextlib import closing
+from typing import Iterable, List, Optional
 
 app = Flask(__name__)
 PROJECT_ROOT = Path(__file__).parent
 DB_PATH = PROJECT_ROOT / "godmode-state.db"
+PIPELINE_STAGES = [
+    "lead_generation",
+    "qualification",
+    "nurturing",
+    "conversion",
+    "retention",
+]
+
+
+def fetch_all(query: str, params: Iterable = ()) -> Optional[List[sqlite3.Row]]:
+    """Execute a SELECT query and return all rows or None on failure.
+
+    Returning ``None`` instead of an empty list allows callers to
+    differentiate between a successful query with no rows and an error such
+    as a missing database or table. This keeps the API responses resilient
+    even when the dashboard is launched before the SQLite state has been
+    initialised.
+    """
+
+    if not DB_PATH.exists():
+        app.logger.warning("Dashboard database not found at %s", DB_PATH)
+        return None
+
+    try:
+        with closing(sqlite3.connect(DB_PATH)) as conn:
+            conn.row_factory = sqlite3.Row
+            with closing(conn.cursor()) as cursor:
+                cursor.execute(query, params)
+                # ``fetchall`` returns a list, so explicitly convert it to
+                # ensure the data survives once the connection closes.
+                return list(cursor.fetchall())
+    except sqlite3.Error as exc:  # pragma: no cover - defensive logging
+        app.logger.error("Database query failed: %s", exc)
+        return None
+
+
+def _database_unavailable_response(payload):
+    response = {"error": "database_unavailable"}
+    if isinstance(payload, dict):
+        response.update(payload)
+    else:
+        response["data"] = payload
+    return jsonify(response), 503
 
 # HTML Template
 DASHBOARD_TEMPLATE = '''
@@ -295,111 +338,112 @@ def index():
 
 @app.route('/api/stats')
 def get_stats():
-    conn = sqlite3.connect(DB_PATH)
-    cursor = conn.cursor()
-    
-    cursor.execute("SELECT COUNT(*) FROM agent_status")
-    agent_count = cursor.fetchone()[0]
-    
-    cursor.execute("SELECT COUNT(*) FROM tasks WHERE status = 'pending'")
-    task_count = cursor.fetchone()[0]
-    
-    cursor.execute("SELECT COUNT(*) FROM crm_pipeline")
-    lead_count = cursor.fetchone()[0]
-    
-    conn.close()
-    
-    return jsonify({
-        'agents': agent_count,
-        'tasks': task_count,
-        'leads': lead_count
-    })
+    stats = {'agents': 0, 'tasks': 0, 'leads': 0}
+
+    agent_row = fetch_all("SELECT COUNT(*) AS count FROM agent_status")
+    if agent_row is None:
+        return _database_unavailable_response(stats)
+    stats['agents'] = agent_row[0]['count'] if agent_row else 0
+
+    task_row = fetch_all("SELECT COUNT(*) AS count FROM tasks WHERE status = 'pending'")
+    if task_row is None:
+        return _database_unavailable_response(stats)
+    stats['tasks'] = task_row[0]['count'] if task_row else 0
+
+    lead_row = fetch_all("SELECT COUNT(*) AS count FROM crm_pipeline")
+    if lead_row is None:
+        return _database_unavailable_response(stats)
+    stats['leads'] = lead_row[0]['count'] if lead_row else 0
+
+    return jsonify(stats)
 
 @app.route('/api/pipeline')
 def get_pipeline():
-    conn = sqlite3.connect(DB_PATH)
-    cursor = conn.cursor()
-    
-    stages = {}
-    for stage in ['lead_generation', 'qualification', 'nurturing', 'conversion', 'retention']:
-        cursor.execute("SELECT COUNT(*) FROM crm_pipeline WHERE stage = ?", (stage,))
-        stages[stage] = cursor.fetchone()[0]
-    
-    conn.close()
+    stages = {stage: 0 for stage in PIPELINE_STAGES}
+
+    for stage in PIPELINE_STAGES:
+        rows = fetch_all("SELECT COUNT(*) AS count FROM crm_pipeline WHERE stage = ?", (stage,))
+        if rows is None:
+            return _database_unavailable_response(stages)
+        stages[stage] = rows[0]['count'] if rows else 0
+
     return jsonify(stages)
 
 @app.route('/api/agents')
 def get_agents():
-    conn = sqlite3.connect(DB_PATH)
-    cursor = conn.cursor()
-    
-    cursor.execute('''
+    rows = fetch_all(
+        '''
         SELECT agent_name, status, current_task, last_heartbeat
         FROM agent_status
         ORDER BY last_heartbeat DESC
-    ''')
-    
-    agents = []
-    for row in cursor.fetchall():
-        agents.append({
-            'agent': row[0],
-            'status': row[1],
-            'current_task': row[2],
-            'last_heartbeat': row[3]
-        })
-    
-    conn.close()
+        '''
+    )
+    if rows is None:
+        return _database_unavailable_response([])
+
+    agents = [
+        {
+            'agent': row['agent_name'],
+            'status': row['status'],
+            'current_task': row['current_task'],
+            'last_heartbeat': row['last_heartbeat'],
+        }
+        for row in rows
+    ]
+
     return jsonify(agents)
 
 @app.route('/api/tasks')
 def get_tasks():
-    conn = sqlite3.connect(DB_PATH)
-    cursor = conn.cursor()
-    
-    cursor.execute('''
+    rows = fetch_all(
+        '''
         SELECT id, title, description, priority, assigned_to
         FROM tasks
         WHERE status = 'pending'
         ORDER BY priority DESC, created_at ASC
         LIMIT 10
-    ''')
-    
-    tasks = []
-    for row in cursor.fetchall():
-        tasks.append({
-            'id': row[0],
-            'title': row[1],
-            'description': row[2],
-            'priority': row[3],
-            'assigned_to': row[4]
-        })
-    
-    conn.close()
+        '''
+    )
+    if rows is None:
+        return _database_unavailable_response([])
+
+    tasks = [
+        {
+            'id': row['id'],
+            'title': row['title'],
+            'description': row['description'],
+            'priority': row['priority'],
+            'assigned_to': row['assigned_to'],
+        }
+        for row in rows
+    ]
+
     return jsonify(tasks)
 
 @app.route('/api/leads')
 def get_leads():
-    conn = sqlite3.connect(DB_PATH)
-    cursor = conn.cursor()
-    
-    cursor.execute('''
+    rows = fetch_all(
+        '''
         SELECT id, lead_name, lead_email, stage, score
         FROM crm_pipeline
         ORDER BY created_at DESC
         LIMIT 10
-    ''')
-    
-    leads = []
-    for row in cursor.fetchall():
-        leads.append({
-            'id': row[0],
-            'name': row[1],
-            'email': row[2],
-            'stage': row[3],
-            'score': row[4]
-        })
-    
-    conn.close()
+        '''
+    )
+    if rows is None:
+        return _database_unavailable_response([])
+
+    leads = [
+        {
+            'id': row['id'],
+            'name': row['lead_name'],
+            'email': row['lead_email'],
+            'stage': row['stage'],
+            'score': row['score'],
+        }
+        for row in rows
+    ]
+
     return jsonify(leads)
 
 if __name__ == '__main__':
