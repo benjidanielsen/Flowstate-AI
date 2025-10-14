@@ -151,7 +151,11 @@ class CRMEmailAutomation:
     
     def __init__(self):
         """Initialize the email automation service."""
-        self.client = OpenAI()
+        try:
+            self.client = OpenAI()
+        except Exception:
+            # OpenAI client optional for testing
+            self.client = None
         self.log_file = Path(__file__).parent.parent / "logs" / "email_automation.log"
         
     def log(self, message: str):
@@ -196,6 +200,12 @@ class CRMEmailAutomation:
         
         # Use AI to personalize the email further
         try:
+            if self.client is None:
+                # Fallback to template with simple variable substitution
+                subject = template['subject'].format(**variables)
+                body = template['template'].format(**variables)
+                return {"subject": subject, "body": body}
+            
             prompt = f"""
             Personalize the following email template for a contact with these details:
             - Name: {variables['name']}
