@@ -25,6 +25,12 @@ Flowstate-AI v2030 comprises three main layers, ensuring a clear separation of c
     -   `agent_states`: Stores the state and metadata for each AI agent.
     -   `documents`: Stores agent memories and knowledge with vector embeddings.
     -   `job_queue`: Manages inter-agent communication and task distribution.
+    -   `customers` (Planned): Stores comprehensive customer profiles, interaction history, and next steps.
+    -   `pipelines` (Planned): Manages the 7-stage Frazer Pipeline, including stages and progression rules.
+    -   `pipeline_analytics` (Planned): Stores data for pipeline performance and conversion rates.
+    -   `reminders` (Planned): Manages intelligent reminders with multi-interval and escalation logic.
+    -   `recommendations` (Planned): Stores AI-powered Next Best Action suggestions.
+    -   `events` (Planned): Detailed JSON-based logging of all customer interactions and system events.
 
 ### 2.2. Backend Layer (Node.js/TypeScript)
 
@@ -37,6 +43,11 @@ Flowstate-AI v2030 comprises three main layers, ensuring a clear separation of c
     -   `EmbeddingService`: Generates vector embeddings for text using OpenAI API.
     -   `VectorSearchService`: Provides semantic search, similarity search, hybrid search, recommendations, and clustering.
     -   `WorkflowOrchestrationService`: Orchestrates complex multi-agent workflows.
+    -   `CustomerService` (Planned): Manages customer data, profiles, and interactions.
+    -   `PipelineService` (Planned): Manages pipeline stages, progression, and analytics.
+    -   `ReminderService` (Planned): Handles reminder creation, scheduling, and escalation.
+    -   `NBAService` (Planned): Generates and manages Next Best Action recommendations.
+    -   `EventLoggingService` (Planned): Processes and stores detailed event logs.
 
 ### 2.3. AI Worker Layer (Python)
 
@@ -44,7 +55,18 @@ Flowstate-AI v2030 comprises three main layers, ensuring a clear separation of c
 -   **Purpose**: Execution environment for the AI agents. Hosts specialized agents, handles job execution, and facilitates inter-agent communication.
 -   **Key Components**:
     -   `AgentBase` class: Provides core functionality for all agents (registration, state management, job processing, memory interaction).
-    -   `Specialized Agents`: Implement specific functionalities (e.g., `CodeAnalyzerAgent`, `DataProcessorAgent`, `CoordinatorAgent`, `LearningAgent`, `MonitoringAgent`).
+    -   `Specialized Agents`:
+        -   `CodeAnalyzerAgent`
+        -   `DataProcessorAgent`
+        -   `CoordinatorAgent`
+        -   `LearningAgent`
+        -   `MonitoringAgent`
+        -   `PipelineAgent` (Planned): Manages Frazer Pipeline progression and analytics.
+        -   `CustomerAgent` (Planned): Handles customer profile management and interaction logging.
+        -   `ReminderAgent` (Planned): Processes and escalates intelligent reminders.
+        -   `NBAAgent` (Planned): Generates and prioritizes Next Best Action recommendations.
+        -   `AnalyticsAgent` (Planned): Processes event logs and generates data-driven insights.
+        -   `GitHubAgent` (Planned): Coordinates with GitHub for task management and automated workflows.
 
 ## 3. Inter-Agent Communication Flow
 
@@ -73,9 +95,53 @@ The `WorkflowOrchestrationService` enables the definition and execution of compl
 -   Timeout handling.
 -   Predefined workflow templates for common tasks.
 
+## 6. Feature Integration Overview (Planned)
+
+This section outlines how the newly defined features will integrate into the existing architectural components.
+
+### 🎯 Frazer Pipeline Method Integration
+-   **Database**: New `pipelines`, `stages`, and `pipeline_analytics` tables.
+-   **Backend Services**: `PipelineService` to manage pipeline logic and state.
+-   **AI Agents**: `PipelineAgent` to automate stage progression and analyze performance.
+-   **Workflow Orchestration**: Workflows to guide customers through the pipeline stages.
+
+### 👤 Customer Card System Integration
+-   **Database**: New `customers` table for comprehensive profiles.
+-   **Backend Services**: `CustomerService` for CRUD operations and interaction tracking.
+-   **AI Agents**: `CustomerAgent` for managing customer-specific tasks and recommendations.
+-   **Memory System**: Store customer interactions and notes in the `documents` table.
+
+### 🔔 Intelligent Reminder System Integration
+-   **Database**: New `reminders` table to store reminder details.
+-   **Backend Services**: `ReminderService` for scheduling and managing reminders.
+-   **AI Agents**: `ReminderAgent` to process due reminders and handle escalations.
+-   **Job Queue**: Utilize `job_queue` for reminder processing tasks.
+
+### 🧠 Next Best Action (NBA) Engine Integration
+-   **Database**: `recommendations` table for storing NBA suggestions.
+-   **Backend Services**: `NBAService` to generate and prioritize recommendations.
+-   **AI Agents**: `LearningAgent` (enhanced) and a potential `NBAAgent` to drive recommendations based on data and behavior.
+-   **Vector Search**: Leverage `VectorSearchService` for context-aware recommendations.
+
+### 📊 Event Logging & Analytics Integration
+-   **Database**: `events` table or extended `documents` table for comprehensive event logs.
+-   **Backend Services**: `EventLoggingService` for capturing and processing events.
+-   **AI Agents**: `AnalyticsAgent` for reporting, performance tracking, and data-driven insights.
+-   **Memory System**: Store processed analytics and insights in the `documents` table.
+
+### 🤖 AI Agent Self-Improvement Integration
+-   **AI Agents**: Enhanced `LearningAgent` for iterative feedback loops, self-evaluation, and adaptive learning.
+-   **GitHub Coordination**: Automated issue creation for performance issues, linking to `GitHubAgent`.
+-   **Memory System**: Store self-evaluation results and learning insights in `documents`.
+
+### 🤝 GitHub Coordination for AI Agents Integration
+-   **AI Agents**: `GitHubAgent` for centralized task management via GitHub Issues and automated workflows.
+-   **Workflow Orchestration**: Integration with `WorkflowOrchestrationService` to trigger GitHub Actions for CI/CD and task automation.
+-   **Backend Services**: Potential `GitHubIntegrationService` for API interactions.
+
 ---
 
-**Document Version**: 1.0  
-**Last Updated**: October 17, 2025  
+**Document Version**: 1.1
+**Last Updated**: October 17, 2025
 **Prepared by**: Manus AI
 
