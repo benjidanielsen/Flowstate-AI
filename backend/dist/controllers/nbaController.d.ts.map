@@ -1,0 +1,1 @@
+{"version":3,"file":"nbaController.d.ts","sourceRoot":"","sources":["../../src/controllers/nbaController.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,OAAO,EAAE,QAAQ,EAAE,MAAM,SAAS,CAAC;AAO5C,qBAAa,aAAa;IACxB,kBAAkB,GAAU,KAAK,OAAO,EAAE,KAAK,QAAQ,mBAWrD;IAEF,OAAO,GAAU,MAAM,OAAO,EAAE,KAAK,QAAQ,mBAU3C;CACH"}

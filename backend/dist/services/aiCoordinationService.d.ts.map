@@ -1,0 +1,1 @@
+{"version":3,"file":"aiCoordinationService.d.ts","sourceRoot":"","sources":["../../src/services/aiCoordinationService.ts"],"names":[],"mappings":"AAIA,qBAAa,qBAAqB;IAChC,OAAO,CAAC,eAAe,CAAS;;IAM1B,kBAAkB,CAAC,QAAQ,EAAE,MAAM,EAAE,OAAO,EAAE,GAAG,GAAG,OAAO,CAAC,GAAG,CAAC;IAYhE,iBAAiB,IAAI,OAAO,CAAC,GAAG,CAAC;CAWxC"}

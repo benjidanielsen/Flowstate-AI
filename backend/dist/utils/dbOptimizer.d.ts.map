@@ -1,0 +1,1 @@
+{"version":3,"file":"dbOptimizer.d.ts","sourceRoot":"","sources":["../../src/utils/dbOptimizer.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,eAAe,EAAE,MAAM,aAAa,CAAC;AAG9C,qBAAa,WAAW;IACtB,OAAO,CAAC,EAAE,CAAkB;gBAEhB,SAAS,EAAE,eAAe;IAItC;;;OAGG;IACU,8BAA8B,IAAI,OAAO,CAAC,MAAM,EAAE,CAAC;IAgChE;;;OAGG;IACU,mBAAmB,CAAC,UAAU,EAAE,MAAM,GAAG,OAAO,CAAC,IAAI,CAAC;CAUpE"}

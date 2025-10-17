@@ -1,0 +1,1 @@
+{"version":3,"file":"interactionController.d.ts","sourceRoot":"","sources":["../../src/controllers/interactionController.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,OAAO,EAAE,QAAQ,EAAE,MAAM,SAAS,CAAC;AAG5C,eAAO,MAAM,qBAAqB;2BACH,OAAO,OAAO,QAAQ;qCAiBZ,OAAO,OAAO,QAAQ;4BAW/B,OAAO,OAAO,QAAQ;2BAevB,OAAO,OAAO,QAAQ;2BAgBtB,OAAO,OAAO,QAAQ;CAUpD,CAAC"}

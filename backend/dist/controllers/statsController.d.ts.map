@@ -1,0 +1,1 @@
+{"version":3,"file":"statsController.d.ts","sourceRoot":"","sources":["../../src/controllers/statsController.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,OAAO,EAAE,QAAQ,EAAE,MAAM,SAAS,CAAC;AAG5C,qBAAa,eAAe;IAC1B,OAAO,CAAC,YAAY,CAAsB;IAE1C,gBAAgB,GAAU,MAAM,OAAO,EAAE,KAAK,QAAQ,mBAqBpD;CACH"}

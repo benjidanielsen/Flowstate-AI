@@ -1,0 +1,1 @@
+{"version":3,"file":"aiCoordination.js","sourceRoot":"","sources":["../../src/routes/aiCoordination.ts"],"names":[],"mappings":";;AAAA,qCAAiC;AACjC,sFAA8E;AAC9E,iEAAiE;AAEjE,MAAM,MAAM,GAAG,IAAA,gBAAM,GAAE,CAAC;AAExB,MAAM,CAAC,IAAI,CAAC,UAAU,EAAE,kCAAiB,EAAE,mCAAQ,CAAC,CAAC;AACrD,MAAM,CAAC,GAAG,CAAC,YAAY,EAAE,kCAAiB,EAAE,oCAAS,CAAC,CAAC;AAEvD,kBAAe,MAAM,CAAC"}
