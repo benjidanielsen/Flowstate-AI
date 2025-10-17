@@ -26,7 +26,7 @@ Flowstate-AI v2030 comprises three main layers:
 
 ## Getting Started
 
-To set up and run Flowstate-AI v2030, please refer to the comprehensive `DEPLOYMENT_GUIDE.md` located in the project root directory. This guide provides detailed instructions for:
+To set up and run Flowstate-AI v2030, please refer to the comprehensive documentation suite. This includes detailed instructions for:
 
 -   Prerequisites and environment setup
 -   Database configuration (Supabase)
@@ -34,6 +34,15 @@ To set up and run Flowstate-AI v2030, please refer to the comprehensive `DEPLOYM
 -   Running the test suite
 -   API endpoints and usage examples
 -   Troubleshooting common issues
+
+## Documentation
+
+For a deeper understanding of the project, please refer to the following documents in the `docs/` directory:
+
+-   **Deployment Guide**: `DEPLOYMENT_GUIDE.md` provides detailed instructions for setting up and running the system.
+-   **Project Summary**: `PROJECT_SUMMARY.md` offers a high-level overview of implemented components and current status.
+-   **Project Roadmap**: `ROADMAP.md` outlines the planned development, immediate actions, and long-term goals.
+-   **Architecture Blueprint**: `ARCHITECTURE_BLUEPRINT.md` details the system's architectural design and core principles.
 
 ## Project Status
 
