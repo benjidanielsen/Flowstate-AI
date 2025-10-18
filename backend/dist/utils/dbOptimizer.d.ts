@@ -1,6 +1,6 @@
-import { DatabaseManager } from "../database";
+import DatabaseManager from "../database";
 export declare class DbOptimizer {
-    private db;
+    private dbManager;
     constructor(dbManager: DatabaseManager);
     /**
      * Analyzes database performance and suggests optimizations.

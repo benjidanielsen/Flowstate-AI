@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import agentController from '../controllers/agentController';
 
-const router = Router();
+const router: Router = Router();
 
 // Agent management routes
 router.post('/agents/register', agentController.registerAgent.bind(agentController));

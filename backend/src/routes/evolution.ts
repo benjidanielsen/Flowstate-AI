@@ -1,8 +1,8 @@
-import express, { Request, Response } from 'express';
+import express, { Request, Response, Router } from 'express';
 import logger from '../utils/logger';
 import { authenticateToken } from '../middleware/authMiddleware';
 
-const router = express.Router();
+const router: Router = express.Router();
 
 // All evolution routes require authentication
 router.use(authenticateToken);

@@ -13,6 +13,7 @@ import performanceMiddleware from './middleware/performanceMiddleware';
 import { correlationIdMiddleware } from './middleware/correlationId'; // Import correlationId middleware
 import { idempotencyMiddleware } from './middleware/idempotency'; // Import idempotency middleware
 import DatabaseManager from './database';
+import { testConnection } from './database/supabase'; // Import test connection from supabase.ts
 import { runMigrations } from './database/migrate';
 import { safeLogger } from './utils/piiRedaction'; // Use safeLogger
 import './utils/tracer'; // Initialize OpenTelemetry tracer
@@ -21,11 +22,27 @@ const swaggerDocument = YAML.load(path.resolve(__dirname, '../../openapi.yaml'))
 
 dotenv.config();
 
-const app = express();
+const app: express.Express = express();
 
 let serverRef: http.Server | null = null;
 let isShuttingDown = false;
 let shutdownPromise: Promise<void> | null = null;
+
+// Ensure the database connection is established early for Drizzle to initialize properly
+// This is a workaround to ensure `db` is initialized before any services try to use it.
+// In a real application, you might want a more controlled initialization flow.
+const initializeDatabaseAndDrizzle = async () => {
+  try {
+    safeLogger.info('Initializing database and running migrations...');
+    await DatabaseManager.getInstance().connect();
+    await testConnection(); // Test Supabase connection
+    await runMigrations(); // Run custom migrations for initial schema setup
+  } catch (error) {
+    safeLogger.error('Failed to initialize database and Drizzle:', error);
+    process.exit(1); // Exit if database initialization fails
+  }
+};
+
 
 // Middleware
 app.use(helmet());
@@ -52,19 +69,14 @@ app.use((req: Request, res: Response) => {
   res.status(404).json({ error: 'Route not found' });
 });
 
-export function createApp() {
+export function createApp(): express.Express {
   return app;
 }
 
 export async function startServer() {
   try {
-    // Initialize database
-    safeLogger.info('Connecting to database...');
-    await DatabaseManager.getInstance().connect();
-
-    // Run migrations
-    safeLogger.info('Running database migrations...');
-    await runMigrations();
+    // The database initialization and migration are now handled by initializeDatabaseAndDrizzle() call above
+    // This ensures they run before the server attempts to start and use the database
 
     // Start server
     serverRef = app.listen(process.env.PORT || 3001, () => {
@@ -74,7 +86,6 @@ export async function startServer() {
     return serverRef;
   } catch (error) {
     safeLogger.error('Failed to start server:', error);
-    // Throw instead of process.exit so tests can handle failures
     throw error;
   }
 }
@@ -132,11 +143,13 @@ export async function shutdown() {
 }
 
 if (require.main === module) {
-  // When run directly, start the server and attach signal handlers that exit the process
-  startServer().catch((err) => {
-    safeLogger.error('Fatal error starting server:', err);
-    process.exit(1);
-  });
+  // When run directly, initialize database, start the server and attach signal handlers that exit the process
+  initializeDatabaseAndDrizzle()
+    .then(() => startServer())
+    .catch((err) => {
+      safeLogger.error("Fatal error starting server:", err);
+      process.exit(1);
+    });
 
   process.on('SIGTERM', async () => {
     safeLogger.info('SIGTERM received, shutting down gracefully');

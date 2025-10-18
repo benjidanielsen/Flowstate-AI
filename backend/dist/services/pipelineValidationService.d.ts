@@ -1,21 +1,12 @@
 import { PipelineStatus } from '../types';
-export interface StageTransitionRule {
-    from: PipelineStatus;
-    to: PipelineStatus;
-    requiresQualification: boolean;
-    validationMessage?: string;
-}
 export interface ValidationResult {
     allowed: boolean;
     reason?: string;
     suggestions?: string[];
 }
 export declare class PipelineValidationService {
-    private qualificationService;
-    private eventLogService;
     private stageOrder;
     private alternativePaths;
-    constructor();
     /**
      * Validate if a customer can transition from one stage to another
      */
@@ -45,4 +36,5 @@ export declare class PipelineValidationService {
      */
     logStageTransition(customerId: string, fromStage: PipelineStatus, toStage: PipelineStatus, notes?: string): Promise<void>;
 }
+export declare const pipelineValidationService: PipelineValidationService;
 //# sourceMappingURL=pipelineValidationService.d.ts.map

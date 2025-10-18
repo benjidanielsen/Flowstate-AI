@@ -1,4 +1,7 @@
 import json
+from dotenv import load_dotenv
+
+load_dotenv() # Load environment variables from .env file
 import logging
 import os
 import asyncio
@@ -23,8 +26,9 @@ from evolution_framework.specialized_agents import (
 )
 from evolution_framework.self_modification_orchestrator import SelfModificationOrchestrator
 from evolution_framework.evolution_governor import EvolutionGovernor
-from evolution_framework.evolution_manager import FlowstateEvolutionManager
+from evolution_framework.evolution_manager import EvolutionManager
 from evolution_framework.anomaly_detector import AnomalyDetector
+from evolution_framework.knowledge_manager import VectorKnowledgeManager
 from evolution_framework.metrics_collector import MetricsCollector
 
 BACKEND_API_URL = os.getenv("BACKEND_API_URL", "http://localhost:3001")
@@ -33,9 +37,10 @@ app = FastAPI(title="Flowstate-AI Worker v2030", version="2.0.0")
 
 # Initialize Evolution Framework components
 metrics_collector = MetricsCollector("python_worker")
-evolution_manager = FlowstateEvolutionManager()
+knowledge_manager = VectorKnowledgeManager()
+evolution_manager = EvolutionManager()
 anomaly_detector = AnomalyDetector(metrics_collector)
-evolution_governor = EvolutionGovernor(evolution_manager, anomaly_detector, metrics_collector)
+evolution_governor = EvolutionGovernor(evolution_manager, anomaly_detector, metrics_collector, knowledge_manager)
 self_modification_orchestrator = SelfModificationOrchestrator(
     project_root="/home/ubuntu/Flowstate-AI", 
     config_path=None

@@ -1,10 +1,10 @@
 import { Router } from 'express';
 import { QualificationController } from '../controllers/qualificationController';
 
-const router = Router();
+const router: Router = Router();
 const controller = new QualificationController();
 
-router.post('/', controller.saveQualification);
-router.get('/:id', controller.getQualification);
+router.post('/', controller.createQualification);
+router.get('/:id', controller.getQualificationById);
 
 export default router;

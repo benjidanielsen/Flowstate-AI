@@ -1,368 +1,256 @@
-import { eq, and, desc } from 'drizzle-orm';
-import { sql as sqlTemplate } from 'drizzle-orm';
-import db from '../database/supabase';
-import { agentStates, jobQueue, documents } from '../database/schema';
-import embeddingService from './embeddingService';
-import logger from '../utils/logger';
-
-export interface AgentState {
-  id?: number;
-  agentName: string;
-  state: any;
-  createdAt?: Date;
-  updatedAt?: Date;
-}
-
-export interface Job {
-  id?: number;
-  payload: any;
-  targetAgent: string;
-  status?: string;
-  attempts?: number;
-  createdAt?: Date;
-  processedAt?: Date;
-}
-
-export interface Document {
-  id?: number;
-  content: string;
-  metadata?: any;
-  embedding?: string;
-}
+import { PoolClient } from 'pg';
+import DatabaseManager from '../database';
+import { safeLogger } from '../utils/piiRedaction';
+import { AgentState, Job, Document, JobStatus } from '../types';
+import { EmbeddingService } from './embeddingService';
 
 export class AgentService {
-  /**
-   * Register or update an agent's state
-   */
-  async registerAgent(agentName: string, initialState: any = {}): Promise<AgentState> {
-    try {
-      logger.info(`Registering agent: ${agentName}`);
-      
-      // Check if agent already exists
-      const existingAgent = await db
-        .select()
-        .from(agentStates)
-        .where(eq(agentStates.agentName, agentName))
-        .limit(1);
+  private dbManager: DatabaseManager;
+  private embeddingService: EmbeddingService;
 
-      if (existingAgent.length > 0) {
-        // Update existing agent
-        const [updated] = await db
-          .update(agentStates)
-          .set({
-            state: initialState,
-            updatedAt: new Date(),
-          })
-          .where(eq(agentStates.agentName, agentName))
-          .returning();
-        
-        logger.info(`Agent ${agentName} updated successfully`);
-        return updated;
-      } else {
-        // Create new agent
-        const [created] = await db
-          .insert(agentStates)
-          .values({
-            agentName,
-            state: initialState,
-          })
-          .returning();
-        
-        logger.info(`Agent ${agentName} registered successfully`);
-        return created;
-      }
+  constructor() {
+    this.dbManager = DatabaseManager.getInstance();
+    this.embeddingService = new EmbeddingService();
+  }
+
+  async registerAgent(agent: AgentState): Promise<AgentState> {
+    let client: PoolClient | null = null;
+    try {
+      const pool = this.dbManager.getPool();
+      client = await pool.connect();
+      const result = await client.query(
+        'INSERT INTO agent_states(name, status, last_heartbeat, metadata) VALUES($1, $2, $3, $4) RETURNING *',
+        [agent.name, agent.status, agent.last_heartbeat, agent.metadata]
+      );
+      safeLogger.info(`Agent ${agent.name} registered successfully.`);
+      return result.rows[0];
     } catch (error) {
-      logger.error(`Error registering agent ${agentName}:`, error);
+      safeLogger.error(`Error registering agent ${agent.name}:`, error);
       throw error;
+    } finally {
+      if (client) client.release();
     }
   }
 
-  /**
-   * Get agent state by name
-   */
   async getAgentState(agentName: string): Promise<AgentState | null> {
+    let client: PoolClient | null = null;
     try {
-      const [agent] = await db
-        .select()
-        .from(agentStates)
-        .where(eq(agentStates.agentName, agentName))
-        .limit(1);
-
-      return agent || null;
+      const pool = this.dbManager.getPool();
+      client = await pool.connect();
+      const result = await client.query(
+        'SELECT * FROM agent_states WHERE name = $1',
+        [agentName]
+      );
+      return result.rows[0] || null;
     } catch (error) {
-      logger.error(`Error getting agent state for ${agentName}:`, error);
+      safeLogger.error(`Error fetching agent state for ${agentName}:`, error);
       throw error;
+    } finally {
+      if (client) client.release();
     }
   }
 
-  /**
-   * Update agent state
-   */
-  async updateAgentState(agentName: string, newState: any): Promise<AgentState> {
-    try {
-      const [updated] = await db
-        .update(agentStates)
-        .set({
-          state: newState,
-          updatedAt: new Date(),
-        })
-        .where(eq(agentStates.agentName, agentName))
-        .returning();
-
-      if (!updated) {
-        throw new Error(`Agent ${agentName} not found`);
-      }
-
-      logger.info(`Agent ${agentName} state updated`);
-      return updated;
-    } catch (error) {
-      logger.error(`Error updating agent state for ${agentName}:`, error);
-      throw error;
-    }
-  }
-
-  /**
-   * Get all registered agents
-   */
   async getAllAgents(): Promise<AgentState[]> {
+    let client: PoolClient | null = null;
     try {
-      const agents = await db
-        .select()
-        .from(agentStates)
-        .orderBy(desc(agentStates.updatedAt));
-
-      return agents;
+      const pool = this.dbManager.getPool();
+      client = await pool.connect();
+      const result = await client.query('SELECT * FROM agent_states');
+      return result.rows;
     } catch (error) {
-      logger.error('Error getting all agents:', error);
+      safeLogger.error('Error fetching all agents:', error);
       throw error;
+    } finally {
+      if (client) client.release();
     }
   }
 
-  /**
-   * Create a new job in the queue
-   */
-  async createJob(targetAgent: string, payload: any): Promise<Job> {
+  async updateAgentState(agentName: string, status: string, metadata: any): Promise<AgentState | null> {
+    let client: PoolClient | null = null;
     try {
-      logger.info(`Creating job for agent: ${targetAgent}`);
-      
-      const [job] = await db
-        .insert(jobQueue)
-        .values({
-          targetAgent,
-          payload,
-          status: 'pending',
-          attempts: 0,
-        })
-        .returning();
-
-      logger.info(`Job created with ID: ${job.id}`);
-      return job;
+      const pool = this.dbManager.getPool();
+      client = await pool.connect();
+      const result = await client.query(
+        'UPDATE agent_states SET status = $1, last_heartbeat = NOW(), metadata = $2 WHERE name = $3 RETURNING *',
+        [status, metadata, agentName]
+      );
+      safeLogger.info(`Agent ${agentName} state updated to ${status}.`);
+      return result.rows[0] || null;
     } catch (error) {
-      logger.error(`Error creating job for ${targetAgent}:`, error);
+      safeLogger.error(`Error updating agent state for ${agentName}:`, error);
       throw error;
+    } finally {
+      if (client) client.release();
     }
   }
 
-  /**
-   * Get pending jobs for a specific agent
-   */
-  async getPendingJobs(targetAgent: string, limit: number = 10): Promise<Job[]> {
+  async createJob(job: Omit<Job, 'id' | 'created_at' | 'updated_at' | 'status'>): Promise<Job> {
+    let client: PoolClient | null = null;
     try {
-      const jobs = await db
-        .select()
-        .from(jobQueue)
-        .where(
-          and(
-            eq(jobQueue.targetAgent, targetAgent),
-            eq(jobQueue.status, 'pending')
-          )
-        )
-        .orderBy(jobQueue.createdAt)
-        .limit(limit);
-
-      return jobs;
+      const pool = this.dbManager.getPool();
+      client = await pool.connect();
+      const result = await client.query(
+        'INSERT INTO job_queue(agent_name, task_type, payload, priority, correlation_id, status) VALUES($1, $2, $3, $4, $5, $6) RETURNING *',
+        [job.agent_name, job.task_type, job.payload, job.priority || 0, job.correlation_id, JobStatus.PENDING]
+      );
+      safeLogger.info(`Job created for agent ${job.agent_name} with task type ${job.task_type}.`);
+      return result.rows[0];
     } catch (error) {
-      logger.error(`Error getting pending jobs for ${targetAgent}:`, error);
+      safeLogger.error(`Error creating job for agent ${job.agent_name}:`, error);
       throw error;
+    } finally {
+      if (client) client.release();
     }
   }
 
-  /**
-   * Get all pending jobs
-   */
-  async getAllPendingJobs(limit: number = 50): Promise<Job[]> {
+  async getPendingJobs(agentName: string): Promise<Job[]> {
+    let client: PoolClient | null = null;
     try {
-      const jobs = await db
-        .select()
-        .from(jobQueue)
-        .where(eq(jobQueue.status, 'pending'))
-        .orderBy(jobQueue.createdAt)
-        .limit(limit);
-
-      return jobs;
+      const pool = this.dbManager.getPool();
+      client = await pool.connect();
+      const result = await client.query(
+        'SELECT * FROM job_queue WHERE agent_name = $1 AND status = $2 ORDER BY priority DESC, created_at ASC',
+        [agentName, JobStatus.PENDING]
+      );
+      return result.rows;
     } catch (error) {
-      logger.error('Error getting all pending jobs:', error);
+      safeLogger.error(`Error fetching pending jobs for ${agentName}:`, error);
       throw error;
+    } finally {
+      if (client) client.release();
     }
   }
 
-  /**
-   * Update job status
-   */
-  async updateJobStatus(
-    jobId: number,
-    status: 'pending' | 'processing' | 'completed' | 'failed',
-    incrementAttempts: boolean = false
-  ): Promise<Job> {
+  async getAllPendingJobs(): Promise<Job[]> {
+    let client: PoolClient | null = null;
     try {
-      const updateData: any = {
-        status,
-      };
+      const pool = this.dbManager.getPool();
+      client = await pool.connect();
+      const result = await client.query(
+        'SELECT * FROM job_queue WHERE status = $1 ORDER BY priority DESC, created_at ASC',
+        [JobStatus.PENDING]
+      );
+      return result.rows;
+    } catch (error) {
+      safeLogger.error('Error fetching all pending jobs:', error);
+      throw error;
+    } finally {
+      if (client) client.release();
+    }
+  }
 
-      if (status === 'completed' || status === 'failed') {
-        updateData.processedAt = new Date();
+  async updateJobStatus(jobId: string, status: JobStatus, resultPayload?: any): Promise<Job | null> {
+    let client: PoolClient | null = null;
+    try {
+      const pool = this.dbManager.getPool();
+      client = await pool.connect();
+      const result = await client.query(
+        'UPDATE job_queue SET status = $1, result = $2, updated_at = NOW() WHERE id = $3 RETURNING *',
+        [status, resultPayload, jobId]
+      );
+      safeLogger.info(`Job ${jobId} status updated to ${status}.`);
+      return result.rows[0] || null;
+    } catch (error) {
+      safeLogger.error(`Error updating job ${jobId} status:`, error);
+      throw error;
+    } finally {
+      if (client) client.release();
+    }
+  }
+
+  async storeDocument(document: Omit<Document, 'id' | 'created_at' | 'updated_at' | 'embedding'>): Promise<Document> {
+    let client: PoolClient | null = null;
+    try {
+      const pool = this.dbManager.getPool();
+      client = await pool.connect();
+
+      const embedding = await this.embeddingService.generateEmbedding(document.content);
+
+      const result = await client.query(
+        'INSERT INTO documents(agent_name, type, content, metadata, tags, importance, embedding) VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING *',
+        [document.agent_name, document.type, document.content, document.metadata, document.tags, document.importance, embedding]
+      );
+      safeLogger.info(`Document stored for agent ${document.agent_name} with type ${document.type}.`);
+      return result.rows[0];
+    } catch (error) {
+      safeLogger.error(`Error storing document for agent ${document.agent_name}:`, error);
+      throw error;
+    } finally {
+      if (client) client.release();
+    }
+  }
+
+  async getDocument(documentId: string): Promise<Document | null> {
+    let client: PoolClient | null = null;
+    try {
+      const pool = this.dbManager.getPool();
+      client = await pool.connect();
+      const result = await client.query(
+        'SELECT * FROM documents WHERE id = $1',
+        [documentId]
+      );
+      return result.rows[0] || null;
+    } catch (error) {
+      safeLogger.error(`Error fetching document ${documentId}:`, error);
+      throw error;
+    } finally {
+      if (client) client.release();
+    }
+  }
+
+  async searchDocuments(query: string, agentName?: string, type?: string, tags?: string[]): Promise<Document[]> {
+    let client: PoolClient | null = null;
+    try {
+      const pool = this.dbManager.getPool();
+      client = await pool.connect();
+
+      let baseQuery = 'SELECT * FROM documents WHERE 1=1';
+      const params: any[] = [];
+      let paramIndex = 1;
+
+      if (agentName) {
+        baseQuery += ` AND agent_name = $${paramIndex++}`;
+        params.push(agentName);
+      }
+      if (type) {
+        baseQuery += ` AND type = $${paramIndex++}`;
+        params.push(type);
+      }
+      if (tags && tags.length > 0) {
+        baseQuery += ` AND tags && $${paramIndex++}::text[]`; // Using '&&' operator for array overlap
+        params.push(tags);
+      }
+      if (query) {
+        baseQuery += ` AND content ILIKE $${paramIndex++}`; // Case-insensitive search
+        params.push(`%${query}%`);
       }
 
-      if (incrementAttempts) {
-        // Get current attempts count
-        const [currentJob] = await db
-          .select()
-          .from(jobQueue)
-          .where(eq(jobQueue.id, jobId))
-          .limit(1);
-
-        if (currentJob) {
-          updateData.attempts = (currentJob.attempts || 0) + 1;
-        }
-      }
-
-      const [updated] = await db
-        .update(jobQueue)
-        .set(updateData)
-        .where(eq(jobQueue.id, jobId))
-        .returning();
-
-      if (!updated) {
-        throw new Error(`Job ${jobId} not found`);
-      }
-
-      logger.info(`Job ${jobId} status updated to ${status}`);
-      return updated;
+      const result = await client.query(baseQuery, params);
+      return result.rows;
     } catch (error) {
-      logger.error(`Error updating job ${jobId}:`, error);
+      safeLogger.error(`Error searching documents with query '${query}' for agent ${agentName}:`, error);
       throw error;
+    } finally {
+      if (client) client.release();
     }
   }
 
-  /**
-   * Store a document in the documents table with automatic embedding generation
-   */
-  async storeDocument(content: string, metadata: any = {}, generateEmbedding: boolean = true): Promise<Document> {
+  async deleteDocument(documentId: string): Promise<boolean> {
+    let client: PoolClient | null = null;
     try {
-      let embeddingVector = null;
-
-      // Generate embedding if requested
-      if (generateEmbedding) {
-        try {
-          const embedding = await embeddingService.generateEmbedding(content);
-          embeddingVector = embeddingService.formatEmbeddingForPostgres(embedding);
-          logger.debug('Generated embedding for document');
-        } catch (error) {
-          logger.warn('Failed to generate embedding, storing document without it:', error);
-        }
-      }
-
-      // Use raw SQL to insert with vector type
-      if (embeddingVector) {
-        const result = await db.execute(sqlTemplate.raw(`
-          INSERT INTO documents (content, metadata, embedding)
-          VALUES (
-            '${content.replace(/'/g, "''")}',
-            '${JSON.stringify(metadata)}'::jsonb,
-            '${embeddingVector}'::vector(1536)
-          )
-          RETURNING *
-        `));
-
-        const doc = result.rows[0] as any;
-        logger.info(`Document stored with ID: ${doc.id} (with embedding)`);
-        return doc;
-      } else {
-        const [doc] = await db
-          .insert(documents)
-          .values({
-            content,
-            metadata,
-          })
-          .returning();
-
-        logger.info(`Document stored with ID: ${doc.id} (without embedding)`);
-        return doc;
-      }
-    } catch (error) {
-      logger.error('Error storing document:', error);
-      throw error;
-    }
-  }
-
-  /**
-   * Search documents by metadata
-   */
-  async searchDocuments(metadataFilter: any, limit: number = 10): Promise<Document[]> {
-    try {
-      // For now, we'll get all documents and filter in memory
-      // In production, you'd want to use Supabase's JSONB query capabilities
-      const allDocs = await db
-        .select()
-        .from(documents)
-        .limit(limit);
-
-      return allDocs;
-    } catch (error) {
-      logger.error('Error searching documents:', error);
-      throw error;
-    }
-  }
-
-  /**
-   * Get document by ID
-   */
-  async getDocument(id: number): Promise<Document | null> {
-    try {
-      const [doc] = await db
-        .select()
-        .from(documents)
-        .where(eq(documents.id, id))
-        .limit(1);
-
-      return doc || null;
-    } catch (error) {
-      logger.error(`Error getting document ${id}:`, error);
-      throw error;
-    }
-  }
-
-  /**
-   * Delete old completed jobs (cleanup)
-   */
-  async cleanupCompletedJobs(olderThanDays: number = 7): Promise<number> {
-    try {
-      const cutoffDate = new Date();
-      cutoffDate.setDate(cutoffDate.getDate() - olderThanDays);
-
-      // Note: This is a simplified version. In production, you'd want to use
-      // a proper date comparison with Drizzle ORM
-      logger.info(`Cleaning up jobs older than ${olderThanDays} days`);
-      
-      // For now, just log the intent
-      // Actual implementation would require proper date filtering
-      return 0;
-    } catch (error) {
-      logger.error('Error cleaning up jobs:', error);
-      throw error;
+      const pool = this.dbManager.getPool();
+      client = await pool.connect();
+      const result = await client.query(
+        'DELETE FROM documents WHERE id = $1 RETURNING id',
+        [documentId]
+      );
+      safeLogger.info(`Document ${documentId} deleted.`);
+      return result.rowCount !== null && result.rowCount > 0;
+    } finally {
+      if (client) client.release();
     }
   }
 }
 
-export default new AgentService();
+export const agentService = new AgentService();
 

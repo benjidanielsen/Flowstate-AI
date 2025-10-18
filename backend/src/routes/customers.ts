@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { CustomerController } from '../controllers/customerController';
 
-const router = Router();
+const router: Router = Router();
 const customerController = new CustomerController();
 
 router.get('/', customerController.getAllCustomers);

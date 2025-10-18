@@ -4,9 +4,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.JobProcessorService = void 0;
-const agentService_1 = __importDefault(require("./agentService"));
+const agentService_1 = require("./agentService");
 const logger_1 = __importDefault(require("../utils/logger"));
 const axios_1 = __importDefault(require("axios"));
+const types_1 = require("../types");
 class JobProcessorService {
     constructor(config) {
         this.isRunning = false;
@@ -58,7 +59,7 @@ class JobProcessorService {
     async processJobs() {
         try {
             // Get all pending jobs
-            const jobs = await agentService_1.default.getAllPendingJobs(10);
+            const jobs = await agentService_1.agentService.getAllPendingJobs();
             if (jobs.length === 0) {
                 logger_1.default.debug('No pending jobs to process');
                 return;
@@ -83,34 +84,34 @@ class JobProcessorService {
      */
     async processJob(job) {
         const jobId = job.id;
-        const targetAgent = job.targetAgent;
+        const targetAgent = job.agent_name;
         const payload = job.payload;
-        const attempts = job.attempts || 0;
+        const attempts = job.payload?.attempts || 0; // Assuming attempts is part of payload
         logger_1.default.info(`Processing job ${jobId} for agent ${targetAgent}`, { attempts });
         // Check if max retries exceeded
         if (attempts >= this.config.maxRetries) {
             logger_1.default.error(`Job ${jobId} exceeded max retries (${this.config.maxRetries})`);
-            await agentService_1.default.updateJobStatus(jobId, 'failed');
+            await agentService_1.agentService.updateJobStatus(jobId, types_1.JobStatus.FAILED);
             return;
         }
         try {
             // Mark job as processing
-            await agentService_1.default.updateJobStatus(jobId, 'processing', true);
+            await agentService_1.agentService.updateJobStatus(jobId, types_1.JobStatus.PROCESSING, { ...job.payload, attempts: attempts + 1 });
             // Execute the job based on the target agent
             const result = await this.executeJob(targetAgent, payload);
             // Mark job as completed
-            await agentService_1.default.updateJobStatus(jobId, 'completed');
+            await agentService_1.agentService.updateJobStatus(jobId, types_1.JobStatus.COMPLETED, result);
             logger_1.default.info(`Job ${jobId} completed successfully`, { result });
         }
         catch (error) {
             logger_1.default.error(`Job ${jobId} failed:`, error);
             // If we haven't exceeded max retries, mark as pending for retry
             if (attempts + 1 < this.config.maxRetries) {
-                await agentService_1.default.updateJobStatus(jobId, 'pending');
+                await agentService_1.agentService.updateJobStatus(jobId, types_1.JobStatus.PENDING, { ...job.payload, attempts: attempts + 1 });
                 logger_1.default.info(`Job ${jobId} will be retried (attempt ${attempts + 1}/${this.config.maxRetries})`);
             }
             else {
-                await agentService_1.default.updateJobStatus(jobId, 'failed');
+                await agentService_1.agentService.updateJobStatus(jobId, types_1.JobStatus.FAILED, { ...job.payload, attempts: attempts + 1, error: error.message });
                 logger_1.default.error(`Job ${jobId} failed permanently after ${attempts + 1} attempts`);
             }
         }
@@ -121,7 +122,7 @@ class JobProcessorService {
     async executeJob(targetAgent, payload) {
         logger_1.default.info(`Executing job for agent ${targetAgent}`, { payload });
         // Get the agent's current state
-        const agentState = await agentService_1.default.getAgentState(targetAgent);
+        const agentState = await agentService_1.agentService.getAgentState(targetAgent);
         if (!agentState) {
             throw new Error(`Agent ${targetAgent} not found`);
         }
@@ -162,9 +163,9 @@ class JobProcessorService {
     async executeDataProcessing(targetAgent, payload) {
         logger_1.default.info(`Executing data processing task for ${targetAgent}`, { payload });
         // Update agent state to reflect processing
-        const currentState = await agentService_1.default.getAgentState(targetAgent);
-        await agentService_1.default.updateAgentState(targetAgent, {
-            ...currentState?.state,
+        const currentState = await agentService_1.agentService.getAgentState(targetAgent);
+        await agentService_1.agentService.updateAgentState(targetAgent, 'active', {
+            ...currentState?.metadata,
             lastProcessedJob: payload,
             lastProcessedAt: new Date().toISOString(),
         });
@@ -177,28 +178,34 @@ class JobProcessorService {
         logger_1.default.info(`Handling inter-agent message for ${targetAgent}`, { payload });
         const { fromAgent, message, messageType } = payload;
         // Store the message in the agent's state
-        const currentState = await agentService_1.default.getAgentState(targetAgent);
-        const messages = currentState?.state?.messages || [];
+        const currentState = await agentService_1.agentService.getAgentState(targetAgent);
+        const messages = currentState?.metadata?.messages || [];
         messages.push({
             from: fromAgent,
             message,
             type: messageType,
             timestamp: new Date().toISOString(),
         });
-        await agentService_1.default.updateAgentState(targetAgent, {
-            ...currentState?.state,
+        await agentService_1.agentService.updateAgentState(targetAgent, 'active', {
+            ...currentState?.metadata,
             messages,
             lastMessageAt: new Date().toISOString(),
         });
         // If the message requires a response, create a job for the sending agent
         if (payload.requiresResponse) {
-            await agentService_1.default.createJob(fromAgent, {
-                type: 'inter_agent_message',
-                fromAgent: targetAgent,
-                message: `Response to: ${message}`,
-                messageType: 'response',
-                requiresResponse: false,
-            });
+            const newJob = {
+                agent_name: fromAgent,
+                task_type: 'inter_agent_message',
+                payload: {
+                    fromAgent: targetAgent,
+                    message: `Response to: ${message}`,
+                    messageType: 'response',
+                    requiresResponse: false,
+                },
+                priority: 0,
+                correlation_id: payload.correlation_id || 'default',
+            };
+            await agentService_1.agentService.createJob(newJob);
         }
         return { status: 'message_received', agent: targetAgent };
     }
@@ -208,9 +215,9 @@ class JobProcessorService {
     async executeGenericTask(targetAgent, payload) {
         logger_1.default.info(`Executing generic task for ${targetAgent}`, { payload });
         // Update agent state
-        const currentState = await agentService_1.default.getAgentState(targetAgent);
-        await agentService_1.default.updateAgentState(targetAgent, {
-            ...currentState?.state,
+        const currentState = await agentService_1.agentService.getAgentState(targetAgent);
+        await agentService_1.agentService.updateAgentState(targetAgent, 'active', {
+            ...currentState?.metadata,
             lastGenericTask: payload,
             lastTaskAt: new Date().toISOString(),
         });
@@ -221,13 +228,19 @@ class JobProcessorService {
      */
     async sendInterAgentMessage(fromAgent, toAgent, message, messageType = 'info', requiresResponse = false) {
         logger_1.default.info(`Sending message from ${fromAgent} to ${toAgent}`);
-        return await agentService_1.default.createJob(toAgent, {
-            type: 'inter_agent_message',
-            fromAgent,
-            message,
-            messageType,
-            requiresResponse,
-        });
+        const newJob = {
+            agent_name: toAgent,
+            task_type: 'inter_agent_message',
+            payload: {
+                fromAgent,
+                message,
+                messageType,
+                requiresResponse,
+            },
+            priority: 0,
+            correlation_id: 'default', // Or generate a new one
+        };
+        return await agentService_1.agentService.createJob(newJob);
     }
     /**
      * Get job processor status

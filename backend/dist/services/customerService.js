@@ -3,10 +3,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CustomerService = void 0;
+exports.customerService = exports.CustomerService = void 0;
 const database_1 = __importDefault(require("../database"));
-const types_1 = require("../types");
 const uuid_1 = require("uuid");
+const types_1 = require("../types");
 const eventLogService_1 = require("./eventLogService");
 const pipelineValidationService_1 = require("./pipelineValidationService");
 class CustomerService {
@@ -15,109 +15,108 @@ class CustomerService {
         this.pipelineValidationService = new pipelineValidationService_1.PipelineValidationService();
     }
     async getAllCustomers(filters = {}) {
-        const db = database_1.default.getInstance().getDb();
-        let query = 'SELECT * FROM customers WHERE 1=1';
-        const params = [];
-        if (filters.status) {
-            query += ' AND status = ?';
-            params.push(filters.status);
+        let client = null;
+        try {
+            const pool = database_1.default.getInstance().getPool();
+            client = await pool.connect();
+            let query = 'SELECT * FROM customers WHERE 1=1';
+            const params = [];
+            let paramIndex = 1;
+            if (filters.status) {
+                query += ` AND status = $${paramIndex++}`;
+                params.push(filters.status);
+            }
+            if (filters.source) {
+                query += ` AND source = $${paramIndex++}`;
+                params.push(filters.source);
+            }
+            if (filters.country) {
+                query += ` AND country = $${paramIndex++}`;
+                params.push(filters.country);
+            }
+            if (filters.language) {
+                query += ` AND language = $${paramIndex++}`;
+                params.push(filters.language);
+            }
+            if (filters.next_action) {
+                query += ` AND next_action = $${paramIndex++}`;
+                params.push(filters.next_action);
+            }
+            if (filters.search) {
+                const searchTerm = `%${filters.search}%`;
+                query += ` AND (name ILIKE $${paramIndex++} OR email ILIKE $${paramIndex++} OR phone ILIKE $${paramIndex++} OR notes ILIKE $${paramIndex++})`;
+                params.push(searchTerm, searchTerm, searchTerm, searchTerm);
+            }
+            const sortBy = filters.sortBy || 'updated_at';
+            const sortOrder = filters.sortOrder || 'DESC';
+            query += ` ORDER BY ${sortBy} ${sortOrder}`;
+            const result = await client.query(query, params);
+            return result.rows.map(row => ({
+                ...row,
+                created_at: new Date(row.created_at),
+                updated_at: new Date(row.updated_at),
+                next_action_date: row.next_action_date ? new Date(row.next_action_date) : undefined,
+                consent_json: row.consent_json,
+                utm_json: row.utm_json
+            }));
         }
-        if (filters.source) {
-            query += ' AND source = ?';
-            params.push(filters.source);
+        finally {
+            if (client)
+                client.release();
         }
-        if (filters.country) {
-            query += ' AND country = ?';
-            params.push(filters.country);
-        }
-        if (filters.language) {
-            query += ' AND language = ?';
-            params.push(filters.language);
-        }
-        if (filters.next_action) {
-            query += ' AND next_action = ?';
-            params.push(filters.next_action);
-        }
-        if (filters.search) {
-            const searchTerm = `%${filters.search}%`;
-            query += ' AND (name LIKE ? OR email LIKE ? OR phone LIKE ? OR notes LIKE ?)';
-            params.push(searchTerm, searchTerm, searchTerm, searchTerm);
-        }
-        const sortBy = filters.sortBy || 'updated_at';
-        const sortOrder = filters.sortOrder || 'DESC';
-        query += ` ORDER BY ${sortBy} ${sortOrder}`;
-        return new Promise((resolve, reject) => {
-            db.all(query, params, (err, rows) => {
-                if (err) {
-                    reject(err);
-                }
-                else {
-                    const customers = rows.map(row => ({
-                        ...row,
-                        created_at: new Date(row.created_at),
-                        updated_at: new Date(row.updated_at),
-                        next_action_date: row.next_action_date ? new Date(row.next_action_date) : undefined,
-                        consent_json: row.consent_json ? JSON.parse(row.consent_json) : undefined,
-                        utm_json: row.utm_json ? JSON.parse(row.utm_json) : undefined
-                    }));
-                    resolve(customers);
-                }
-            });
-        });
     }
     async getCustomerById(id) {
-        const db = database_1.default.getInstance().getDb();
-        return new Promise((resolve, reject) => {
-            db.get("SELECT * FROM customers WHERE id = ?", [id], (err, row) => {
-                if (err) {
-                    reject(err);
-                }
-                else if (!row) {
-                    resolve(null);
-                }
-                else {
-                    const customer = {
-                        ...row,
-                        created_at: new Date(row.created_at),
-                        updated_at: new Date(row.created_at),
-                        next_action_date: row.next_action_date ? new Date(row.next_action_date) : undefined,
-                        consent_json: row.consent_json ? JSON.parse(row.consent_json) : undefined,
-                        utm_json: row.utm_json ? JSON.parse(row.utm_json) : undefined
-                    };
-                    resolve(customer);
-                }
-            });
-        });
+        let client = null;
+        try {
+            const pool = database_1.default.getInstance().getPool();
+            client = await pool.connect();
+            const result = await client.query(`SELECT * FROM customers WHERE id = $1`, [id]);
+            const row = result.rows[0];
+            if (!row)
+                return null;
+            return {
+                ...row,
+                created_at: new Date(row.created_at),
+                updated_at: new Date(row.updated_at),
+                next_action_date: row.next_action_date ? new Date(row.next_action_date) : undefined,
+                consent_json: row.consent_json,
+                utm_json: row.utm_json
+            };
+        }
+        finally {
+            if (client)
+                client.release();
+        }
     }
     async createCustomer(customerData) {
-        const db = database_1.default.getInstance().getDb();
-        const id = (0, uuid_1.v4)();
-        const now = new Date();
-        const customer = {
-            id,
-            ...customerData,
-            status: customerData.status || types_1.PipelineStatus.NEW_LEAD,
-            created_at: now,
-            updated_at: now
-        };
-        return new Promise((resolve, reject) => {
-            const stmt = db.prepare(`
-        INSERT INTO customers (
+        let client = null;
+        try {
+            const pool = database_1.default.getInstance().getPool();
+            client = await pool.connect();
+            const id = (0, uuid_1.v4)();
+            const now = new Date().toISOString();
+            const customer = {
+                id,
+                ...customerData,
+                status: customerData.status || types_1.PipelineStatus.NEW_LEAD,
+                created_at: new Date(now),
+                updated_at: new Date(now)
+            };
+            const result = await client.query(`INSERT INTO customers (
           id, name, email, phone, status, notes, next_action, next_action_date,
           created_at, updated_at, source, handle_ig, handle_whatsapp, country, language,
           consent_json, utm_json
         )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-      `);
-            stmt.run([
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17)
+        RETURNING *`, [
                 customer.id,
                 customer.name,
-                customer.email,
-                customer.phone,
+                customer.email || null,
+                customer.phone || null,
                 customer.status,
-                customer.notes,
-                customer.next_action,
-                customer.next_action_date?.toISOString(),
+                customer.notes || null,
+                customer.next_action || null,
+                customer.next_action_date?.toISOString() || null,
                 customer.created_at.toISOString(),
                 customer.updated_at.toISOString(),
                 customerData.source || null,
@@ -125,111 +124,108 @@ class CustomerService {
                 customerData.handle_whatsapp || null,
                 customerData.country || null,
                 customerData.language || null,
-                customerData.consent_json ? JSON.stringify(customerData.consent_json) : null,
-                customerData.utm_json ? JSON.stringify(customerData.utm_json) : null
-            ], (err) => {
-                if (err) {
-                    reject(err);
-                }
-                else {
-                    // Log event
-                    this.eventLogService.logEvent('customer_created', {
-                        customer_id: customer.id,
-                        name: customer.name,
-                        status: customer.status
-                    }, customer.id);
-                    resolve(customer);
-                }
-            });
-            stmt.finalize();
-        });
+                customerData.consent_json || null,
+                customerData.utm_json || null
+            ]);
+            const createdCustomer = result.rows[0];
+            // Log event
+            this.eventLogService.logEvent('customer_created', {
+                customer_id: createdCustomer.id,
+                name: createdCustomer.name,
+                status: createdCustomer.status
+            }, createdCustomer.id);
+            return {
+                ...createdCustomer,
+                created_at: new Date(createdCustomer.created_at),
+                updated_at: new Date(createdCustomer.updated_at),
+                next_action_date: createdCustomer.next_action_date ? new Date(createdCustomer.next_action_date) : undefined,
+            };
+        }
+        finally {
+            if (client)
+                client.release();
+        }
     }
     async updateCustomer(id, updates) {
-        const existingCustomer = await this.getCustomerById(id);
-        if (!existingCustomer) {
-            return null;
-        }
-        const db = database_1.default.getInstance().getDb();
-        const updatedCustomer = {
-            ...existingCustomer,
-            ...updates,
-            updated_at: new Date()
-        };
-        return new Promise((resolve, reject) => {
-            const stmt = db.prepare(`
-        UPDATE customers 
-        SET name = ?, email = ?, phone = ?, status = ?, notes = ?, next_action = ?, next_action_date = ?, updated_at = ?,
-            source = ?, handle_ig = ?, handle_whatsapp = ?, country = ?, language = ?,
-            consent_json = ?, utm_json = ?
-        WHERE id = ?
-      `);
-            stmt.run([
-                updatedCustomer.name,
-                updatedCustomer.email,
-                updatedCustomer.phone,
-                updatedCustomer.status,
-                updatedCustomer.notes,
-                updatedCustomer.next_action,
-                updatedCustomer.next_action_date?.toISOString(),
-                updatedCustomer.updated_at.toISOString(),
-                updates.source ?? existingCustomer.source ?? null,
-                updates.handle_ig ?? existingCustomer.handle_ig ?? null,
-                updates.handle_whatsapp ?? existingCustomer.handle_whatsapp ?? null,
-                updates.country ?? existingCustomer.country ?? null,
-                updates.language ?? existingCustomer.language ?? null,
-                updates.consent_json ? JSON.stringify(updates.consent_json) : existingCustomer.consent_json ? JSON.stringify(existingCustomer.consent_json) : null,
-                updates.utm_json ? JSON.stringify(updates.utm_json) : existingCustomer.utm_json ? JSON.stringify(existingCustomer.utm_json) : null,
-                id
-            ], (err) => {
-                if (err) {
-                    reject(err);
+        let client = null;
+        try {
+            const pool = database_1.default.getInstance().getPool();
+            client = await pool.connect();
+            const existingCustomer = await this.getCustomerById(id);
+            if (!existingCustomer) {
+                return null;
+            }
+            const now = new Date().toISOString();
+            const updateKeys = Object.keys(updates).filter(key => key !== 'id' && key !== 'created_at' && key !== 'updated_at');
+            const updateValues = updateKeys.map(key => {
+                const value = updates[key];
+                // Handle JSON fields
+                if (key === 'consent_json' || key === 'utm_json') {
+                    return value;
                 }
-                else {
-                    // Log event if status changed
-                    if (updates.status && updates.status !== existingCustomer.status) {
-                        this.eventLogService.logEvent('status_changed', {
-                            customer_id: id,
-                            old_status: existingCustomer.status,
-                            new_status: updates.status
-                        }, id);
-                    }
-                    resolve(updatedCustomer);
-                }
+                return value !== undefined ? value : existingCustomer[key];
             });
-            stmt.finalize();
-        });
+            if (updateKeys.length === 0 && !updates.status) {
+                return existingCustomer; // No actual updates
+            }
+            const setClauses = updateKeys.map((key, index) => `
+        ${key} = $${index + 2}
+      `).join(', ');
+            const query = `UPDATE customers SET ${setClauses}, updated_at = $${updateValues.length + 2} WHERE id = $1 RETURNING *`;
+            const result = await client.query(query, [id, ...updateValues, now]);
+            const updatedCustomer = result.rows[0];
+            // Log event if status changed
+            if (updates.status && updates.status !== existingCustomer.status) {
+                this.eventLogService.logEvent('status_changed', {
+                    customer_id: id,
+                    old_status: existingCustomer.status,
+                    new_status: updates.status
+                }, id);
+            }
+            if (!updatedCustomer)
+                return null; // Should not happen if RETURNING * is used
+            return {
+                ...updatedCustomer,
+                created_at: new Date(updatedCustomer.created_at),
+                updated_at: new Date(updatedCustomer.updated_at),
+                next_action_date: updatedCustomer.next_action_date ? new Date(updatedCustomer.next_action_date) : undefined,
+            };
+        }
+        finally {
+            if (client)
+                client.release();
+        }
     }
     async deleteCustomer(id) {
-        const db = database_1.default.getInstance().getDb();
-        return new Promise((resolve, reject) => {
-            db.run('DELETE FROM customers WHERE id = ?', [id], function (err) {
-                if (err) {
-                    reject(err);
-                }
-                else {
-                    resolve(this.changes > 0);
-                }
-            });
-        });
+        let client = null;
+        try {
+            const pool = database_1.default.getInstance().getPool();
+            client = await pool.connect();
+            const result = await client.query(`DELETE FROM customers WHERE id = $1 RETURNING id`, [id]);
+            return result.rowCount !== null && result.rowCount > 0;
+        }
+        finally {
+            if (client)
+                client.release();
+        }
     }
     async getCustomersByStatus(status) {
-        const db = database_1.default.getInstance().getDb();
-        return new Promise((resolve, reject) => {
-            db.all('SELECT * FROM customers WHERE status = ? ORDER BY updated_at DESC', [status], (err, rows) => {
-                if (err) {
-                    reject(err);
-                }
-                else {
-                    const customers = rows.map(row => ({
-                        ...row,
-                        created_at: new Date(row.created_at),
-                        updated_at: new Date(row.updated_at),
-                        next_action_date: row.next_action_date ? new Date(row.next_action_date) : undefined
-                    }));
-                    resolve(customers);
-                }
-            });
-        });
+        let client = null;
+        try {
+            const pool = database_1.default.getInstance().getPool();
+            client = await pool.connect();
+            const result = await client.query(`SELECT * FROM customers WHERE status = $1 ORDER BY created_at DESC`, [status]);
+            return result.rows.map(row => ({
+                ...row,
+                created_at: new Date(row.created_at),
+                updated_at: new Date(row.updated_at),
+                next_action_date: row.next_action_date ? new Date(row.next_action_date) : undefined,
+            }));
+        }
+        finally {
+            if (client)
+                client.release();
+        }
     }
     async moveCustomerToNextStage(id) {
         const customer = await this.getCustomerById(id);
@@ -280,4 +276,5 @@ class CustomerService {
     }
 }
 exports.CustomerService = CustomerService;
+exports.customerService = new CustomerService();
 //# sourceMappingURL=customerService.js.map

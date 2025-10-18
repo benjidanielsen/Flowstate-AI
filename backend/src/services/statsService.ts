@@ -1,5 +1,6 @@
 import DatabaseManager from '../database';
 import { PipelineStatus } from '../types';
+import { PoolClient } from 'pg';
 
 interface CacheEntry<T> {
   data: T;
@@ -29,18 +30,26 @@ export class StatsService {
       return cachedData;
     }
 
-    const db = DatabaseManager.getInstance().getDb();
-    const statuses = Object.values(PipelineStatus);
+    let client: PoolClient | null = null;
     const result: Record<string, number> = {};
-    await Promise.all(statuses.map(s => new Promise<void>((resolve, reject) => {
-      db.get('SELECT COUNT(*) as c FROM customers WHERE status = ?', [s], (err, row: any) => {
-        if (err) return reject(err);
-        result[s] = row.c || 0;
-        resolve();
-      });
-    })));
-    this.setCache(cacheKey, result);
-    return result;
+
+    try {
+      const pool = DatabaseManager.getInstance().getPool();
+      client = await pool.connect();
+
+      const statuses = Object.values(PipelineStatus);
+      await Promise.all(statuses.map(async s => {
+        const queryResult = await client!.query('SELECT COUNT(*) as count FROM customers WHERE status = $1', [s]);
+        result[s] = parseInt(queryResult.rows[0].count, 10) || 0;
+      }));
+
+      this.setCache(cacheKey, result);
+      return result;
+    } finally {
+      if (client) {
+        client.release();
+      }
+    }
   }
 
   private dateRange() {
@@ -60,29 +69,35 @@ export class StatsService {
       return cachedData;
     }
 
-    const db = DatabaseManager.getInstance().getDb();
-    const { todayStart, weekStart } = this.dateRange();
-    function countEvent(name: string, from: Date): Promise<number> {
-      return new Promise((resolve, reject) => {
-        db.get(
-          'SELECT COUNT(*) as c FROM event_logs WHERE event_type = ? AND timestamp >= ?',
-          [name, from.toISOString()],
-          (err, row: any) => err ? reject(err) : resolve(row.c || 0)
-        );
-      });
+    let client: PoolClient | null = null;
+
+    try {
+      const pool = DatabaseManager.getInstance().getPool();
+      client = await pool.connect();
+
+      async function countEvent(name: string, from: Date): Promise<number> {
+        const queryResult = await client!.query('SELECT COUNT(*) as count FROM event_logs WHERE event_type = $1 AND timestamp >= $2', [name, from.toISOString()]);
+        return parseInt(queryResult.rows[0].count, 10) || 0;
+      }
+
+      const [invitesToday, invitesWeek, followToday, followWeek] = await Promise.all([
+        countEvent('INVITE_SENT', this.dateRange().todayStart),
+        countEvent('INVITE_SENT', this.dateRange().weekStart),
+        countEvent('FOLLOW_UP_DONE', this.dateRange().todayStart),
+        countEvent('FOLLOW_UP_DONE', this.dateRange().weekStart),
+      ]);
+
+      const result = {
+        today: { invites: invitesToday, follow_ups: followToday },
+        week: { invites: invitesWeek, follow_ups: followWeek },
+      };
+      this.setCache(cacheKey, result);
+      return result;
+    } finally {
+      if (client) {
+        client.release();
+      }
     }
-    const [invitesToday, invitesWeek, followToday, followWeek] = await Promise.all([
-      countEvent('INVITE_SENT', todayStart),
-      countEvent('INVITE_SENT', weekStart),
-      countEvent('FOLLOW_UP_DONE', todayStart),
-      countEvent('FOLLOW_UP_DONE', weekStart),
-    ]);
-    const result = {
-      today: { invites: invitesToday, follow_ups: followToday },
-      week: { invites: invitesWeek, follow_ups: followWeek },
-    };
-    this.setCache(cacheKey, result);
-    return result;
   }
 
   async extraCounts() {
@@ -92,20 +107,31 @@ export class StatsService {
       return cachedData;
     }
 
-    const db = DatabaseManager.getInstance().getDb();
-    const nowIso = new Date().toISOString();
-    const noShow = await new Promise<number>((resolve, reject) => {
-      db.get('SELECT COUNT(*) as c FROM event_logs WHERE event_type = ?', ['NO_SHOW'], (e, r: any) => e ? reject(e) : resolve(r.c || 0));
-    });
-    const videoSent = await new Promise<number>((resolve, reject) => {
-      db.get('SELECT COUNT(*) as c FROM event_logs WHERE event_type = ?', ['VIDEO_SENT'], (e, r: any) => e ? reject(e) : resolve(r.c || 0));
-    });
-    const overdueFollowups = await new Promise<number>((resolve, reject) => {
-      db.get('SELECT COUNT(*) as c FROM reminders WHERE completed = 0 AND scheduled_for < ?', [nowIso], (e, r: any) => e ? reject(e) : resolve(r.c || 0));
-    });
-    const result = { no_show_count: noShow, video_sent_count: videoSent, overdue_followups: overdueFollowups };
-    this.setCache(cacheKey, result);
-    return result;
+    let client: PoolClient | null = null;
+
+    try {
+      const pool = DatabaseManager.getInstance().getPool();
+      client = await pool.connect();
+
+      const nowIso = new Date().toISOString();
+
+      const noShowResult = await client!.query('SELECT COUNT(*) as count FROM event_logs WHERE event_type = $1', ['NO_SHOW']);
+      const noShow = parseInt(noShowResult.rows[0].count, 10) || 0;
+
+      const videoSentResult = await client!.query('SELECT COUNT(*) as count FROM event_logs WHERE event_type = $1', ['VIDEO_SENT']);
+      const videoSent = parseInt(videoSentResult.rows[0].count, 10) || 0;
+
+      const overdueFollowupsResult = await client!.query('SELECT COUNT(*) as count FROM reminders WHERE completed = FALSE AND scheduled_for < $1', [nowIso]);
+      const overdueFollowups = parseInt(overdueFollowupsResult.rows[0].count, 10) || 0;
+
+      const result = { no_show_count: noShow, video_sent_count: videoSent, overdue_followups: overdueFollowups };
+      this.setCache(cacheKey, result);
+      return result;
+    } finally {
+      if (client) {
+        client.release();
+      }
+    }
   }
 
   async getCustomerDemographics(): Promise<{
@@ -119,30 +145,30 @@ export class StatsService {
       return cachedData;
     }
 
-    const db = DatabaseManager.getInstance().getDb();
-    const [byCountry, byLanguage, bySource] = await Promise.all([
-      new Promise<Record<string, number>>((resolve, reject) => {
-        db.all('SELECT country, COUNT(*) as count FROM customers WHERE country IS NOT NULL GROUP BY country', (err, rows: any[]) => {
-          if (err) return reject(err);
-          resolve(rows.reduce((acc, row) => ({ ...acc, [row.country]: row.count }), {}));
-        });
-      }),
-      new Promise<Record<string, number>>((resolve, reject) => {
-        db.all('SELECT language, COUNT(*) as count FROM customers WHERE language IS NOT NULL GROUP BY language', (err, rows: any[]) => {
-          if (err) return reject(err);
-          resolve(rows.reduce((acc, row) => ({ ...acc, [row.language]: row.count }), {}));
-        });
-      }),
-      new Promise<Record<string, number>>((resolve, reject) => {
-        db.all('SELECT source, COUNT(*) as count FROM customers WHERE source IS NOT NULL GROUP BY source', (err, rows: any[]) => {
-          if (err) return reject(err);
-          resolve(rows.reduce((acc, row) => ({ ...acc, [row.source]: row.count }), {}));
-        });
-      }),
-    ]);
-    const result = { byCountry, byLanguage, bySource };
-    this.setCache(cacheKey, result);
-    return result;
+    let client: PoolClient | null = null;
+
+    try {
+      const pool = DatabaseManager.getInstance().getPool();
+      client = await pool.connect();
+
+      const [byCountryResult, byLanguageResult, bySourceResult] = await Promise.all([
+        client!.query('SELECT country, COUNT(*) as count FROM customers WHERE country IS NOT NULL GROUP BY country'),
+        client!.query('SELECT language, COUNT(*) as count FROM customers WHERE language IS NOT NULL GROUP BY language'),
+        client!.query('SELECT source, COUNT(*) as count FROM customers WHERE source IS NOT NULL GROUP BY source'),
+      ]);
+
+      const byCountry = byCountryResult.rows.reduce((acc, row) => ({ ...acc, [row.country]: parseInt(row.count, 10) }), {});
+      const byLanguage = byLanguageResult.rows.reduce((acc, row) => ({ ...acc, [row.language]: parseInt(row.count, 10) }), {});
+      const bySource = bySourceResult.rows.reduce((acc, row) => ({ ...acc, [row.source]: parseInt(row.count, 10) }), {});
+
+      const result = { byCountry, byLanguage, bySource };
+      this.setCache(cacheKey, result);
+      return result;
+    } finally {
+      if (client) {
+        client.release();
+      }
+    }
   }
 
   async getInteractionSummary(): Promise<{
@@ -156,35 +182,31 @@ export class StatsService {
       return cachedData;
     }
 
-    const db = DatabaseManager.getInstance().getDb();
-    const [byType, totalInteractionsResult, totalCustomersResult] = await Promise.all([
-      new Promise<Record<string, number>>((resolve, reject) => {
-        db.all('SELECT type, COUNT(*) as count FROM interactions GROUP BY type', (err, rows: any[]) => {
-          if (err) return reject(err);
-          resolve(rows.reduce((acc, row) => ({ ...acc, [row.type]: row.count }), {}));
-        });
-      }),
-      new Promise<number>((resolve, reject) => {
-        db.get('SELECT COUNT(*) as count FROM interactions', (err, row: any) => {
-          if (err) return reject(err);
-          resolve(row.count || 0);
-        });
-      }),
-      new Promise<number>((resolve, reject) => {
-        db.get('SELECT COUNT(*) as count FROM customers', (err, row: any) => {
-          if (err) return reject(err);
-          resolve(row.count || 0);
-        });
-      }),
-    ]);
+    let client: PoolClient | null = null;
 
-    const totalInteractions = totalInteractionsResult;
-    const totalCustomers = totalCustomersResult;
-    const avgInteractionsPerCustomer = totalCustomers > 0 ? totalInteractions / totalCustomers : 0;
+    try {
+      const pool = DatabaseManager.getInstance().getPool();
+      client = await pool.connect();
 
-    const result = { byType, totalInteractions, avgInteractionsPerCustomer };
-    this.setCache(cacheKey, result);
-    return result;
+      const [byTypeResult, totalInteractionsResult, totalCustomersResult] = await Promise.all([
+        client!.query('SELECT type, COUNT(*) as count FROM interactions GROUP BY type'),
+        client!.query('SELECT COUNT(*) as count FROM interactions'),
+        client!.query('SELECT COUNT(*) as count FROM customers'),
+      ]);
+
+      const byType = byTypeResult.rows.reduce((acc, row) => ({ ...acc, [row.type]: parseInt(row.count, 10) }), {});
+      const totalInteractions = parseInt(totalInteractionsResult.rows[0].count, 10);
+      const totalCustomers = parseInt(totalCustomersResult.rows[0].count, 10);
+      const avgInteractionsPerCustomer = totalCustomers > 0 ? totalInteractions / totalCustomers : 0;
+
+      const result = { byType, totalInteractions, avgInteractionsPerCustomer };
+      this.setCache(cacheKey, result);
+      return result;
+    } finally {
+      if (client) {
+        client.release();
+      }
+    }
   }
 
   async getPipelineConversionRates(): Promise<Record<string, number>> {
@@ -194,36 +216,38 @@ export class StatsService {
       return cachedData;
     }
 
-    const db = DatabaseManager.getInstance().getDb();
-    const pipelineStatuses = Object.values(PipelineStatus);
-    const conversionRates: Record<string, number> = {};
+    let client: PoolClient | null = null;
 
-    for (let i = 0; i < pipelineStatuses.length - 1; i++) {
-      const currentStage = pipelineStatuses[i];
-      const nextStage = pipelineStatuses[i + 1];
+    try {
+      const pool = DatabaseManager.getInstance().getPool();
+      client = await pool.connect();
 
-      const currentStageCount = await new Promise<number>((resolve, reject) => {
-        db.get('SELECT COUNT(*) as count FROM customers WHERE status = ?', [currentStage], (err, row: any) => {
-          if (err) return reject(err);
-          resolve(row.count || 0);
-        });
-      });
+      const pipelineStatuses = Object.values(PipelineStatus);
+      const conversionRates: Record<string, number> = {};
 
-      const nextStageCount = await new Promise<number>((resolve, reject) => {
-        db.get('SELECT COUNT(*) as count FROM customers WHERE status = ?', [nextStage], (err, row: any) => {
-          if (err) return reject(err);
-          resolve(row.count || 0);
-        });
-      });
+      for (let i = 0; i < pipelineStatuses.length - 1; i++) {
+        const currentStage = pipelineStatuses[i];
+        const nextStage = pipelineStatuses[i + 1];
 
-      if (currentStageCount > 0) {
-        conversionRates[`${currentStage}_to_${nextStage}`] = (nextStageCount / currentStageCount) * 100;
-      } else {
-        conversionRates[`${currentStage}_to_${nextStage}`] = 0;
+        const currentStageCountResult = await client!.query('SELECT COUNT(*) as count FROM customers WHERE status = $1', [currentStage]);
+        const currentStageCount = parseInt(currentStageCountResult.rows[0].count, 10);
+
+        const nextStageCountResult = await client!.query('SELECT COUNT(*) as count FROM customers WHERE status = $1', [nextStage]);
+        const nextStageCount = parseInt(nextStageCountResult.rows[0].count, 10);
+
+        if (currentStageCount > 0) {
+          conversionRates[`${currentStage}_to_${nextStage}`] = (nextStageCount / currentStageCount) * 100;
+        } else {
+          conversionRates[`${currentStage}_to_${nextStage}`] = 0;
+        }
+      }
+      this.setCache(cacheKey, conversionRates);
+      return conversionRates;
+    } finally {
+      if (client) {
+        client.release();
       }
     }
-    this.setCache(cacheKey, conversionRates);
-    return conversionRates;
   }
 }
 

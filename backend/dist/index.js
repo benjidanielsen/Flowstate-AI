@@ -19,6 +19,7 @@ const performanceMiddleware_1 = __importDefault(require("./middleware/performanc
 const correlationId_1 = require("./middleware/correlationId"); // Import correlationId middleware
 const idempotency_1 = require("./middleware/idempotency"); // Import idempotency middleware
 const database_1 = __importDefault(require("./database"));
+const supabase_1 = require("./database/supabase"); // Import test connection from supabase.ts
 const migrate_1 = require("./database/migrate");
 const piiRedaction_1 = require("./utils/piiRedaction"); // Use safeLogger
 require("./utils/tracer"); // Initialize OpenTelemetry tracer
@@ -28,6 +29,21 @@ const app = (0, express_1.default)();
 let serverRef = null;
 let isShuttingDown = false;
 let shutdownPromise = null;
+// Ensure the database connection is established early for Drizzle to initialize properly
+// This is a workaround to ensure `db` is initialized before any services try to use it.
+// In a real application, you might want a more controlled initialization flow.
+const initializeDatabaseAndDrizzle = async () => {
+    try {
+        piiRedaction_1.safeLogger.info('Initializing database and running migrations...');
+        await database_1.default.getInstance().connect();
+        await (0, supabase_1.testConnection)(); // Test Supabase connection
+        await (0, migrate_1.runMigrations)(); // Run custom migrations for initial schema setup
+    }
+    catch (error) {
+        piiRedaction_1.safeLogger.error('Failed to initialize database and Drizzle:', error);
+        process.exit(1); // Exit if database initialization fails
+    }
+};
 // Middleware
 app.use((0, helmet_1.default)());
 app.use((0, cors_1.default)());
@@ -54,12 +70,8 @@ function createApp() {
 }
 async function startServer() {
     try {
-        // Initialize database
-        piiRedaction_1.safeLogger.info('Connecting to database...');
-        await database_1.default.getInstance().connect();
-        // Run migrations
-        piiRedaction_1.safeLogger.info('Running database migrations...');
-        await (0, migrate_1.runMigrations)();
+        // The database initialization and migration are now handled by initializeDatabaseAndDrizzle() call above
+        // This ensures they run before the server attempts to start and use the database
         // Start server
         serverRef = app.listen(process.env.PORT || 3001, () => {
             piiRedaction_1.safeLogger.info(`Server is running on port ${process.env.PORT || 3001}`);
@@ -69,7 +81,6 @@ async function startServer() {
     }
     catch (error) {
         piiRedaction_1.safeLogger.error('Failed to start server:', error);
-        // Throw instead of process.exit so tests can handle failures
         throw error;
     }
 }
@@ -120,9 +131,11 @@ async function shutdown() {
     return shutdownPromise;
 }
 if (require.main === module) {
-    // When run directly, start the server and attach signal handlers that exit the process
-    startServer().catch((err) => {
-        piiRedaction_1.safeLogger.error('Fatal error starting server:', err);
+    // When run directly, initialize database, start the server and attach signal handlers that exit the process
+    initializeDatabaseAndDrizzle()
+        .then(() => startServer())
+        .catch((err) => {
+        piiRedaction_1.safeLogger.error("Fatal error starting server:", err);
         process.exit(1);
     });
     process.on('SIGTERM', async () => {

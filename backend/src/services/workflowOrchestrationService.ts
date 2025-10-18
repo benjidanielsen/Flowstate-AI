@@ -1,5 +1,6 @@
-import agentService from './agentService';
+import { agentService } from './agentService';
 import logger from '../utils/logger';
+import { v4 as uuidv4 } from 'uuid';
 
 export interface WorkflowStep {
   id: string;
@@ -162,11 +163,12 @@ export class WorkflowOrchestrationService {
     };
 
     // Create a job for the agent
-    const job = await agentService.createJob(step.agentName, {
-      type: 'workflow_step',
-      stepId: step.id,
-      taskType: step.taskType,
-      ...enrichedPayload,
+    const job = await agentService.createJob({
+      agent_name: step.agentName,
+      task_type: step.taskType,
+      payload: enrichedPayload,
+      priority: 0, // Default priority
+      correlation_id: uuidv4(), // Generate new correlationId for job, or pass from request if available
     });
 
     // Wait for the job to complete (with timeout)
@@ -180,7 +182,7 @@ export class WorkflowOrchestrationService {
       }
 
       // Get job status
-      const jobs = await agentService.getPendingJobs(step.agentName, 100);
+      const jobs = await agentService.getPendingJobs(step.agentName);
       const currentJob = jobs.find((j) => j.id === job.id);
 
       if (!currentJob) {

@@ -1,11 +1,12 @@
-import { DatabaseManager } from "../database";
+import DatabaseManager from "../database";
 import { safeLogger } from "./piiRedaction";
+import { PoolClient } from "pg";
 
 export class DbOptimizer {
-  private db: DatabaseManager;
+  private dbManager: DatabaseManager;
 
   constructor(dbManager: DatabaseManager) {
-    this.db = dbManager;
+    this.dbManager = dbManager;
   }
 
   /**
@@ -15,30 +16,37 @@ export class DbOptimizer {
   public async analyzeAndSuggestOptimizations(): Promise<string[]> {
     safeLogger.info("Starting database optimization analysis...");
     const suggestions: string[] = [];
+    let client: PoolClient | null = null;
 
     try {
+      const pool = this.dbManager.getPool();
+      client = await pool.connect();
+
       // Example 1: Check for missing indexes on frequently queried tables
-      const customerCount = await this.db.get("SELECT COUNT(*) FROM customers");
-      if (customerCount && customerCount["COUNT(*)"] > 10000) {
-        const indexCheck = await this.db.all("PRAGMA index_list("customers")");
-        const hasEmailIndex = indexCheck.some((idx: any) => idx.name.includes("email"));
-        if (!hasEmailIndex) {
-          suggestions.push("Consider adding an index on customers.email for faster lookups.");
-        }
+      // This is a simplified check. A full implementation would query pg_indexes or information_schema.
+      const customerCountResult = await client.query("SELECT COUNT(*) FROM customers");
+      const customerCount = parseInt(customerCountResult.rows[0].count, 10);
+
+      if (customerCount > 10000) {
+        // Placeholder: In a real scenario, you'd query pg_indexes for specific index existence
+        // For example: SELECT 1 FROM pg_indexes WHERE tablename = 'customers' AND indexname = 'idx_customers_email';
+        suggestions.push("Consider reviewing indexes on large tables like 'customers' for frequently queried columns (e.g., email, status).");
       }
 
-      // Example 2: Identify long-running queries (requires query logging or specific DB features)
-      // For SQLite, this is harder without external tools, but we can simulate.
-      // In a real system (e.g., PostgreSQL), you'd query pg_stat_statements.
-      suggestions.push("Monitor long-running queries using database-specific tools (e.g., pg_stat_statements for PostgreSQL).");
+      // Example 2: Identify long-running queries (requires pg_stat_statements extension)
+      suggestions.push("Monitor long-running queries using PostgreSQL's pg_stat_statements extension for detailed analysis.");
 
-      // Example 3: Suggest vacuuming/reindexing for PostgreSQL/SQLite
-      suggestions.push("Regularly run VACUUM ANALYZE (PostgreSQL) or VACUUM (SQLite) to optimize database space and performance.");
+      // Example 3: Suggest vacuuming/reindexing for PostgreSQL
+      suggestions.push("Regularly run VACUUM ANALYZE on tables to optimize database space and performance, especially after significant data changes.");
 
       safeLogger.info("Database optimization analysis completed.");
     } catch (error) {
       safeLogger.error("Error during database optimization analysis", error);
       suggestions.push("Error during analysis. Please check database connection and permissions.");
+    } finally {
+      if (client) {
+        client.release();
+      }
     }
 
     return suggestions;
@@ -50,12 +58,20 @@ export class DbOptimizer {
    */
   public async executeOptimization(sqlCommand: string): Promise<void> {
     safeLogger.warn(`Executing database optimization command: ${sqlCommand}`);
+    let client: PoolClient | null = null;
+
     try {
-      await this.db.run(sqlCommand);
+      const pool = this.dbManager.getPool();
+      client = await pool.connect();
+      await client.query(sqlCommand);
       safeLogger.info("Optimization command executed successfully.");
     } catch (error) {
       safeLogger.error(`Error executing optimization command: ${sqlCommand}`, error);
       throw error;
+    } finally {
+      if (client) {
+        client.release();
+      }
     }
   }
 }

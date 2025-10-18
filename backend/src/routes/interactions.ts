@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { interactionController } from '../controllers/interactionController';
 
-const router = Router();
+const router: Router = Router();
 
 router.get('/customer/:customerId', interactionController.getInteractionsByCustomerId);
 router.post('/', interactionController.createInteraction);

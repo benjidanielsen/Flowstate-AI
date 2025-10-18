@@ -1,51 +1,81 @@
 import { Request, Response, NextFunction } from 'express';
+import { v4 as uuidv4 } from 'uuid';
+import { cacheManager } from '../utils/cacheManager';
 import { safeLogger } from '../utils/piiRedaction';
-import { redisClient } from '../utils/cacheManager'; // Assuming cacheManager exports redisClient
 
-const IDEMPOTENCY_KEY_PREFIX = 'idempotency:';
-const IDEMPOTENCY_KEY_TTL = 60 * 60; // 1 hour
+const IDEMPOTENCY_KEY_HEADER = 'X-Idempotency-Key';
+const IDEMPOTENCY_EXPIRATION_SECONDS = 60 * 60; // 1 hour
 
-/**
- * Middleware to ensure idempotency for API requests.
- * Prevents duplicate processing of requests with the same idempotency key.
- */
 export async function idempotencyMiddleware(req: Request, res: Response, next: NextFunction): Promise<void> {
-  const idempotencyKey = req.headers['x-idempotency-key'] as string;
-
-  if (!idempotencyKey) {
-    return next(); // No idempotency key provided, proceed as normal
+  if (req.method !== 'POST' && req.method !== 'PUT' && req.method !== 'PATCH') {
+    return next();
   }
 
-  const cacheKey = IDEMPOTENCY_KEY_PREFIX + idempotencyKey;
+  const idempotencyKey = req.headers[IDEMPOTENCY_KEY_HEADER.toLowerCase()] as string;
+
+  if (!idempotencyKey) {
+    return next();
+  }
+
+  const cacheKey = `idempotency:${idempotencyKey}`;
 
   try {
-    const cachedResponse = await redisClient.get(cacheKey);
+    const cachedResponse = await cacheManager.get<{ status: number; headers: Record<string, string>; body: any }>(cacheKey);
 
     if (cachedResponse) {
-      safeLogger.info(`Idempotency: Returning cached response for key: ${idempotencyKey}`);
-      const { statusCode, headers, body } = JSON.parse(cachedResponse);
-      res.status(statusCode).set(headers).send(body);
+      safeLogger.info(`Idempotent request for key ${idempotencyKey} served from cache.`);
+      res.status(cachedResponse.status).set(cachedResponse.headers).json(cachedResponse.body);
       return;
     }
 
-    // Store original send method to cache response before sending
+    // Store original send/json methods
+    const originalJson = res.json;
     const originalSend = res.send;
-    res.send = (body?: any) => {
-      const responseToCache = {
-        statusCode: res.statusCode,
-        headers: res.getHeaders(),
-        body: body,
-      };
-      redisClient.setex(cacheKey, IDEMPOTENCY_KEY_TTL, JSON.stringify(responseToCache))
-        .catch(err => safeLogger.error(`Idempotency: Failed to cache response for key ${idempotencyKey}`, err));
-      return originalSend.apply(res, [body]);
+    const originalStatus = res.status;
+
+    let responseBody: any;
+    let responseStatus: number;
+    const responseHeaders: Record<string, string> = {};
+
+    // Intercept response data
+    res.json = (body: any): Response => {
+      responseBody = body;
+      return originalJson.call(res, body);
     };
 
-    next();
+    res.send = (body: any): Response => {
+      responseBody = body;
+      return originalSend.call(res, body);
+    };
 
-  } catch (error) {
-    safeLogger.error(`Idempotency: Error processing key ${idempotencyKey}`, error);
-    next(error); // Continue to error handler
+    res.status = (status: number): Response => {
+      responseStatus = status;
+      return originalStatus.call(res, status);
+    };
+
+    // Intercept headers
+    const originalSetHeader = res.setHeader;
+    res.setHeader = (name: string, value: string | number | readonly string[]): Response => {
+      responseHeaders[name.toLowerCase()] = value.toString();
+      return originalSetHeader.call(res, name, value);
+    };
+
+    res.on('finish', async () => {
+      if (responseStatus && responseBody) {
+        const responseToCache = {
+          status: responseStatus,
+          headers: responseHeaders,
+          body: responseBody,
+        };
+        await cacheManager.set(cacheKey, responseToCache, { ttl: IDEMPOTENCY_EXPIRATION_SECONDS })
+          .catch((err: Error) => safeLogger.error(`Idempotency: Failed to cache response for key ${idempotencyKey}`, err));
+      }
+    });
+
+    next();
+  } catch (error: any) {
+    safeLogger.error(`Idempotency middleware error for key ${idempotencyKey}:`, error);
+    next(error); // Pass error to next middleware
   }
 }
 

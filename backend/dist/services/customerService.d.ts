@@ -32,4 +32,5 @@ export declare class CustomerService {
         reasoning: string[];
     } | null>;
 }
+export declare const customerService: CustomerService;
 //# sourceMappingURL=customerService.d.ts.map

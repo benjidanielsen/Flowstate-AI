@@ -36,37 +36,40 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.db = void 0;
+exports.getDbInstance = getDbInstance;
 exports.testConnection = testConnection;
-const postgres_js_1 = require("drizzle-orm/postgres-js");
-const postgres_1 = __importDefault(require("postgres"));
+const node_postgres_1 = require("drizzle-orm/node-postgres");
 const schema = __importStar(require("./schema"));
 const logger_1 = __importDefault(require("../utils/logger"));
-// Supabase connection configuration
-const connectionString = process.env.DATABASE_URL || '';
-if (!connectionString) {
-    throw new Error('DATABASE_URL environment variable is not set');
+const index_1 = __importDefault(require("./index"));
+let _dbInstance = null;
+function getDbInstance() {
+    if (!_dbInstance) {
+        let pool;
+        try {
+            pool = index_1.default.getInstance().getPool();
+            _dbInstance = (0, node_postgres_1.drizzle)(pool, { schema });
+        }
+        catch (error) {
+            logger_1.default.error('Failed to get database pool from DatabaseManager:', error);
+            throw error; // Re-throw to indicate a critical error
+        }
+    }
+    return _dbInstance;
 }
-// Create postgres client
-const client = (0, postgres_1.default)(connectionString, {
-    prepare: false,
-    max: 10,
-    idle_timeout: 20,
-    connect_timeout: 10,
-});
-// Create drizzle instance
-exports.db = (0, postgres_js_1.drizzle)(client, { schema });
-// Test connection
+// Test connection function (now uses the pool from DatabaseManager)
 async function testConnection() {
     try {
-        await client `SELECT 1`;
-        logger_1.default.info('Successfully connected to Supabase database');
+        const pool = index_1.default.getInstance().getPool(); // Get pool when needed
+        await pool.query('SELECT 1');
+        logger_1.default.info('Successfully connected to Supabase database via DatabaseManager pool');
         return true;
     }
     catch (error) {
-        logger_1.default.error('Failed to connect to Supabase database:', error);
+        logger_1.default.error('Failed to connect to Supabase database via DatabaseManager pool:', error);
         return false;
     }
 }
-exports.default = exports.db;
+// Export getDbInstance as the default export for convenience
+exports.default = getDbInstance;
 //# sourceMappingURL=supabase.js.map

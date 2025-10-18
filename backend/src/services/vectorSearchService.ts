@@ -1,4 +1,4 @@
-import db from '../database/supabase';
+import getDbInstance from '../database/supabase'; // Import the function to get the db instance
 import { documents } from '../database/schema';
 import { sql as sqlTemplate } from 'drizzle-orm';
 import embeddingService from './embeddingService';
@@ -35,6 +35,8 @@ export class VectorSearchService {
       // Generate embedding for the query
       const queryEmbedding = await embeddingService.generateEmbedding(query);
       const embeddingStr = embeddingService.formatEmbeddingForPostgres(queryEmbedding);
+
+      const db = getDbInstance(); // Get the Drizzle instance
 
       // Use the match_documents function we created in Supabase
       const results = await db.execute(sqlTemplate.raw(`
@@ -79,6 +81,8 @@ export class VectorSearchService {
       } = options;
 
       logger.info(`Finding similar documents to document ${documentId}`);
+
+      const db = getDbInstance(); // Get the Drizzle instance
 
       // Get the document's embedding
       const result = await db.execute(sqlTemplate.raw(`
@@ -152,6 +156,8 @@ export class VectorSearchService {
         ? `WHERE ${metadataConditions}`
         : '';
 
+      const db = getDbInstance(); // Get the Drizzle instance
+
       // Perform semantic search with metadata filters
       const results = await db.execute(sqlTemplate.raw(`
         SELECT
@@ -199,6 +205,8 @@ export class VectorSearchService {
       } = options;
 
       logger.info(`Getting recommendations based on ${documentIds.length} documents`);
+
+      const db = getDbInstance(); // Get the Drizzle instance
 
       // Get embeddings for all documents
       const results = await db.execute(sqlTemplate.raw(`
@@ -271,6 +279,8 @@ export class VectorSearchService {
       const whereClause = agentName
         ? `WHERE metadata->>'agentName' = '${agentName}' AND embedding IS NOT NULL`
         : 'WHERE embedding IS NOT NULL';
+
+      const db = getDbInstance(); // Get the Drizzle instance
 
       const results = await db.execute(sqlTemplate.raw(`
         SELECT id, content, metadata, embedding FROM documents

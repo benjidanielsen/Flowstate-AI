@@ -1,45 +1,68 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.idempotencyMiddleware = idempotencyMiddleware;
+const cacheManager_1 = require("../utils/cacheManager");
 const piiRedaction_1 = require("../utils/piiRedaction");
-const cacheManager_1 = require("../utils/cacheManager"); // Assuming cacheManager exports redisClient
-const IDEMPOTENCY_KEY_PREFIX = 'idempotency:';
-const IDEMPOTENCY_KEY_TTL = 60 * 60; // 1 hour
-/**
- * Middleware to ensure idempotency for API requests.
- * Prevents duplicate processing of requests with the same idempotency key.
- */
+const IDEMPOTENCY_KEY_HEADER = 'X-Idempotency-Key';
+const IDEMPOTENCY_EXPIRATION_SECONDS = 60 * 60; // 1 hour
 async function idempotencyMiddleware(req, res, next) {
-    const idempotencyKey = req.headers['x-idempotency-key'];
-    if (!idempotencyKey) {
-        return next(); // No idempotency key provided, proceed as normal
+    if (req.method !== 'POST' && req.method !== 'PUT' && req.method !== 'PATCH') {
+        return next();
     }
-    const cacheKey = IDEMPOTENCY_KEY_PREFIX + idempotencyKey;
+    const idempotencyKey = req.headers[IDEMPOTENCY_KEY_HEADER.toLowerCase()];
+    if (!idempotencyKey) {
+        return next();
+    }
+    const cacheKey = `idempotency:${idempotencyKey}`;
     try {
-        const cachedResponse = await cacheManager_1.redisClient.get(cacheKey);
+        const cachedResponse = await cacheManager_1.cacheManager.get(cacheKey);
         if (cachedResponse) {
-            piiRedaction_1.safeLogger.info(`Idempotency: Returning cached response for key: ${idempotencyKey}`);
-            const { statusCode, headers, body } = JSON.parse(cachedResponse);
-            res.status(statusCode).set(headers).send(body);
+            piiRedaction_1.safeLogger.info(`Idempotent request for key ${idempotencyKey} served from cache.`);
+            res.status(cachedResponse.status).set(cachedResponse.headers).json(cachedResponse.body);
             return;
         }
-        // Store original send method to cache response before sending
+        // Store original send/json methods
+        const originalJson = res.json;
         const originalSend = res.send;
-        res.send = (body) => {
-            const responseToCache = {
-                statusCode: res.statusCode,
-                headers: res.getHeaders(),
-                body: body,
-            };
-            cacheManager_1.redisClient.setex(cacheKey, IDEMPOTENCY_KEY_TTL, JSON.stringify(responseToCache))
-                .catch(err => piiRedaction_1.safeLogger.error(`Idempotency: Failed to cache response for key ${idempotencyKey}`, err));
-            return originalSend.apply(res, [body]);
+        const originalStatus = res.status;
+        let responseBody;
+        let responseStatus;
+        const responseHeaders = {};
+        // Intercept response data
+        res.json = (body) => {
+            responseBody = body;
+            return originalJson.call(res, body);
         };
+        res.send = (body) => {
+            responseBody = body;
+            return originalSend.call(res, body);
+        };
+        res.status = (status) => {
+            responseStatus = status;
+            return originalStatus.call(res, status);
+        };
+        // Intercept headers
+        const originalSetHeader = res.setHeader;
+        res.setHeader = (name, value) => {
+            responseHeaders[name.toLowerCase()] = value.toString();
+            return originalSetHeader.call(res, name, value);
+        };
+        res.on('finish', async () => {
+            if (responseStatus && responseBody) {
+                const responseToCache = {
+                    status: responseStatus,
+                    headers: responseHeaders,
+                    body: responseBody,
+                };
+                await cacheManager_1.cacheManager.set(cacheKey, responseToCache, { ttl: IDEMPOTENCY_EXPIRATION_SECONDS })
+                    .catch((err) => piiRedaction_1.safeLogger.error(`Idempotency: Failed to cache response for key ${idempotencyKey}`, err));
+            }
+        });
         next();
     }
     catch (error) {
-        piiRedaction_1.safeLogger.error(`Idempotency: Error processing key ${idempotencyKey}`, error);
-        next(error); // Continue to error handler
+        piiRedaction_1.safeLogger.error(`Idempotency middleware error for key ${idempotencyKey}:`, error);
+        next(error); // Pass error to next middleware
     }
 }
 //# sourceMappingURL=idempotency.js.map

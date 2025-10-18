@@ -1,4 +1,4 @@
-import agentService from './agentService';
+import { agentService } from './agentService';
 import logger from '../utils/logger';
 
 export interface MemoryEntry {
@@ -38,14 +38,14 @@ export class MemoryService {
         ...additionalMetadata,
       };
 
-      const document = await agentService.storeDocument(content, metadata);
+      const document = await agentService.storeDocument({ agent_name: agentName, type, content, metadata, tags, importance });
 
       // Update agent state to track memory count
       const agentState = await agentService.getAgentState(agentName);
-      const memoryCount = (agentState?.state?.memoryCount || 0) + 1;
+      const memoryCount = (agentState?.metadata?.memoryCount || 0) + 1;
 
-      await agentService.updateAgentState(agentName, {
-        ...agentState?.state,
+      await agentService.updateAgentState(agentName, "active", {
+        ...agentState?.metadata,
         memoryCount,
         lastMemoryAt: new Date().toISOString(),
       });
@@ -71,7 +71,7 @@ export class MemoryService {
       logger.info(`Retrieving memories for agent ${agentName}`, { type, tags, limit });
 
       // Get all documents (in production, you'd filter by metadata)
-      const documents = await agentService.searchDocuments({ agentName }, limit * 2);
+      const documents = await agentService.searchDocuments('', agentName, type, tags);
 
       // Filter by agent name and optionally by type and tags
       let filtered = documents.filter(
@@ -280,8 +280,8 @@ export class MemoryService {
       
       // Update agent state to reset memory count
       const agentState = await agentService.getAgentState(agentName);
-      await agentService.updateAgentState(agentName, {
-        ...agentState?.state,
+      await agentService.updateAgentState(agentName, "active", {
+        ...agentState?.metadata,
         memoryCount: 0,
         lastMemoryAt: null,
       });

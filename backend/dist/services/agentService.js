@@ -3,285 +3,243 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.AgentService = void 0;
-const drizzle_orm_1 = require("drizzle-orm");
-const supabase_1 = __importDefault(require("../database/supabase"));
-const schema_1 = require("../database/schema");
-const logger_1 = __importDefault(require("../utils/logger"));
+exports.agentService = exports.AgentService = void 0;
+const database_1 = __importDefault(require("../database"));
+const piiRedaction_1 = require("../utils/piiRedaction");
+const types_1 = require("../types");
+const embeddingService_1 = require("./embeddingService");
 class AgentService {
-    /**
-     * Register or update an agent's state
-     */
-    async registerAgent(agentName, initialState = {}) {
+    constructor() {
+        this.dbManager = database_1.default.getInstance();
+        this.embeddingService = new embeddingService_1.EmbeddingService();
+    }
+    async registerAgent(agent) {
+        let client = null;
         try {
-            logger_1.default.info(`Registering agent: ${agentName}`);
-            // Check if agent already exists
-            const existingAgent = await supabase_1.default
-                .select()
-                .from(schema_1.agentStates)
-                .where((0, drizzle_orm_1.eq)(schema_1.agentStates.agentName, agentName))
-                .limit(1);
-            if (existingAgent.length > 0) {
-                // Update existing agent
-                const [updated] = await supabase_1.default
-                    .update(schema_1.agentStates)
-                    .set({
-                    state: initialState,
-                    updatedAt: new Date(),
-                })
-                    .where((0, drizzle_orm_1.eq)(schema_1.agentStates.agentName, agentName))
-                    .returning();
-                logger_1.default.info(`Agent ${agentName} updated successfully`);
-                return updated;
-            }
-            else {
-                // Create new agent
-                const [created] = await supabase_1.default
-                    .insert(schema_1.agentStates)
-                    .values({
-                    agentName,
-                    state: initialState,
-                })
-                    .returning();
-                logger_1.default.info(`Agent ${agentName} registered successfully`);
-                return created;
-            }
+            const pool = this.dbManager.getPool();
+            client = await pool.connect();
+            const result = await client.query('INSERT INTO agent_states(name, status, last_heartbeat, metadata) VALUES($1, $2, $3, $4) RETURNING *', [agent.name, agent.status, agent.last_heartbeat, agent.metadata]);
+            piiRedaction_1.safeLogger.info(`Agent ${agent.name} registered successfully.`);
+            return result.rows[0];
         }
         catch (error) {
-            logger_1.default.error(`Error registering agent ${agentName}:`, error);
+            piiRedaction_1.safeLogger.error(`Error registering agent ${agent.name}:`, error);
             throw error;
         }
+        finally {
+            if (client)
+                client.release();
+        }
     }
-    /**
-     * Get agent state by name
-     */
     async getAgentState(agentName) {
+        let client = null;
         try {
-            const [agent] = await supabase_1.default
-                .select()
-                .from(schema_1.agentStates)
-                .where((0, drizzle_orm_1.eq)(schema_1.agentStates.agentName, agentName))
-                .limit(1);
-            return agent || null;
+            const pool = this.dbManager.getPool();
+            client = await pool.connect();
+            const result = await client.query('SELECT * FROM agent_states WHERE name = $1', [agentName]);
+            return result.rows[0] || null;
         }
         catch (error) {
-            logger_1.default.error(`Error getting agent state for ${agentName}:`, error);
+            piiRedaction_1.safeLogger.error(`Error fetching agent state for ${agentName}:`, error);
             throw error;
         }
-    }
-    /**
-     * Update agent state
-     */
-    async updateAgentState(agentName, newState) {
-        try {
-            const [updated] = await supabase_1.default
-                .update(schema_1.agentStates)
-                .set({
-                state: newState,
-                updatedAt: new Date(),
-            })
-                .where((0, drizzle_orm_1.eq)(schema_1.agentStates.agentName, agentName))
-                .returning();
-            if (!updated) {
-                throw new Error(`Agent ${agentName} not found`);
-            }
-            logger_1.default.info(`Agent ${agentName} state updated`);
-            return updated;
-        }
-        catch (error) {
-            logger_1.default.error(`Error updating agent state for ${agentName}:`, error);
-            throw error;
+        finally {
+            if (client)
+                client.release();
         }
     }
-    /**
-     * Get all registered agents
-     */
     async getAllAgents() {
+        let client = null;
         try {
-            const agents = await supabase_1.default
-                .select()
-                .from(schema_1.agentStates)
-                .orderBy((0, drizzle_orm_1.desc)(schema_1.agentStates.updatedAt));
-            return agents;
+            const pool = this.dbManager.getPool();
+            client = await pool.connect();
+            const result = await client.query('SELECT * FROM agent_states');
+            return result.rows;
         }
         catch (error) {
-            logger_1.default.error('Error getting all agents:', error);
+            piiRedaction_1.safeLogger.error('Error fetching all agents:', error);
             throw error;
         }
+        finally {
+            if (client)
+                client.release();
+        }
     }
-    /**
-     * Create a new job in the queue
-     */
-    async createJob(targetAgent, payload) {
+    async updateAgentState(agentName, status, metadata) {
+        let client = null;
         try {
-            logger_1.default.info(`Creating job for agent: ${targetAgent}`);
-            const [job] = await supabase_1.default
-                .insert(schema_1.jobQueue)
-                .values({
-                targetAgent,
-                payload,
-                status: 'pending',
-                attempts: 0,
-            })
-                .returning();
-            logger_1.default.info(`Job created with ID: ${job.id}`);
-            return job;
+            const pool = this.dbManager.getPool();
+            client = await pool.connect();
+            const result = await client.query('UPDATE agent_states SET status = $1, last_heartbeat = NOW(), metadata = $2 WHERE name = $3 RETURNING *', [status, metadata, agentName]);
+            piiRedaction_1.safeLogger.info(`Agent ${agentName} state updated to ${status}.`);
+            return result.rows[0] || null;
         }
         catch (error) {
-            logger_1.default.error(`Error creating job for ${targetAgent}:`, error);
+            piiRedaction_1.safeLogger.error(`Error updating agent state for ${agentName}:`, error);
             throw error;
         }
+        finally {
+            if (client)
+                client.release();
+        }
     }
-    /**
-     * Get pending jobs for a specific agent
-     */
-    async getPendingJobs(targetAgent, limit = 10) {
+    async createJob(job) {
+        let client = null;
         try {
-            const jobs = await supabase_1.default
-                .select()
-                .from(schema_1.jobQueue)
-                .where((0, drizzle_orm_1.and)((0, drizzle_orm_1.eq)(schema_1.jobQueue.targetAgent, targetAgent), (0, drizzle_orm_1.eq)(schema_1.jobQueue.status, 'pending')))
-                .orderBy(schema_1.jobQueue.createdAt)
-                .limit(limit);
-            return jobs;
+            const pool = this.dbManager.getPool();
+            client = await pool.connect();
+            const result = await client.query('INSERT INTO job_queue(agent_name, task_type, payload, priority, correlation_id, status) VALUES($1, $2, $3, $4, $5, $6) RETURNING *', [job.agent_name, job.task_type, job.payload, job.priority || 0, job.correlation_id, types_1.JobStatus.PENDING]);
+            piiRedaction_1.safeLogger.info(`Job created for agent ${job.agent_name} with task type ${job.task_type}.`);
+            return result.rows[0];
         }
         catch (error) {
-            logger_1.default.error(`Error getting pending jobs for ${targetAgent}:`, error);
+            piiRedaction_1.safeLogger.error(`Error creating job for agent ${job.agent_name}:`, error);
             throw error;
         }
+        finally {
+            if (client)
+                client.release();
+        }
     }
-    /**
-     * Get all pending jobs
-     */
-    async getAllPendingJobs(limit = 50) {
+    async getPendingJobs(agentName) {
+        let client = null;
         try {
-            const jobs = await supabase_1.default
-                .select()
-                .from(schema_1.jobQueue)
-                .where((0, drizzle_orm_1.eq)(schema_1.jobQueue.status, 'pending'))
-                .orderBy(schema_1.jobQueue.createdAt)
-                .limit(limit);
-            return jobs;
+            const pool = this.dbManager.getPool();
+            client = await pool.connect();
+            const result = await client.query('SELECT * FROM job_queue WHERE agent_name = $1 AND status = $2 ORDER BY priority DESC, created_at ASC', [agentName, types_1.JobStatus.PENDING]);
+            return result.rows;
         }
         catch (error) {
-            logger_1.default.error('Error getting all pending jobs:', error);
+            piiRedaction_1.safeLogger.error(`Error fetching pending jobs for ${agentName}:`, error);
             throw error;
         }
+        finally {
+            if (client)
+                client.release();
+        }
     }
-    /**
-     * Update job status
-     */
-    async updateJobStatus(jobId, status, incrementAttempts = false) {
+    async getAllPendingJobs() {
+        let client = null;
         try {
-            const updateData = {
-                status,
-            };
-            if (status === 'completed' || status === 'failed') {
-                updateData.processedAt = new Date();
+            const pool = this.dbManager.getPool();
+            client = await pool.connect();
+            const result = await client.query('SELECT * FROM job_queue WHERE status = $1 ORDER BY priority DESC, created_at ASC', [types_1.JobStatus.PENDING]);
+            return result.rows;
+        }
+        catch (error) {
+            piiRedaction_1.safeLogger.error('Error fetching all pending jobs:', error);
+            throw error;
+        }
+        finally {
+            if (client)
+                client.release();
+        }
+    }
+    async updateJobStatus(jobId, status, resultPayload) {
+        let client = null;
+        try {
+            const pool = this.dbManager.getPool();
+            client = await pool.connect();
+            const result = await client.query('UPDATE job_queue SET status = $1, result = $2, updated_at = NOW() WHERE id = $3 RETURNING *', [status, resultPayload, jobId]);
+            piiRedaction_1.safeLogger.info(`Job ${jobId} status updated to ${status}.`);
+            return result.rows[0] || null;
+        }
+        catch (error) {
+            piiRedaction_1.safeLogger.error(`Error updating job ${jobId} status:`, error);
+            throw error;
+        }
+        finally {
+            if (client)
+                client.release();
+        }
+    }
+    async storeDocument(document) {
+        let client = null;
+        try {
+            const pool = this.dbManager.getPool();
+            client = await pool.connect();
+            const embedding = await this.embeddingService.generateEmbedding(document.content);
+            const result = await client.query('INSERT INTO documents(agent_name, type, content, metadata, tags, importance, embedding) VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING *', [document.agent_name, document.type, document.content, document.metadata, document.tags, document.importance, embedding]);
+            piiRedaction_1.safeLogger.info(`Document stored for agent ${document.agent_name} with type ${document.type}.`);
+            return result.rows[0];
+        }
+        catch (error) {
+            piiRedaction_1.safeLogger.error(`Error storing document for agent ${document.agent_name}:`, error);
+            throw error;
+        }
+        finally {
+            if (client)
+                client.release();
+        }
+    }
+    async getDocument(documentId) {
+        let client = null;
+        try {
+            const pool = this.dbManager.getPool();
+            client = await pool.connect();
+            const result = await client.query('SELECT * FROM documents WHERE id = $1', [documentId]);
+            return result.rows[0] || null;
+        }
+        catch (error) {
+            piiRedaction_1.safeLogger.error(`Error fetching document ${documentId}:`, error);
+            throw error;
+        }
+        finally {
+            if (client)
+                client.release();
+        }
+    }
+    async searchDocuments(query, agentName, type, tags) {
+        let client = null;
+        try {
+            const pool = this.dbManager.getPool();
+            client = await pool.connect();
+            let baseQuery = 'SELECT * FROM documents WHERE 1=1';
+            const params = [];
+            let paramIndex = 1;
+            if (agentName) {
+                baseQuery += ` AND agent_name = $${paramIndex++}`;
+                params.push(agentName);
             }
-            if (incrementAttempts) {
-                // Get current attempts count
-                const [currentJob] = await supabase_1.default
-                    .select()
-                    .from(schema_1.jobQueue)
-                    .where((0, drizzle_orm_1.eq)(schema_1.jobQueue.id, jobId))
-                    .limit(1);
-                if (currentJob) {
-                    updateData.attempts = (currentJob.attempts || 0) + 1;
-                }
+            if (type) {
+                baseQuery += ` AND type = $${paramIndex++}`;
+                params.push(type);
             }
-            const [updated] = await supabase_1.default
-                .update(schema_1.jobQueue)
-                .set(updateData)
-                .where((0, drizzle_orm_1.eq)(schema_1.jobQueue.id, jobId))
-                .returning();
-            if (!updated) {
-                throw new Error(`Job ${jobId} not found`);
+            if (tags && tags.length > 0) {
+                baseQuery += ` AND tags && $${paramIndex++}::text[]`; // Using '&&' operator for array overlap
+                params.push(tags);
             }
-            logger_1.default.info(`Job ${jobId} status updated to ${status}`);
-            return updated;
+            if (query) {
+                baseQuery += ` AND content ILIKE $${paramIndex++}`; // Case-insensitive search
+                params.push(`%${query}%`);
+            }
+            const result = await client.query(baseQuery, params);
+            return result.rows;
         }
         catch (error) {
-            logger_1.default.error(`Error updating job ${jobId}:`, error);
+            piiRedaction_1.safeLogger.error(`Error searching documents with query '${query}' for agent ${agentName}:`, error);
             throw error;
+        }
+        finally {
+            if (client)
+                client.release();
         }
     }
-    /**
-     * Store a document in the documents table
-     */
-    async storeDocument(content, metadata = {}, embedding) {
+    async deleteDocument(documentId) {
+        let client = null;
         try {
-            const [doc] = await supabase_1.default
-                .insert(schema_1.documents)
-                .values({
-                content,
-                metadata,
-                embedding,
-            })
-                .returning();
-            logger_1.default.info(`Document stored with ID: ${doc.id}`);
-            return doc;
+            const pool = this.dbManager.getPool();
+            client = await pool.connect();
+            const result = await client.query('DELETE FROM documents WHERE id = $1 RETURNING id', [documentId]);
+            piiRedaction_1.safeLogger.info(`Document ${documentId} deleted.`);
+            return result.rowCount !== null && result.rowCount > 0;
         }
-        catch (error) {
-            logger_1.default.error('Error storing document:', error);
-            throw error;
-        }
-    }
-    /**
-     * Search documents by metadata
-     */
-    async searchDocuments(metadataFilter, limit = 10) {
-        try {
-            // For now, we'll get all documents and filter in memory
-            // In production, you'd want to use Supabase's JSONB query capabilities
-            const allDocs = await supabase_1.default
-                .select()
-                .from(schema_1.documents)
-                .limit(limit);
-            return allDocs;
-        }
-        catch (error) {
-            logger_1.default.error('Error searching documents:', error);
-            throw error;
-        }
-    }
-    /**
-     * Get document by ID
-     */
-    async getDocument(id) {
-        try {
-            const [doc] = await supabase_1.default
-                .select()
-                .from(schema_1.documents)
-                .where((0, drizzle_orm_1.eq)(schema_1.documents.id, id))
-                .limit(1);
-            return doc || null;
-        }
-        catch (error) {
-            logger_1.default.error(`Error getting document ${id}:`, error);
-            throw error;
-        }
-    }
-    /**
-     * Delete old completed jobs (cleanup)
-     */
-    async cleanupCompletedJobs(olderThanDays = 7) {
-        try {
-            const cutoffDate = new Date();
-            cutoffDate.setDate(cutoffDate.getDate() - olderThanDays);
-            // Note: This is a simplified version. In production, you'd want to use
-            // a proper date comparison with Drizzle ORM
-            logger_1.default.info(`Cleaning up jobs older than ${olderThanDays} days`);
-            // For now, just log the intent
-            // Actual implementation would require proper date filtering
-            return 0;
-        }
-        catch (error) {
-            logger_1.default.error('Error cleaning up jobs:', error);
-            throw error;
+        finally {
+            if (client)
+                client.release();
         }
     }
 }
 exports.AgentService = AgentService;
-exports.default = new AgentService();
+exports.agentService = new AgentService();
 //# sourceMappingURL=agentService.js.map

@@ -17,6 +17,7 @@ const aiCoordination_1 = __importDefault(require("./aiCoordination"));
 const evolution_1 = __importDefault(require("./evolution"));
 const kpis_1 = __importDefault(require("./kpis")); // Import KPI routes
 const agents_1 = __importDefault(require("./agents")); // Import agent routes
+const vectorSearch_1 = __importDefault(require("./vectorSearch")); // Import vector search routes
 const authMiddleware_1 = require("../middleware/authMiddleware");
 const router = (0, express_1.Router)();
 router.use('/auth', auth_1.default);
@@ -33,6 +34,7 @@ router.use("/ai", authMiddleware_1.authenticateToken, aiCoordination_1.default);
 router.use("/evolution", authMiddleware_1.authenticateToken, evolution_1.default);
 router.use("/kpis", authMiddleware_1.authenticateToken, kpis_1.default); // Use KPI routes
 router.use("/api", authMiddleware_1.authenticateToken, agents_1.default); // Use agent routes
+router.use("/api", authMiddleware_1.authenticateToken, vectorSearch_1.default); // Use vector search routes
 // Health check
 router.get('/health', (req, res) => {
     res.json({ status: 'OK', timestamp: new Date().toISOString() });

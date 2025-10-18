@@ -1,6 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ReminderType = exports.InteractionType = exports.PipelineStatus = void 0;
+exports.ReminderType = exports.InteractionType = exports.PipelineStatus = exports.JobStatus = void 0;
+var JobStatus;
+(function (JobStatus) {
+    JobStatus["PENDING"] = "pending";
+    JobStatus["PROCESSING"] = "processing";
+    JobStatus["COMPLETED"] = "completed";
+    JobStatus["FAILED"] = "failed";
+})(JobStatus || (exports.JobStatus = JobStatus = {}));
 var PipelineStatus;
 (function (PipelineStatus) {
     PipelineStatus["NEW_LEAD"] = "New Lead";

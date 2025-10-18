@@ -4,7 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AgentController = void 0;
-const agentService_1 = __importDefault(require("../services/agentService"));
+const agentService_1 = require("../services/agentService");
 const logger_1 = __importDefault(require("../utils/logger"));
 class AgentController {
     /**
@@ -12,12 +12,18 @@ class AgentController {
      */
     async registerAgent(req, res) {
         try {
-            const { agentName, initialState } = req.body;
-            if (!agentName) {
-                res.status(400).json({ error: 'agentName is required' });
+            const { name, status, metadata } = req.body;
+            if (!name || !status) {
+                res.status(400).json({ error: 'Agent name and status are required' });
                 return;
             }
-            const agent = await agentService_1.default.registerAgent(agentName, initialState || {});
+            const newAgent = {
+                name,
+                status,
+                last_heartbeat: new Date(),
+                metadata: metadata || {},
+            };
+            const agent = await agentService_1.agentService.registerAgent(newAgent);
             res.status(201).json(agent);
         }
         catch (error) {
@@ -31,7 +37,7 @@ class AgentController {
     async getAgentState(req, res) {
         try {
             const { agentName } = req.params;
-            const agent = await agentService_1.default.getAgentState(agentName);
+            const agent = await agentService_1.agentService.getAgentState(agentName);
             if (!agent) {
                 res.status(404).json({ error: 'Agent not found' });
                 return;
@@ -49,12 +55,12 @@ class AgentController {
     async updateAgentState(req, res) {
         try {
             const { agentName } = req.params;
-            const { state } = req.body;
-            if (!state) {
-                res.status(400).json({ error: 'state is required' });
+            const { status, metadata } = req.body;
+            if (!status) {
+                res.status(400).json({ error: 'status is required' });
                 return;
             }
-            const agent = await agentService_1.default.updateAgentState(agentName, state);
+            const agent = await agentService_1.agentService.updateAgentState(agentName, status, metadata || {});
             res.json(agent);
         }
         catch (error) {
@@ -67,7 +73,7 @@ class AgentController {
      */
     async getAllAgents(req, res) {
         try {
-            const agents = await agentService_1.default.getAllAgents();
+            const agents = await agentService_1.agentService.getAllAgents();
             res.json(agents);
         }
         catch (error) {
@@ -80,12 +86,19 @@ class AgentController {
      */
     async createJob(req, res) {
         try {
-            const { targetAgent, payload } = req.body;
-            if (!targetAgent || !payload) {
-                res.status(400).json({ error: 'targetAgent and payload are required' });
+            const { agent_name, task_type, payload, priority, correlation_id } = req.body;
+            if (!agent_name || !task_type || !payload) {
+                res.status(400).json({ error: 'agent_name, task_type, and payload are required' });
                 return;
             }
-            const job = await agentService_1.default.createJob(targetAgent, payload);
+            const newJob = {
+                agent_name,
+                task_type,
+                payload,
+                priority: priority || 0,
+                correlation_id: correlation_id || 'default',
+            };
+            const job = await agentService_1.agentService.createJob(newJob);
             res.status(201).json(job);
         }
         catch (error) {
@@ -99,8 +112,7 @@ class AgentController {
     async getPendingJobs(req, res) {
         try {
             const { agentName } = req.params;
-            const limit = parseInt(req.query.limit) || 10;
-            const jobs = await agentService_1.default.getPendingJobs(agentName, limit);
+            const jobs = await agentService_1.agentService.getPendingJobs(agentName);
             res.json(jobs);
         }
         catch (error) {
@@ -113,8 +125,7 @@ class AgentController {
      */
     async getAllPendingJobs(req, res) {
         try {
-            const limit = parseInt(req.query.limit) || 50;
-            const jobs = await agentService_1.default.getAllPendingJobs(limit);
+            const jobs = await agentService_1.agentService.getAllPendingJobs();
             res.json(jobs);
         }
         catch (error) {
@@ -128,16 +139,12 @@ class AgentController {
     async updateJobStatus(req, res) {
         try {
             const { jobId } = req.params;
-            const { status, incrementAttempts } = req.body;
+            const { status, resultPayload } = req.body;
             if (!status) {
                 res.status(400).json({ error: 'status is required' });
                 return;
             }
-            if (!['pending', 'processing', 'completed', 'failed'].includes(status)) {
-                res.status(400).json({ error: 'Invalid status value' });
-                return;
-            }
-            const job = await agentService_1.default.updateJobStatus(parseInt(jobId), status, incrementAttempts || false);
+            const job = await agentService_1.agentService.updateJobStatus(jobId, status, resultPayload);
             res.json(job);
         }
         catch (error) {
@@ -150,12 +157,20 @@ class AgentController {
      */
     async storeDocument(req, res) {
         try {
-            const { content, metadata, embedding } = req.body;
-            if (!content) {
-                res.status(400).json({ error: 'content is required' });
+            const { agent_name, type, content, metadata, tags, importance } = req.body;
+            if (!agent_name || !content) {
+                res.status(400).json({ error: 'agent_name and content are required' });
                 return;
             }
-            const doc = await agentService_1.default.storeDocument(content, metadata, embedding);
+            const newDocument = {
+                agent_name,
+                type: type || 'general',
+                content,
+                metadata: metadata || {},
+                tags: tags || [],
+                importance: importance || 5,
+            };
+            const doc = await agentService_1.agentService.storeDocument(newDocument);
             res.status(201).json(doc);
         }
         catch (error) {
@@ -169,7 +184,7 @@ class AgentController {
     async getDocument(req, res) {
         try {
             const { id } = req.params;
-            const doc = await agentService_1.default.getDocument(parseInt(id));
+            const doc = await agentService_1.agentService.getDocument(id);
             if (!doc) {
                 res.status(404).json({ error: 'Document not found' });
                 return;
@@ -186,8 +201,8 @@ class AgentController {
      */
     async searchDocuments(req, res) {
         try {
-            const { metadata, limit } = req.query;
-            const docs = await agentService_1.default.searchDocuments(metadata ? JSON.parse(metadata) : {}, limit ? parseInt(limit) : 10);
+            const { query, agentName, type, tags } = req.query;
+            const docs = await agentService_1.agentService.searchDocuments(query || '', agentName, type, tags ? tags.split(',') : undefined);
             res.json(docs);
         }
         catch (error) {

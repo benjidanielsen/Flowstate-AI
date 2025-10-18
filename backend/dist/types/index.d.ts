@@ -1,3 +1,58 @@
+export interface AgentState {
+    name: string;
+    status: string;
+    last_heartbeat: Date;
+    metadata: any;
+}
+export declare enum JobStatus {
+    PENDING = "pending",
+    PROCESSING = "processing",
+    COMPLETED = "completed",
+    FAILED = "failed"
+}
+export interface Job {
+    id: string;
+    agent_name: string;
+    task_type: string;
+    payload: any;
+    status: JobStatus;
+    priority: number;
+    correlation_id: string;
+    created_at: Date;
+    updated_at: Date;
+    result?: any;
+}
+export interface Document {
+    id: string;
+    agent_name: string;
+    type: string;
+    content: string;
+    metadata: any;
+    tags: string[];
+    importance: number;
+    embedding?: number[];
+    created_at: Date;
+    updated_at: Date;
+}
+export interface Qualification {
+    id: string;
+    customer_id: string;
+    question: string;
+    expected_answer: string;
+    status: 'pending' | 'completed' | 'failed';
+    agent_name?: string;
+    created_at: Date;
+    updated_at: Date;
+}
+export interface QualificationAnswer {
+    id: string;
+    qualification_id: string;
+    answer: string;
+    is_correct: boolean;
+    agent_name?: string;
+    created_at: Date;
+    updated_at: Date;
+}
 export interface Customer {
     id: string;
     name: string;
@@ -87,6 +142,16 @@ export interface ExternalIntegration {
     created_at: Date;
     updated_at: Date;
 }
+export interface KPI {
+    name: string;
+    value: number;
+    unit: string;
+    change: number;
+    changeType: 'increase' | 'decrease' | 'neutral';
+    description: string;
+    status: 'success' | 'warning' | 'danger';
+    category: string;
+}
 export interface Database {
     customers: Customer;
     interactions: Interaction;
@@ -94,5 +159,6 @@ export interface Database {
     event_logs: EventLog;
     users: User;
     external_integrations: ExternalIntegration;
+    kpis: KPI;
 }
 //# sourceMappingURL=index.d.ts.map

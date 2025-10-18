@@ -1,6 +1,7 @@
-import agentService from './agentService';
+import { agentService } from './agentService';
 import logger from '../utils/logger';
 import axios from 'axios';
+import { JobStatus, Job } from '../types';
 
 export interface JobProcessorConfig {
   pythonWorkerUrl: string;
@@ -68,7 +69,7 @@ export class JobProcessorService {
   private async processJobs(): Promise<void> {
     try {
       // Get all pending jobs
-      const jobs = await agentService.getAllPendingJobs(10);
+      const jobs = await agentService.getAllPendingJobs();
 
       if (jobs.length === 0) {
         logger.debug('No pending jobs to process');
@@ -93,30 +94,30 @@ export class JobProcessorService {
   /**
    * Process a single job
    */
-  private async processJob(job: any): Promise<void> {
+  private async processJob(job: Job): Promise<void> {
     const jobId = job.id;
-    const targetAgent = job.targetAgent;
+    const targetAgent = job.agent_name;
     const payload = job.payload;
-    const attempts = job.attempts || 0;
+    const attempts = job.payload?.attempts || 0; // Assuming attempts is part of payload
 
     logger.info(`Processing job ${jobId} for agent ${targetAgent}`, { attempts });
 
     // Check if max retries exceeded
     if (attempts >= this.config.maxRetries) {
       logger.error(`Job ${jobId} exceeded max retries (${this.config.maxRetries})`);
-      await agentService.updateJobStatus(jobId, 'failed');
+      await agentService.updateJobStatus(jobId, JobStatus.FAILED);
       return;
     }
 
     try {
       // Mark job as processing
-      await agentService.updateJobStatus(jobId, 'processing', true);
+      await agentService.updateJobStatus(jobId, JobStatus.PROCESSING, { ...job.payload, attempts: attempts + 1 });
 
       // Execute the job based on the target agent
       const result = await this.executeJob(targetAgent, payload);
 
       // Mark job as completed
-      await agentService.updateJobStatus(jobId, 'completed');
+      await agentService.updateJobStatus(jobId, JobStatus.COMPLETED, result);
 
       logger.info(`Job ${jobId} completed successfully`, { result });
     } catch (error: any) {
@@ -124,10 +125,10 @@ export class JobProcessorService {
 
       // If we haven't exceeded max retries, mark as pending for retry
       if (attempts + 1 < this.config.maxRetries) {
-        await agentService.updateJobStatus(jobId, 'pending');
+        await agentService.updateJobStatus(jobId, JobStatus.PENDING, { ...job.payload, attempts: attempts + 1 });
         logger.info(`Job ${jobId} will be retried (attempt ${attempts + 1}/${this.config.maxRetries})`);
       } else {
-        await agentService.updateJobStatus(jobId, 'failed');
+        await agentService.updateJobStatus(jobId, JobStatus.FAILED, { ...job.payload, attempts: attempts + 1, error: error.message });
         logger.error(`Job ${jobId} failed permanently after ${attempts + 1} attempts`);
       }
     }
@@ -194,8 +195,8 @@ export class JobProcessorService {
 
     // Update agent state to reflect processing
     const currentState = await agentService.getAgentState(targetAgent);
-    await agentService.updateAgentState(targetAgent, {
-      ...currentState?.state,
+    await agentService.updateAgentState(targetAgent, 'active', {
+      ...currentState?.metadata,
       lastProcessedJob: payload,
       lastProcessedAt: new Date().toISOString(),
     });
@@ -213,7 +214,7 @@ export class JobProcessorService {
 
     // Store the message in the agent's state
     const currentState = await agentService.getAgentState(targetAgent);
-    const messages = currentState?.state?.messages || [];
+    const messages = currentState?.metadata?.messages || [];
     
     messages.push({
       from: fromAgent,
@@ -222,21 +223,27 @@ export class JobProcessorService {
       timestamp: new Date().toISOString(),
     });
 
-    await agentService.updateAgentState(targetAgent, {
-      ...currentState?.state,
+    await agentService.updateAgentState(targetAgent, 'active', {
+      ...currentState?.metadata,
       messages,
       lastMessageAt: new Date().toISOString(),
     });
 
     // If the message requires a response, create a job for the sending agent
     if (payload.requiresResponse) {
-      await agentService.createJob(fromAgent, {
-        type: 'inter_agent_message',
-        fromAgent: targetAgent,
-        message: `Response to: ${message}`,
-        messageType: 'response',
-        requiresResponse: false,
-      });
+      const newJob: Omit<Job, 'id' | 'created_at' | 'updated_at' | 'status'> = {
+        agent_name: fromAgent,
+        task_type: 'inter_agent_message',
+        payload: {
+          fromAgent: targetAgent,
+          message: `Response to: ${message}`,
+          messageType: 'response',
+          requiresResponse: false,
+        },
+        priority: 0,
+        correlation_id: payload.correlation_id || 'default',
+      };
+      await agentService.createJob(newJob);
     }
 
     return { status: 'message_received', agent: targetAgent };
@@ -250,8 +257,8 @@ export class JobProcessorService {
 
     // Update agent state
     const currentState = await agentService.getAgentState(targetAgent);
-    await agentService.updateAgentState(targetAgent, {
-      ...currentState?.state,
+    await agentService.updateAgentState(targetAgent, 'active', {
+      ...currentState?.metadata,
       lastGenericTask: payload,
       lastTaskAt: new Date().toISOString(),
     });
@@ -271,13 +278,20 @@ export class JobProcessorService {
   ): Promise<any> {
     logger.info(`Sending message from ${fromAgent} to ${toAgent}`);
 
-    return await agentService.createJob(toAgent, {
-      type: 'inter_agent_message',
-      fromAgent,
-      message,
-      messageType,
-      requiresResponse,
-    });
+    const newJob: Omit<Job, 'id' | 'created_at' | 'updated_at' | 'status'> = {
+      agent_name: toAgent,
+      task_type: 'inter_agent_message',
+      payload: {
+        fromAgent,
+        message,
+        messageType,
+        requiresResponse,
+      },
+      priority: 0,
+      correlation_id: 'default', // Or generate a new one
+    };
+
+    return await agentService.createJob(newJob);
   }
 
   /**

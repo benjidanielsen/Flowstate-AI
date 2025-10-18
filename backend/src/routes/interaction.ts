@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { interactionController } from '../controllers/interactionController';
 import { authenticateToken } from '../middleware/authMiddleware';
 
-const router = Router();
+const router: Router = Router();
 
 router.post(
   '/',

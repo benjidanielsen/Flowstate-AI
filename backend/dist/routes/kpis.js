@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
-const auth_1 = require("../middleware/auth");
+const authMiddleware_1 = require("../middleware/authMiddleware");
 const piiRedaction_1 = require("../utils/piiRedaction");
 const router = (0, express_1.Router)();
 // Mock KPI data for demonstration
@@ -34,7 +34,7 @@ const mockKpis = {
         { name: 'Human Intervention Frequency', value: 10, unit: '/day', change: -2, changeType: 'decrease', description: 'Number of times human intervention was required per day.', status: 'success' },
     ],
 };
-router.get('/', auth_1.requireAuth, (req, res) => {
+router.get("/", authMiddleware_1.authenticateToken, (req, res) => {
     const category = req.query.category;
     if (category && mockKpis[category]) {
         piiRedaction_1.safeLogger.info(`Fetching KPIs for category: ${category}`);

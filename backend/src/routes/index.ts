@@ -16,7 +16,7 @@ import agentRoutes from './agents'; // Import agent routes
 import vectorSearchRoutes from './vectorSearch'; // Import vector search routes
 import { authenticateToken } from '../middleware/authMiddleware';
 
-const router = Router();
+const router: Router = Router();
 
 router.use('/auth', authRoutes);
 

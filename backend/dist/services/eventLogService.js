@@ -8,107 +8,86 @@ const database_1 = __importDefault(require("../database"));
 const uuid_1 = require("uuid");
 class EventLogService {
     async logEvent(eventType, eventData, customerId, userId) {
-        const db = database_1.default.getInstance().getDb();
-        const id = (0, uuid_1.v4)();
-        const timestamp = new Date();
-        const eventLog = {
-            id,
-            customer_id: customerId,
-            event_type: eventType,
-            event_data: eventData,
-            timestamp,
-            user_id: userId
-        };
-        return new Promise((resolve, reject) => {
-            const stmt = db.prepare(`
-        INSERT INTO event_logs (id, customer_id, event_type, event_data, timestamp, user_id)
-        VALUES (?, ?, ?, ?, ?, ?)
-      `);
-            stmt.run([
-                eventLog.id,
-                eventLog.customer_id,
-                eventLog.event_type,
-                JSON.stringify(eventLog.event_data),
-                eventLog.timestamp.toISOString(),
-                eventLog.user_id
-            ], function (err) {
-                if (err) {
-                    reject(err);
-                }
-                else {
-                    resolve(eventLog);
-                }
-            });
-            stmt.finalize();
-        });
+        let client = null;
+        try {
+            const pool = database_1.default.getInstance().getPool();
+            client = await pool.connect();
+            const id = (0, uuid_1.v4)();
+            const timestamp = new Date();
+            const result = await client.query(`INSERT INTO event_logs (id, customer_id, event_type, event_data, timestamp, user_id)
+         VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`, [
+                id,
+                customerId || null,
+                eventType,
+                eventData,
+                timestamp.toISOString(),
+                userId || null
+            ]);
+            return result.rows[0];
+        }
+        finally {
+            if (client)
+                client.release();
+        }
     }
     async getEventsByCustomer(customerId, limit = 50) {
-        const db = database_1.default.getInstance().getDb();
-        return new Promise((resolve, reject) => {
-            db.all(`
-        SELECT * FROM event_logs 
-        WHERE customer_id = ? 
-        ORDER BY timestamp DESC 
-        LIMIT ?
-      `, [customerId, limit], (err, rows) => {
-                if (err) {
-                    reject(err);
-                }
-                else {
-                    const events = rows.map(row => ({
-                        ...row,
-                        event_data: JSON.parse(row.event_data),
-                        timestamp: new Date(row.timestamp)
-                    }));
-                    resolve(events);
-                }
-            });
-        });
+        let client = null;
+        try {
+            const pool = database_1.default.getInstance().getPool();
+            client = await pool.connect();
+            const result = await client.query(`SELECT * FROM event_logs 
+         WHERE customer_id = $1 
+         ORDER BY timestamp DESC 
+         LIMIT $2`, [customerId, limit]);
+            return result.rows.map(row => ({
+                ...row,
+                event_data: row.event_data,
+                timestamp: new Date(row.timestamp)
+            }));
+        }
+        finally {
+            if (client)
+                client.release();
+        }
     }
     async getAllEvents(limit = 100) {
-        const db = database_1.default.getInstance().getDb();
-        return new Promise((resolve, reject) => {
-            db.all(`
-        SELECT * FROM event_logs 
-        ORDER BY timestamp DESC 
-        LIMIT ?
-      `, [limit], (err, rows) => {
-                if (err) {
-                    reject(err);
-                }
-                else {
-                    const events = rows.map(row => ({
-                        ...row,
-                        event_data: JSON.parse(row.event_data),
-                        timestamp: new Date(row.timestamp)
-                    }));
-                    resolve(events);
-                }
-            });
-        });
+        let client = null;
+        try {
+            const pool = database_1.default.getInstance().getPool();
+            client = await pool.connect();
+            const result = await client.query(`SELECT * FROM event_logs 
+         ORDER BY timestamp DESC 
+         LIMIT $1`, [limit]);
+            return result.rows.map(row => ({
+                ...row,
+                event_data: row.event_data,
+                timestamp: new Date(row.timestamp)
+            }));
+        }
+        finally {
+            if (client)
+                client.release();
+        }
     }
     async getEventsByType(eventType, limit = 50) {
-        const db = database_1.default.getInstance().getDb();
-        return new Promise((resolve, reject) => {
-            db.all(`
-        SELECT * FROM event_logs 
-        WHERE event_type = ? 
-        ORDER BY timestamp DESC 
-        LIMIT ?
-      `, [eventType, limit], (err, rows) => {
-                if (err) {
-                    reject(err);
-                }
-                else {
-                    const events = rows.map(row => ({
-                        ...row,
-                        event_data: JSON.parse(row.event_data),
-                        timestamp: new Date(row.timestamp)
-                    }));
-                    resolve(events);
-                }
-            });
-        });
+        let client = null;
+        try {
+            const pool = database_1.default.getInstance().getPool();
+            client = await pool.connect();
+            const result = await client.query(`SELECT * FROM event_logs 
+         WHERE event_type = $1 
+         ORDER BY timestamp DESC 
+         LIMIT $2`, [eventType, limit]);
+            return result.rows.map(row => ({
+                ...row,
+                event_data: row.event_data,
+                timestamp: new Date(row.timestamp)
+            }));
+        }
+        finally {
+            if (client)
+                client.release();
+        }
     }
 }
 exports.EventLogService = EventLogService;

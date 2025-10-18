@@ -2,6 +2,7 @@ import DatabaseManager from './index';
 import logger from '../utils/logger';
 import { v4 as uuidv4 } from 'uuid';
 import { PipelineStatus, InteractionType } from '../types';
+import { PoolClient } from 'pg';
 
 const sampleCustomers = [
   {
@@ -57,116 +58,77 @@ const sampleCustomers = [
 ];
 
 export async function seedDatabase(): Promise<void> {
-  const dbManager = DatabaseManager.getInstance();
-  const db = await dbManager.connect();
+  let client: PoolClient | null = null;
+  try {
+    const pool = DatabaseManager.getInstance().getPool();
+    client = await pool.connect();
+    logger.info("Starting database seed...");
 
-  logger.info("Starting database seed...");
-
-  return new Promise((resolve, reject) => {
     // Clear existing data
-    db.run('DELETE FROM interactions', (err) => {
-      if (err) {
-        reject(err);
-        return;
-      }
+    await client.query('DELETE FROM interactions');
+    await client.query('DELETE FROM reminders');
+    await client.query('DELETE FROM event_logs');
+    await client.query('DELETE FROM customers');
+    logger.info("Cleared existing data.");
 
-      db.run('DELETE FROM reminders', (err) => {
-        if (err) {
-          reject(err);
-          return;
-        }
+    // Insert sample customers
+    for (const customer of sampleCustomers) {
+      await client.query(
+        `INSERT INTO customers (
+          id, name, email, phone, status, notes, next_action, next_action_date,
+          created_at, updated_at
+        )
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
+        [
+          customer.id,
+          customer.name, 
+          customer.email,
+          customer.phone,
+          customer.status,
+          customer.notes,
+          customer.next_action,
+          customer.next_action_date.toISOString(),
+          new Date().toISOString(),
+          new Date().toISOString()
+        ]
+      );
+      logger.info(`Inserted customer: ${customer.name}`);
 
-        db.run('DELETE FROM event_logs', (err) => {
-          if (err) {
-            reject(err);
-            return;
-          }
+      // Add sample interactions
+      await client.query(
+        `INSERT INTO interactions (id, customer_id, type, summary, interaction_date, created_at, updated_at)
+         VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+        [
+          uuidv4(),
+          customer.id,
+          InteractionType.NOTE,
+          `Initial contact with ${customer.name}`,
+          new Date().toISOString(),
+          new Date().toISOString(),
+          new Date().toISOString()
+        ]
+      );
 
-          db.run('DELETE FROM customers', (err) => {
-            if (err) {
-              reject(err);
-              return;
-            }
-
-            // Insert sample customers
-            let completed = 0;
-            sampleCustomers.forEach(customer => {
-              const stmt = db.prepare(`
-                INSERT INTO customers (id, name, email, phone, status, notes, next_action, next_action_date)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-              `);
-
-              stmt.run([
-                customer.id,
-                customer.name, 
-                customer.email,
-                customer.phone,
-                customer.status,
-                customer.notes,
-                customer.next_action,
-                customer.next_action_date.toISOString()
-              ], (err) => {
-                if (err) {
-                  reject(err);
-                  return;
-                }
-
-                // Add sample interactions
-                const interactionStmt = db.prepare(`
-                  INSERT INTO interactions (id, customer_id, type, content, created_at)
-                  VALUES (?, ?, ?, ?, ?)
-                `);
-
-                interactionStmt.run([
-                  uuidv4(),
-                  customer.id,
-                  InteractionType.NOTE,
-                  `Initial contact with ${customer.name}`,
-                  new Date().toISOString()
-                ], (err) => {
-                  if (err) {
-                    reject(err);
-                    return;
-                  }
-
-                  // Add sample event log
-                  const eventStmt = db.prepare(`
-                    INSERT INTO event_logs (id, customer_id, event_type, event_data, timestamp)
-                    VALUES (?, ?, ?, ?, ?)
-                  `);
-
-                  eventStmt.run([
-                    uuidv4(),
-                    customer.id,
-                    'customer_created',
-                    JSON.stringify({ name: customer.name, status: customer.status }),
-                    new Date().toISOString()
-                  ], (err) => {
-                    if (err) {
-                      reject(err);
-                      return;
-                    }
-
-                    completed++;
-                    if (completed === sampleCustomers.length) {
-                      logger.info("Database seed completed successfully");
-                      resolve();
-                    }
-                  });
-
-                  eventStmt.finalize();
-                });
-
-                interactionStmt.finalize();
-              });
-
-              stmt.finalize();
-            });
-          });
-        });
-      });
-    });
-  });
+      // Add sample event log
+      await client.query(
+        `INSERT INTO event_logs (id, customer_id, event_type, event_data, timestamp)
+         VALUES ($1, $2, $3, $4, $5)`,
+        [
+          uuidv4(),
+          customer.id,
+          'customer_created',
+          JSON.stringify({ name: customer.name, status: customer.status }),
+          new Date().toISOString()
+        ]
+      );
+    }
+    logger.info("Database seed completed successfully.");
+  } catch (error) {
+    logger.error('Seed failed:', error);
+    throw error;
+  } finally {
+    if (client) client.release();
+  }
 }
 
 if (require.main === module) {
@@ -180,3 +142,4 @@ if (require.main === module) {
       process.exit(1);
     });
 }
+

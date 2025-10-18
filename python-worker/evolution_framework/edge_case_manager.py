@@ -1,5 +1,6 @@
 import logging
 from typing import Dict, Any, List
+import json # Added import for json
 
 logger = logging.getLogger(__name__)
 
@@ -36,8 +37,9 @@ class EdgeCaseManager:
                 "solution": None
             }
             self.edge_cases.append(edge_case_entry)
+            edge_case_id_str = str(edge_case_entry["id"])
             self.knowledge_manager.store_knowledge(
-               f"edge_case_{edge_case_entry['id']}",
+               f"edge_case_{edge_case_id_str}",
                 json.dumps(edge_case_entry),
                 tags=["edge_case", context]
             )
@@ -63,11 +65,15 @@ class EdgeCaseManager:
         if not edge_case:
             raise ValueError(f"Edge case with ID {edge_case_id} not found.")
 
+        # Extract data and context to avoid f-string parsing issues
+        edge_case_data_str = str(edge_case.get("data", "N/A"))
+        edge_case_context_str = str(edge_case.get("context", "N/A"))
+
         # Simulate AI reasoning and solution generation
-        solution_description = f"Autonomous solution generated for edge case in {edge_case['context']}. " \
-                               f"Adjusted parameters based on data: {edge_case['data']}."
-        simulated_code_patch = f"// Simulated code patch for edge case {edge_case_id}\n" \
-                           f"// Logic to handle: {edge_case["data"]}\n"
+        solution_description = f'Autonomous solution generated for edge case in {edge_case_context_str}. ' \
+                               f'Adjusted parameters based on data: {edge_case_data_str}.'
+        simulated_code_patch = f'// Simulated code patch for edge case {edge_case_id}\n' \
+                               f'// Logic to handle: {edge_case_data_str} \n'
         solution = {
             "description": solution_description,
             "code_patch": simulated_code_patch,
@@ -110,5 +116,4 @@ class EdgeCaseManager:
                 human_feedback,
                 tags=["edge_case_feedback", edge_case["context"]]
             )
-
 

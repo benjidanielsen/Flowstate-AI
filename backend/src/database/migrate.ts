@@ -1,7 +1,13 @@
 import DatabaseManager from './index';
 import logger from '../utils/logger';
+import { PoolClient } from 'pg';
 
-const migrations = [
+interface Migration {
+  version: number;
+  up: string;
+}
+
+const migrations: Migration[] = [
   {
     version: 1,
     up: `
@@ -11,11 +17,11 @@ const migrations = [
         email TEXT,
         phone TEXT,
         status TEXT NOT NULL DEFAULT 'New Lead',
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
         notes TEXT,
         next_action TEXT,
-        next_action_date DATETIME
+        next_action_date TIMESTAMP WITH TIME ZONE
       );
 
       CREATE TABLE IF NOT EXISTS interactions (
@@ -24,9 +30,9 @@ const migrations = [
         type TEXT NOT NULL,
         summary TEXT NOT NULL,
         notes TEXT,
-        interaction_date DATETIME DEFAULT CURRENT_TIMESTAMP,
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        interaction_date TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (customer_id) REFERENCES customers (id)
       );
 
@@ -35,10 +41,10 @@ const migrations = [
         customer_id TEXT NOT NULL,
         type TEXT NOT NULL,
         message TEXT NOT NULL,
-        scheduled_for DATETIME NOT NULL,
-        completed BOOLEAN DEFAULT 0,
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        scheduled_for TIMESTAMP WITH TIME ZONE NOT NULL,
+        completed BOOLEAN DEFAULT FALSE,
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
         repeat_interval TEXT,
         FOREIGN KEY (customer_id) REFERENCES customers (id)
       );
@@ -47,8 +53,8 @@ const migrations = [
         id TEXT PRIMARY KEY,
         customer_id TEXT,
         event_type TEXT NOT NULL,
-        event_data TEXT NOT NULL,
-        timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+        event_data JSONB NOT NULL,
+        timestamp TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
         user_id TEXT
       );
 
@@ -60,19 +66,17 @@ const migrations = [
       CREATE INDEX IF NOT EXISTS idx_event_logs_customer_id ON event_logs(customer_id);
       CREATE INDEX IF NOT EXISTS idx_event_logs_timestamp ON event_logs(timestamp);
     `
-  }
-  ,
+  },
   {
     version: 2,
     up: `
-      -- Extend customers with metadata for consent/utm/source/handles per docs
       ALTER TABLE customers ADD COLUMN source TEXT;
       ALTER TABLE customers ADD COLUMN handle_ig TEXT;
       ALTER TABLE customers ADD COLUMN handle_whatsapp TEXT;
       ALTER TABLE customers ADD COLUMN country TEXT;
       ALTER TABLE customers ADD COLUMN language TEXT;
-      ALTER TABLE customers ADD COLUMN consent_json TEXT;
-      ALTER TABLE customers ADD COLUMN utm_json TEXT;
+      ALTER TABLE customers ADD COLUMN consent_json JSONB;
+      ALTER TABLE customers ADD COLUMN utm_json JSONB;
 
       CREATE INDEX IF NOT EXISTS idx_customers_source ON customers(source);
     `
@@ -80,10 +84,8 @@ const migrations = [
   {
     version: 3,
     up: `
-      -- Add prospect_why field for Frazer Method requirement
       ALTER TABLE customers ADD COLUMN prospect_why TEXT;
       
-      -- Update existing customers with old status values to new Frazer Method stages
       UPDATE customers SET status = 'New Lead' WHERE status = 'Lead';
       UPDATE customers SET status = 'Warming Up' WHERE status = 'Relationship';
       UPDATE customers SET status = 'Closed - Won' WHERE status = 'SIGNED-UP';
@@ -98,8 +100,8 @@ const migrations = [
         id TEXT PRIMARY KEY,
         username TEXT NOT NULL UNIQUE,
         password TEXT NOT NULL,
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
       );
       CREATE INDEX IF NOT EXISTS idx_users_username ON users(username);
       CREATE INDEX IF NOT EXISTS idx_customers_email ON customers(email);
@@ -118,88 +120,112 @@ const migrations = [
         id TEXT PRIMARY KEY,
         customer_id TEXT NOT NULL,
         type TEXT NOT NULL,
-        config TEXT NOT NULL, -- Storing as JSON string
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        config JSONB NOT NULL, -- Storing as JSONB for PostgreSQL
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (customer_id) REFERENCES customers (id)
       );
       CREATE INDEX IF NOT EXISTS idx_external_integrations_customer_id ON external_integrations(customer_id);
+    `
+  },
+  {
+    version: 6,
+    up: `
+      CREATE TABLE IF NOT EXISTS pipelines (
+        id TEXT PRIMARY KEY,
+        name TEXT NOT NULL UNIQUE,
+        description TEXT,
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+      );
+
+      CREATE TABLE IF NOT EXISTS pipeline_stages (
+        id TEXT PRIMARY KEY,
+        pipeline_id TEXT NOT NULL,
+        name TEXT NOT NULL,
+        order_index INTEGER NOT NULL,
+        description TEXT,
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (pipeline_id) REFERENCES pipelines (id)
+      );
+
+      CREATE TABLE IF NOT EXISTS customer_pipeline_status (
+        customer_id TEXT PRIMARY KEY,
+        pipeline_id TEXT NOT NULL,
+        current_stage_id TEXT NOT NULL,
+        status TEXT NOT NULL DEFAULT 'Active', -- e.g., Active, Completed, Dropped
+        started_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+        last_updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (customer_id) REFERENCES customers (id),
+        FOREIGN KEY (pipeline_id) REFERENCES pipelines (id),
+        FOREIGN KEY (current_stage_id) REFERENCES pipeline_stages (id)
+      );
+
+      CREATE INDEX IF NOT EXISTS idx_pipelines_name ON pipelines(name);
+      CREATE INDEX IF NOT EXISTS idx_pipeline_stages_pipeline_id ON pipeline_stages(pipeline_id);
+      CREATE INDEX IF NOT EXISTS idx_customer_pipeline_status_customer_id ON customer_pipeline_status(customer_id);
+      CREATE INDEX IF NOT EXISTS idx_customer_pipeline_status_pipeline_id ON customer_pipeline_status(pipeline_id);
     `
   }
 ];
 
 export async function runMigrations(): Promise<void> {
   const dbManager = DatabaseManager.getInstance();
-  const db = await dbManager.connect();
+  const pool = dbManager.getPool();
+  let client: PoolClient | null = null;
 
-  return new Promise((resolve, reject) => {
-    // Create migrations table
-    db.run(`
+  try {
+    client = await pool.connect();
+
+    await client.query(`
       CREATE TABLE IF NOT EXISTS migrations (
         version INTEGER PRIMARY KEY,
-        applied_at DATETIME DEFAULT CURRENT_TIMESTAMP
-      )
-    `, (err) => {
-      if (err) {
-        reject(err);
-        return;
-      }
+        applied_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+      );
+    `);
 
-      // Get current version
-      db.get('SELECT MAX(version) as version FROM migrations', (err, row: any) => {
-        if (err) {
-          reject(err);
-          return;
-        }
+    const result = await client.query('SELECT MAX(version) as version FROM migrations');
+    const currentVersion = result.rows[0]?.version || 0;
+    logger.info(`Current database version: ${currentVersion}`);
 
-        const currentVersion = row?.version || 0;
-        const pendingMigrations = migrations.filter(m => m.version > currentVersion);
+    const pendingMigrations = migrations.filter(m => m.version > currentVersion);
 
-        if (pendingMigrations.length === 0) {
-          logger.info("No pending migrations");
-          resolve();
-          return;
-        }
+    if (pendingMigrations.length === 0) {
+      logger.info('No pending migrations');
+      return;
+    }
 
-        // Run pending migrations
-        let completed = 0;
-        pendingMigrations.forEach(migration => {
-          db.exec(migration.up, (err) => {
-            if (err) {
-              logger.error(`Migration ${migration.version} failed:`, err);
-              reject(err);
-              return;
-            }
+    logger.info(`Applying ${pendingMigrations.length} pending migrations...`);
 
-            // Record migration
-            db.run('INSERT INTO migrations (version) VALUES (?)', [migration.version], (err) => {
-              if (err) {
-                reject(err);
-                return;
-              }
+    for (const migration of pendingMigrations) {
+      await client.query(migration.up);
+      await client.query('INSERT INTO migrations (version) VALUES ($1)', [migration.version]);
+      logger.info(`Migration ${migration.version} completed`);
+    }
 
-              completed++;
-              logger.info(`Migration ${migration.version} completed`);
-              
-              if (completed === pendingMigrations.length) {
-                resolve();
-              }
-            });
-          });
-        });
-      });
-    });
-  });
+    logger.info('All migrations completed successfully');
+  } catch (error) {
+    logger.error('Failed to run migrations:', error);
+    throw error; // Re-throw to indicate migration failure
+  } finally {
+    if (client) {
+      client.release();
+    }
+  }
 }
 
 if (require.main === module) {
-  runMigrations()
+  // Ensure the database connection is established before running migrations
+  DatabaseManager.getInstance().connect()
+    .then(() => runMigrations())
     .then(() => {
-      logger.info("All migrations completed");
+      logger.info('Migration process finished.');
       process.exit(0);
     })
     .catch((err) => {
-      console.error('Migration failed:', err);
+      logger.error('Fatal error during migration process:', err);
       process.exit(1);
     });
 }
+

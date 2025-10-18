@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { ReminderController } from '../controllers/reminderController';
 
-const router = Router();
+const router: Router = Router();
 const controller = new ReminderController();
 
 router.get('/due', controller.listDue);

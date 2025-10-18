@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Card, Title, Text, Metric, Flex, ProgressBar, Badge, TabGroup, TabList, Tab, TabPanels, TabPanel } from '@tremor/react';
 import { ChartBarIcon, ChartPieIcon, ArrowUpIcon, ArrowDownIcon, ExclamationTriangleIcon, CheckCircleIcon } from '@heroicons/react/24/outline';
 import { LineChart, BarChart } from '@tremor/react';
-import { api } from '../services/api';
+import { statsApi } from '../services/api';
 import logger from '../utils/logger';
 
 interface KPI {
@@ -35,7 +35,7 @@ const KPIDashboard: React.FC = () => {
     setError(null);
     try {
       // Simulate API call based on selectedTab
-      const response = await api.get(`/kpis?category=${selectedTab}`);
+      const response = await statsApi.getStats();
       setKpis(response.data);
     } catch (err) {
       logger.error('Failed to fetch KPIs', err);

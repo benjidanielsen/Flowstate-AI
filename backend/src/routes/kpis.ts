@@ -1,8 +1,8 @@
 import { Router } from 'express';
-import { requireAuth } from '../middleware/auth';
+import { authenticateToken } from '../middleware/authMiddleware';
 import { safeLogger } from '../utils/piiRedaction';
 
-const router = Router();
+const router: Router = Router();
 
 // Mock KPI data for demonstration
 const mockKpis = {
@@ -35,7 +35,7 @@ const mockKpis = {
   ],
 };
 
-router.get('/', requireAuth, (req, res) => {
+router.get("/", authenticateToken, (req, res) => {
   const category = req.query.category as string;
   if (category && mockKpis[category as keyof typeof mockKpis]) {
     safeLogger.info(`Fetching KPIs for category: ${category}`);

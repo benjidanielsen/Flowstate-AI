@@ -4,7 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.MemoryService = void 0;
-const agentService_1 = __importDefault(require("./agentService"));
+const agentService_1 = require("./agentService");
 const logger_1 = __importDefault(require("../utils/logger"));
 class MemoryService {
     /**
@@ -21,12 +21,12 @@ class MemoryService {
                 importance,
                 ...additionalMetadata,
             };
-            const document = await agentService_1.default.storeDocument(content, metadata);
+            const document = await agentService_1.agentService.storeDocument({ agent_name: agentName, type, content, metadata, tags, importance });
             // Update agent state to track memory count
-            const agentState = await agentService_1.default.getAgentState(agentName);
-            const memoryCount = (agentState?.state?.memoryCount || 0) + 1;
-            await agentService_1.default.updateAgentState(agentName, {
-                ...agentState?.state,
+            const agentState = await agentService_1.agentService.getAgentState(agentName);
+            const memoryCount = (agentState?.metadata?.memoryCount || 0) + 1;
+            await agentService_1.agentService.updateAgentState(agentName, "active", {
+                ...agentState?.metadata,
                 memoryCount,
                 lastMemoryAt: new Date().toISOString(),
             });
@@ -45,7 +45,7 @@ class MemoryService {
         try {
             logger_1.default.info(`Retrieving memories for agent ${agentName}`, { type, tags, limit });
             // Get all documents (in production, you'd filter by metadata)
-            const documents = await agentService_1.default.searchDocuments({ agentName }, limit * 2);
+            const documents = await agentService_1.agentService.searchDocuments('', agentName, type, tags);
             // Filter by agent name and optionally by type and tags
             let filtered = documents.filter((doc) => doc.metadata?.agentName === agentName);
             if (type) {
@@ -179,9 +179,9 @@ class MemoryService {
         try {
             logger_1.default.warn(`Clearing all memories for agent ${agentName}`);
             // Update agent state to reset memory count
-            const agentState = await agentService_1.default.getAgentState(agentName);
-            await agentService_1.default.updateAgentState(agentName, {
-                ...agentState?.state,
+            const agentState = await agentService_1.agentService.getAgentState(agentName);
+            await agentService_1.agentService.updateAgentState(agentName, "active", {
+                ...agentState?.metadata,
                 memoryCount: 0,
                 lastMemoryAt: null,
             });

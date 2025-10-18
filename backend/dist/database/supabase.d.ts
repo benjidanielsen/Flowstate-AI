@@ -1,8 +1,5 @@
-import postgres from 'postgres';
-import * as schema from './schema';
-export declare const db: import("drizzle-orm/postgres-js").PostgresJsDatabase<typeof schema> & {
-    $client: postgres.Sql<{}>;
-};
+import { drizzle } from 'drizzle-orm/node-postgres';
+export declare function getDbInstance(): ReturnType<typeof drizzle>;
 export declare function testConnection(): Promise<boolean>;
-export default db;
+export default getDbInstance;
 //# sourceMappingURL=supabase.d.ts.map

@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import vectorSearchController from '../controllers/vectorSearchController';
 
-const router = Router();
+const router: Router = Router();
 
 // Semantic search routes
 router.post('/search/semantic', vectorSearchController.semanticSearch.bind(vectorSearchController));

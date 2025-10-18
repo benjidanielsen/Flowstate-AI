@@ -3,13 +3,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const sqlite3_1 = __importDefault(require("sqlite3"));
-const path_1 = __importDefault(require("path"));
-const fs_1 = __importDefault(require("fs"));
+const pg_1 = require("pg");
 const logger_1 = __importDefault(require("../utils/logger"));
 class DatabaseManager {
     constructor() {
-        this.db = null;
+        this.pool = null;
     }
     static getInstance() {
         if (!DatabaseManager.instance) {
@@ -18,48 +16,46 @@ class DatabaseManager {
         return DatabaseManager.instance;
     }
     async connect() {
-        if (this.db) {
-            return this.db;
+        if (this.pool) {
+            return this.pool;
         }
-        const dbPath = process.env.DATABASE_URL || './data/flowstate.db';
-        const dataDir = path_1.default.dirname(dbPath);
-        // Ensure data directory exists
-        if (!fs_1.default.existsSync(dataDir)) {
-            fs_1.default.mkdirSync(dataDir, { recursive: true });
+        const connectionString = process.env.DATABASE_URL;
+        if (!connectionString) {
+            logger_1.default.error('DATABASE_URL is not defined in environment variables.');
+            throw new Error('DATABASE_URL is not defined.');
         }
-        return new Promise((resolve, reject) => {
-            this.db = new sqlite3_1.default.Database(dbPath, (err) => {
-                if (err) {
-                    logger_1.default.error("Error connecting to database:", err);
-                    reject(err);
-                }
-                else {
-                    logger_1.default.debug("Connected to SQLite database");
-                    resolve(this.db);
-                }
+        try {
+            this.pool = new pg_1.Pool({
+                connectionString,
+                // You might want to add more pool options here, e.g., max, idleTimeoutMillis
             });
-        });
+            await this.pool.query('SELECT 1'); // Test connection
+            logger_1.default.info('Connected to Supabase PostgreSQL database');
+            return this.pool;
+        }
+        catch (error) {
+            logger_1.default.error('Error connecting to Supabase database:', error);
+            throw error;
+        }
     }
     async close() {
-        if (this.db) {
-            return new Promise((resolve, reject) => {
-                this.db.close((err) => {
-                    if (err) {
-                        reject(err);
-                    }
-                    else {
-                        this.db = null;
-                        resolve();
-                    }
-                });
-            });
+        if (this.pool) {
+            try {
+                await this.pool.end();
+                this.pool = null;
+                logger_1.default.info('Supabase PostgreSQL database connection pool closed.');
+            }
+            catch (error) {
+                logger_1.default.error('Error closing Supabase database connection pool:', error);
+                throw error;
+            }
         }
     }
-    getDb() {
-        if (!this.db) {
+    getPool() {
+        if (!this.pool) {
             throw new Error('Database not connected. Call connect() first.');
         }
-        return this.db;
+        return this.pool;
     }
 }
 exports.default = DatabaseManager;

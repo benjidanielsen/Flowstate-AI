@@ -4,7 +4,7 @@ const express_1 = require("express");
 const qualificationController_1 = require("../controllers/qualificationController");
 const router = (0, express_1.Router)();
 const controller = new qualificationController_1.QualificationController();
-router.post('/', controller.saveQualification);
-router.get('/:id', controller.getQualification);
+router.post('/', controller.createQualification);
+router.get('/:id', controller.getQualificationById);
 exports.default = router;
 //# sourceMappingURL=qualification.js.map

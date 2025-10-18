@@ -1,75 +1,20 @@
-export interface AgentState {
-    id?: number;
-    agentName: string;
-    state: any;
-    createdAt?: Date;
-    updatedAt?: Date;
-}
-export interface Job {
-    id?: number;
-    payload: any;
-    targetAgent: string;
-    status?: string;
-    attempts?: number;
-    createdAt?: Date;
-    processedAt?: Date;
-}
-export interface Document {
-    id?: number;
-    content: string;
-    metadata?: any;
-    embedding?: string;
-}
+import { AgentState, Job, Document, JobStatus } from '../types';
 export declare class AgentService {
-    /**
-     * Register or update an agent's state
-     */
-    registerAgent(agentName: string, initialState?: any): Promise<AgentState>;
-    /**
-     * Get agent state by name
-     */
+    private dbManager;
+    private embeddingService;
+    constructor();
+    registerAgent(agent: AgentState): Promise<AgentState>;
     getAgentState(agentName: string): Promise<AgentState | null>;
-    /**
-     * Update agent state
-     */
-    updateAgentState(agentName: string, newState: any): Promise<AgentState>;
-    /**
-     * Get all registered agents
-     */
     getAllAgents(): Promise<AgentState[]>;
-    /**
-     * Create a new job in the queue
-     */
-    createJob(targetAgent: string, payload: any): Promise<Job>;
-    /**
-     * Get pending jobs for a specific agent
-     */
-    getPendingJobs(targetAgent: string, limit?: number): Promise<Job[]>;
-    /**
-     * Get all pending jobs
-     */
-    getAllPendingJobs(limit?: number): Promise<Job[]>;
-    /**
-     * Update job status
-     */
-    updateJobStatus(jobId: number, status: 'pending' | 'processing' | 'completed' | 'failed', incrementAttempts?: boolean): Promise<Job>;
-    /**
-     * Store a document in the documents table
-     */
-    storeDocument(content: string, metadata?: any, embedding?: string): Promise<Document>;
-    /**
-     * Search documents by metadata
-     */
-    searchDocuments(metadataFilter: any, limit?: number): Promise<Document[]>;
-    /**
-     * Get document by ID
-     */
-    getDocument(id: number): Promise<Document | null>;
-    /**
-     * Delete old completed jobs (cleanup)
-     */
-    cleanupCompletedJobs(olderThanDays?: number): Promise<number>;
+    updateAgentState(agentName: string, status: string, metadata: any): Promise<AgentState | null>;
+    createJob(job: Omit<Job, 'id' | 'created_at' | 'updated_at' | 'status'>): Promise<Job>;
+    getPendingJobs(agentName: string): Promise<Job[]>;
+    getAllPendingJobs(): Promise<Job[]>;
+    updateJobStatus(jobId: string, status: JobStatus, resultPayload?: any): Promise<Job | null>;
+    storeDocument(document: Omit<Document, 'id' | 'created_at' | 'updated_at' | 'embedding'>): Promise<Document>;
+    getDocument(documentId: string): Promise<Document | null>;
+    searchDocuments(query: string, agentName?: string, type?: string, tags?: string[]): Promise<Document[]>;
+    deleteDocument(documentId: string): Promise<boolean>;
 }
-declare const _default: AgentService;
-export default _default;
+export declare const agentService: AgentService;
 //# sourceMappingURL=agentService.d.ts.map

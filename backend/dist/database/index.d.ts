@@ -1,12 +1,12 @@
-import { Database } from 'sqlite3';
+import { Pool } from 'pg';
 declare class DatabaseManager {
     private static instance;
-    private db;
+    private pool;
     private constructor();
     static getInstance(): DatabaseManager;
-    connect(): Promise<Database>;
+    connect(): Promise<Pool>;
     close(): Promise<void>;
-    getDb(): Database;
+    getPool(): Pool;
 }
 export default DatabaseManager;
 //# sourceMappingURL=index.d.ts.map

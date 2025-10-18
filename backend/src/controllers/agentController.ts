@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
-import agentService from '../services/agentService';
+import { agentService } from '../services/agentService';
 import logger from '../utils/logger';
+import { AgentState, Job } from '../types';
 
 export class AgentController {
   /**
@@ -8,14 +9,21 @@ export class AgentController {
    */
   async registerAgent(req: Request, res: Response): Promise<void> {
     try {
-      const { agentName, initialState } = req.body;
+      const { name, status, metadata } = req.body;
 
-      if (!agentName) {
-        res.status(400).json({ error: 'agentName is required' });
+      if (!name || !status) {
+        res.status(400).json({ error: 'Agent name and status are required' });
         return;
       }
 
-      const agent = await agentService.registerAgent(agentName, initialState || {});
+      const newAgent: AgentState = {
+        name,
+        status,
+        last_heartbeat: new Date(),
+        metadata: metadata || {},
+      };
+
+      const agent = await agentService.registerAgent(newAgent);
       res.status(201).json(agent);
     } catch (error: any) {
       logger.error('Error in registerAgent:', error);
@@ -50,14 +58,14 @@ export class AgentController {
   async updateAgentState(req: Request, res: Response): Promise<void> {
     try {
       const { agentName } = req.params;
-      const { state } = req.body;
+      const { status, metadata } = req.body;
 
-      if (!state) {
-        res.status(400).json({ error: 'state is required' });
+      if (!status) {
+        res.status(400).json({ error: 'status is required' });
         return;
       }
 
-      const agent = await agentService.updateAgentState(agentName, state);
+      const agent = await agentService.updateAgentState(agentName, status, metadata || {});
       res.json(agent);
     } catch (error: any) {
       logger.error('Error in updateAgentState:', error);
@@ -83,14 +91,22 @@ export class AgentController {
    */
   async createJob(req: Request, res: Response): Promise<void> {
     try {
-      const { targetAgent, payload } = req.body;
+      const { agent_name, task_type, payload, priority, correlation_id } = req.body;
 
-      if (!targetAgent || !payload) {
-        res.status(400).json({ error: 'targetAgent and payload are required' });
+      if (!agent_name || !task_type || !payload) {
+        res.status(400).json({ error: 'agent_name, task_type, and payload are required' });
         return;
       }
 
-      const job = await agentService.createJob(targetAgent, payload);
+      const newJob: Omit<Job, 'id' | 'created_at' | 'updated_at' | 'status'> = {
+        agent_name,
+        task_type,
+        payload,
+        priority: priority || 0,
+        correlation_id: correlation_id || 'default',
+      };
+
+      const job = await agentService.createJob(newJob);
       res.status(201).json(job);
     } catch (error: any) {
       logger.error('Error in createJob:', error);
@@ -104,9 +120,8 @@ export class AgentController {
   async getPendingJobs(req: Request, res: Response): Promise<void> {
     try {
       const { agentName } = req.params;
-      const limit = parseInt(req.query.limit as string) || 10;
 
-      const jobs = await agentService.getPendingJobs(agentName, limit);
+      const jobs = await agentService.getPendingJobs(agentName);
       res.json(jobs);
     } catch (error: any) {
       logger.error('Error in getPendingJobs:', error);
@@ -119,9 +134,7 @@ export class AgentController {
    */
   async getAllPendingJobs(req: Request, res: Response): Promise<void> {
     try {
-      const limit = parseInt(req.query.limit as string) || 50;
-
-      const jobs = await agentService.getAllPendingJobs(limit);
+      const jobs = await agentService.getAllPendingJobs();
       res.json(jobs);
     } catch (error: any) {
       logger.error('Error in getAllPendingJobs:', error);
@@ -135,23 +148,14 @@ export class AgentController {
   async updateJobStatus(req: Request, res: Response): Promise<void> {
     try {
       const { jobId } = req.params;
-      const { status, incrementAttempts } = req.body;
+      const { status, resultPayload } = req.body;
 
       if (!status) {
         res.status(400).json({ error: 'status is required' });
         return;
       }
 
-      if (!['pending', 'processing', 'completed', 'failed'].includes(status)) {
-        res.status(400).json({ error: 'Invalid status value' });
-        return;
-      }
-
-      const job = await agentService.updateJobStatus(
-        parseInt(jobId),
-        status,
-        incrementAttempts || false
-      );
+      const job = await agentService.updateJobStatus(jobId, status, resultPayload);
       res.json(job);
     } catch (error: any) {
       logger.error('Error in updateJobStatus:', error);
@@ -164,14 +168,23 @@ export class AgentController {
    */
   async storeDocument(req: Request, res: Response): Promise<void> {
     try {
-      const { content, metadata, embedding } = req.body;
+      const { agent_name, type, content, metadata, tags, importance } = req.body;
 
-      if (!content) {
-        res.status(400).json({ error: 'content is required' });
+      if (!agent_name || !content) {
+        res.status(400).json({ error: 'agent_name and content are required' });
         return;
       }
 
-      const doc = await agentService.storeDocument(content, metadata, embedding);
+      const newDocument = {
+        agent_name,
+        type: type || 'general',
+        content,
+        metadata: metadata || {},
+        tags: tags || [],
+        importance: importance || 5,
+      };
+
+      const doc = await agentService.storeDocument(newDocument);
       res.status(201).json(doc);
     } catch (error: any) {
       logger.error('Error in storeDocument:', error);
@@ -186,7 +199,7 @@ export class AgentController {
     try {
       const { id } = req.params;
 
-      const doc = await agentService.getDocument(parseInt(id));
+      const doc = await agentService.getDocument(id);
       
       if (!doc) {
         res.status(404).json({ error: 'Document not found' });
@@ -205,11 +218,13 @@ export class AgentController {
    */
   async searchDocuments(req: Request, res: Response): Promise<void> {
     try {
-      const { metadata, limit } = req.query;
+      const { query, agentName, type, tags } = req.query;
 
       const docs = await agentService.searchDocuments(
-        metadata ? JSON.parse(metadata as string) : {},
-        limit ? parseInt(limit as string) : 10
+        query as string || '',
+        agentName as string,
+        type as string,
+        tags ? (tags as string).split(',') : undefined
       );
       res.json(docs);
     } catch (error: any) {

@@ -3,44 +3,43 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import DatabaseManager from '../database';
 import { User } from '../types';
+import { PoolClient } from 'pg';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'supersecretjwtkey';
 
 export class AuthService {
-  private db = DatabaseManager.getInstance().getDb();
-
   async registerUser(username: string, password_plain: string): Promise<User> {
-    const hashedPassword = await bcrypt.hash(password_plain, 10);
-    const id = uuidv4();
-    const now = new Date().toISOString();
+    let client: PoolClient | null = null;
+    try {
+      const pool = DatabaseManager.getInstance().getPool();
+      client = await pool.connect();
+      const hashedPassword = await bcrypt.hash(password_plain, 10);
+      const id = uuidv4();
+      const now = new Date().toISOString();
 
-    return new Promise((resolve, reject) => {
-      this.db.run(
-        'INSERT INTO users (id, username, password, created_at, updated_at) VALUES (?, ?, ?, ?, ?)',
-        [id, username, hashedPassword, now, now],
-        function (err) {
-          if (err) {
-            reject(err);
-          } else {
-            resolve({ id, username, created_at: new Date(now), updated_at: new Date(now) });
-          }
-        }
+      const result = await client.query(
+        `INSERT INTO users (id, username, password, created_at, updated_at) VALUES ($1, $2, $3, $4, $5) RETURNING id, username, created_at, updated_at`,
+        [id, username, hashedPassword, now, now]
       );
-    });
+      return result.rows[0];
+    } finally {
+      if (client) client.release();
+    }
   }
 
   async findUserByUsername(username: string): Promise<User | null> {
-    return new Promise((resolve, reject) => {
-      this.db.get('SELECT * FROM users WHERE username = ?', [username], (err, row: any) => {
-        if (err) {
-          reject(err);
-        } else if (!row) {
-          resolve(null);
-        } else {
-          resolve({ ...row, created_at: new Date(row.created_at), updated_at: new Date(row.updated_at) });
-        }
-      });
-    });
+    let client: PoolClient | null = null;
+    try {
+      const pool = DatabaseManager.getInstance().getPool();
+      client = await pool.connect();
+      const result = await client.query(
+        `SELECT id, username, password, created_at, updated_at FROM users WHERE username = $1`,
+        [username]
+      );
+      return result.rows[0] || null;
+    } finally {
+      if (client) client.release();
+    }
   }
 
   async validateUser(username: string, password_plain: string): Promise<User | null> {
@@ -49,7 +48,6 @@ export class AuthService {
       return null;
     }
 
-    // Assuming password field is named 'password' in the database
     const isMatch = await bcrypt.compare(password_plain, (user as any).password);
     if (isMatch) {
       // Remove password hash before returning user object
@@ -71,4 +69,6 @@ export class AuthService {
     }
   }
 }
+
+export const authService = new AuthService();
 

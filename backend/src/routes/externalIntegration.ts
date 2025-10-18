@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { createIntegration, getIntegrationsByCustomer, updateIntegration, deleteIntegration } from '../controllers/externalIntegrationController';
 import { authenticateToken } from '../middleware/authMiddleware';
 
-const router = Router();
+const router: Router = Router();
 
 router.post('/', authenticateToken, createIntegration);
 router.get('/:customerId', authenticateToken, getIntegrationsByCustomer);

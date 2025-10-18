@@ -1,12 +1,9 @@
-import sqlite3 from 'sqlite3';
-import { Database } from 'sqlite3';
-import path from 'path';
-import fs from 'fs';
+import { Pool } from 'pg';
 import logger from '../utils/logger';
 
 class DatabaseManager {
   private static instance: DatabaseManager;
-  private db: Database | null = null;
+  private pool: Pool | null = null;
 
   private constructor() {}
 
@@ -17,52 +14,50 @@ class DatabaseManager {
     return DatabaseManager.instance;
   }
 
-  public async connect(): Promise<Database> {
-    if (this.db) {
-      return this.db;
+  public async connect(): Promise<Pool> {
+    if (this.pool) {
+      return this.pool;
     }
 
-    const dbPath = process.env.DATABASE_URL || './data/flowstate.db';
-    const dataDir = path.dirname(dbPath);
-    
-    // Ensure data directory exists
-    if (!fs.existsSync(dataDir)) {
-      fs.mkdirSync(dataDir, { recursive: true });
+    const connectionString = process.env.DATABASE_URL;
+
+    if (!connectionString) {
+      logger.error('DATABASE_URL is not defined in environment variables.');
+      throw new Error('DATABASE_URL is not defined.');
     }
 
-    return new Promise((resolve, reject) => {
-      this.db = new sqlite3.Database(dbPath, (err) => {
-        if (err) {
-          logger.error("Error connecting to database:", err);
-          reject(err);
-        } else {
-          logger.debug("Connected to SQLite database");
-          resolve(this.db!);
-        }
+    try {
+      this.pool = new Pool({
+        connectionString,
+        // You might want to add more pool options here, e.g., max, idleTimeoutMillis
       });
-    });
+      await this.pool.query('SELECT 1'); // Test connection
+      logger.info('Connected to Supabase PostgreSQL database');
+      return this.pool;
+    } catch (error) {
+      logger.error('Error connecting to Supabase database:', error);
+      throw error;
+    }
   }
 
   public async close(): Promise<void> {
-    if (this.db) {
-      return new Promise((resolve, reject) => {
-        this.db!.close((err) => {
-          if (err) {
-            reject(err);
-          } else {
-            this.db = null;
-            resolve();
-          }
-        });
-      });
+    if (this.pool) {
+      try {
+        await this.pool.end();
+        this.pool = null;
+        logger.info('Supabase PostgreSQL database connection pool closed.');
+      } catch (error) {
+        logger.error('Error closing Supabase database connection pool:', error);
+        throw error;
+      }
     }
   }
 
-  public getDb(): Database {
-    if (!this.db) {
+  public getPool(): Pool {
+    if (!this.pool) {
       throw new Error('Database not connected. Call connect() first.');
     }
-    return this.db;
+    return this.pool;
   }
 }
 

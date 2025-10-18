@@ -1,6 +1,7 @@
 import DatabaseManager from '../database';
 import { v4 as uuidv4 } from 'uuid';
 import { Reminder, ReminderType } from '../types';
+import { PoolClient } from 'pg';
 
 export class ReminderService {
   async createReminder(data: {
@@ -10,146 +11,121 @@ export class ReminderService {
     scheduled_for: Date;
     repeat_interval?: string;
   }): Promise<Reminder> {
-    const db = DatabaseManager.getInstance().getDb();
-    const id = uuidv4();
-    const now = new Date();
-    return new Promise((resolve, reject) => {
-      const stmt = db.prepare(`
-        INSERT INTO reminders (id, customer_id, type, message, scheduled_for, completed, created_at, updated_at, repeat_interval)
-        VALUES (?, ?, ?, ?, ?, 0, ?, ?, ?)
-      `);
-      stmt.run([
-        id,
-        data.customer_id,
-        data.type,
-        data.message,
-        data.scheduled_for.toISOString(),
-        now.toISOString(),
-        now.toISOString(),
-        data.repeat_interval || null
-      ], (err) => {
-        if (err) return reject(err);
-        resolve({
+    let client: PoolClient | null = null;
+    try {
+      const pool = DatabaseManager.getInstance().getPool();
+      client = await pool.connect();
+      const id = uuidv4();
+      const now = new Date();
+      const result = await client.query(
+        `INSERT INTO reminders (id, customer_id, type, message, scheduled_for, completed, created_at, updated_at, repeat_interval)
+         VALUES ($1, $2, $3, $4, $5, FALSE, $6, $7, $8) RETURNING *`,
+        [
           id,
-          customer_id: data.customer_id,
-          type: data.type,
-          message: data.message,
-          scheduled_for: data.scheduled_for,
-          completed: false,
-          created_at: now,
-          updated_at: now,
-          repeat_interval: data.repeat_interval || null,
-        } as Reminder);
-      });
-      stmt.finalize();
-    });
+          data.customer_id,
+          data.type,
+          data.message,
+          data.scheduled_for.toISOString(),
+          now.toISOString(),
+          now.toISOString(),
+          data.repeat_interval || null
+        ]
+      );
+      return result.rows[0];
+    } finally {
+      if (client) client.release();
+    }
   }
 
   async getDueReminders(): Promise<Reminder[]> {
-    const db = DatabaseManager.getInstance().getDb();
-    const now = new Date().toISOString();
-    return new Promise((resolve, reject) => {
-      db.all(
-        `SELECT * FROM reminders WHERE completed = 0 AND scheduled_for <= ? ORDER BY scheduled_for ASC`,
-        [now],
-        (err, rows: any[]) => {
-          if (err) return reject(err);
-          const reminders = rows.map(r => ({
-            id: r.id,
-            customer_id: r.customer_id,
-            type: r.type,
-            message: r.message,
-            scheduled_for: new Date(r.scheduled_for),
-            completed: Boolean(r.completed),
-            created_at: new Date(r.created_at),
-            updated_at: new Date(r.updated_at),
-            repeat_interval: r.repeat_interval,
-          }));
-          resolve(reminders);
-        }
+    let client: PoolClient | null = null;
+    try {
+      const pool = DatabaseManager.getInstance().getPool();
+      client = await pool.connect();
+      const now = new Date().toISOString();
+      const result = await client.query(
+        `SELECT * FROM reminders WHERE completed = FALSE AND scheduled_for <= $1 ORDER BY scheduled_for ASC`,
+        [now]
       );
-    });
+      return result.rows.map(r => ({
+        id: r.id,
+        customer_id: r.customer_id,
+        type: r.type,
+        message: r.message,
+        scheduled_for: new Date(r.scheduled_for),
+        completed: r.completed,
+        created_at: new Date(r.created_at),
+        updated_at: new Date(r.updated_at),
+        repeat_interval: r.repeat_interval,
+      }));
+    } finally {
+      if (client) client.release();
+    }
   }
 
   async markReminderCompleted(id: string): Promise<Reminder | null> {
-    const db = DatabaseManager.getInstance().getDb();
-    const now = new Date().toISOString();
-    return new Promise((resolve, reject) => {
-      db.run(`UPDATE reminders SET completed = 1, updated_at = ? WHERE id = ?`, [now, id], function(err) {
-        if (err) return reject(err);
-        if (this.changes > 0) {
-          db.get(`SELECT * FROM reminders WHERE id = ?`, [id], (err, row: any) => {
-            if (err) return reject(err);
-            if (row) {
-              resolve({
-                id: row.id,
-                customer_id: row.customer_id,
-                type: row.type,
-                message: row.message,
-                scheduled_for: new Date(row.scheduled_for),
-                completed: true,
-                created_at: new Date(row.created_at),
-                updated_at: new Date(row.updated_at),
-                repeat_interval: row.repeat_interval,
-              });
-            } else {
-              resolve(null);
-            }
-          });
-        } else {
-          resolve(null);
-        }
-      });
-    });
+    let client: PoolClient | null = null;
+    try {
+      const pool = DatabaseManager.getInstance().getPool();
+      client = await pool.connect();
+      const now = new Date().toISOString();
+      const result = await client.query(
+        `UPDATE reminders SET completed = TRUE, updated_at = $1 WHERE id = $2 RETURNING *`,
+        [now, id]
+      );
+      return result.rows[0] || null;
+    } finally {
+      if (client) client.release();
+    }
   }
 
   async getRemindersByCustomerId(customerId: string): Promise<Reminder[]> {
-    const db = DatabaseManager.getInstance().getDb();
-    return new Promise((resolve, reject) => {
-      db.all(
-        `SELECT * FROM reminders WHERE customer_id = ? ORDER BY scheduled_for ASC`,
-        [customerId],
-        (err, rows: any[]) => {
-          if (err) return reject(err);
-          const reminders = rows.map(r => ({
-            id: r.id,
-            customer_id: r.customer_id,
-            type: r.type,
-            message: r.message,
-            scheduled_for: new Date(r.scheduled_for),
-            completed: Boolean(r.completed),
-            created_at: new Date(r.created_at),
-            updated_at: new Date(r.updated_at),
-            repeat_interval: r.repeat_interval,
-          }));
-          resolve(reminders);
-        }
+    let client: PoolClient | null = null;
+    try {
+      const pool = DatabaseManager.getInstance().getPool();
+      client = await pool.connect();
+      const result = await client.query(
+        `SELECT * FROM reminders WHERE customer_id = $1 ORDER BY scheduled_for ASC`,
+        [customerId]
       );
-    });
+      return result.rows.map(r => ({
+        id: r.id,
+        customer_id: r.customer_id,
+        type: r.type,
+        message: r.message,
+        scheduled_for: new Date(r.scheduled_for),
+        completed: r.completed,
+        created_at: new Date(r.created_at),
+        updated_at: new Date(r.updated_at),
+        repeat_interval: r.repeat_interval,
+      }));
+    } finally {
+      if (client) client.release();
+    }
   }
 
   async getAllReminders(): Promise<Reminder[]> {
-    const db = DatabaseManager.getInstance().getDb();
-    return new Promise((resolve, reject) => {
-      db.all(
-        `SELECT * FROM reminders ORDER BY scheduled_for ASC`,
-        (err, rows: any[]) => {
-          if (err) return reject(err);
-          const reminders = rows.map(r => ({
-            id: r.id,
-            customer_id: r.customer_id,
-            type: r.type,
-            message: r.message,
-            scheduled_for: new Date(r.scheduled_for),
-            completed: Boolean(r.completed),
-            created_at: new Date(r.created_at),
-            updated_at: new Date(r.updated_at),
-            repeat_interval: r.repeat_interval,
-          }));
-          resolve(reminders);
-        }
+    let client: PoolClient | null = null;
+    try {
+      const pool = DatabaseManager.getInstance().getPool();
+      client = await pool.connect();
+      const result = await client.query(
+        `SELECT * FROM reminders ORDER BY scheduled_for ASC`
       );
-    });
+      return result.rows.map(r => ({
+        id: r.id,
+        customer_id: r.customer_id,
+        type: r.type,
+        message: r.message,
+        scheduled_for: new Date(r.scheduled_for),
+        completed: r.completed,
+        created_at: new Date(r.created_at),
+        updated_at: new Date(r.updated_at),
+        repeat_interval: r.repeat_interval,
+      }));
+    } finally {
+      if (client) client.release();
+    }
   }
 
   async updateReminder(id: string, data: {
@@ -159,68 +135,79 @@ export class ReminderService {
     completed?: boolean;
     repeat_interval?: string;
   }): Promise<Reminder | null> {
-    const db = DatabaseManager.getInstance().getDb();
-    const now = new Date().toISOString();
-    const fields: string[] = [];
-    const values: any[] = [];
+    let client: PoolClient | null = null;
+    try {
+      const pool = DatabaseManager.getInstance().getPool();
+      client = await pool.connect();
+      const now = new Date().toISOString();
+      const fields: string[] = [];
+      const values: any[] = [];
 
-    if (data.type) { fields.push('type = ?'); values.push(data.type); }
-    if (data.message) { fields.push('message = ?'); values.push(data.message); }
-    if (data.scheduled_for) { fields.push('scheduled_for = ?'); values.push(data.scheduled_for.toISOString()); }
-    if (data.completed !== undefined) { fields.push('completed = ?'); values.push(data.completed ? 1 : 0); }
-    if (data.repeat_interval !== undefined) { fields.push('repeat_interval = ?'); values.push(data.repeat_interval); }
+      if (data.type) { fields.push('type = $'+(fields.length+1)); values.push(data.type); }
+      if (data.message) { fields.push('message = $'+(fields.length+1)); values.push(data.message); }
+      if (data.scheduled_for) { fields.push('scheduled_for = $'+(fields.length+1)); values.push(data.scheduled_for.toISOString()); }
+      if (data.completed !== undefined) { fields.push('completed = $'+(fields.length+1)); values.push(data.completed); }
+      if (data.repeat_interval !== undefined) { fields.push('repeat_interval = $'+(fields.length+1)); values.push(data.repeat_interval); }
 
-    if (fields.length === 0) return this.getReminderById(id); // No fields to update
+      if (fields.length === 0) return this.getReminderById(id); // No fields to update
 
-    fields.push('updated_at = ?');
-    values.push(now);
-    values.push(id);
+      fields.push('updated_at = $'+(fields.length+1));
+      values.push(now);
+      values.push(id);
 
-    return new Promise((resolve, reject) => {
-      db.run(`UPDATE reminders SET ${fields.join(', ')} WHERE id = ?`, values, (err) => {
-        if (err) return reject(err);
-        // Note: changes count not available with arrow function, fetch to verify
-        this.getReminderById(id)
-          .then(reminder => {
-            resolve(reminder);
-          })
-          .catch(reject);
-      });
-    });
+      const result = await client.query(
+        `UPDATE reminders SET ${fields.join(', ')} WHERE id = $${values.length} RETURNING *`,
+        values
+      );
+      return result.rows[0] || null;
+    } finally {
+      if (client) client.release();
+    }
   }
 
   async deleteReminder(id: string): Promise<boolean> {
-    const db = DatabaseManager.getInstance().getDb();
-    return new Promise((resolve, reject) => {
-      db.run(`DELETE FROM reminders WHERE id = ?`, [id], function(err) {
-        if (err) return reject(err);
-        resolve(this.changes > 0);
-      });
-    });
+    let client: PoolClient | null = null;
+    try {
+      const pool = DatabaseManager.getInstance().getPool();
+      client = await pool.connect();
+      const result = await client.query(
+        `DELETE FROM reminders WHERE id = $1 RETURNING id`,
+        [id]
+      );
+      return result.rowCount !== null && result.rowCount > 0;
+    } finally {
+      if (client) client.release();
+    }
   }
 
   async getReminderById(id: string): Promise<Reminder | null> {
-    const db = DatabaseManager.getInstance().getDb();
-    return new Promise((resolve, reject) => {
-      db.get(`SELECT * FROM reminders WHERE id = ?`, [id], (err, row: any) => {
-        if (err) return reject(err);
-        if (row) {
-          resolve({
-            id: row.id,
-            customer_id: row.customer_id,
-            type: row.type,
-            message: row.message,
-            scheduled_for: new Date(row.scheduled_for),
-            completed: Boolean(row.completed),
-            created_at: new Date(row.created_at),
-            updated_at: new Date(row.updated_at),
-            repeat_interval: row.repeat_interval,
-          });
-        } else {
-          resolve(null);
-        }
-      });
-    });
+    let client: PoolClient | null = null;
+    try {
+      const pool = DatabaseManager.getInstance().getPool();
+      client = await pool.connect();
+      const result = await client.query(
+        `SELECT * FROM reminders WHERE id = $1`,
+        [id]
+      );
+      const row = result.rows[0];
+      if (row) {
+        return {
+          id: row.id,
+          customer_id: row.customer_id,
+          type: row.type,
+          message: row.message,
+          scheduled_for: new Date(row.scheduled_for),
+          completed: row.completed,
+          created_at: new Date(row.created_at),
+          updated_at: new Date(row.updated_at),
+          repeat_interval: row.repeat_interval,
+        };
+      } else {
+        return null;
+      }
+    } finally {
+      if (client) client.release();
+    }
   }
 }
 
