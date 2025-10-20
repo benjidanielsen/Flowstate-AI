@@ -8,6 +8,7 @@ declare global {
     interface Request {
       correlationId?: string;
       logger?: Logger; // Add a logger property to the Request object
+      user?: unknown;
     }
   }
 }

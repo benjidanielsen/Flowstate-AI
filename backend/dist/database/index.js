@@ -3,11 +3,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const supabase_js_1 = require("@supabase/supabase-js");
 const pg_1 = require("pg");
 const logger_1 = __importDefault(require("../utils/logger"));
 class DatabaseManager {
     constructor() {
         this.pool = null;
+        this.supabaseClient = null;
     }
     static getInstance() {
         if (!DatabaseManager.instance) {
@@ -15,22 +17,48 @@ class DatabaseManager {
         }
         return DatabaseManager.instance;
     }
+    initialiseSupabaseClient() {
+        if (this.supabaseClient) {
+            return this.supabaseClient;
+        }
+        const supabaseUrl = process.env.SUPABASE_URL;
+        const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY ?? process.env.SUPABASE_ANON_KEY;
+        if (!supabaseUrl || !serviceRoleKey) {
+            logger_1.default.error('Supabase credentials are not configured.');
+            throw new Error('SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY (or SUPABASE_ANON_KEY) must be defined.');
+        }
+        this.supabaseClient = (0, supabase_js_1.createClient)(supabaseUrl, serviceRoleKey, {
+            auth: {
+                autoRefreshToken: false,
+                persistSession: false,
+            },
+        });
+        logger_1.default.info('Supabase client initialised.');
+        return this.supabaseClient;
+    }
+    getClient() {
+        return this.initialiseSupabaseClient();
+    }
     async connect() {
         if (this.pool) {
             return this.pool;
         }
-        const connectionString = process.env.DATABASE_URL;
+        // Ensure Supabase client is created so credentials are validated early.
+        this.initialiseSupabaseClient();
+        const connectionString = process.env.SUPABASE_DB_URL ?? process.env.DATABASE_URL;
         if (!connectionString) {
-            logger_1.default.error('DATABASE_URL is not defined in environment variables.');
-            throw new Error('DATABASE_URL is not defined.');
+            logger_1.default.error('No database connection string configured for Supabase.');
+            throw new Error('SUPABASE_DB_URL or DATABASE_URL must be defined.');
         }
         try {
             this.pool = new pg_1.Pool({
                 connectionString,
-                // You might want to add more pool options here, e.g., max, idleTimeoutMillis
+                ssl: connectionString.includes('supabase.co')
+                    ? { rejectUnauthorized: false }
+                    : undefined,
             });
-            await this.pool.query('SELECT 1'); // Test connection
-            logger_1.default.info('Connected to Supabase PostgreSQL database');
+            await this.pool.query('SELECT 1');
+            logger_1.default.info('Connected to Supabase PostgreSQL database.');
             return this.pool;
         }
         catch (error) {

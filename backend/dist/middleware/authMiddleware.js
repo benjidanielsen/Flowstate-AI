@@ -9,11 +9,15 @@ const JWT_SECRET = process.env.JWT_SECRET || 'supersecretjwtkey'; // Use the sam
 const authenticateToken = (req, res, next) => {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
-    if (token == null)
-        return res.sendStatus(401); // No token
+    if (!token) {
+        res.sendStatus(401);
+        return;
+    }
     jsonwebtoken_1.default.verify(token, JWT_SECRET, (err, user) => {
-        if (err)
-            return res.sendStatus(403); // Invalid token
+        if (err) {
+            res.sendStatus(403);
+            return;
+        }
         req.user = user; // Attach user payload to request
         next();
     });

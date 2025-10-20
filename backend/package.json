@@ -41,7 +41,8 @@
     "swagger-ui-express": "^5.0.1",
     "uuid": "^9.0.1",
     "winston": "^3.18.3",
-    "yamljs": "^0.3.0"
+    "yamljs": "^0.3.0",
+    "@supabase/supabase-js": "^2.47.6"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",
