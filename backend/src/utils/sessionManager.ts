@@ -222,6 +222,13 @@ export class SessionManager {
   }
 }
 
-// Export singleton instance
-export const sessionManager = new SessionManager();
+let singletonInstance: SessionManager | null = null;
+
+export const getSessionManager = (): SessionManager => {
+  if (!singletonInstance) {
+    singletonInstance = new SessionManager();
+  }
+
+  return singletonInstance;
+};
 

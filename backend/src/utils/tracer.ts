@@ -1,39 +1,52 @@
 import { diag, DiagConsoleLogger, DiagLogLevel, trace } from '@opentelemetry/api';
+import { Resource } from '@opentelemetry/resources';
+import { SemanticResourceAttributes } from '@opentelemetry/semantic-conventions';
+import { NodeSDK } from '@opentelemetry/sdk-node';
+import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';
+import logger from './logger';
 import { safeLogger } from './piiRedaction';
 
-// For troubleshooting, set the log level to DiagLogLevel.DEBUG
-diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.INFO);
+// Configure diagnostic logger
+const logLevel = (process.env.OTEL_LOG_LEVEL || 'info').toUpperCase() as keyof typeof DiagLogLevel;
+const resolvedLevel = DiagLogLevel[logLevel] ?? DiagLogLevel.INFO;
+diag.setLogger(new DiagConsoleLogger(), resolvedLevel);
 
 const serviceName = process.env.OTEL_SERVICE_NAME || 'flowstate-ai-backend';
-// const collectorEndpoint = process.env.OTEL_COLLECTOR_ENDPOINT || 'http://localhost:4318/v1/traces';
+const collectorEndpoint = process.env.OTEL_EXPORTER_OTLP_ENDPOINT || process.env.OTEL_COLLECTOR_ENDPOINT || 'http://localhost:4318/v1/traces';
+const otelEnabled = (process.env.OTEL_ENABLED || 'true').toLowerCase() !== 'false';
 
-// Temporarily commenting out OpenTelemetry initialization due to persistent TypeScript errors.
-// We will revisit this integration once the core backend is stable.
+let sdk: NodeSDK | null = null;
 
-// import { NodeSDK } from '@opentelemetry/sdk-node';
-// import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';
-// import { Resource } from '@opentelemetry/resources';
-// import { SemanticResourceAttributes } from '@opentelemetry/semantic-conventions';
+if (otelEnabled) {
+  try {
+    const traceExporter = new OTLPTraceExporter({
+      url: collectorEndpoint,
+    });
 
-// const sdk = new NodeSDK({
-//   resource: new Resource({
-//     [SemanticResourceAttributes.SERVICE_NAME]: serviceName,
-//   }),
-//   traceExporter: new OTLPTraceExporter({
-//     url: collectorEndpoint,
-//   }),
-//   // instrumentations: [getNodeAutoInstrumentations()], // Enable auto-instrumentations if needed
-// });
+    sdk = new NodeSDK({
+      resource: new Resource({
+        [SemanticResourceAttributes.SERVICE_NAME]: serviceName,
+        [SemanticResourceAttributes.DEPLOYMENT_ENVIRONMENT]: process.env.NODE_ENV || 'development',
+      }),
+      traceExporter,
+    });
 
-// // Initialize the SDK and register it
-// try {
-//   sdk.start();
-//   safeLogger.info(`OpenTelemetry SDK initialized for service: ${serviceName}, exporting to: ${collectorEndpoint}`);
-// } catch (error) {
-//   safeLogger.error('Error initializing OpenTelemetry SDK', error);
-// }
+    sdk.start().then(() => {
+      safeLogger.info(`OpenTelemetry SDK initialized for service: ${serviceName}`);
+    });
 
-// Export a dummy tracer for now
+    process.once('beforeExit', async () => {
+      try {
+        await sdk?.shutdown();
+      } catch (error) {
+        logger.warn('Error shutting down OpenTelemetry SDK', error as Error);
+      }
+    });
+  } catch (error) {
+    safeLogger.error('Error initializing OpenTelemetry SDK', error);
+  }
+} else {
+  safeLogger.info('OpenTelemetry tracing is disabled via OTEL_ENABLED flag.');
+}
+
 export const tracer = trace.getTracer(serviceName);
-safeLogger.warn('OpenTelemetry initialization is temporarily disabled. Tracing will not be active.');
-

@@ -1,8 +1,8 @@
 import getDbInstance from '../database/supabase'; // Import the function to get the db instance
-import { documents } from '../database/schema';
 import { sql as sqlTemplate } from 'drizzle-orm';
 import embeddingService from './embeddingService';
 import logger from '../utils/logger';
+import { getCachedResults, setCachedResults } from '../cache/vectorSearchCache';
 
 export interface SearchResult {
   id: number;
@@ -21,6 +21,7 @@ export class VectorSearchService {
       agentName?: string;
       threshold?: number;
       limit?: number;
+      cacheTtlSeconds?: number;
     } = {}
   ): Promise<SearchResult[]> {
     try {
@@ -28,9 +29,23 @@ export class VectorSearchService {
         agentName,
         threshold = 0.7,
         limit = 10,
+        cacheTtlSeconds,
       } = options;
 
       logger.info(`Performing semantic search for query: "${query.substring(0, 50)}..."`);
+
+      const cached = await getCachedResults({
+        type: 'semantic',
+        query,
+        agentName,
+        threshold,
+        limit,
+      });
+
+      if (cached) {
+        logger.debug('Returning cached semantic search results');
+        return cached;
+      }
 
       // Generate embedding for the query
       const queryEmbedding = await embeddingService.generateEmbedding(query);
@@ -50,12 +65,26 @@ export class VectorSearchService {
 
       logger.info(`Found ${results.rows.length} results for semantic search`);
 
-      return results.rows.map((row: any) => ({
+      const mappedResults = results.rows.map((row: any) => ({
         id: row.id,
         content: row.content,
         metadata: row.metadata,
         similarity: row.similarity,
       }));
+
+      await setCachedResults(
+        {
+          type: 'semantic',
+          query,
+          agentName,
+          threshold,
+          limit,
+        },
+        mappedResults,
+        cacheTtlSeconds
+      );
+
+      return mappedResults;
     } catch (error: any) {
       logger.error('Error in semantic search:', error);
       throw new Error(`Semantic search failed: ${error.message}`);
@@ -71,6 +100,7 @@ export class VectorSearchService {
       agentName?: string;
       threshold?: number;
       limit?: number;
+      cacheTtlSeconds?: number;
     } = {}
   ): Promise<SearchResult[]> {
     try {
@@ -78,9 +108,23 @@ export class VectorSearchService {
         agentName,
         threshold = 0.7,
         limit = 10,
+        cacheTtlSeconds,
       } = options;
 
       logger.info(`Finding similar documents to document ${documentId}`);
+
+      const cached = await getCachedResults({
+        type: 'similar',
+        documentId,
+        agentName,
+        threshold,
+        limit,
+      });
+
+      if (cached) {
+        logger.debug(`Returning cached similar document results for ${documentId}`);
+        return cached;
+      }
 
       const db = getDbInstance(); // Get the Drizzle instance
 
@@ -112,12 +156,26 @@ export class VectorSearchService {
 
       logger.info(`Found ${results.rows.length} similar documents`);
 
-      return results.rows.map((row: any) => ({
+      const mappedResults = results.rows.map((row: any) => ({
         id: row.id,
         content: row.content,
         metadata: row.metadata,
         similarity: row.similarity,
       }));
+
+      await setCachedResults(
+        {
+          type: 'similar',
+          documentId,
+          agentName,
+          threshold,
+          limit,
+        },
+        mappedResults,
+        cacheTtlSeconds
+      );
+
+      return mappedResults;
     } catch (error: any) {
       logger.error('Error finding similar documents:', error);
       throw new Error(`Failed to find similar documents: ${error.message}`);
@@ -133,15 +191,30 @@ export class VectorSearchService {
     options: {
       threshold?: number;
       limit?: number;
+      cacheTtlSeconds?: number;
     } = {}
   ): Promise<SearchResult[]> {
     try {
       const {
         threshold = 0.7,
         limit = 10,
+        cacheTtlSeconds,
       } = options;
 
       logger.info(`Performing hybrid search for query: "${query.substring(0, 50)}..."`);
+
+      const cached = await getCachedResults({
+        type: 'hybrid',
+        query,
+        metadataFilters,
+        threshold,
+        limit,
+      });
+
+      if (cached) {
+        logger.debug('Returning cached hybrid search results');
+        return cached;
+      }
 
       // Generate embedding for the query
       const queryEmbedding = await embeddingService.generateEmbedding(query);
@@ -174,12 +247,26 @@ export class VectorSearchService {
 
       logger.info(`Found ${results.rows.length} results for hybrid search`);
 
-      return results.rows.map((row: any) => ({
+      const mappedResults = results.rows.map((row: any) => ({
         id: row.id,
         content: row.content,
         metadata: row.metadata,
         similarity: row.similarity,
       }));
+
+      await setCachedResults(
+        {
+          type: 'hybrid',
+          query,
+          metadataFilters,
+          threshold,
+          limit,
+        },
+        mappedResults,
+        cacheTtlSeconds
+      );
+
+      return mappedResults;
     } catch (error: any) {
       logger.error('Error in hybrid search:', error);
       throw new Error(`Hybrid search failed: ${error.message}`);
@@ -195,6 +282,7 @@ export class VectorSearchService {
       agentName?: string;
       threshold?: number;
       limit?: number;
+      cacheTtlSeconds?: number;
     } = {}
   ): Promise<SearchResult[]> {
     try {
@@ -202,9 +290,23 @@ export class VectorSearchService {
         agentName,
         threshold = 0.7,
         limit = 10,
+        cacheTtlSeconds,
       } = options;
 
       logger.info(`Getting recommendations based on ${documentIds.length} documents`);
+
+      const cached = await getCachedResults({
+        type: 'recommendations',
+        documentIds: [...documentIds].sort((a, b) => a - b),
+        agentName,
+        threshold,
+        limit,
+      });
+
+      if (cached) {
+        logger.debug('Returning cached recommendations');
+        return cached;
+      }
 
       const db = getDbInstance(); // Get the Drizzle instance
 
@@ -253,12 +355,26 @@ export class VectorSearchService {
 
       logger.info(`Found ${searchResults.rows.length} recommendations`);
 
-      return searchResults.rows.map((row: any) => ({
+      const mappedResults = searchResults.rows.map((row: any) => ({
         id: row.id,
         content: row.content,
         metadata: row.metadata,
         similarity: row.similarity,
       }));
+
+      await setCachedResults(
+        {
+          type: 'recommendations',
+          documentIds: [...documentIds].sort((a, b) => a - b),
+          agentName,
+          threshold,
+          limit,
+        },
+        mappedResults,
+        cacheTtlSeconds
+      );
+
+      return mappedResults;
     } catch (error: any) {
       logger.error('Error getting recommendations:', error);
       throw new Error(`Failed to get recommendations: ${error.message}`);
