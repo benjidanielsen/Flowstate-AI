@@ -1,26 +1,8 @@
-"""
-Evolution Framework
+"""Evolution Framework package with lazy attribute loading."""
+from __future__ import annotations
 
-Self-improvement and continuous learning framework for Flowstate-AI.
-"""
-
-from .config import EvolutionConfig, default_config
-from .metrics_collector import MetricsCollector
-from .evolution_manager import EvolutionManager
-from .knowledge_manager import VectorKnowledgeManager
-from .code_analyzer import CodeAnalyzer
-from .self_modification_orchestrator import SelfModificationOrchestrator
-from .anomaly_detector import AnomalyDetector
-from .evolution_governor import EvolutionGovernor
-from .cross_domain_learner import CrossDomainLearner
-from .meta_optimizer import MetaOptimizer
-from .edge_case_manager import EdgeCaseManager
-from .predictive_optimizer import PredictiveOptimizer
-from .xai_nba import XAINBA
-from .multi_agent_coordinator import MultiAgentCoordinator
-from .human_oversight_manager import HumanOversightManager
-from .performance_tuner import PerformanceTuner
-from .cost_optimizer import CostOptimizer
+import importlib
+from typing import Any, Dict
 
 __all__ = [
     "EvolutionConfig",
@@ -43,5 +25,34 @@ __all__ = [
     "CostOptimizer",
 ]
 
-__version__ = "0.2.0"
+_MODULE_MAP: Dict[str, str] = {
+    "EvolutionConfig": "evolution_framework.config",
+    "default_config": "evolution_framework.config",
+    "MetricsCollector": "evolution_framework.metrics_collector",
+    "EvolutionManager": "evolution_framework.evolution_manager",
+    "VectorKnowledgeManager": "evolution_framework.knowledge_manager",
+    "CodeAnalyzer": "evolution_framework.code_analyzer",
+    "SelfModificationOrchestrator": "evolution_framework.self_modification_orchestrator",
+    "AnomalyDetector": "evolution_framework.anomaly_detector",
+    "EvolutionGovernor": "evolution_framework.evolution_governor",
+    "CrossDomainLearner": "evolution_framework.cross_domain_learner",
+    "MetaOptimizer": "evolution_framework.meta_optimizer",
+    "EdgeCaseManager": "evolution_framework.edge_case_manager",
+    "PredictiveOptimizer": "evolution_framework.predictive_optimizer",
+    "XAINBA": "evolution_framework.xai_nba",
+    "MultiAgentCoordinator": "evolution_framework.multi_agent_coordinator",
+    "HumanOversightManager": "evolution_framework.human_oversight_manager",
+    "PerformanceTuner": "evolution_framework.performance_tuner",
+    "CostOptimizer": "evolution_framework.cost_optimizer",
+}
 
+
+def __getattr__(name: str) -> Any:
+    if name not in _MODULE_MAP:
+        raise AttributeError(f"module 'evolution_framework' has no attribute '{name}'")
+
+    module = importlib.import_module(_MODULE_MAP[name])
+    return getattr(module, name)
+
+
+__version__ = "0.2.0"
