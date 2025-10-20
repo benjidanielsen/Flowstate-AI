@@ -1,0 +1,1 @@
+CREATE TABLE public.job_queue (id SERIAL PRIMARY KEY, payload JSONB NOT NULL, target_agent TEXT NOT NULL, status TEXT NOT NULL DEFAULT 'pending', attempts INTEGER NOT NULL DEFAULT 0, created_at TIMESTAMPTZ DEFAULT NOW(), processed_at TIMESTAMPTZ); CREATE INDEX idx_job_queue_pending ON public.job_queue (created_at) WHERE status = 'pending';
