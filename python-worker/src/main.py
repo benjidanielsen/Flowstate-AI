@@ -9,7 +9,10 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import httpx
-BACKEND_API_URL = os.getenv("BACKEND_API_URL", "http://localhost:3001")
+from app import get_settings
+
+settings = get_settings()
+BACKEND_API_URL = settings.backend_api_url
 from ai_gods.logging_config import setup_logging
 from evolution_framework.self_modification_orchestrator import SelfModificationOrchestrator
 from evolution_framework.evolution_governor import EvolutionGovernor
@@ -34,6 +37,11 @@ app.add_middleware(
 )
 # Setup logging
 logger = setup_logging(__name__, "python-worker.log")
+
+if settings.openai_api_key is None or not settings.openai_api_key.get_secret_value():
+    logger.warning("OPENAI_API_KEY not configured; embedding features will be unavailable.")
+else:
+    logger.info("OPENAI API key detected for worker embedding operations.")
 
 class ReminderRequest(BaseModel):
     customer_id: str

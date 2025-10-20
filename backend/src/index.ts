@@ -1,6 +1,5 @@
 import express, { Request, Response, NextFunction } from 'express';
 import bodyParser from 'body-parser';
-import dotenv from 'dotenv';
 import cors from 'cors';
 import helmet from 'helmet';
 import http from 'http';
@@ -17,10 +16,9 @@ import { testConnection } from './database/supabase'; // Import test connection 
 import { runMigrations } from './database/migrate';
 import { safeLogger } from './utils/piiRedaction'; // Use safeLogger
 import './utils/tracer'; // Initialize OpenTelemetry tracer
+import { environment } from './config/environment';
 
 const swaggerDocument = YAML.load(path.resolve(__dirname, '../../openapi.yaml'));
-
-dotenv.config();
 
 const app: express.Express = express();
 
@@ -81,7 +79,7 @@ export async function startServer() {
     // Start server
     serverRef = app.listen(process.env.PORT || 3001, () => {
       safeLogger.info(`Server is running on port ${process.env.PORT || 3001}`);
-      safeLogger.info(`Environment: ${process.env.NODE_ENV || 'development'}`);
+      safeLogger.info(`Environment: ${environment.nodeEnv}`);
     });
     return serverRef;
   } catch (error) {

@@ -1,5 +1,6 @@
 import logger from '../utils/logger';
 import axios from 'axios';
+import { environment, getOpenAIApiKey, hasOpenAIKey } from '../config/environment';
 
 export interface EmbeddingResult {
   embedding: number[];
@@ -16,13 +17,20 @@ export class EmbeddingService {
   private apiUrl: string;
 
   constructor() {
-    this.apiKey = process.env.OPENAI_API_KEY || '';
-    this.model = process.env.EMBEDDING_MODEL || 'text-embedding-3-small';
-    this.apiUrl = process.env.OPENAI_API_URL || 'https://api.openai.com/v1/embeddings';
+    this.apiKey = environment.openAI.apiKey || '';
+    this.model = environment.openAI.model;
+    this.apiUrl = environment.openAI.apiUrl;
 
-    if (!this.apiKey) {
+    if (!hasOpenAIKey()) {
       logger.warn('OPENAI_API_KEY not set. Embedding service will not work.');
     }
+  }
+
+  private ensureApiKey(): string {
+    if (!this.apiKey) {
+      this.apiKey = getOpenAIApiKey();
+    }
+    return this.apiKey;
   }
 
   /**
@@ -30,9 +38,7 @@ export class EmbeddingService {
    */
   async generateEmbedding(text: string): Promise<number[]> {
     try {
-      if (!this.apiKey) {
-        throw new Error('OPENAI_API_KEY not configured');
-      }
+      const apiKey = this.ensureApiKey();
 
       logger.debug(`Generating embedding for text: ${text.substring(0, 100)}...`);
 
@@ -44,7 +50,7 @@ export class EmbeddingService {
         },
         {
           headers: {
-            'Authorization': `Bearer ${this.apiKey}`,
+            'Authorization': `Bearer ${apiKey}`,
             'Content-Type': 'application/json',
           },
         }
@@ -65,9 +71,7 @@ export class EmbeddingService {
    */
   async generateEmbeddings(texts: string[]): Promise<number[][]> {
     try {
-      if (!this.apiKey) {
-        throw new Error('OPENAI_API_KEY not configured');
-      }
+      const apiKey = this.ensureApiKey();
 
       logger.debug(`Generating embeddings for ${texts.length} texts`);
 
@@ -79,7 +83,7 @@ export class EmbeddingService {
         },
         {
           headers: {
-            'Authorization': `Bearer ${this.apiKey}`,
+            'Authorization': `Bearer ${apiKey}`,
             'Content-Type': 'application/json',
           },
         }
