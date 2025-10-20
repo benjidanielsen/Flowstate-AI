@@ -1,5 +1,5 @@
-import { DatabaseManager } from "../database";
-import { safeLogger } from "./piiRedaction";
+import { DatabaseManager } from '../database';
+import { safeLogger } from './piiRedaction';
 
 export class DbOptimizer {
   private db: DatabaseManager;
@@ -13,32 +13,32 @@ export class DbOptimizer {
    * This is a simplified example; real-world would involve more complex analysis.
    */
   public async analyzeAndSuggestOptimizations(): Promise<string[]> {
-    safeLogger.info("Starting database optimization analysis...");
+    safeLogger.info('Starting database optimization analysis...');
     const suggestions: string[] = [];
 
     try {
       // Example 1: Check for missing indexes on frequently queried tables
-      const customerCount = await this.db.get("SELECT COUNT(*) FROM customers");
-      if (customerCount && customerCount["COUNT(*)"] > 10000) {
-        const indexCheck = await this.db.all("PRAGMA index_list("customers")");
-        const hasEmailIndex = indexCheck.some((idx: any) => idx.name.includes("email"));
+      const customerCount = await this.db.get('SELECT COUNT(*) AS count FROM customers');
+      if (customerCount && typeof customerCount === 'object' && 'count' in customerCount && Number(customerCount.count) > 10000) {
+        const indexCheck = await this.db.all('PRAGMA index_list("customers")');
+        const hasEmailIndex = indexCheck.some((idx: Record<string, unknown>) => typeof idx.name === 'string' && idx.name.includes('email'));
         if (!hasEmailIndex) {
-          suggestions.push("Consider adding an index on customers.email for faster lookups.");
+          suggestions.push('Consider adding an index on customers.email for faster lookups.');
         }
       }
 
       // Example 2: Identify long-running queries (requires query logging or specific DB features)
       // For SQLite, this is harder without external tools, but we can simulate.
       // In a real system (e.g., PostgreSQL), you'd query pg_stat_statements.
-      suggestions.push("Monitor long-running queries using database-specific tools (e.g., pg_stat_statements for PostgreSQL).");
+      suggestions.push('Monitor long-running queries using database-specific tools (e.g., pg_stat_statements for PostgreSQL).');
 
       // Example 3: Suggest vacuuming/reindexing for PostgreSQL/SQLite
-      suggestions.push("Regularly run VACUUM ANALYZE (PostgreSQL) or VACUUM (SQLite) to optimize database space and performance.");
+      suggestions.push('Regularly run VACUUM ANALYZE (PostgreSQL) or VACUUM (SQLite) to optimize database space and performance.');
 
-      safeLogger.info("Database optimization analysis completed.");
+      safeLogger.info('Database optimization analysis completed.');
     } catch (error) {
-      safeLogger.error("Error during database optimization analysis", error);
-      suggestions.push("Error during analysis. Please check database connection and permissions.");
+      safeLogger.error('Error during database optimization analysis', error);
+      suggestions.push('Error during analysis. Please check database connection and permissions.');
     }
 
     return suggestions;
@@ -52,11 +52,10 @@ export class DbOptimizer {
     safeLogger.warn(`Executing database optimization command: ${sqlCommand}`);
     try {
       await this.db.run(sqlCommand);
-      safeLogger.info("Optimization command executed successfully.");
+      safeLogger.info('Optimization command executed successfully.');
     } catch (error) {
       safeLogger.error(`Error executing optimization command: ${sqlCommand}`, error);
       throw error;
     }
   }
 }
-
