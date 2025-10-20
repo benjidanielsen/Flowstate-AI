@@ -4,25 +4,58 @@ import os
 import sqlite3
 from datetime import datetime, timedelta
 from typing import Any, Dict, List, Optional
+
+import httpx
 import uvicorn
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-import httpx
+
 BACKEND_API_URL = os.getenv("BACKEND_API_URL", "http://localhost:3001")
-from ai_gods.logging_config import setup_logging
-from evolution_framework.self_modification_orchestrator import SelfModificationOrchestrator
-from evolution_framework.evolution_governor import EvolutionGovernor
-from evolution_framework.evolution_manager import FlowstateEvolutionManager
-from evolution_framework.anomaly_detector import AnomalyDetector
-from evolution_framework.metrics_collector import MetricsCollector
+
+try:  # Prefer the richer logging helper when available.
+    from ai_gods.logging_config import setup_logging  # type: ignore
+except Exception:  # pragma: no cover - fallback for constrained environments
+    def setup_logging(name: str, log_file: Optional[str] = None) -> logging.Logger:
+        logger = logging.getLogger(name)
+        if not logger.handlers:
+            logger.setLevel(logging.INFO)
+            handler = logging.StreamHandler()
+            handler.setFormatter(logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s"))
+            logger.addHandler(handler)
+        return logger
+
+try:  # Import optional evolution framework components.
+    from evolution_framework.self_modification_orchestrator import SelfModificationOrchestrator
+    from evolution_framework.evolution_governor import EvolutionGovernor
+    from evolution_framework.evolution_manager import FlowstateEvolutionManager
+    from evolution_framework.anomaly_detector import AnomalyDetector
+    from evolution_framework.metrics_collector import MetricsCollector
+except Exception as import_error:  # pragma: no cover - optional dependency handling
+    SelfModificationOrchestrator = EvolutionGovernor = FlowstateEvolutionManager = AnomalyDetector = MetricsCollector = None  # type: ignore
+    _evolution_import_error = import_error
+else:
+    _evolution_import_error = None
+
 app = FastAPI(title="Flowstate-AI Worker", version="1.0.0")
-# Initialize Evolution Framework components
-metrics_collector = MetricsCollector("python_worker")
-evolution_manager = FlowstateEvolutionManager()
-anomaly_detector = AnomalyDetector(metrics_collector)
-evolution_governor = EvolutionGovernor(evolution_manager, anomaly_detector, metrics_collector)
-self_modification_orchestrator = SelfModificationOrchestrator(project_root="/home/ubuntu/Flowstate-AI", config_path=None)
+
+# Initialize Evolution Framework components if dependencies are available
+if MetricsCollector and FlowstateEvolutionManager and AnomalyDetector and EvolutionGovernor and SelfModificationOrchestrator:
+    metrics_collector = MetricsCollector("python_worker")
+    evolution_manager = FlowstateEvolutionManager()
+    anomaly_detector = AnomalyDetector(metrics_collector)
+    evolution_governor = EvolutionGovernor(evolution_manager, anomaly_detector, metrics_collector)
+    self_modification_orchestrator = SelfModificationOrchestrator(project_root=os.getcwd(), config_path=None)
+else:  # pragma: no cover - simplified fallback
+    metrics_collector = evolution_manager = anomaly_detector = evolution_governor = None
+
+    class _NoOpOrchestrator:
+        def run_self_modification_cycle(self) -> None:
+            raise RuntimeError(
+                "Evolution framework components are unavailable; self-modification cycle cannot run."
+            )
+
+    self_modification_orchestrator = _NoOpOrchestrator()
 
 # CORS middleware
 app.add_middleware(
@@ -34,6 +67,12 @@ app.add_middleware(
 )
 # Setup logging
 logger = setup_logging(__name__, "python-worker.log")
+
+if _evolution_import_error:
+    logger.warning(
+        "Evolution framework integrations disabled: %s",
+        _evolution_import_error,
+    )
 
 class ReminderRequest(BaseModel):
     customer_id: str
@@ -147,6 +186,13 @@ async def analyze_customer_data():
 @app.post("/autonomous-experimentation")
 async def run_autonomous_experimentation():
     """Trigger a cycle of autonomous experimentation and self-modification."""
+    if _evolution_import_error:
+        logger.error("Evolution framework unavailable: %s", _evolution_import_error)
+        raise HTTPException(
+            status_code=503,
+            detail="Evolution framework components unavailable; self-modification disabled.",
+        )
+
     try:
         logger.info("Initiating autonomous experimentation cycle...")
         self_modification_orchestrator.run_self_modification_cycle()

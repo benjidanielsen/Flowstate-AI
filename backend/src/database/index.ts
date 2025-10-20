@@ -29,6 +29,8 @@ class DatabaseManager {
     try {
       this.pool = new Pool({
         connectionString,
+        // Supabase instances require TLS; allow self-signed certificates when running locally.
+        ssl: { rejectUnauthorized: false },
         // You might want to add more pool options here, e.g., max, idleTimeoutMillis
       });
       await this.pool.query('SELECT 1'); // Test connection
