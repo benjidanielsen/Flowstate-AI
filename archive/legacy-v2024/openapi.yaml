@@ -1,0 +1,28 @@
+openapi: 3.0.0
+info:
+  title: Flowstate-AI Backend API
+  version: 1.0.0
+  description: API documentation for the Flowstate-AI v2030 backend services.
+servers:
+  - url: http://localhost:3001/api
+    description: Local Development Server
+tags:
+  - name: Agents
+    description: Agent management operations
+paths:
+  /health:
+    get:
+      summary: Health Check
+      description: Checks the health of the API.
+      responses:
+        '200':
+          description: API is healthy.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "UP"
+
