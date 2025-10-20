@@ -16,26 +16,41 @@ export interface Customer {
 }
 
 export enum PipelineStatus {
-  LEAD = 'Lead',
-  RELATIONSHIP = 'Relationship', 
+  NEW_LEAD = 'New Lead',
+  WARMING_UP = 'Warming Up',
   INVITED = 'Invited',
   QUALIFIED = 'Qualified',
   PRESENTATION_SENT = 'Presentation Sent',
   FOLLOW_UP = 'Follow-up',
-  SIGNED_UP = 'SIGNED-UP'
+  CLOSED_WON = 'Closed - Won',
+  NOT_NOW = 'Not Now',
+  LONG_TERM_NURTURE = 'Long-term Nurture',
 }
+
+export const PIPELINE_STATUS_LABELS: Record<PipelineStatus, string> = {
+  [PipelineStatus.NEW_LEAD]: 'Lead',
+  [PipelineStatus.WARMING_UP]: 'Relationship',
+  [PipelineStatus.INVITED]: 'Invited',
+  [PipelineStatus.QUALIFIED]: 'Qualified',
+  [PipelineStatus.PRESENTATION_SENT]: 'Presentation Sent',
+  [PipelineStatus.FOLLOW_UP]: 'Follow-up',
+  [PipelineStatus.CLOSED_WON]: 'Signed Up',
+  [PipelineStatus.NOT_NOW]: 'Not Now',
+  [PipelineStatus.LONG_TERM_NURTURE]: 'Long-term Nurture',
+};
 
 export interface Interaction {
   id: string;
   customer_id: string;
   type: InteractionType;
-  content: string;
-  created_at: Date | string;
-  scheduled_for?: Date | string;
-  completed: boolean;
-  summary?: string;
+  summary: string;
+  content?: string;
   notes?: string;
-  interaction_date?: Date | string;
+  interaction_date: Date | string;
+  created_at: Date | string;
+  updated_at: Date | string;
+  scheduled_for?: Date | string | null;
+  completed: boolean;
 }
 
 export enum InteractionType {
@@ -92,9 +107,8 @@ export interface Reminder {
 export interface EventLog {
   id: string;
   event_type: string;
-  description: string;
-  metadata?: Record<string, any>;
-  created_at: Date | string;
+  event_data: Record<string, any>;
+  timestamp: Date | string;
   user_id?: string;
   customer_id?: string;
 }

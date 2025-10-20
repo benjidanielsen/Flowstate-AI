@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Plus, Search, Filter, ArrowRight, X, Calendar, Mail, Phone } from 'lucide-react';
 import { customerApi } from '../services/api';
-import { Customer, PipelineStatus } from '../types';
+import { Customer, PipelineStatus, PIPELINE_STATUS_LABELS } from '../types';
 import { useDebounce } from '../hooks/useDebounce';
 import HighlightText from '../components/HighlightText';
 
@@ -58,9 +58,9 @@ const Customers: React.FC = () => {
 
   const getStatusColor = (status: PipelineStatus) => {
     switch (status) {
-      case PipelineStatus.LEAD:
+      case PipelineStatus.NEW_LEAD:
         return 'bg-gray-100 text-gray-800';
-      case PipelineStatus.RELATIONSHIP:
+      case PipelineStatus.WARMING_UP:
         return 'bg-blue-100 text-blue-800';
       case PipelineStatus.INVITED:
         return 'bg-yellow-100 text-yellow-800';
@@ -70,8 +70,12 @@ const Customers: React.FC = () => {
         return 'bg-purple-100 text-purple-800';
       case PipelineStatus.FOLLOW_UP:
         return 'bg-indigo-100 text-indigo-800';
-      case PipelineStatus.SIGNED_UP:
+      case PipelineStatus.CLOSED_WON:
         return 'bg-green-100 text-green-800';
+      case PipelineStatus.NOT_NOW:
+        return 'bg-red-100 text-red-800';
+      case PipelineStatus.LONG_TERM_NURTURE:
+        return 'bg-teal-100 text-teal-800';
       default:
         return 'bg-gray-100 text-gray-800';
     }
@@ -202,7 +206,7 @@ const Customers: React.FC = () => {
               <option value="">All Statuses</option>
               {Object.values(PipelineStatus).map((status) => (
                 <option key={status} value={status}>
-                  {status}
+                  {PIPELINE_STATUS_LABELS[status] ?? status}
                 </option>
               ))}
             </select>
@@ -284,10 +288,10 @@ const Customers: React.FC = () => {
                     <span
                       className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(customer.status)}`}
                     >
-                      {customer.status}
+                      {PIPELINE_STATUS_LABELS[customer.status] ?? customer.status}
                     </span>
-                    
-                    {customer.status !== PipelineStatus.SIGNED_UP && (
+
+                    {customer.status !== PipelineStatus.CLOSED_WON && (
                       <button
                         onClick={() => handleMoveToNextStage(customer.id)}
                         className="p-2 text-gray-400 hover:text-primary-600 transition-colors rounded-full bg-gray-100 hover:bg-gray-200"
@@ -330,7 +334,7 @@ const CreateCustomerModal: React.FC<CreateCustomerModalProps> = ({ onClose, onSu
     email: '',
     phone: '',
     notes: '',
-    status: PipelineStatus.LEAD,
+    status: PipelineStatus.NEW_LEAD,
   });
   const [loading, setLoading] = useState(false);
 
@@ -395,7 +399,7 @@ const CreateCustomerModal: React.FC<CreateCustomerModalProps> = ({ onClose, onSu
             >
               {Object.values(PipelineStatus).map((status) => (
                 <option key={status} value={status}>
-                  {status}
+                  {PIPELINE_STATUS_LABELS[status] ?? status}
                 </option>
               ))}
             </select>
