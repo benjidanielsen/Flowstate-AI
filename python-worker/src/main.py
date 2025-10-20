@@ -4,16 +4,21 @@ import os
 import sqlite3
 from datetime import datetime, timedelta
 from typing import Any, Dict, List, Optional
+
+import httpx
 import uvicorn
+from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-import httpx
+
+load_dotenv()
 BACKEND_API_URL = os.getenv("BACKEND_API_URL", "http://localhost:3001")
 from ai_gods.logging_config import setup_logging
 from evolution_framework.self_modification_orchestrator import SelfModificationOrchestrator
 from evolution_framework.evolution_governor import EvolutionGovernor
 from evolution_framework.evolution_manager import FlowstateEvolutionManager
+from evolution_framework.knowledge_manager import VectorKnowledgeManager
 from evolution_framework.anomaly_detector import AnomalyDetector
 from evolution_framework.metrics_collector import MetricsCollector
 app = FastAPI(title="Flowstate-AI Worker", version="1.0.0")
@@ -21,8 +26,16 @@ app = FastAPI(title="Flowstate-AI Worker", version="1.0.0")
 metrics_collector = MetricsCollector("python_worker")
 evolution_manager = FlowstateEvolutionManager()
 anomaly_detector = AnomalyDetector(metrics_collector)
-evolution_governor = EvolutionGovernor(evolution_manager, anomaly_detector, metrics_collector)
-self_modification_orchestrator = SelfModificationOrchestrator(project_root="/home/ubuntu/Flowstate-AI", config_path=None)
+knowledge_manager = VectorKnowledgeManager()
+evolution_governor = EvolutionGovernor(
+    evolution_manager,
+    anomaly_detector,
+    metrics_collector,
+    knowledge_manager,
+)
+self_modification_orchestrator = SelfModificationOrchestrator(
+    project_root="/home/ubuntu/Flowstate-AI",
+)
 
 # CORS middleware
 app.add_middleware(
