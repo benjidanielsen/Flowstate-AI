@@ -1,5 +1,5 @@
 import axiosInstance from '../api/axiosInstance';
-import { Customer, Interaction, PipelineStatus, Reminder, EventLog, PipelineStats, Stats } from '../types';
+import { Customer, Interaction, PipelineStatus, Reminder, EventLog, PipelineStats, Stats, Pipeline } from '../types';
 
 // Customer API
 export const aiDecisionLogApi = {
@@ -114,6 +114,26 @@ export const statsApi = {
   },
   getPipelineStats: async (): Promise<PipelineStats> => {
     const response = await axiosInstance.get('/stats/pipeline');
+    return response.data;
+  },
+};
+
+// Pipeline API
+export const pipelineApi = {
+  list: async (): Promise<Pipeline[]> => {
+    const response = await axiosInstance.get('/pipelines');
+    return response.data;
+  },
+  getById: async (pipelineId: string): Promise<Pipeline> => {
+    const response = await axiosInstance.get(`/pipelines/${pipelineId}`);
+    return response.data;
+  },
+  create: async (payload: Partial<Pipeline>): Promise<Pipeline> => {
+    const response = await axiosInstance.post('/pipelines', payload);
+    return response.data;
+  },
+  assignCustomerStage: async (customerId: string, stageId: string): Promise<Customer> => {
+    const response = await axiosInstance.post(`/pipelines/customers/${customerId}/stage`, { stageId });
     return response.data;
   },
 };

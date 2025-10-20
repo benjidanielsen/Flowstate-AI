@@ -15,6 +15,7 @@ import kpiRoutes from './kpis'; // Import KPI routes
 import agentRoutes from './agents'; // Import agent routes
 import vectorSearchRoutes from './vectorSearch'; // Import vector search routes
 import { authenticateToken } from '../middleware/authMiddleware';
+import pipelineRoutes from './pipelines';
 
 const router: Router = Router();
 
@@ -34,6 +35,7 @@ router.use("/evolution", authenticateToken, evolutionRoutes);
 router.use("/kpis", authenticateToken, kpiRoutes); // Use KPI routes
 router.use("/api", authenticateToken, agentRoutes); // Use agent routes
 router.use("/api", authenticateToken, vectorSearchRoutes); // Use vector search routes
+router.use('/pipelines', authenticateToken, pipelineRoutes);
 
 // Health check
 router.get('/health', (req, res) => {

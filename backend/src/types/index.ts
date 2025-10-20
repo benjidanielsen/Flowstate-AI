@@ -65,6 +65,8 @@ export interface Customer {
   email?: string;
   phone?: string;
   status: PipelineStatus;
+  pipeline_id?: string | null;
+  pipeline_stage_id?: string | null;
   created_at: Date;
   updated_at: Date;
   notes?: string;
@@ -78,6 +80,7 @@ export interface Customer {
   language?: string;
   consent_json?: any;
   utm_json?: any;
+  last_interacted_at?: Date | null;
 }
 
 export enum PipelineStatus {
@@ -101,6 +104,7 @@ export interface Interaction {
   interaction_date: Date;
   created_at: Date;
   updated_at: Date;
+  pipeline_stage_id?: string | null;
 }
 
 export enum InteractionType {
@@ -121,6 +125,26 @@ export interface Reminder {
   created_at: Date;
   updated_at: Date;
   repeat_interval?: string; // e.g., "daily", "weekly", "monthly"
+  pipeline_stage_id?: string | null;
+}
+
+export interface Pipeline {
+  id: string;
+  name: string;
+  description?: string | null;
+  created_at: Date;
+  updated_at: Date;
+}
+
+export interface PipelineStage {
+  id: string;
+  pipeline_id: string;
+  name: string;
+  description?: string | null;
+  position: number;
+  metadata: Record<string, unknown>;
+  created_at: Date;
+  updated_at: Date;
 }
 
 export enum ReminderType {
@@ -176,5 +200,7 @@ export interface Database {
   users: User;
   external_integrations: ExternalIntegration;
   kpis: KPI;
+  pipelines: Pipeline;
+  pipeline_stages: PipelineStage;
 }
 
