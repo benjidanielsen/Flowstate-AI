@@ -23,17 +23,29 @@ export function correlationIdMiddleware(req: Request, res: Response, next: NextF
   const originalError = safeLogger.error;
   const originalDebug = safeLogger.debug;
 
+  const coerceMeta = (meta?: unknown) => {
+    if (meta && typeof meta === 'object') {
+      return meta as Record<string, unknown>;
+    }
+
+    if (typeof meta === 'undefined') {
+      return {} as Record<string, unknown>;
+    }
+
+    return { value: meta } as Record<string, unknown>;
+  };
+
   safeLogger.info = (message: string, meta?: unknown) => {
-    originalInfo(message, { correlationId, ...meta });
+    originalInfo(message, { correlationId, ...coerceMeta(meta) });
   };
   safeLogger.warn = (message: string, meta?: unknown) => {
-    originalWarn(message, { correlationId, ...meta });
+    originalWarn(message, { correlationId, ...coerceMeta(meta) });
   };
   safeLogger.error = (message: string, meta?: unknown) => {
-    originalError(message, { correlationId, ...meta });
+    originalError(message, { correlationId, ...coerceMeta(meta) });
   };
   safeLogger.debug = (message: string, meta?: unknown) => {
-    originalDebug(message, { correlationId, ...meta });
+    originalDebug(message, { correlationId, ...coerceMeta(meta) });
   };
 
   // Reset logger functions after the request is processed

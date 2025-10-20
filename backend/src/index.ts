@@ -17,7 +17,13 @@ import { runMigrations } from './database/migrate';
 import { safeLogger } from './utils/piiRedaction'; // Use safeLogger
 import './utils/tracer'; // Initialize OpenTelemetry tracer
 
-const swaggerDocument = YAML.load(path.resolve(__dirname, '../../openapi.yaml'));
+let swaggerDocument: unknown = null;
+try {
+  const specPath = path.resolve(__dirname, '../../openapi.yaml');
+  swaggerDocument = YAML.load(specPath);
+} catch (error) {
+  safeLogger.warn('OpenAPI specification not found; swagger docs disabled.', error);
+}
 
 dotenv.config();
 
@@ -38,7 +44,13 @@ app.use(performanceMiddleware);
 
 // Routes
 app.use("/api", routes);
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+if (swaggerDocument) {
+  app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+} else {
+  app.get('/api-docs', (_req, res) => {
+    res.status(503).json({ error: 'API documentation unavailable. Upload openapi.yaml to enable docs.' });
+  });
+}
 
 // Global Error Handling Middleware
 app.use((err: Error, req: Request, res: Response, _next: NextFunction) => { // eslint-disable-line @typescript-eslint/no-unused-vars

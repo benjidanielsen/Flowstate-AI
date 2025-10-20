@@ -2,7 +2,7 @@ import { v4 as uuidv4 } from 'uuid';
 import DatabaseManager from '../database';
 import { Interaction, InteractionType } from '../types';
 
-type InteractionCreateInput = {
+export type InteractionCreateInput = {
   customer_id: string;
   type: InteractionType;
   summary?: string;
@@ -13,9 +13,33 @@ type InteractionCreateInput = {
   completed?: boolean;
 };
 
-type InteractionUpdateInput = Partial<InteractionCreateInput> & {
+export type InteractionUpdateInput = Partial<InteractionCreateInput> & {
   interaction_date?: Date;
 };
+
+const EMAIL_REGEX = /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b/g;
+const PHONE_REGEX = /\b\d{3}[-.]?\d{3}[-.]?\d{4}\b/g;
+const GENERIC_ID_REGEX = /\b(user_id|customer_id|agent_id):\s*\S+/gi;
+
+function redact(value: string): string {
+  return value
+    .replace(EMAIL_REGEX, '[REDACTED_EMAIL]')
+    .replace(PHONE_REGEX, '[REDACTED_PHONE]')
+    .replace(GENERIC_ID_REGEX, '$1: [REDACTED_ID]');
+}
+
+function sanitizeSummary(summary?: string, content?: string): string {
+  const base = (summary ?? content ?? '').trim();
+  if (!base) {
+    throw new Error('Interaction summary is required');
+  }
+  return redact(base);
+}
+
+function sanitizeContent(summary: string, content?: string): string {
+  const base = (content ?? summary).trim();
+  return base ? redact(base) : summary;
+}
 
 function mapRowToInteraction(row: any): Interaction {
   return {
@@ -33,20 +57,20 @@ function mapRowToInteraction(row: any): Interaction {
   };
 }
 
-export const interactionService = {
+export class InteractionService {
+  private getDb() {
+    return DatabaseManager.getInstance().getDb();
+  }
+
   async create(interaction: InteractionCreateInput): Promise<Interaction> {
-    const db = DatabaseManager.getInstance().getDb();
+    const db = this.getDb();
     const id = uuidv4();
     const now = new Date();
     const interactionDate = interaction.interaction_date ?? now;
     const scheduledFor = interaction.scheduled_for ?? null;
 
-    const summary = (interaction.summary ?? interaction.content ?? '').trim();
-    if (!summary) {
-      throw new Error('Interaction summary is required');
-    }
-
-    const content = interaction.content ?? summary;
+    const summary = sanitizeSummary(interaction.summary, interaction.content);
+    const content = sanitizeContent(summary, interaction.content);
     const completed = interaction.completed ?? false;
 
     return new Promise((resolve, reject) => {
@@ -85,10 +109,14 @@ export const interactionService = {
         }
       );
     });
-  },
+  }
+
+  async createInteraction(interaction: InteractionCreateInput): Promise<Interaction> {
+    return this.create(interaction);
+  }
 
   async getByCustomerId(customerId: string): Promise<Interaction[]> {
-    const db = DatabaseManager.getInstance().getDb();
+    const db = this.getDb();
 
     return new Promise((resolve, reject) => {
       db.all(
@@ -101,10 +129,14 @@ export const interactionService = {
         }
       );
     });
-  },
+  }
+
+  async getInteractionsByCustomer(customerId: string): Promise<Interaction[]> {
+    return this.getByCustomerId(customerId);
+  }
 
   async getById(id: string): Promise<Interaction | undefined> {
-    const db = DatabaseManager.getInstance().getDb();
+    const db = this.getDb();
 
     return new Promise((resolve, reject) => {
       db.get(
@@ -117,10 +149,15 @@ export const interactionService = {
         }
       );
     });
-  },
+  }
+
+  async getInteractionById(id: string): Promise<Interaction | null> {
+    const interaction = await this.getById(id);
+    return interaction ?? null;
+  }
 
   async update(id: string, updates: InteractionUpdateInput): Promise<Interaction | undefined> {
-    const db = DatabaseManager.getInstance().getDb();
+    const db = this.getDb();
     const now = new Date().toISOString();
 
     const fields: string[] = [];
@@ -128,8 +165,8 @@ export const interactionService = {
 
     if (updates.customer_id) { fields.push('customer_id = ?'); values.push(updates.customer_id); }
     if (updates.type) { fields.push('type = ?'); values.push(updates.type); }
-    if (updates.summary !== undefined) { fields.push('summary = ?'); values.push(updates.summary); }
-    if (updates.content !== undefined) { fields.push('content = ?'); values.push(updates.content); }
+    if (updates.summary !== undefined) { fields.push('summary = ?'); values.push(redact(updates.summary)); }
+    if (updates.content !== undefined) { fields.push('content = ?'); values.push(updates.content ? redact(updates.content) : null); }
     if (updates.notes !== undefined) { fields.push('notes = ?'); values.push(updates.notes); }
     if (updates.interaction_date) { fields.push('interaction_date = ?'); values.push(updates.interaction_date.toISOString()); }
     if (updates.scheduled_for !== undefined) {
@@ -157,18 +194,22 @@ export const interactionService = {
           if (err) return reject(err);
           if (this.changes === 0) return resolve(undefined);
 
-          db.get(`SELECT * FROM interactions WHERE id = ?`, [id], (err, row: any) => {
-            if (err) return reject(err);
+          db.get(`SELECT * FROM interactions WHERE id = ?`, [id], (innerErr, row: any) => {
+            if (innerErr) return reject(innerErr);
             if (!row) return resolve(undefined);
             resolve(mapRowToInteraction(row));
           });
         }
       );
     });
-  },
+  }
+
+  async updateInteraction(id: string, updates: InteractionUpdateInput): Promise<Interaction | undefined> {
+    return this.update(id, updates);
+  }
 
   async markCompleted(id: string): Promise<Interaction | null> {
-    const db = DatabaseManager.getInstance().getDb();
+    const db = this.getDb();
     const now = new Date().toISOString();
 
     return new Promise((resolve, reject) => {
@@ -179,18 +220,22 @@ export const interactionService = {
           if (err) return reject(err);
           if (this.changes === 0) return resolve(null);
 
-          db.get(`SELECT * FROM interactions WHERE id = ?`, [id], (err, row: any) => {
-            if (err) return reject(err);
+          db.get(`SELECT * FROM interactions WHERE id = ?`, [id], (innerErr, row: any) => {
+            if (innerErr) return reject(innerErr);
             if (!row) return resolve(null);
             resolve(mapRowToInteraction(row));
           });
         }
       );
     });
-  },
+  }
 
-  async getUpcoming(limit: number = 5): Promise<Interaction[]> {
-    const db = DatabaseManager.getInstance().getDb();
+  async markInteractionCompleted(id: string): Promise<Interaction | null> {
+    return this.markCompleted(id);
+  }
+
+  async getUpcoming(limit = 5): Promise<Interaction[]> {
+    const db = this.getDb();
     const nowIso = new Date().toISOString();
 
     return new Promise((resolve, reject) => {
@@ -208,10 +253,14 @@ export const interactionService = {
         }
       );
     });
-  },
+  }
+
+  async getUpcomingInteractions(limit = 5): Promise<Interaction[]> {
+    return this.getUpcoming(limit);
+  }
 
   async delete(id: string): Promise<void> {
-    const db = DatabaseManager.getInstance().getDb();
+    const db = this.getDb();
 
     return new Promise((resolve, reject) => {
       db.run(`DELETE FROM interactions WHERE id = ?`, [id], function(err) {
@@ -219,6 +268,12 @@ export const interactionService = {
         resolve();
       });
     });
-  },
-};
+  }
+
+  async deleteInteraction(id: string): Promise<void> {
+    await this.delete(id);
+  }
+}
+
+export const interactionService = new InteractionService();
 
