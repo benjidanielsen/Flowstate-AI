@@ -2,6 +2,9 @@ import DatabaseManager from '../database';
 import { EventLog } from '../types';
 import { v4 as uuidv4 } from 'uuid';
 import { PoolClient } from 'pg';
+import analyticsIngestionService from './analyticsIngestionService';
+import featureFlagService from './featureFlagService';
+import logger from '../utils/logger';
 
 export class EventLogService {
   async logEvent(eventType: string, eventData: any, customerId?: string, userId?: string): Promise<EventLog> {
@@ -24,7 +27,35 @@ export class EventLogService {
           userId || null
         ]
       );
-      return result.rows[0];
+      const inserted = result.rows[0];
+
+      featureFlagService
+        .shouldServe('analytics_event_ingestion', {
+          accountId: (eventData && (eventData.account_id || eventData.accountId)) || undefined,
+          customerId,
+          userId,
+        })
+        .then((enabled) => {
+          if (!enabled) {
+            return;
+          }
+          analyticsIngestionService
+            .recordEvent({
+              eventName: eventType,
+              eventType,
+              customerId,
+              accountId: (eventData && (eventData.account_id || eventData.accountId)) || undefined,
+              userId,
+              source: eventData?.source,
+              payload: eventData || undefined,
+              metadata: eventData?.metadata || undefined,
+              correlationId: eventData?.correlationId,
+            })
+            .catch((err) => logger.warn('Failed to mirror event into analytics pipeline', err));
+        })
+        .catch((err) => logger.warn('Failed to evaluate analytics event feature flag', err));
+
+      return inserted;
     } finally {
       if (client) client.release();
     }

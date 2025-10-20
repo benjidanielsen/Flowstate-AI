@@ -2,15 +2,24 @@ import json
 import logging
 import os
 import sqlite3
+import sys
 from datetime import datetime, timedelta
+from pathlib import Path
 from typing import Any, Dict, List, Optional
+
+import httpx
 import uvicorn
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-import httpx
+
+ROOT_DIR = Path(__file__).resolve().parent.parent
+if str(ROOT_DIR) not in sys.path:
+    sys.path.append(str(ROOT_DIR))
+
 BACKEND_API_URL = os.getenv("BACKEND_API_URL", "http://localhost:3001")
 from ai_gods.logging_config import setup_logging
+from app.agents import LearningAgent, VectorSearchNBAAgent
 from evolution_framework.self_modification_orchestrator import SelfModificationOrchestrator
 from evolution_framework.evolution_governor import EvolutionGovernor
 from evolution_framework.evolution_manager import FlowstateEvolutionManager
@@ -23,6 +32,8 @@ evolution_manager = FlowstateEvolutionManager()
 anomaly_detector = AnomalyDetector(metrics_collector)
 evolution_governor = EvolutionGovernor(evolution_manager, anomaly_detector, metrics_collector)
 self_modification_orchestrator = SelfModificationOrchestrator(project_root="/home/ubuntu/Flowstate-AI", config_path=None)
+learning_agent = LearningAgent()
+vector_nba_agent = VectorSearchNBAAgent(learning_agent)
 
 # CORS middleware
 app.add_middleware(
@@ -120,6 +131,16 @@ async def process_due_reminders():
 async def get_next_best_actions(customer_id: Optional[str] = None, limit: int = 10):
     """Get Next Best Actions (NBA) recommendations"""
     try:
+        recommendations = await vector_nba_agent.generate_prioritized_recommendations(
+            customer_id=customer_id,
+            limit=limit,
+        )
+        if recommendations:
+            return recommendations
+    except Exception as e:
+        logger.warning(f"Vector NBA agent failed, falling back to backend service: {e}")
+
+    try:
         async with httpx.AsyncClient() as client:
             params = {"limit": limit}
             if customer_id:
@@ -134,6 +155,12 @@ async def get_next_best_actions(customer_id: Optional[str] = None, limit: int = 
 @app.post("/nba/analyze")
 async def analyze_customer_data():
     """Analyze customer data and generate NBA recommendations"""
+    try:
+        recommendations = await vector_nba_agent.generate_prioritized_recommendations(limit=10)
+        return {"analyzed": len(recommendations), "recommendations": recommendations}
+    except Exception as e:
+        logger.warning(f"Vector NBA analysis failed, using backend fallback: {e}")
+
     try:
         async with httpx.AsyncClient() as client:
             response = await client.post(f"{BACKEND_API_URL}/nba/analyze")

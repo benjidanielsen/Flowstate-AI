@@ -1,6 +1,7 @@
 import { agentService } from './agentService';
 import logger from '../utils/logger';
 import { v4 as uuidv4 } from 'uuid';
+import githubAgentService from './githubAgentService';
 
 export interface WorkflowStep {
   id: string;
@@ -49,6 +50,8 @@ export class WorkflowOrchestrationService {
 
     logger.info(`Created workflow: ${name} (${workflowId}) with ${steps.length} steps`);
 
+    void this.syncToGitHub(workflow, 'pending', 'Workflow registered and awaiting execution.');
+
     return workflow;
   }
 
@@ -71,6 +74,8 @@ export class WorkflowOrchestrationService {
     workflow.status = 'running';
     const completedSteps = new Set<string>();
     const results = new Map<string, any>();
+
+    void this.syncToGitHub(workflow, 'running', 'Workflow execution started.');
 
     try {
       // Execute steps in dependency order
@@ -134,10 +139,13 @@ export class WorkflowOrchestrationService {
 
       logger.info(`Workflow ${workflowId} completed successfully`);
 
+      void this.syncToGitHub(workflow, 'completed', 'Workflow execution completed successfully.');
+
       return workflow;
     } catch (error: any) {
       workflow.status = 'failed';
       logger.error(`Workflow ${workflowId} failed:`, error);
+      void this.syncToGitHub(workflow, 'failed', `Workflow failed with error: ${error.message}`);
       throw error;
     }
   }
@@ -227,6 +235,8 @@ export class WorkflowOrchestrationService {
 
     workflow.status = 'failed';
     logger.info(`Workflow ${workflowId} cancelled`);
+
+    void this.syncToGitHub(workflow, 'failed', 'Workflow cancelled by operator.');
   }
 
   /**
@@ -329,6 +339,14 @@ export class WorkflowOrchestrationService {
         },
       ]
     );
+  }
+
+  private async syncToGitHub(workflow: Workflow, status: Workflow['status'], summary: string): Promise<void> {
+    try {
+      await githubAgentService.syncWorkflow(workflow, status, summary);
+    } catch (error: any) {
+      logger.warn(`Failed to sync workflow ${workflow.id} to GitHub: ${error.message}`);
+    }
   }
 }
 

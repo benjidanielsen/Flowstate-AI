@@ -96,6 +96,74 @@ class GitHubIntegration:
             logger.error(f"Failed to add comment to issue {issue_number}: {response.status_code} - {response.text}")
             return None
 
+
+class GitHubAgent:
+    """Higher-level helper that manages workflow issues on GitHub."""
+
+    def __init__(self, repo_owner: str | None = None, repo_name: str | None = None, token: str | None = None) -> None:
+        owner = repo_owner or os.getenv("GITHUB_REPO_OWNER")
+        repo = repo_name or os.getenv("GITHUB_REPO_NAME")
+        github_token = token or os.getenv("GITHUB_TOKEN")
+
+        if not owner or not repo or not github_token:
+            raise RuntimeError("Missing GitHub configuration. Set GITHUB_REPO_OWNER, GITHUB_REPO_NAME, and GITHUB_TOKEN.")
+
+        self.integration = GitHubIntegration(owner, repo, github_token)
+
+    def sync_workflow(self, workflow_id: str, name: str, status: str, summary: str, steps: list[dict[str, str]] | None = None) -> None:
+        """Create or update an issue describing the workflow lifecycle."""
+
+        label = f"workflow:{workflow_id}"
+        existing = self.integration.get_issues(state="all", labels=[label])
+        body = self._compose_body(workflow_id, name, status, summary, steps)
+        labels = ['automation', 'workflow', label]
+
+        if existing:
+            issue = existing[0]
+            logger.debug("Updating existing workflow issue %s", issue.get('number'))
+            self.integration.update_issue(
+                issue_number=issue.get('number'),
+                title=f"[Workflow] {name} ({status})",
+                body=body,
+                state='closed' if status == 'completed' else 'open',
+                labels=labels,
+            )
+            self.integration.add_comment_to_issue(
+                issue_number=issue.get('number'),
+                body=f"Workflow **{workflow_id}** moved to **{status.upper()}**\n\n{summary}",
+            )
+        else:
+            logger.debug("Creating new workflow issue for %s", workflow_id)
+            self.integration.create_issue(
+                title=f"[Workflow] {name} ({status})",
+                body=body,
+                labels=labels,
+            )
+
+    def _compose_body(
+        self,
+        workflow_id: str,
+        name: str,
+        status: str,
+        summary: str,
+        steps: list[dict[str, str]] | None = None,
+    ) -> str:
+        step_lines = []
+        for step in steps or []:
+            step_id = step.get('id')
+            agent = step.get('agentName') or step.get('agent_name')
+            task = step.get('taskType') or step.get('task_type')
+            step_lines.append(f"- {step_id} — agent `{agent}` task `{task}`")
+        if not step_lines:
+            step_lines.append('- No steps registered')
+        return (
+            f"**Workflow:** {name}\n"
+            f"**ID:** {workflow_id}\n"
+            f"**Status:** {status}\n\n"
+            f"{summary}\n\n"
+            "**Steps**\n" + "\n".join(step_lines)
+        )
+
 # Example Usage (requires GITHUB_TOKEN environment variable)
 # if __name__ == "__main__":
 #     GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")

@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 const Home: React.FC = () => {
@@ -18,8 +19,10 @@ const Home: React.FC = () => {
       <div className="bg-white p-6 rounded-lg shadow-md">
         <h2 className="text-xl font-semibold mb-4">You are logged in!</h2>
         <p className="text-gray-700">This is a placeholder for your main application content. You can navigate to the dashboard or other features from here.</p>
-        {/* Link to the actual dashboard or other features */}
-        <a href="/dashboard" className="text-blue-500 hover:underline mt-4 block">Go to Dashboard</a>
+        <div className="mt-4 space-y-2">
+          <Link to="/dashboard" className="text-blue-500 hover:underline block">Go to Dashboard</Link>
+          <Link to="/analytics" className="text-blue-500 hover:underline block">View Analytics Preview</Link>
+        </div>
       </div>
     </div>
   );

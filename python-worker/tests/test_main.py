@@ -1,8 +1,9 @@
-import pytest
-import sys
 import os
-from datetime import datetime, timedelta
+import sys
+from datetime import datetime
 from unittest.mock import AsyncMock, patch, MagicMock
+
+import pytest
 
 # Add parent directory to path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
@@ -173,14 +174,11 @@ class TestReminderEndpoints:
 
 class TestNBAEndpoints:
     """Test Next Best Action endpoints"""
-    
-    @patch('httpx.AsyncClient')
-    def test_get_nba_without_customer_id(self, mock_client):
+
+    @patch('src.main.vector_nba_agent.generate_prioritized_recommendations', new_callable=AsyncMock)
+    def test_get_nba_without_customer_id(self, mock_agent):
         """Test fetching NBA recommendations without customer ID"""
-        # Mock the httpx client
-        mock_response = MagicMock()
-        mock_response.status_code = 200
-        mock_response.json.return_value = [
+        mock_agent.return_value = [
             {
                 "customer_id": "customer-1",
                 "customer_name": "Test Customer",
@@ -189,28 +187,20 @@ class TestNBAEndpoints:
                 "priority": 70
             }
         ]
-        mock_response.raise_for_status = MagicMock()
-        
-        mock_client_instance = AsyncMock()
-        mock_client_instance.get = AsyncMock(return_value=mock_response)
-        mock_client.return_value.__aenter__.return_value = mock_client_instance
-        
-        # Make request
+
         response = client.get("/nba?limit=10")
-        
+
         assert response.status_code == 200
         data = response.json()
         assert isinstance(data, list)
         assert len(data) == 1
         assert data[0]["customer_id"] == "customer-1"
-    
-    @patch('httpx.AsyncClient')
-    def test_get_nba_with_customer_id(self, mock_client):
+        mock_agent.assert_awaited_once_with(customer_id=None, limit=10)
+
+    @patch('src.main.vector_nba_agent.generate_prioritized_recommendations', new_callable=AsyncMock)
+    def test_get_nba_with_customer_id(self, mock_agent):
         """Test fetching NBA recommendations for specific customer"""
-        # Mock the httpx client
-        mock_response = MagicMock()
-        mock_response.status_code = 200
-        mock_response.json.return_value = [
+        mock_agent.return_value = [
             {
                 "customer_id": "customer-1",
                 "customer_name": "Test Customer",
@@ -219,50 +209,38 @@ class TestNBAEndpoints:
                 "priority": 80
             }
         ]
-        mock_response.raise_for_status = MagicMock()
-        
-        mock_client_instance = AsyncMock()
-        mock_client_instance.get = AsyncMock(return_value=mock_response)
-        mock_client.return_value.__aenter__.return_value = mock_client_instance
-        
-        # Make request
+
         response = client.get("/nba?customer_id=customer-1&limit=10")
-        
+
         assert response.status_code == 200
         data = response.json()
         assert isinstance(data, list)
         assert len(data) == 1
         assert data[0]["customer_id"] == "customer-1"
-    
-    @patch('httpx.AsyncClient')
-    def test_analyze_customer_data_success(self, mock_client):
+        mock_agent.assert_awaited_once_with(customer_id="customer-1", limit=10)
+
+    @patch('src.main.vector_nba_agent.generate_prioritized_recommendations', new_callable=AsyncMock)
+    def test_analyze_customer_data_success(self, mock_agent):
         """Test analyzing customer data and generating NBA recommendations"""
-        # Mock the httpx client
-        mock_response = MagicMock()
-        mock_response.status_code = 200
-        mock_response.json.return_value = [
+        mock_agent.return_value = [
             {
                 "customer_id": "customer-1",
-                "recommendations": ["action-1", "action-2"]
+                "action_type": "follow_up",
+                "priority": 80
             },
             {
-                "customer_id": "customer-2",
-                "recommendations": ["action-3"]
+                "customer_id": None,
+                "action_type": "review_pipeline",
+                "priority": 60
             }
         ]
-        mock_response.raise_for_status = MagicMock()
-        
-        mock_client_instance = AsyncMock()
-        mock_client_instance.post = AsyncMock(return_value=mock_response)
-        mock_client.return_value.__aenter__.return_value = mock_client_instance
-        
-        # Make request
+
         response = client.post("/nba/analyze")
-        
+
         assert response.status_code == 200
         data = response.json()
         assert "analyzed" in data
-        assert data["analyzed"] == 2
+        assert data["analyzed"] == len(mock_agent.return_value)
         assert "recommendations" in data
 
 
@@ -288,17 +266,19 @@ class TestErrorHandling:
         
         assert response.status_code == 500
     
+    @patch('src.main.vector_nba_agent.generate_prioritized_recommendations', new_callable=AsyncMock)
     @patch('httpx.AsyncClient')
-    def test_get_nba_backend_error(self, mock_client):
+    def test_get_nba_backend_error(self, mock_client, mock_agent):
         """Test NBA fetch when backend returns error"""
+        mock_agent.side_effect = Exception("Vector agent failure")
         # Mock the httpx client to raise an exception
         mock_client_instance = AsyncMock()
         mock_client_instance.get = AsyncMock(side_effect=Exception("Backend error"))
         mock_client.return_value.__aenter__.return_value = mock_client_instance
-        
+
         # Make request
         response = client.get("/nba?limit=10")
-        
+
         assert response.status_code == 500
 
 

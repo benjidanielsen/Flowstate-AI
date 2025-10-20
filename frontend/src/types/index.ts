@@ -129,3 +129,41 @@ export enum ReminderType {
   OTHER = 'other'
 }
 
+export interface AnalyticsEventRecord {
+  id: string;
+  event_name: string;
+  event_type: string;
+  occurred_at: string;
+  ingested_at: string;
+  customer_id?: string;
+  source?: string;
+}
+
+export interface AnalyticsSummary {
+  events: {
+    total: number;
+    byType: { eventType: string; count: number }[];
+    trend: { date: string; count: number }[];
+  };
+  recommendations: {
+    total: number;
+    byAgent: { agentName: string; count: number }[];
+    topTypes: { recommendationType: string; count: number; averagePriority: number | null }[];
+    averageScoreByAgent: { agentName: string; averageScore: number | null }[];
+  };
+  pipeline: {
+    byStatus: { status: string; count: number }[];
+  };
+}
+
+export interface FeatureFlagEvaluation {
+  flag: {
+    key: string;
+    description?: string;
+    enabled: boolean;
+    rollout_phase?: string;
+    rollout_percentage?: number;
+  };
+  enabledForContext: boolean;
+}
+

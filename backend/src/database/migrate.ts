@@ -168,6 +168,62 @@ const migrations: Migration[] = [
       CREATE INDEX IF NOT EXISTS idx_customer_pipeline_status_pipeline_id ON customer_pipeline_status(pipeline_id);
     `
   }
+  ,
+  {
+    version: 7,
+    up: `
+      CREATE TABLE IF NOT EXISTS analytics_events (
+        id TEXT PRIMARY KEY,
+        event_name TEXT NOT NULL,
+        event_type TEXT NOT NULL,
+        customer_id TEXT,
+        account_id TEXT,
+        user_id TEXT,
+        source TEXT,
+        payload JSONB,
+        metadata JSONB,
+        occurred_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+        ingested_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+        correlation_id TEXT,
+        recommendation_id TEXT
+      );
+
+      CREATE TABLE IF NOT EXISTS recommendation_logs (
+        id TEXT PRIMARY KEY,
+        recommendation_id TEXT NOT NULL,
+        agent_name TEXT,
+        customer_id TEXT,
+        account_id TEXT,
+        recommendation_type TEXT,
+        priority INTEGER,
+        score DOUBLE PRECISION,
+        context JSONB,
+        metadata JSONB,
+        generated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+        accepted BOOLEAN DEFAULT FALSE,
+        action_taken_at TIMESTAMP WITH TIME ZONE,
+        outcome TEXT,
+        feedback JSONB
+      );
+
+      CREATE TABLE IF NOT EXISTS feature_flags (
+        key TEXT PRIMARY KEY,
+        description TEXT,
+        rollout_phase TEXT DEFAULT 'beta',
+        enabled BOOLEAN NOT NULL DEFAULT FALSE,
+        rollout_percentage INTEGER DEFAULT 0,
+        metadata JSONB,
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+      );
+
+      CREATE INDEX IF NOT EXISTS idx_analytics_events_type ON analytics_events(event_type);
+      CREATE INDEX IF NOT EXISTS idx_analytics_events_customer ON analytics_events(customer_id);
+      CREATE INDEX IF NOT EXISTS idx_analytics_events_occurred_at ON analytics_events(occurred_at);
+      CREATE INDEX IF NOT EXISTS idx_recommendation_logs_customer ON recommendation_logs(customer_id);
+      CREATE INDEX IF NOT EXISTS idx_recommendation_logs_generated_at ON recommendation_logs(generated_at);
+    `
+  }
 ];
 
 export async function runMigrations(): Promise<void> {

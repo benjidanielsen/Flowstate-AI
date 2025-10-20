@@ -1,5 +1,17 @@
 import axiosInstance from '../api/axiosInstance';
-import { Customer, Interaction, PipelineStatus, Reminder, EventLog, PipelineStats, Stats } from '../types';
+import type { AxiosError } from 'axios';
+import {
+  Customer,
+  Interaction,
+  PipelineStatus,
+  Reminder,
+  EventLog,
+  PipelineStats,
+  Stats,
+  AnalyticsSummary,
+  AnalyticsEventRecord,
+  FeatureFlagEvaluation,
+} from '../types';
 
 // Customer API
 export const aiDecisionLogApi = {
@@ -114,6 +126,49 @@ export const statsApi = {
   },
   getPipelineStats: async (): Promise<PipelineStats> => {
     const response = await axiosInstance.get('/stats/pipeline');
+    return response.data;
+  },
+};
+
+export const analyticsApi = {
+  getSummary: async (): Promise<AnalyticsSummary> => {
+    const response = await axiosInstance.get('/analytics/summary');
+    return response.data;
+  },
+  getRecentEvents: async (params?: {
+    limit?: number;
+    customerId?: string;
+    eventType?: string;
+  }): Promise<AnalyticsEventRecord[]> => {
+    const response = await axiosInstance.get('/analytics/events', { params });
+    return response.data;
+  },
+};
+
+export const featureFlagApi = {
+  evaluate: async (key: string): Promise<FeatureFlagEvaluation> => {
+    try {
+      const response = await axiosInstance.get(`/feature-flags/${key}`);
+      return response.data;
+    } catch (error) {
+      const axiosError = error as AxiosError;
+      if (axiosError.response && axiosError.response.status === 404) {
+        return {
+          flag: {
+            key,
+            description: undefined,
+            enabled: false,
+            rollout_phase: undefined,
+            rollout_percentage: undefined,
+          },
+          enabledForContext: false,
+        };
+      }
+      throw error;
+    }
+  },
+  list: async (): Promise<FeatureFlagEvaluation['flag'][]> => {
+    const response = await axiosInstance.get('/feature-flags');
     return response.data;
   },
 };

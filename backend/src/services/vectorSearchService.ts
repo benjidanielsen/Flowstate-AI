@@ -3,6 +3,9 @@ import { documents } from '../database/schema';
 import { sql as sqlTemplate } from 'drizzle-orm';
 import embeddingService from './embeddingService';
 import logger from '../utils/logger';
+import analyticsIngestionService from './analyticsIngestionService';
+import featureFlagService from './featureFlagService';
+import { v4 as uuidv4 } from 'uuid';
 
 export interface SearchResult {
   id: number;
@@ -253,12 +256,47 @@ export class VectorSearchService {
 
       logger.info(`Found ${searchResults.rows.length} recommendations`);
 
-      return searchResults.rows.map((row: any) => ({
+      const formattedResults = searchResults.rows.map((row: any) => ({
         id: row.id,
         content: row.content,
         metadata: row.metadata,
         similarity: row.similarity,
       }));
+
+      featureFlagService
+        .shouldServe('analytics_recommendation_logging', {
+          fallbackId: agentName,
+        })
+        .then((enabled) => {
+          if (!enabled) {
+            return;
+          }
+
+          const recommendationBatchId = uuidv4();
+          Promise.all(
+            formattedResults.map((result, index) =>
+              analyticsIngestionService.recordRecommendation({
+                recommendationId: `${recommendationBatchId}-${result.id}`,
+                agentName,
+                recommendationType: result.metadata?.type || 'vector_search',
+                priority: typeof result.similarity === 'number' ? Math.round(result.similarity * 100) : null,
+                score: typeof result.similarity === 'number' ? result.similarity : null,
+                context: {
+                  basedOnDocumentIds: documentIds,
+                  rank: index + 1,
+                  documentMetadata: result.metadata,
+                },
+                metadata: {
+                  correlationId: recommendationBatchId,
+                  similarity: result.similarity,
+                },
+              })
+            )
+          ).catch((err) => logger.warn('Failed to log recommendation analytics', err));
+        })
+        .catch((err) => logger.warn('Failed to evaluate recommendation analytics feature flag', err));
+
+      return formattedResults;
     } catch (error: any) {
       logger.error('Error getting recommendations:', error);
       throw new Error(`Failed to get recommendations: ${error.message}`);

@@ -173,8 +173,56 @@ export interface Database {
   interactions: Interaction;
   reminders: Reminder;
   event_logs: EventLog;
+  analytics_events: AnalyticsEvent;
+  recommendation_logs: RecommendationLog;
+  feature_flags: FeatureFlag;
   users: User;
   external_integrations: ExternalIntegration;
   kpis: KPI;
+}
+
+export interface AnalyticsEvent {
+  id: string;
+  event_name: string;
+  event_type: string;
+  customer_id?: string | null;
+  account_id?: string | null;
+  user_id?: string | null;
+  source?: string | null;
+  payload?: Record<string, any> | null;
+  metadata?: Record<string, any> | null;
+  occurred_at: Date;
+  ingested_at: Date;
+  correlation_id?: string | null;
+  recommendation_id?: string | null;
+}
+
+export interface RecommendationLog {
+  id: string;
+  recommendation_id: string;
+  agent_name?: string | null;
+  customer_id?: string | null;
+  account_id?: string | null;
+  recommendation_type?: string | null;
+  priority?: number | null;
+  score?: number | null;
+  context?: Record<string, any> | null;
+  metadata?: Record<string, any> | null;
+  generated_at: Date;
+  accepted?: boolean | null;
+  action_taken_at?: Date | null;
+  outcome?: string | null;
+  feedback?: Record<string, any> | null;
+}
+
+export interface FeatureFlag {
+  key: string;
+  description?: string | null;
+  rollout_phase?: string | null;
+  enabled: boolean;
+  rollout_percentage?: number | null;
+  metadata?: Record<string, any> | null;
+  created_at: Date;
+  updated_at: Date;
 }
 

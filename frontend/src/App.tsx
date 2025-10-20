@@ -6,6 +6,7 @@ import Dashboard from './pages/Dashboard';
 import AIDecisionLogs from './pages/AIDecisionLogs';
 import EvolutionDashboard from './pages/EvolutionDashboard';
 import KPIDashboard from './pages/KPIDashboard';
+import AnalyticsDashboard from './pages/analytics';
 
 function App() {
   return (
@@ -49,6 +50,14 @@ function App() {
           element={
             <ProtectedRoute>
               <KPIDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/analytics"
+          element={
+            <ProtectedRoute>
+              <AnalyticsDashboard />
             </ProtectedRoute>
           }
         />
