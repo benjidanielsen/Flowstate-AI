@@ -1,9 +1,11 @@
+import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { Pool } from 'pg';
 import logger from '../utils/logger';
 
 class DatabaseManager {
   private static instance: DatabaseManager;
   private pool: Pool | null = null;
+  private supabaseClient: SupabaseClient | null = null;
 
   private constructor() {}
 
@@ -14,25 +16,59 @@ class DatabaseManager {
     return DatabaseManager.instance;
   }
 
+  private initialiseSupabaseClient(): SupabaseClient {
+    if (this.supabaseClient) {
+      return this.supabaseClient;
+    }
+
+    const supabaseUrl = process.env.SUPABASE_URL;
+    const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY ?? process.env.SUPABASE_ANON_KEY;
+
+    if (!supabaseUrl || !serviceRoleKey) {
+      logger.error('Supabase credentials are not configured.');
+      throw new Error('SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY (or SUPABASE_ANON_KEY) must be defined.');
+    }
+
+    this.supabaseClient = createClient(supabaseUrl, serviceRoleKey, {
+      auth: {
+        autoRefreshToken: false,
+        persistSession: false,
+      },
+    });
+
+    logger.info('Supabase client initialised.');
+
+    return this.supabaseClient;
+  }
+
+  public getClient(): SupabaseClient {
+    return this.initialiseSupabaseClient();
+  }
+
   public async connect(): Promise<Pool> {
     if (this.pool) {
       return this.pool;
     }
 
-    const connectionString = process.env.DATABASE_URL;
+    // Ensure Supabase client is created so credentials are validated early.
+    this.initialiseSupabaseClient();
+
+    const connectionString = process.env.SUPABASE_DB_URL ?? process.env.DATABASE_URL;
 
     if (!connectionString) {
-      logger.error('DATABASE_URL is not defined in environment variables.');
-      throw new Error('DATABASE_URL is not defined.');
+      logger.error('No database connection string configured for Supabase.');
+      throw new Error('SUPABASE_DB_URL or DATABASE_URL must be defined.');
     }
 
     try {
       this.pool = new Pool({
         connectionString,
-        // You might want to add more pool options here, e.g., max, idleTimeoutMillis
+        ssl: connectionString.includes('supabase.co')
+          ? { rejectUnauthorized: false }
+          : undefined,
       });
-      await this.pool.query('SELECT 1'); // Test connection
-      logger.info('Connected to Supabase PostgreSQL database');
+      await this.pool.query('SELECT 1');
+      logger.info('Connected to Supabase PostgreSQL database.');
       return this.pool;
     } catch (error) {
       logger.error('Error connecting to Supabase database:', error);
