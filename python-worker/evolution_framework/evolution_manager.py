@@ -417,3 +417,9 @@ class EvolutionManager:
         if self._conn and not self._conn.closed:
             self._conn.close()
 
+
+
+
+class FlowstateEvolutionManager(EvolutionManager):
+    """Backwards compatible alias used by the FastAPI worker."""
+    pass
