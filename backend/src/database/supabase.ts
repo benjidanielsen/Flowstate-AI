@@ -1,10 +1,12 @@
 import { drizzle } from 'drizzle-orm/node-postgres';
 import { Pool } from 'pg';
+import { SupabaseClient } from '@supabase/supabase-js';
 import * as schema from './schema';
 import logger from '../utils/logger';
 import DatabaseManager from './index';
 
 let _dbInstance: ReturnType<typeof drizzle> | null = null;
+let _supabaseClient: SupabaseClient | null = null;
 
 export function getDbInstance(): ReturnType<typeof drizzle> {
   if (!_dbInstance) {
@@ -18,6 +20,13 @@ export function getDbInstance(): ReturnType<typeof drizzle> {
     }
   }
   return _dbInstance;
+}
+
+export function getSupabaseClient(): SupabaseClient {
+  if (!_supabaseClient) {
+    _supabaseClient = DatabaseManager.getInstance().getClient();
+  }
+  return _supabaseClient;
 }
 
 // Test connection function (now uses the pool from DatabaseManager)
