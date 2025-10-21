@@ -230,7 +230,11 @@ const Customers: React.FC = () => {
         ) : (
           <div className="divide-y divide-gray-200">
             {customers.map((customer) => (
-              <div key={customer.id} className="p-6 hover:bg-gray-50 transition-colors border-b border-gray-100 last:border-b-0">
+              <div
+                key={customer.id}
+                data-testid={`customer-card-${customer.id}`}
+                className="p-6 hover:bg-gray-50 transition-colors border-b border-gray-100 last:border-b-0"
+              >
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                   <div className="flex-1 min-w-0">
                     <h3 className="text-lg font-semibold text-gray-900 truncate">
@@ -328,6 +332,8 @@ interface CreateCustomerModalProps {
   onSuccess: () => void;
 }
 
+type CustomerCreateInput = Omit<Customer, 'id' | 'created_at' | 'updated_at'>;
+
 const CreateCustomerModal: React.FC<CreateCustomerModalProps> = ({ onClose, onSuccess }) => {
   const [formData, setFormData] = useState({
     name: '',
@@ -340,11 +346,34 @@ const CreateCustomerModal: React.FC<CreateCustomerModalProps> = ({ onClose, onSu
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.name) return;
+    const trimmedName = formData.name.trim();
+    if (!trimmedName) {
+      return;
+    }
 
     try {
       setLoading(true);
-      await customerApi.create(formData);
+      const payload: CustomerCreateInput = {
+        name: trimmedName,
+        status: formData.status,
+      };
+
+      const email = formData.email.trim();
+      if (email) {
+        payload.email = email;
+      }
+
+      const phone = formData.phone.trim();
+      if (phone) {
+        payload.phone = phone;
+      }
+
+      const notes = formData.notes.trim();
+      if (notes) {
+        payload.notes = notes;
+      }
+
+      await customerApi.create(payload);
       onSuccess();
     } catch (error) {
       console.error('Error creating customer:', error);
@@ -360,8 +389,9 @@ const CreateCustomerModal: React.FC<CreateCustomerModalProps> = ({ onClose, onSu
         
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Name *</label>
+            <label htmlFor="customer-name" className="block text-sm font-medium text-gray-700 mb-1">Name *</label>
             <input
+              id="customer-name"
               type="text"
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
@@ -369,30 +399,33 @@ const CreateCustomerModal: React.FC<CreateCustomerModalProps> = ({ onClose, onSu
               required
             />
           </div>
-          
+
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+            <label htmlFor="customer-email" className="block text-sm font-medium text-gray-700 mb-1">Email</label>
             <input
+              id="customer-email"
               type="email"
               value={formData.email}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
             />
           </div>
-          
+
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+            <label htmlFor="customer-phone" className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
             <input
+              id="customer-phone"
               type="tel"
               value={formData.phone}
               onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
             />
           </div>
-          
+
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+            <label htmlFor="customer-status" className="block text-sm font-medium text-gray-700 mb-1">Status</label>
             <select
+              id="customer-status"
               value={formData.status}
               onChange={(e) => setFormData({ ...formData, status: e.target.value as PipelineStatus })}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
@@ -406,8 +439,9 @@ const CreateCustomerModal: React.FC<CreateCustomerModalProps> = ({ onClose, onSu
           </div>
           
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Notes</label>
+            <label htmlFor="customer-notes" className="block text-sm font-medium text-gray-700 mb-1">Notes</label>
             <textarea
+              id="customer-notes"
               value={formData.notes}
               onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
               rows={3}

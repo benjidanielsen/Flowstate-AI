@@ -310,6 +310,7 @@ const CustomerDetail: React.FC = () => {
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-xl font-semibold text-gray-900">Reminders</h2>
               <button
+                data-testid="add-reminder-button"
                 onClick={() => setShowAddReminder(true)}
                 className="flex items-center space-x-2 px-3 py-2 text-sm bg-primary-600 text-white rounded-md hover:bg-primary-700 transition-colors"
               >
@@ -495,13 +496,41 @@ const CustomerEditForm: React.FC<CustomerEditFormProps> = ({ customer, onSave, o
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     try {
       setLoading(true);
-      const updatedCustomer = await customerApi.update(customer.id, {
-        ...formData,
-        next_action_date: formData.next_action_date ? new Date(formData.next_action_date) : undefined
-      });
+      const updates: Partial<Customer> = { status: formData.status };
+
+      const trimmedName = formData.name.trim();
+      if (trimmedName) {
+        updates.name = trimmedName;
+      }
+
+      const email = formData.email.trim();
+      if (email) {
+        updates.email = email;
+      } else if (customer.email) {
+        updates.email = undefined;
+      }
+
+      const phone = formData.phone.trim();
+      if (phone) {
+        updates.phone = phone;
+      } else if (customer.phone) {
+        updates.phone = undefined;
+      }
+
+      const notes = formData.notes.trim();
+      updates.notes = notes || undefined;
+
+      const nextAction = formData.next_action.trim();
+      updates.next_action = nextAction || undefined;
+
+      updates.next_action_date = formData.next_action_date
+        ? new Date(formData.next_action_date)
+        : undefined;
+
+      const updatedCustomer = await customerApi.update(customer.id, updates);
       onSave(updatedCustomer);
     } catch (error) {
       console.error('Error updating customer:', error);
@@ -513,8 +542,9 @@ const CustomerEditForm: React.FC<CustomerEditFormProps> = ({ customer, onSave, o
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
+        <label htmlFor="edit-name" className="block text-sm font-medium text-gray-700 mb-1">Name</label>
         <input
+          id="edit-name"
           type="text"
           value={formData.name}
           onChange={(e) => setFormData({ ...formData, name: e.target.value })}
@@ -524,8 +554,9 @@ const CustomerEditForm: React.FC<CustomerEditFormProps> = ({ customer, onSave, o
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+        <label htmlFor="edit-email" className="block text-sm font-medium text-gray-700 mb-1">Email</label>
         <input
+          id="edit-email"
           type="email"
           value={formData.email}
           onChange={(e) => setFormData({ ...formData, email: e.target.value })}
@@ -534,8 +565,9 @@ const CustomerEditForm: React.FC<CustomerEditFormProps> = ({ customer, onSave, o
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+        <label htmlFor="edit-phone" className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
         <input
+          id="edit-phone"
           type="tel"
           value={formData.phone}
           onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
@@ -544,8 +576,9 @@ const CustomerEditForm: React.FC<CustomerEditFormProps> = ({ customer, onSave, o
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+        <label htmlFor="edit-status" className="block text-sm font-medium text-gray-700 mb-1">Status</label>
         <select
+          id="edit-status"
           value={formData.status}
           onChange={(e) => setFormData({ ...formData, status: e.target.value as PipelineStatus })}
           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
@@ -559,8 +592,9 @@ const CustomerEditForm: React.FC<CustomerEditFormProps> = ({ customer, onSave, o
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Next Action</label>
+        <label htmlFor="edit-next-action" className="block text-sm font-medium text-gray-700 mb-1">Next Action</label>
         <input
+          id="edit-next-action"
           type="text"
           value={formData.next_action}
           onChange={(e) => setFormData({ ...formData, next_action: e.target.value })}
@@ -569,8 +603,9 @@ const CustomerEditForm: React.FC<CustomerEditFormProps> = ({ customer, onSave, o
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Next Action Date</label>
+        <label htmlFor="edit-next-action-date" className="block text-sm font-medium text-gray-700 mb-1">Next Action Date</label>
         <input
+          id="edit-next-action-date"
           type="datetime-local"
           value={formData.next_action_date}
           onChange={(e) => setFormData({ ...formData, next_action_date: e.target.value })}
@@ -579,8 +614,9 @@ const CustomerEditForm: React.FC<CustomerEditFormProps> = ({ customer, onSave, o
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Notes</label>
+        <label htmlFor="edit-notes" className="block text-sm font-medium text-gray-700 mb-1">Notes</label>
         <textarea
+          id="edit-notes"
           value={formData.notes}
           onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
           rows={4}

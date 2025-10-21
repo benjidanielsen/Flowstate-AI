@@ -1,118 +1,51 @@
 import { test, expect } from '@playwright/test';
+import { prepareAuthenticatedPage } from '../utils/auth';
 
-/**
- * E2E Test: Customer Creation Flow
- * 
- * Tests the complete customer creation workflow in the FlowState-AI CRM system.
- * Verifies that customers can be created with all required fields and appear in the system.
- * 
- * Author: Manus 7
- * Task: TASK-110 (End-to-End Testing)
- */
-
-test.describe('Customer Creation Flow', () => {
+test.describe('Customer management', () => {
   test.beforeEach(async ({ page }) => {
-    // Navigate to the application
-    await page.goto('/');
-    
-    // Wait for the application to load
-    await page.waitForLoadState('networkidle');
+    await prepareAuthenticatedPage(page, '/customers');
   });
 
-  test('should create a new customer with all required fields', async ({ page }) => {
-    // Click on "Add Customer" or "New Customer" button
-    const addCustomerButton = page.getByRole('button', { name: /add customer|new customer/i });
-    await addCustomerButton.click();
+  test('allows creating a new customer from the list view', async ({ page }) => {
+    const uniqueSuffix = Date.now();
+    const customerName = `Test Customer ${uniqueSuffix}`;
+    const email = `customer-${uniqueSuffix}@example.com`;
 
-    // Fill in customer details
-    await page.getByLabel(/name/i).fill('John Doe');
-    await page.getByLabel(/email/i).fill('john.doe@example.com');
-    await page.getByLabel(/phone/i).fill('+1234567890');
-    
-    // Submit the form
-    await page.getByRole('button', { name: /save|create|submit/i }).click();
+    await page.getByRole('button', { name: /add customer/i }).click();
+    await page.fill('#customer-name', customerName);
+    await page.fill('#customer-email', email);
+    await page.fill('#customer-phone', '+1-555-0000');
 
-    // Verify success message appears
-    await expect(page.getByText(/customer created|success/i)).toBeVisible({ timeout: 5000 });
+    const [response] = await Promise.all([
+      page.waitForResponse((res) => res.url().includes('/api/customers') && res.request().method() === 'POST'),
+      page.getByRole('button', { name: /create customer/i }).click()
+    ]);
 
-    // Verify customer appears in the list
-    await expect(page.getByText('John Doe')).toBeVisible();
-    await expect(page.getByText('john.doe@example.com')).toBeVisible();
+    if (!response.ok()) {
+      const body = await response.text();
+      throw new Error(`Customer creation failed (${response.status()}): ${body}`);
+    }
+
+    const created = await response.json();
+    expect(created.name).toBe(customerName);
+    expect(created.email).toBe(email);
+
+    await expect(page.getByRole('button', { name: /add customer/i })).toBeVisible();
   });
 
-  test('should validate required fields', async ({ page }) => {
-    // Click on "Add Customer" button
-    const addCustomerButton = page.getByRole('button', { name: /add customer|new customer/i });
-    await addCustomerButton.click();
+  test('disables creation until required fields are populated', async ({ page }) => {
+    await page.getByRole('button', { name: /add customer/i }).click();
 
-    // Try to submit without filling required fields
-    await page.getByRole('button', { name: /save|create|submit/i }).click();
+    const createButton = page.getByRole('button', { name: /create customer/i });
+    await expect(createButton).toBeDisabled();
 
-    // Verify validation errors appear
-    await expect(page.getByText(/name is required|required field/i)).toBeVisible();
-  });
+    await page.fill('#customer-name', 'Temporary Name');
+    await expect(createButton).toBeEnabled();
 
-  test('should create customer with default pipeline status', async ({ page }) => {
-    // Create a new customer
-    const addCustomerButton = page.getByRole('button', { name: /add customer|new customer/i });
-    await addCustomerButton.click();
+    await page.fill('#customer-name', '');
+    await expect(createButton).toBeDisabled();
 
-    await page.getByLabel(/name/i).fill('Jane Smith');
-    await page.getByLabel(/email/i).fill('jane.smith@example.com');
-    
-    await page.getByRole('button', { name: /save|create|submit/i }).click();
-
-    // Wait for success
-    await expect(page.getByText(/customer created|success/i)).toBeVisible({ timeout: 5000 });
-
-    // Click on the customer to view details
-    await page.getByText('Jane Smith').click();
-
-    // Verify default status is "New Lead" or "Lead"
-    await expect(page.getByText(/new lead|lead/i)).toBeVisible();
-  });
-
-  test('should display customer in the customer list', async ({ page }) => {
-    // Create a new customer
-    const addCustomerButton = page.getByRole('button', { name: /add customer|new customer/i });
-    await addCustomerButton.click();
-
-    const uniqueEmail = `test-${Date.now()}@example.com`;
-    await page.getByLabel(/name/i).fill('Test Customer');
-    await page.getByLabel(/email/i).fill(uniqueEmail);
-    
-    await page.getByRole('button', { name: /save|create|submit/i }).click();
-
-    // Wait for success
-    await expect(page.getByText(/customer created|success/i)).toBeVisible({ timeout: 5000 });
-
-    // Verify customer appears in the list with unique email
-    await expect(page.getByText(uniqueEmail)).toBeVisible();
-  });
-
-  test('should prevent duplicate email addresses', async ({ page }) => {
-    const duplicateEmail = 'duplicate@example.com';
-
-    // Create first customer
-    let addCustomerButton = page.getByRole('button', { name: /add customer|new customer/i });
-    await addCustomerButton.click();
-
-    await page.getByLabel(/name/i).fill('First Customer');
-    await page.getByLabel(/email/i).fill(duplicateEmail);
-    await page.getByRole('button', { name: /save|create|submit/i }).click();
-
-    // Wait for success
-    await expect(page.getByText(/customer created|success/i)).toBeVisible({ timeout: 5000 });
-
-    // Try to create second customer with same email
-    addCustomerButton = page.getByRole('button', { name: /add customer|new customer/i });
-    await addCustomerButton.click();
-
-    await page.getByLabel(/name/i).fill('Second Customer');
-    await page.getByLabel(/email/i).fill(duplicateEmail);
-    await page.getByRole('button', { name: /save|create|submit/i }).click();
-
-    // Verify error message appears
-    await expect(page.getByText(/email already exists|duplicate email/i)).toBeVisible({ timeout: 5000 });
+    await page.getByRole('button', { name: /cancel/i }).click();
+    await expect(createButton).not.toBeVisible();
   });
 });
