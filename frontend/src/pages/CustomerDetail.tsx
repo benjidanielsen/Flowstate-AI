@@ -3,7 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { ArrowLeft, Edit, Phone, Mail, Calendar, Plus, MessageSquare, ArrowRight, CheckCircle } from 'lucide-react';
 import { customerApi, interactionApi, reminderApi } from '../services/api';
 import AddReminderModal from '../components/AddReminderModal';
-import { Customer, Interaction, PipelineStatus, InteractionType, Reminder } from '../types';
+import { Customer, Interaction, PipelineStatus, InteractionType, Reminder, PIPELINE_STATUS_LABELS } from '../types';
 import { format } from 'date-fns';
 import QualificationQuestionnaire from '../components/QualificationQuestionnaire';
 
@@ -58,9 +58,9 @@ const CustomerDetail: React.FC = () => {
 
   const getStatusColor = (status: PipelineStatus) => {
     switch (status) {
-      case PipelineStatus.LEAD:
+      case PipelineStatus.NEW_LEAD:
         return 'bg-gray-100 text-gray-800 border-gray-300';
-      case PipelineStatus.RELATIONSHIP:
+      case PipelineStatus.WARMING_UP:
         return 'bg-blue-100 text-blue-800 border-blue-300';
       case PipelineStatus.INVITED:
         return 'bg-yellow-100 text-yellow-800 border-yellow-300';
@@ -70,8 +70,12 @@ const CustomerDetail: React.FC = () => {
         return 'bg-purple-100 text-purple-800 border-purple-300';
       case PipelineStatus.FOLLOW_UP:
         return 'bg-indigo-100 text-indigo-800 border-indigo-300';
-      case PipelineStatus.SIGNED_UP:
+      case PipelineStatus.CLOSED_WON:
         return 'bg-green-100 text-green-800 border-green-300';
+      case PipelineStatus.NOT_NOW:
+        return 'bg-red-100 text-red-800 border-red-300';
+      case PipelineStatus.LONG_TERM_NURTURE:
+        return 'bg-teal-100 text-teal-800 border-teal-300';
       default:
         return 'bg-gray-100 text-gray-800 border-gray-300';
     }
@@ -134,7 +138,7 @@ const CustomerDetail: React.FC = () => {
             <Edit size={16} />
             <span>{editMode ? 'Cancel Edit' : 'Edit'}</span>
           </button>
-          {customer.status !== PipelineStatus.SIGNED_UP && (
+          {customer.status !== PipelineStatus.CLOSED_WON && (
             <button
               onClick={handleMoveToNextStage}
               className="flex items-center space-x-2 px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition-colors"
@@ -166,7 +170,7 @@ const CustomerDetail: React.FC = () => {
                 <div className="flex items-center justify-between">
                   <span className="text-sm font-medium text-gray-500">Status</span>
                   <span className={`px-3 py-1 rounded-full text-sm font-medium border ${getStatusColor(customer.status)}`}>
-                    {customer.status}
+                    {PIPELINE_STATUS_LABELS[customer.status] ?? customer.status}
                   </span>
                 </div>
 
@@ -212,7 +216,7 @@ const CustomerDetail: React.FC = () => {
             <div className="bg-white rounded-lg shadow p-6 mt-6">
               <div className="flex items-center space-x-2 mb-4">
                 <CheckCircle size={20} className="text-green-600" />
-                <h2 className="text-xl font-semibold text-gray-900">Prospect's WHY</h2>
+                <h2 className="text-xl font-semibold text-gray-900">Prospect’s WHY</h2>
               </div>
               <div className="p-4 bg-green-50 rounded-lg border border-green-200">
                 <p className="text-sm text-gray-700 whitespace-pre-wrap">{customer.prospect_why}</p>
@@ -548,7 +552,7 @@ const CustomerEditForm: React.FC<CustomerEditFormProps> = ({ customer, onSave, o
         >
           {Object.values(PipelineStatus).map((status) => (
             <option key={status} value={status}>
-              {status}
+              {PIPELINE_STATUS_LABELS[status] ?? status}
             </option>
           ))}
         </select>
@@ -614,21 +618,21 @@ interface AddInteractionModalProps {
 const AddInteractionModal: React.FC<AddInteractionModalProps> = ({ customerId, onClose, onSuccess }) => {
   const [formData, setFormData] = useState({
     type: InteractionType.NOTE,
-    content: '',
+    summary: '',
     scheduled_for: ''
   });
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.content) return;
+    if (!formData.summary) return;
 
     try {
       setLoading(true);
       await interactionApi.create(customerId, {
-        customer_id: customerId,
         type: formData.type,
-        content: formData.content,
+        summary: formData.summary,
+        interaction_date: new Date(),
         scheduled_for: formData.scheduled_for ? new Date(formData.scheduled_for) : undefined,
         completed: false
       });
@@ -662,10 +666,10 @@ const AddInteractionModal: React.FC<AddInteractionModalProps> = ({ customerId, o
           </div>
           
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Content</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Summary</label>
             <textarea
-              value={formData.content}
-              onChange={(e) => setFormData({ ...formData, content: e.target.value })}
+              value={formData.summary}
+              onChange={(e) => setFormData({ ...formData, summary: e.target.value })}
               rows={4}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
               required
@@ -692,7 +696,7 @@ const AddInteractionModal: React.FC<AddInteractionModalProps> = ({ customerId, o
             </button>
             <button
               type="submit"
-              disabled={loading || !formData.content}
+              disabled={loading || !formData.summary}
               className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition-colors disabled:opacity-50"
             >
               {loading ? 'Adding...' : 'Add Interaction'}

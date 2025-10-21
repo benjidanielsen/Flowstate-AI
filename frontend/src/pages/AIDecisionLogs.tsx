@@ -8,30 +8,48 @@ const AIDecisionLogs: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
+  const extractErrorMessage = (err: unknown): string => {
+    if (err && typeof err === 'object') {
+      const potentialError = err as {
+        response?: { data?: { message?: string } };
+        message?: string;
+      };
+
+      return potentialError.response?.data?.message ?? potentialError.message ?? 'Unknown error';
+    }
+
+    return 'Unknown error';
+  };
+
   useEffect(() => {
     fetchDecisionLogs();
   }, []);
 
-  const fetchDecisionLogs = async () => {
+  const fetchDecisionLogs = async (): Promise<void> => {
     try {
       setLoading(true);
-      const response = await aiDecisionLogApi.getAIDecisionLogs();
-      setLogs(response.data);
-    } catch (err: any) {
-      setError(err.response?.data?.message || err.message);
+      const apiLogs = await aiDecisionLogApi.getAIDecisionLogs();
+      setLogs(apiLogs);
+    } catch (err: unknown) {
+      const message = extractErrorMessage(err);
+      setError(message);
       toast.error("Failed to fetch AI decision logs.");
     } finally {
       setLoading(false);
     }
   };
 
-  const handleUpdateStatus = async (logId: number, newStatus: 'approved' | 'rejected' | 'executed') => {
+  const handleUpdateStatus = async (
+    logId: number,
+    newStatus: 'approved' | 'rejected' | 'executed'
+  ): Promise<void> => {
     try {
       await aiDecisionLogApi.updateDecisionStatus(logId, newStatus, 'Human Reviewer'); // Placeholder for actual reviewer
       toast.success(`Decision log ${logId} ${newStatus} successfully.`);
       fetchDecisionLogs(); // Refresh logs
-    } catch (err: any) {
-      toast.error(`Failed to update status for log ${logId}: ${err.response?.data?.message || err.message}`);
+    } catch (err: unknown) {
+      const message = extractErrorMessage(err);
+      toast.error(`Failed to update status for log ${logId}: ${message}`);
     }
   };
 

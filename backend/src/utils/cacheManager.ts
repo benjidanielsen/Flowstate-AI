@@ -248,6 +248,157 @@ export class CacheManager {
   }
 }
 
+class InMemoryCacheManager {
+  private readonly store = new Map<string, { value: string; expiresAt: number | null }>();
+  private readonly DEFAULT_TTL = 3600; // 1 hour
+  private readonly DEFAULT_PREFIX = 'cache:';
+
+  private buildKey(key: string, prefix?: string): string {
+    return `${prefix ?? this.DEFAULT_PREFIX}${key}`;
+  }
+
+  private purgeIfExpired(fullKey: string) {
+    const entry = this.store.get(fullKey);
+    if (entry && entry.expiresAt !== null && entry.expiresAt <= Date.now()) {
+      this.store.delete(fullKey);
+    }
+  }
+
+  async get<T>(key: string, options?: CacheOptions): Promise<T | null> {
+    const fullKey = this.buildKey(key, options?.prefix);
+    this.purgeIfExpired(fullKey);
+    const entry = this.store.get(fullKey);
+    if (!entry) {
+      return null;
+    }
+
+    try {
+      return JSON.parse(entry.value) as T;
+    } catch (error) {
+      logger.error('In-memory cache parse error:', error);
+      this.store.delete(fullKey);
+      return null;
+    }
+  }
+
+  async set<T>(key: string, value: T, options?: CacheOptions): Promise<void> {
+    const fullKey = this.buildKey(key, options?.prefix);
+    const ttlSeconds = options?.ttl ?? this.DEFAULT_TTL;
+    const expiresAt = ttlSeconds > 0 ? Date.now() + ttlSeconds * 1000 : null;
+    this.store.set(fullKey, { value: JSON.stringify(value), expiresAt });
+  }
+
+  async del(key: string, options?: CacheOptions): Promise<void> {
+    const fullKey = this.buildKey(key, options?.prefix);
+    this.store.delete(fullKey);
+  }
+
+  async exists(key: string, options?: CacheOptions): Promise<boolean> {
+    const fullKey = this.buildKey(key, options?.prefix);
+    this.purgeIfExpired(fullKey);
+    return this.store.has(fullKey);
+  }
+
+  async getOrSet<T>(key: string, factory: () => Promise<T>, options?: CacheOptions): Promise<T> {
+    const cached = await this.get<T>(key, options);
+    if (cached !== null) {
+      return cached;
+    }
+
+    const value = await factory();
+    await this.set(key, value, options);
+    return value;
+  }
+
+  async invalidatePattern(pattern: string, options?: CacheOptions): Promise<number> {
+    const prefix = options?.prefix ?? this.DEFAULT_PREFIX;
+    const regex = new RegExp(`^${prefix}${pattern.replace(/[*]/g, '.*')}$`);
+    let removed = 0;
+    for (const key of [...this.store.keys()]) {
+      if (regex.test(key)) {
+        this.store.delete(key);
+        removed += 1;
+      }
+    }
+    return removed;
+  }
+
+  async invalidatePrefix(prefix: string): Promise<number> {
+    const regex = new RegExp(`^${prefix}`);
+    let removed = 0;
+    for (const key of [...this.store.keys()]) {
+      if (regex.test(key)) {
+        this.store.delete(key);
+        removed += 1;
+      }
+    }
+    return removed;
+  }
+
+  async getTTL(key: string, options?: CacheOptions): Promise<number> {
+    const fullKey = this.buildKey(key, options?.prefix);
+    this.purgeIfExpired(fullKey);
+    const entry = this.store.get(fullKey);
+    if (!entry || entry.expiresAt === null) {
+      return -1;
+    }
+    return Math.max(0, Math.floor((entry.expiresAt - Date.now()) / 1000));
+  }
+
+  async refreshTTL(key: string, options?: CacheOptions): Promise<void> {
+    const fullKey = this.buildKey(key, options?.prefix);
+    const entry = this.store.get(fullKey);
+    if (!entry) {
+      return;
+    }
+    const ttlSeconds = options?.ttl ?? this.DEFAULT_TTL;
+    entry.expiresAt = ttlSeconds > 0 ? Date.now() + ttlSeconds * 1000 : null;
+    this.store.set(fullKey, entry);
+  }
+
+  async increment(key: string, options?: CacheOptions): Promise<number> {
+    const current = await this.get<number>(key, options);
+    const next = (current ?? 0) + 1;
+    await this.set(key, next, options);
+    return next;
+  }
+
+  async decrement(key: string, options?: CacheOptions): Promise<number> {
+    const current = await this.get<number>(key, options);
+    const next = (current ?? 0) - 1;
+    await this.set(key, next, options);
+    return next;
+  }
+
+  async mset(entries: Array<{ key: string; value: any }>, options?: CacheOptions): Promise<void> {
+    await Promise.all(entries.map(entry => this.set(entry.key, entry.value, options)));
+  }
+
+  async mget<T>(keys: string[], options?: CacheOptions): Promise<Array<T | null>> {
+    return Promise.all(keys.map(key => this.get<T>(key, options)));
+  }
+
+  async getStats(prefix?: string): Promise<{ keyCount: number; memoryUsed: string }> {
+    const regex = prefix ? new RegExp(`^${prefix}`) : null;
+    const keys = regex ? [...this.store.keys()].filter(key => regex.test(key)) : this.store.keys();
+    const keyCount = regex ? [...keys].length : this.store.size;
+    return { keyCount, memoryUsed: 'in-memory' };
+  }
+
+  async clear(): Promise<void> {
+    this.store.clear();
+  }
+
+  async close(): Promise<void> {
+    this.store.clear();
+  }
+}
+
 // Export singleton instance
-export const cacheManager = new CacheManager();
+const redisUrl = process.env.REDIS_URL;
+export const cacheManager = redisUrl ? new CacheManager(redisUrl) : new InMemoryCacheManager();
+
+if (!redisUrl) {
+  logger.warn('Redis URL not configured; using in-memory cache fallback.');
+}
 

@@ -2,11 +2,9 @@ import { Request, Response, NextFunction } from 'express';
 import { v4 as uuidv4 } from 'uuid';
 import { safeLogger } from '../utils/piiRedaction';
 
-declare global {
-  namespace Express {
-    interface Request {
-      correlationId?: string;
-    }
+declare module 'express-serve-static-core' {
+  interface Request {
+    correlationId?: string;
   }
 }
 
@@ -25,17 +23,27 @@ export function correlationIdMiddleware(req: Request, res: Response, next: NextF
   const originalError = safeLogger.error;
   const originalDebug = safeLogger.debug;
 
+  const mergeMeta = (meta?: unknown) => {
+    if (typeof meta === 'object' && meta !== null) {
+      return { correlationId, ...(meta as Record<string, unknown>) };
+    }
+    if (typeof meta !== 'undefined') {
+      return { correlationId, meta };
+    }
+    return { correlationId };
+  };
+
   safeLogger.info = (message: string, meta?: unknown) => {
-    originalInfo(message, { correlationId, ...meta });
+    originalInfo(message, mergeMeta(meta));
   };
   safeLogger.warn = (message: string, meta?: unknown) => {
-    originalWarn(message, { correlationId, ...meta });
+    originalWarn(message, mergeMeta(meta));
   };
   safeLogger.error = (message: string, meta?: unknown) => {
-    originalError(message, { correlationId, ...meta });
+    originalError(message, mergeMeta(meta));
   };
   safeLogger.debug = (message: string, meta?: unknown) => {
-    originalDebug(message, { correlationId, ...meta });
+    originalDebug(message, mergeMeta(meta));
   };
 
   // Reset logger functions after the request is processed

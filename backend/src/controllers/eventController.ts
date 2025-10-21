@@ -97,7 +97,10 @@ export class EventController {
 
   getByCustomer = async (req: Request, res: Response) => {
     try {
-      const { customerId } = req.params;
+      const customerId = (req.params.customerId || req.params.id) as string | undefined;
+      if (!customerId) {
+        return res.status(400).json({ error: 'customerId is required' });
+      }
       const limit = Math.min(parseInt((req.query.limit as string) || '50', 10), 500);
       const events = await this.eventLogService.getEventsByCustomer(customerId, limit);
       res.json(events);

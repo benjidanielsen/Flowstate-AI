@@ -10,6 +10,19 @@ const Login: React.FC = () => {
   const navigate = useNavigate();
   const { login } = useAuth();
 
+  const extractErrorMessage = (err: unknown): string => {
+    if (err && typeof err === 'object') {
+      const potentialError = err as {
+        response?: { data?: { message?: string } };
+        message?: string;
+      };
+
+      return potentialError.response?.data?.message ?? potentialError.message ?? 'Login failed';
+    }
+
+    return 'Login failed';
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
@@ -17,8 +30,8 @@ const Login: React.FC = () => {
       const response = await axiosInstance.post('/auth/login', { username, password });
       login(response.data.token);
       navigate('/dashboard'); // Redirect to dashboard on successful login
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Login failed');
+    } catch (err: unknown) {
+      setError(extractErrorMessage(err));
     }
   };
 
