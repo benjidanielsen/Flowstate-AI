@@ -1,33 +1,14 @@
 import { Router } from 'express';
 import { interactionController } from '../controllers/interactionController';
-import { authenticateToken } from '../middleware/authMiddleware';
 
 const router = Router();
 
-router.post(
-  '/',
-  authenticateToken,
-  interactionController.createInteraction
-);
-router.get(
-  '/customer/:customerId',
-  authenticateToken,
-  interactionController.getInteractionsByCustomerId
-);
-router.get(
-  '/:id',
-  authenticateToken,
-  interactionController.getInteractionById
-);
-router.put(
-  '/:id',
-  authenticateToken,
-  interactionController.updateInteraction
-);
-router.delete(
-  '/:id',
-  authenticateToken,
-  interactionController.deleteInteraction
-);
+router.get('/upcoming', interactionController.getUpcomingInteractions);
+router.post('/:id/complete', interactionController.completeInteraction);
+router.post('/', interactionController.createInteraction);
+router.get('/customer/:customerId', interactionController.getInteractionsByCustomerId);
+router.get('/:id', interactionController.getInteractionById);
+router.put('/:id', interactionController.updateInteraction);
+router.delete('/:id', interactionController.deleteInteraction);
 
 export default router;

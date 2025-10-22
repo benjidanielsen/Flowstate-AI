@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { requireAuth } from '../middleware/auth';
+import { requireAuth } from '../middleware/authMiddleware';
 import { safeLogger } from '../utils/piiRedaction';
 
 const router = Router();

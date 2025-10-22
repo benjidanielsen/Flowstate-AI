@@ -63,13 +63,39 @@ export class ReminderController {
 
   getRemindersByCustomerId = async (req: Request, res: Response) => {
     try {
-      const { customerId } = req.params;
+      const customerId = (req.params.customerId || req.params.id) as string | undefined;
+      if (!customerId) {
+        return res.status(400).json({ error: 'customerId is required' });
+      }
       const reminders = await this.reminderService.getRemindersByCustomerId(customerId);
       res.json(reminders);
     } catch (err) {
       console.error('Error getting reminders by customer ID:', err);
       res.status(500).json({ error: 'Internal server error' });
     }
+  };
+
+  createForCustomer = async (req: Request, res: Response) => {
+    req.body = { ...req.body, customer_id: req.params.id || req.params.customerId };
+    return this.create(req, res);
+  };
+
+  updateForCustomer = async (req: Request, res: Response) => {
+    const reminderId = req.params.reminderId;
+    if (!reminderId) {
+      return res.status(400).json({ error: 'reminderId is required' });
+    }
+    req.params.id = reminderId;
+    return this.update(req, res);
+  };
+
+  deleteForCustomer = async (req: Request, res: Response) => {
+    const reminderId = req.params.reminderId;
+    if (!reminderId) {
+      return res.status(400).json({ error: 'reminderId is required' });
+    }
+    req.params.id = reminderId;
+    return this.delete(req, res);
   };
 
   update = async (req: Request, res: Response) => {
