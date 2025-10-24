@@ -4,13 +4,14 @@ import { interactionService } from '../services/interactionService';
 export const interactionController = {
   async createInteraction(req: Request, res: Response) {
     try {
-      const { customer_id, type, summary, notes, interaction_date } = req.body;
-      const newInteraction = await interactionService.create({
+      const { customer_id, type, content, notes, scheduled_for, completed } = req.body;
+      const newInteraction = await interactionService.createInteraction({
         customer_id,
         type,
-        summary,
+        content,
         notes,
-        interaction_date: interaction_date ? new Date(interaction_date) : new Date(),
+        scheduled_for: scheduled_for ? new Date(scheduled_for) : undefined,
+        completed,
       });
       res.status(201).json(newInteraction);
     } catch (error) {
@@ -22,7 +23,7 @@ export const interactionController = {
   async getInteractionsByCustomerId(req: Request, res: Response) {
     try {
       const { customerId } = req.params;
-      const interactions = await interactionService.getByCustomerId(customerId);
+      const interactions = await interactionService.getInteractionsByCustomer(customerId);
       res.status(200).json(interactions);
     } catch (error) {
       console.error("Error fetching interactions:", error);
@@ -33,7 +34,7 @@ export const interactionController = {
   async getInteractionById(req: Request, res: Response) {
     try {
       const { id } = req.params;
-      const interaction = await interactionService.getById(id);
+      const interaction = await interactionService.getInteractionById(id);
       if (interaction) {
         res.status(200).json(interaction);
       } else {
@@ -48,8 +49,14 @@ export const interactionController = {
   async updateInteraction(req: Request, res: Response) {
     try {
       const { id } = req.params;
-      const updates = req.body;
-      const updatedInteraction = await interactionService.update(id, updates);
+      const { type, content, notes, scheduled_for, completed } = req.body;
+      const updatedInteraction = await interactionService.updateInteraction(id, {
+        type,
+        content,
+        notes,
+        scheduled_for: scheduled_for ? new Date(scheduled_for) : undefined,
+        completed,
+      });
       if (updatedInteraction) {
         res.status(200).json(updatedInteraction);
       } else {
@@ -64,7 +71,7 @@ export const interactionController = {
   async deleteInteraction(req: Request, res: Response) {
     try {
       const { id } = req.params;
-      await interactionService.delete(id);
+      await interactionService.deleteInteraction(id);
       res.status(204).send();
     } catch (error) {
       console.error("Error deleting interaction:", error);
