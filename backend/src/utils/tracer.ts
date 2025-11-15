@@ -18,8 +18,8 @@ const exporter = new OTLPTraceExporter({
 
 const provider = new NodeTracerProvider({
   resource,
-  spanProcessors: [new SimpleSpanProcessor(exporter)],
 });
+provider.addSpanProcessor(new SimpleSpanProcessor(exporter));
 provider.register();
 
 safeLogger.info(`OpenTelemetry Tracer initialized for service: ${serviceName}, exporting to: ${collectorEndpoint}`);
