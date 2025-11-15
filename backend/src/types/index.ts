@@ -83,8 +83,56 @@ export interface EventLog {
 export interface User {
   id: string;
   username: string;
+  role?: string;
   created_at: Date;
   updated_at: Date;
+}
+
+export interface Prospect {
+  id: string;
+  name: string;
+  email?: string;
+  phone?: string;
+  status: string;
+  interest_level?: string;
+  source?: string;
+  owner?: string;
+  segmentation?: string;
+  notes?: string;
+  created_at: Date;
+  updated_at: Date;
+}
+
+export interface Task {
+  id: string;
+  title: string;
+  description?: string;
+  due_date?: Date;
+  status: string;
+  priority: string;
+  owner?: string;
+  customer_id?: string;
+  prospect_id?: string;
+  metadata?: Record<string, unknown>;
+  created_at: Date;
+  updated_at: Date;
+}
+
+export interface PaginationMeta {
+  page: number;
+  pageSize: number;
+  total: number;
+  hasMore: boolean;
+}
+
+export interface PaginationOptions {
+  page?: number;
+  pageSize?: number;
+}
+
+export interface PaginatedResult<T> {
+  data: T[];
+  meta: PaginationMeta;
 }
 
 export interface ExternalIntegration {
@@ -103,5 +151,7 @@ export interface Database {
   event_logs: EventLog;
   users: User;
   external_integrations: ExternalIntegration;
+  prospects: Prospect;
+  tasks: Task;
 }
 

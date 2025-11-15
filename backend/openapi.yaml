@@ -4,7 +4,7 @@ info:
   version: 1.0.0
   description: API documentation for the Flowstate-AI backend services.
 servers:
-  - url: http://localhost:3000/api
+  - url: http://localhost:3001/api
     description: Local Development Server
 paths:
   /auth/register:
@@ -54,18 +54,275 @@ paths:
           description: Invalid credentials
   /customers:
     get:
-      summary: Get all customers
+      summary: Get paginated customers
       security:
         - bearerAuth: []
+      parameters:
+        - in: query
+          name: status
+          schema:
+            type: string
+        - in: query
+          name: search
+          schema:
+            type: string
+        - in: query
+          name: source
+          schema:
+            type: string
+        - in: query
+          name: country
+          schema:
+            type: string
+        - in: query
+          name: language
+          schema:
+            type: string
+        - in: query
+          name: next_action
+          schema:
+            type: string
+        - in: query
+          name: sortBy
+          schema:
+            type: string
+        - in: query
+          name: sortOrder
+          schema:
+            type: string
+            enum: [ASC, DESC]
+        - in: query
+          name: page
+          schema:
+            type: integer
+            minimum: 1
+        - in: query
+          name: pageSize
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
       responses:
         '200':
-          description: List of customers
+          description: Paginated list of customers
           content:
             application/json:
-            schema:
-              type: array
-              items:
-                $ref: '#/components/schemas/Customer'
+              schema:
+                $ref: '#/components/schemas/PaginatedCustomers'
+  /interactions/customer/{customerId}:
+    get:
+      summary: Get customer interactions with pagination
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: customerId
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: type
+          schema:
+            type: string
+        - in: query
+          name: search
+          schema:
+            type: string
+        - in: query
+          name: from
+          schema:
+            type: string
+            format: date-time
+        - in: query
+          name: to
+          schema:
+            type: string
+            format: date-time
+        - in: query
+          name: page
+          schema:
+            type: integer
+            minimum: 1
+        - in: query
+          name: pageSize
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+      responses:
+        '200':
+          description: Paginated interactions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedInteractions'
+  /reminders/due:
+    get:
+      summary: Get due reminders with pagination
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: dueInMinutes
+          schema:
+            type: integer
+        - in: query
+          name: page
+          schema:
+            type: integer
+            minimum: 1
+        - in: query
+          name: pageSize
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+      responses:
+        '200':
+          description: Paginated due reminders
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedReminders'
+  /reminders/customer/{customerId}:
+    get:
+      summary: Get reminders for a customer
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: customerId
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: onlyOpen
+          schema:
+            type: boolean
+        - in: query
+          name: page
+          schema:
+            type: integer
+        - in: query
+          name: pageSize
+          schema:
+            type: integer
+            maximum: 100
+      responses:
+        '200':
+          description: Paginated reminders
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedReminders'
+  /events:
+    get:
+      summary: Get events with filtering and pagination
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: source
+          schema:
+            type: string
+        - in: query
+          name: from
+          schema:
+            type: string
+            format: date-time
+        - in: query
+          name: to
+          schema:
+            type: string
+            format: date-time
+        - in: query
+          name: page
+          schema:
+            type: integer
+        - in: query
+          name: pageSize
+          schema:
+            type: integer
+            maximum: 250
+      responses:
+        '200':
+          description: Paginated events
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedEvents'
+  /events/customer/{customerId}:
+    get:
+      summary: Get events for a customer
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: customerId
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: from
+          schema:
+            type: string
+            format: date-time
+        - in: query
+          name: to
+          schema:
+            type: string
+            format: date-time
+        - in: query
+          name: page
+          schema:
+            type: integer
+        - in: query
+          name: pageSize
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Paginated events
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedEvents'
+  /events/type/{type}:
+    get:
+      summary: Get events filtered by type
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: type
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: from
+          schema:
+            type: string
+            format: date-time
+        - in: query
+          name: to
+          schema:
+            type: string
+            format: date-time
+        - in: query
+          name: page
+          schema:
+            type: integer
+        - in: query
+          name: pageSize
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Paginated events by type
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedEvents'
 components:
   securitySchemes:
     bearerAuth:
@@ -78,7 +335,6 @@ components:
       properties:
         id:
           type: string
-          format: uuid
         name:
           type: string
         email:
@@ -93,4 +349,117 @@ components:
         updated_at:
           type: string
           format: date-time
-
+        next_action:
+          type: string
+        next_action_date:
+          type: string
+          format: date-time
+        source:
+          type: string
+    Interaction:
+      type: object
+      properties:
+        id:
+          type: string
+        customer_id:
+          type: string
+        type:
+          type: string
+        summary:
+          type: string
+        notes:
+          type: string
+        interaction_date:
+          type: string
+          format: date-time
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    Reminder:
+      type: object
+      properties:
+        id:
+          type: string
+        customer_id:
+          type: string
+        type:
+          type: string
+        message:
+          type: string
+        scheduled_for:
+          type: string
+          format: date-time
+        completed:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    EventLog:
+      type: object
+      properties:
+        id:
+          type: string
+        customer_id:
+          type: string
+        event_type:
+          type: string
+        event_data:
+          type: object
+        timestamp:
+          type: string
+          format: date-time
+        user_id:
+          type: string
+    PaginationMeta:
+      type: object
+      properties:
+        page:
+          type: integer
+        pageSize:
+          type: integer
+        total:
+          type: integer
+        hasMore:
+          type: boolean
+    PaginatedCustomers:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Customer'
+        meta:
+          $ref: '#/components/schemas/PaginationMeta'
+    PaginatedInteractions:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Interaction'
+        meta:
+          $ref: '#/components/schemas/PaginationMeta'
+    PaginatedReminders:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Reminder'
+        meta:
+          $ref: '#/components/schemas/PaginationMeta'
+    PaginatedEvents:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/EventLog'
+        meta:
+          $ref: '#/components/schemas/PaginationMeta'

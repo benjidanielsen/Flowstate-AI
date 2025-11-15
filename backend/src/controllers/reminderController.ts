@@ -24,7 +24,12 @@ export class ReminderController {
 
   listDue = async (_req: Request, res: Response) => {
     try {
-      const due = await this.reminderService.getDueReminders();
+      const { page, pageSize, dueInMinutes } = _req.query;
+      const due = await this.reminderService.getDueReminders({
+        page: page ? parseInt(page as string, 10) : undefined,
+        pageSize: pageSize ? parseInt(pageSize as string, 10) : undefined,
+        dueInMinutes: dueInMinutes ? parseInt(dueInMinutes as string, 10) : undefined,
+      });
       res.json(due);
     } catch (err) {
       console.error('Error listing due reminders:', err);
@@ -64,7 +69,12 @@ export class ReminderController {
   getRemindersByCustomerId = async (req: Request, res: Response) => {
     try {
       const { customerId } = req.params;
-      const reminders = await this.reminderService.getRemindersByCustomerId(customerId);
+      const { page, pageSize, onlyOpen } = req.query;
+      const reminders = await this.reminderService.getRemindersByCustomerId(customerId, {
+        page: page ? parseInt(page as string, 10) : undefined,
+        pageSize: pageSize ? parseInt(pageSize as string, 10) : undefined,
+        onlyOpen: onlyOpen === 'true',
+      });
       res.json(reminders);
     } catch (err) {
       console.error('Error getting reminders by customer ID:', err);

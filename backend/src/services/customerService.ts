@@ -1,5 +1,5 @@
 import DatabaseManager from '../database';
-import { Customer, PipelineStatus } from '../types';
+import { Customer, PaginatedResult, PipelineStatus } from '../types';
 import { v4 as uuidv4 } from 'uuid';
 import { EventLogService } from './eventLogService';
 import { PipelineValidationService } from './pipelineValidationService';
@@ -13,67 +13,80 @@ export class CustomerService {
     this.pipelineValidationService = new PipelineValidationService();
   }
 
-  async getAllCustomers(filters: { 
-    status?: PipelineStatus; 
-    search?: string; 
-    source?: string; 
-    country?: string; 
-    language?: string; 
-    next_action?: string; 
-    sortBy?: string; 
-    sortOrder?: 'ASC' | 'DESC'; 
-  } = {}): Promise<Customer[]> {
-    const db = DatabaseManager.getInstance().getDb();
-    let query = 'SELECT * FROM customers WHERE 1=1';
+  async getAllCustomers(filters: {
+    status?: PipelineStatus;
+    search?: string;
+    source?: string;
+    country?: string;
+    language?: string;
+    next_action?: string;
+    sortBy?: string;
+    sortOrder?: 'ASC' | 'DESC';
+    page?: number;
+    pageSize?: number;
+  } = {}): Promise<PaginatedResult<Customer>> {
+    const manager = DatabaseManager.getInstance();
+    const pool = await manager.connect();
+    const clauses: string[] = [];
     const params: any[] = [];
+    let index = 1;
 
     if (filters.status) {
-      query += ' AND status = ?';
+      clauses.push(`status = $${index++}`);
       params.push(filters.status);
     }
     if (filters.source) {
-      query += ' AND source = ?';
+      clauses.push(`source = $${index++}`);
       params.push(filters.source);
     }
     if (filters.country) {
-      query += ' AND country = ?';
+      clauses.push(`country = $${index++}`);
       params.push(filters.country);
     }
     if (filters.language) {
-      query += ' AND language = ?';
+      clauses.push(`language = $${index++}`);
       params.push(filters.language);
     }
     if (filters.next_action) {
-      query += ' AND next_action = ?';
+      clauses.push(`next_action = $${index++}`);
       params.push(filters.next_action);
     }
     if (filters.search) {
-      const searchTerm = `%${filters.search}%`;
-      query += ' AND (name LIKE ? OR email LIKE ? OR phone LIKE ? OR notes LIKE ?)';
+      const searchTerm = `%${filters.search.toLowerCase()}%`;
+      clauses.push(`(LOWER(name) LIKE $${index} OR LOWER(email) LIKE $${index + 1} OR LOWER(phone) LIKE $${index + 2} OR LOWER(notes) LIKE $${index + 3})`);
       params.push(searchTerm, searchTerm, searchTerm, searchTerm);
+      index += 4;
     }
 
-    const sortBy = filters.sortBy || 'updated_at';
-    const sortOrder = filters.sortOrder || 'DESC';
-    query += ` ORDER BY ${sortBy} ${sortOrder}`;
-    
-    return new Promise((resolve, reject) => {
-      db.all(query, params, (err, rows: any[]) => {
-        if (err) {
-          reject(err);
-        } else {
-          const customers = rows.map(row => ({
-            ...row,
-            created_at: new Date(row.created_at),
-            updated_at: new Date(row.updated_at),
-            next_action_date: row.next_action_date ? new Date(row.next_action_date) : undefined,
-            consent_json: row.consent_json ? JSON.parse(row.consent_json) : undefined,
-            utm_json: row.utm_json ? JSON.parse(row.utm_json) : undefined
-          }));
-          resolve(customers);
-        }
-      });
-    });
+    const whereClause = clauses.length ? `WHERE ${clauses.join(' AND ')}` : '';
+    const totalResult = await pool.query<{ count: number }>(`SELECT COUNT(*)::BIGINT as count FROM customers ${whereClause}`, params);
+    const total = Number(totalResult.rows[0]?.count || 0);
+
+    const allowedSortFields = new Set(['name', 'email', 'status', 'created_at', 'updated_at', 'next_action_date', 'country', 'source']);
+    const sortBy = (filters.sortBy && allowedSortFields.has(filters.sortBy)) ? filters.sortBy : 'updated_at';
+    const sortOrder = filters.sortOrder === 'ASC' ? 'ASC' : 'DESC';
+
+    const page = Math.max(filters.page || 1, 1);
+    const rawPageSize = filters.pageSize || 25;
+    const pageSize = Math.min(Math.max(rawPageSize, 1), 100);
+    const offset = (page - 1) * pageSize;
+
+    const dataResult = await pool.query(
+      `SELECT * FROM customers ${whereClause} ORDER BY ${sortBy} ${sortOrder} LIMIT $${index} OFFSET $${index + 1}`,
+      [...params, pageSize, offset]
+    );
+
+    const customers = dataResult.rows.map(row => this.mapCustomerRow(row));
+
+    return {
+      data: customers,
+      meta: {
+        page,
+        pageSize,
+        total,
+        hasMore: offset + customers.length < total,
+      },
+    };
   }
 
   async getCustomerById(id: string): Promise<Customer | null> {
@@ -326,5 +339,16 @@ export class CustomerService {
     }
 
     return this.pipelineValidationService.getStageRecommendations(id, customer.status);
+  }
+
+  private mapCustomerRow(row: any): Customer {
+    return {
+      ...row,
+      created_at: new Date(row.created_at),
+      updated_at: new Date(row.updated_at),
+      next_action_date: row.next_action_date ? new Date(row.next_action_date) : undefined,
+      consent_json: row.consent_json || undefined,
+      utm_json: row.utm_json || undefined,
+    };
   }
 }
