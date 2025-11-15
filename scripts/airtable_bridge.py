@@ -73,13 +73,15 @@ class AirtableBridge:
                 title TEXT NOT NULL,
                 status TEXT NOT NULL,
                 priority TEXT,
-                assigned_to TEXT,
                 created_at TEXT DEFAULT CURRENT_TIMESTAMP,
                 completed_at TEXT,
+                assigned_to TEXT,
                 due_date TEXT
             )
             """
         )
+        self._ensure_column("tasks", "assigned_to", "TEXT")
+        self._ensure_column("tasks", "due_date", "TEXT")
         cursor.execute(
             """
             CREATE TABLE IF NOT EXISTS activity_log (
@@ -142,6 +144,14 @@ class AirtableBridge:
             """
         )
         self.conn.commit()
+
+    def _ensure_column(self, table: str, column: str, definition: str) -> None:
+        cursor = self.conn.execute(f"PRAGMA table_info({table})")
+        columns = {row[1] for row in cursor.fetchall()}
+        if column not in columns:
+            logging.info("Adding missing column %s.%s", table, column)
+            self.conn.execute(f"ALTER TABLE {table} ADD COLUMN {column} {definition}")
+            self.conn.commit()
 
     # --- Airtable helpers -------------------------------------------------
     def fetch_records(self, table: str, view: Optional[str] = None) -> List[dict]:
