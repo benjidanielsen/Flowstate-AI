@@ -38,6 +38,34 @@ Based on the multi-agent discussion and QA review, a phased and multi-pronged te
 *   **Rationale**: Addresses the user's explicit request for a "plug & play" setup and minimizes initial work, allowing for rapid value delivery.
 *   **Scalability Note**: Airtable has inherent limitations for handling 100,000+ records efficiently. This phase is intended as a temporary solution while the custom application is developed.
 
+##### Airtable Schema (Frazer-Staged Source of Truth)
+
+The Airtable base mirrors the Frazer Method stages defined in the CRM plan (`Lead → Relationship → Invited → Qualified → Presentation Sent → Follow-Up → Team Member`) so that the data captured in Phase 1 can flow directly into later phases. Core tables include:
+
+| Table | Purpose | Representative Fields | Frazer Alignment |
+| --- | --- | --- | --- |
+| **Prospects** | Canonical record per lead. | `Name`, `Primary Channel`, `Frazer Stage`, `DMO Score`, `Prospect's Why`, `Owner`, `Last Touch`, `Tags`, `Airtable Record ID`. | `Frazer Stage` dropdown enforces the seven canonical stages, `Prospect's Why` becomes mandatory when entering `Qualified`, and `DMO Score` tallies IPA counts per day. |
+| **Pipeline Touchpoints** | Activity ledger per prospect. | `Prospect Lookup`, `Touchpoint Type`, `Outcome`, `Next Action Date`, `Notes`, `AI Summary`. | Automations restrict touchpoints to stage-appropriate actions (e.g., "Invite" is only valid when the linked prospect is in `Relationship`). |
+| **Follow-Up Automations** | SLA guardrails for reminders. | `Trigger Stage`, `Reminder Template`, `Delay (hrs)`, `Delivery Channel`, `Owner`. | Every Frazer stage change fires an entry here so the dashboard always knows the reminder window that should be represented in SQLite `reminders`. |
+| **Daily Metrics & DMO** | Aggregated performance table. | `Date`, `Invites`, `Follow-Ups`, `Video Sent`, `No-Shows`, `Sign-Ups`, `Coaching Notes`. | Ensures IPA counters match Frazer-labeled actions and feeds the Flask sandbox's analytics widgets. |
+| **AI Coaching Insights** | Structured capture of improvement ideas. | `Prospect Lookup`, `Bottleneck Stage`, `AI Suggestion`, `Confidence`, `Human Decision`. | The `Bottleneck Stage` field mirrors the Frazer enumerations so AI prompts and SQLite `quick_notes` entries can reference the same vocabulary. |
+
+##### Automations & IPA Enforcement
+
+1. **Stage Guardrails** – Airtable automations prevent manual skipping of stages by referencing the Frazer order and logging violations in `Pipeline Touchpoints`.
+2. **DMO Autocomplete** – Each prospect touchpoint increments the `Daily Metrics & DMO` row via script action, guaranteeing the dashboard shows true IPA progress bars.
+3. **Time-Bound Follow-Ups** – When `Frazer Stage` enters `Presentation Sent`, an automation schedules reminders at +24h, +72h, and +120h and writes the events into the `Follow-Up Automations` table. These reminders later sync into SQLite `reminders`.
+4. **Coaching Loops** – A daily summary automation compiles prospects stuck in the same stage > 5 days and creates an entry in `AI Coaching Insights`, pre-populating the `quick_notes` queue used by the Flask sandbox.
+
+##### Data Export & Sync Workflow
+
+The Airtable → SQLite → Postgres pipeline is now explicitly defined:
+
+1. **Scheduled Export** – Airtable's native CSV export (or `airtable-cli` script) runs nightly for `Prospects`, `Pipeline Touchpoints`, and `Daily Metrics & DMO`, ensuring there's always an offline artifact in `/data/airtable_exports/YYYY-MM-DD/`.
+2. **Bridge Script** – `scripts/airtable_bridge.py` (see Section 6) ingests the Airtable REST API directly, maps Frazer stages to the SQLite `leads`, `tasks`, `activity_log`, `quick_notes`, and `reminders` tables referenced throughout `SYSTEM_STATUS.md`, and updates the `airtable_sync_state` ledger for idempotency.
+3. **Validation Hook** – After each sync, the script runs reconciliation queries (e.g., "count of Presentation Sent prospects in Airtable vs. SQLite") and logs discrepancies for the QA agent.
+4. **Hand-off to Postgres** – Once the acceptance criteria in `MASTER_7DAY_PLAN.json` are satisfied, the same export payloads are replayed into the custom Postgres schema to complete the migration.
+
 #### 3.3.2. Phase 2: Prototyping/Sandbox (Flask/Vanilla JS Dashboard)
 
 *   **Purpose**: Leverage the existing Flask/Vanilla JS dashboard as a rapid prototyping and testing environment for new AI features and UI concepts.
