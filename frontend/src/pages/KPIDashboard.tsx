@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Card, Title, Text, Metric, Flex, ProgressBar, Badge, TabGroup, TabList, Tab, TabPanels, TabPanel } from '@tremor/react';
 import { ChartBarIcon, ChartPieIcon, ArrowUpIcon, ArrowDownIcon, ExclamationTriangleIcon, CheckCircleIcon } from '@heroicons/react/24/outline';
 import { LineChart, BarChart } from '@tremor/react';
-import { api } from '../services/api';
+import api from '../services/api';
 import logger from '../utils/logger';
 
 interface KPI {
