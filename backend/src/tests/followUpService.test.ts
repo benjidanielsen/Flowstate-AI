@@ -42,16 +42,16 @@ describe('FollowUpService', () => {
   describe('createFollowUp', () => {
     it('should create a new follow-up for a customer', async () => {
       const initialReminders = await reminderService.getRemindersByCustomerId(testCustomerId);
-      expect(initialReminders.length).toBe(0);
+      const initialFollowUpCount = initialReminders.filter(r => r.type === ReminderType.FOLLOW_UP).length;
 
       await followUpService.createFollowUp(testCustomerId, PipelineStatus.PRESENTATION_SENT);
 
       const newReminders = await reminderService.getRemindersByCustomerId(testCustomerId);
-      expect(newReminders.length).toBe(1);
-      expect(newReminders[0].customer_id).toBe(testCustomerId);
-      expect(newReminders[0].type).toBe(ReminderType.FOLLOW_UP);
-      expect(newReminders[0].message).toBeDefined();
-      expect(newReminders[0].scheduled_for).toBeDefined();
+      const followUpReminders = newReminders.filter(r => r.type === ReminderType.FOLLOW_UP);
+      expect(followUpReminders.length).toBe(initialFollowUpCount + 1);
+      expect(followUpReminders[followUpReminders.length - 1].customer_id).toBe(testCustomerId);
+      expect(followUpReminders[followUpReminders.length - 1].message).toBeDefined();
+      expect(followUpReminders[followUpReminders.length - 1].scheduled_for).toBeDefined();
     });
   });
 

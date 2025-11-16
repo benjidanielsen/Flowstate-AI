@@ -1,6 +1,7 @@
 import DatabaseManager from '../database';
 import { v4 as uuidv4 } from 'uuid';
-import { Reminder, ReminderType } from '../types';
+import { PipelineStatus, Reminder, ReminderType } from '../types';
+import { getStageDefinition } from './frazerStageConfig';
 
 export class ReminderService {
   async createReminder(data: {
@@ -220,6 +221,66 @@ export class ReminderService {
           resolve(null);
         }
       });
+    });
+  }
+
+  async scheduleStageReminder(
+    customerId: string,
+    stage: PipelineStatus,
+    options: {
+      cadenceHours?: number;
+      context?: string;
+      skipIfExists?: boolean;
+      reminderTypeOverride?: ReminderType;
+    } = {}
+  ): Promise<Reminder | null> {
+    const stageDefinition = getStageDefinition(stage);
+    const cadenceHours = options.cadenceHours ?? stageDefinition.cadenceHours;
+    const reminderType = options.reminderTypeOverride ?? stageDefinition.reminderType;
+    const scheduledFor = new Date(Date.now() + cadenceHours * 60 * 60 * 1000);
+    const message = options.context
+      ? `${stageDefinition.frazerStep}: ${options.context}`
+      : `${stageDefinition.frazerStep} → ${stageDefinition.touchpoint.summary}`;
+
+    if (options.skipIfExists) {
+      const existing = await this.findActiveReminder(customerId, reminderType);
+      if (existing) {
+        return existing;
+      }
+    }
+
+    return this.createReminder({
+      customer_id: customerId,
+      type: reminderType,
+      message,
+      scheduled_for: scheduledFor
+    });
+  }
+
+  private async findActiveReminder(customerId: string, reminderType: ReminderType): Promise<Reminder | null> {
+    const db = DatabaseManager.getInstance().getDb();
+    return new Promise((resolve, reject) => {
+      db.get(
+        `SELECT * FROM reminders
+         WHERE customer_id = ? AND type = ? AND completed = 0
+         ORDER BY scheduled_for ASC LIMIT 1`,
+        [customerId, reminderType],
+        (err, row: any) => {
+          if (err) return reject(err);
+          if (!row) return resolve(null);
+          resolve({
+            id: row.id,
+            customer_id: row.customer_id,
+            type: row.type,
+            message: row.message,
+            scheduled_for: new Date(row.scheduled_for),
+            completed: Boolean(row.completed),
+            created_at: new Date(row.created_at),
+            updated_at: new Date(row.updated_at),
+            repeat_interval: row.repeat_interval,
+          });
+        }
+      );
     });
   }
 }

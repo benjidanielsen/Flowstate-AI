@@ -6,6 +6,7 @@ Advanced system that continuously analyzes project state and generates tasks aut
 import asyncio
 import json
 import logging
+import os
 from typing import Dict, List, Any, Optional
 from datetime import datetime, timedelta
 from pathlib import Path
@@ -17,6 +18,18 @@ from .error_handler import with_retry, with_error_handling, CircuitBreaker, log_
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+FRAZER_STAGE_THRESHOLDS = {
+    "New Lead": 24,
+    "Warming Up": 36,
+    "Invited": 48,
+    "Qualified": 72,
+    "Presentation Sent": 72,
+    "Follow-up": 96,
+    "Closed - Won": 0,
+    "Not Now": 168,
+    "Long-term Nurture": 240,
+}
+
 class AutonomousTaskSystem:
     """
     Advanced autonomous task generation system that continuously monitors
@@ -25,7 +38,10 @@ class AutonomousTaskSystem:
     
     def __init__(self, db_path: str = "godmode-state.db", redis_host: str = "localhost"):
         """Initialize the autonomous task system."""
-        self.db_path = Path(__file__).parent.parent / db_path
+        self.project_root = Path(__file__).parent.parent
+        self.db_path = self.project_root / db_path
+        default_crm_db = self.project_root / "backend" / "data" / "flowstate.db"
+        self.crm_db_path = Path(os.environ.get("CRM_DB_PATH", str(default_crm_db)))
         self.redis = redis.Redis(host=redis_host, port=6379, db=0, decode_responses=True)
         self.client = OpenAI()
         self.openai_circuit_breaker = CircuitBreaker(failure_threshold=3, recovery_timeout=60, expected_exception=Exception) # Adjust exception type as needed
@@ -184,10 +200,61 @@ class AutonomousTaskSystem:
         except Exception as e:
             logger.error(f"Error analyzing CRM data: {str(e)}")
             analysis['crm']['error'] = str(e)
-        
+
+        crm_pipeline = self._analyze_crm_pipeline()
+        analysis['crm'].update(crm_pipeline)
+
         conn.close()
-        
+
         return analysis
+
+    def _analyze_crm_pipeline(self) -> Dict[str, Any]:
+        summary = {'status_counts': {}, 'stalled_leads': []}
+
+        if not self.crm_db_path.exists():
+            return summary
+
+        try:
+            conn = sqlite3.connect(self.crm_db_path)
+            conn.row_factory = sqlite3.Row
+            cursor = conn.cursor()
+
+            cursor.execute("SELECT status, COUNT(*) as count FROM customers GROUP BY status")
+            summary['status_counts'] = {row['status']: row['count'] for row in cursor.fetchall()}
+
+            cursor.execute("SELECT id, name, status, updated_at FROM customers")
+            now = datetime.utcnow()
+            stalled = []
+
+            for row in cursor.fetchall():
+                status = row['status']
+                threshold = FRAZER_STAGE_THRESHOLDS.get(status, 72)
+                updated_raw = row['updated_at']
+                if not updated_raw or threshold == 0:
+                    continue
+                try:
+                    updated_at = datetime.fromisoformat(str(updated_raw).replace('Z', '+00:00'))
+                except Exception:
+                    try:
+                        updated_at = datetime.fromisoformat(str(updated_raw))
+                    except Exception:
+                        continue
+                hours_since_update = (now - updated_at).total_seconds() / 3600
+                if hours_since_update > threshold:
+                    stalled.append({
+                        'id': row['id'],
+                        'name': row['name'],
+                        'status': status,
+                        'hours_stalled': round(hours_since_update, 1),
+                        'threshold': threshold
+                    })
+
+            summary['stalled_leads'] = stalled
+            conn.close()
+        except Exception as crm_error:
+            logger.error(f"Error inspecting CRM pipeline: {str(crm_error)}")
+
+        return summary
         
     @with_error_handling(fallback=default_fallback_value)
     async def generate_tasks(self, project_state: Dict[str, Any]) -> List[Dict[str, Any]]:
@@ -253,7 +320,23 @@ class AutonomousTaskSystem:
                 'auto_generated': True,
                 'source': 'rule_based'
             })
-        
+
+        stalled_leads = crm_data.get('stalled_leads', [])
+        if stalled_leads:
+            grouped: Dict[str, List[Dict[str, Any]]] = {}
+            for lead in stalled_leads:
+                grouped.setdefault(lead['status'], []).append(lead)
+            for stage, leads in grouped.items():
+                max_hours = max(lead.get('hours_stalled', 0) for lead in leads)
+                tasks.append({
+                    'title': f'Follow up with {len(leads)} {stage} leads',
+                    'description': f'{len(leads)} leads are stalled in {stage} for {max_hours}h. Auto-create reminders and AI touchpoints.',
+                    'category': 'crm_automation',
+                    'priority': 8,
+                    'auto_generated': True,
+                    'source': 'crm_pipeline'
+                })
+
         return tasks
         
     @with_error_handling(fallback=default_fallback_value)
