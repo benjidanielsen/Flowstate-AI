@@ -630,6 +630,7 @@ const AddInteractionModal: React.FC<AddInteractionModalProps> = ({ customerId, o
     try {
       setLoading(true);
       await interactionApi.create(customerId, {
+        customer_id: customerId,
         type: formData.type,
         summary: formData.summary,
         interaction_date: new Date(),
