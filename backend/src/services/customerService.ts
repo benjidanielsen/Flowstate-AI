@@ -108,7 +108,7 @@ export class CustomerService {
     const customer: Customer = {
       id,
       ...customerData,
-      status: customerData.status || PipelineStatus.NEW_LEAD,
+      status: customerData.status || PipelineStatus.LEAD,
       created_at: now,
       updated_at: now
     };
