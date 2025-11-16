@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { requireAuth } from '../middleware/auth';
 import { safeLogger } from '../utils/piiRedaction';
+import { kpiGauge } from '../utils/metrics';
 
 const router = Router();
 
@@ -38,8 +39,12 @@ const mockKpis = {
 router.get('/', requireAuth, (req, res) => {
   const category = req.query.category as string;
   if (category && mockKpis[category as keyof typeof mockKpis]) {
-    safeLogger.info(`Fetching KPIs for category: ${category}`);
-    res.json(mockKpis[category as keyof typeof mockKpis]);
+    const kpis = mockKpis[category as keyof typeof mockKpis];
+    safeLogger.info(`Fetching KPIs for category: ${category}`, { total: kpis.length });
+    kpis.forEach(kpi => {
+      kpiGauge.set({ category, name: kpi.name, unit: kpi.unit }, kpi.value);
+    });
+    res.json(kpis);
   } else {
     safeLogger.warn('Invalid or missing KPI category', { category });
     res.status(400).json({ error: 'Invalid or missing KPI category' });

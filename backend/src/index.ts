@@ -16,6 +16,7 @@ import DatabaseManager from './database';
 import { runMigrations } from './database/migrate';
 import { safeLogger } from './utils/piiRedaction'; // Use safeLogger
 import './utils/tracer'; // Initialize OpenTelemetry tracer
+import { metricsHandler } from './utils/metrics';
 
 const swaggerDocument = YAML.load(path.resolve(__dirname, '../../openapi.yaml'));
 
@@ -35,6 +36,8 @@ app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(idempotencyMiddleware); // Add idempotency middleware after body parser
 app.use(performanceMiddleware);
+
+app.get('/metrics', metricsHandler);
 
 // Routes
 app.use("/api", routes);
