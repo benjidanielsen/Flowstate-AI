@@ -11,5 +11,6 @@ module.exports = {
     'src/**/*.ts',
     '!src/**/*.d.ts',
   ],
+  setupFiles: ['<rootDir>/src/tests/setupRedisMock.ts'],
   setupFilesAfterEnv: ['<rootDir>/src/tests/setup.ts']
 };
