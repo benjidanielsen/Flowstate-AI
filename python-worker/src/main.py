@@ -13,16 +13,22 @@ BACKEND_API_URL = os.getenv("BACKEND_API_URL", "http://localhost:3001")
 from ai_gods.logging_config import setup_logging
 from evolution_framework.self_modification_orchestrator import SelfModificationOrchestrator
 from evolution_framework.evolution_governor import EvolutionGovernor
-from evolution_framework.evolution_manager import FlowstateEvolutionManager
+from evolution_framework.evolution_manager import EvolutionManager
 from evolution_framework.anomaly_detector import AnomalyDetector
 from evolution_framework.metrics_collector import MetricsCollector
+from evolution_framework.config import EvolutionConfig
+from evolution_framework.performance_tuner import PerformanceTuner
+from evolution_framework.cost_optimizer import CostOptimizer
+from evolution_framework.synthetic_load_scheduler import build_scheduler
+from evolution_framework.observability import init_observability
 app = FastAPI(title="Flowstate-AI Worker", version="1.0.0")
 # Initialize Evolution Framework components
 metrics_collector = MetricsCollector("python_worker")
-evolution_manager = FlowstateEvolutionManager()
+evolution_manager = EvolutionManager()
 anomaly_detector = AnomalyDetector(metrics_collector)
 evolution_governor = EvolutionGovernor(evolution_manager, anomaly_detector, metrics_collector)
 self_modification_orchestrator = SelfModificationOrchestrator(project_root="/home/ubuntu/Flowstate-AI", config_path=None)
+synthetic_scheduler = None
 
 # CORS middleware
 app.add_middleware(
@@ -34,6 +40,30 @@ app.add_middleware(
 )
 # Setup logging
 logger = setup_logging(__name__, "python-worker.log")
+init_observability()
+
+
+async def _maybe_start_synthetic_tests():
+    global synthetic_scheduler
+    if os.getenv("ENABLE_SYNTHETIC_LOAD_TESTS", "false").lower() != "true":
+        return
+    db_url = os.getenv("EVOLUTION_DATABASE_URL") or os.getenv("DATABASE_URL")
+    if not db_url:
+        logger.warning("Synthetic load tests requested but database URL is missing")
+        return
+    config = EvolutionConfig(database_url=db_url)
+    tuner = PerformanceTuner(evolution_manager, config)
+    optimizer = CostOptimizer(evolution_manager, config)
+    synthetic_scheduler = build_scheduler(tuner, optimizer)
+    synthetic_scheduler.start()
+    logger.info("Synthetic load scheduler started", extra={"interval": synthetic_scheduler.interval_seconds})
+
+
+async def _stop_synthetic_tests():
+    global synthetic_scheduler
+    if synthetic_scheduler:
+        await synthetic_scheduler.stop()
+        synthetic_scheduler = None
 
 class ReminderRequest(BaseModel):
     customer_id: str
@@ -155,6 +185,16 @@ async def run_autonomous_experimentation():
     except Exception as e:
         logger.error(f"Error during autonomous experimentation: {e}")
         raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.on_event("startup")
+async def on_startup() -> None:
+    await _maybe_start_synthetic_tests()
+
+
+@app.on_event("shutdown")
+async def on_shutdown() -> None:
+    await _stop_synthetic_tests()
 
 if __name__ == "__main__":
     port = int(os.getenv("PYTHON_API_PORT", 8000))

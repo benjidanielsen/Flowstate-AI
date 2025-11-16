@@ -32,6 +32,14 @@ class EvolutionConfig:
     # Cost management
     cost_budget_daily_limit: float = 10.0  # USD
     cost_budget_per_operation_limit: float = 0.50  # USD
+    performance_thresholds: Dict[str, float] = field(default_factory=lambda: {
+        "latency_p95": 500,
+        "error_rate": 0.05,
+    })
+    cost_thresholds: Dict[str, float] = field(default_factory=lambda: {
+        "monthly_cost_usd": 500,
+        "unit_cost": 0.05,
+    })
     use_local_llm: bool = True  # Prioritize local LLMs for cost savings
     local_llm_endpoint: str = field(default_factory=lambda: os.getenv("LOCAL_LLM_ENDPOINT", "http://localhost:11434"))
     
@@ -61,7 +69,7 @@ class EvolutionConfig:
     enable_detailed_logging: bool = True
     
     # Database connection
-    database_url: str = field(default_factory=lambda: os.getenv("DATABASE_URL", ""))
+    database_url: str = field(default_factory=lambda: os.getenv("DATABASE_URL", "postgresql://localhost:5432/flowstate"))
     
     @classmethod
     def from_dict(cls, config_dict: Dict[str, Any]) -> "EvolutionConfig":

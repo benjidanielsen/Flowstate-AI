@@ -83,6 +83,19 @@ describe('AutomationService', () => {
       const newReminders: Reminder[] = await reminderService.getAllReminders();
       expect(newReminders.length).toBe(0);
     });
+
+    it('chains reminders when multiple automation events fire in sequence', async () => {
+      await automationService.handleEvent({ event_name: 'VIDEO_SENT', customer_id: testCustomerId });
+      await automationService.handleEvent({ event_name: 'NO_SHOW', customer_id: testCustomerId });
+
+      const reminders: Reminder[] = await reminderService.getAllReminders();
+      expect(reminders.length).toBe(4);
+      const types = reminders.map(r => r.type).sort();
+      expect(types).toEqual(['follow_up_1d', 'follow_up_24h', 'follow_up_2h', 'follow_up_48h'].sort());
+      const scheduledDates = reminders.map(r => new Date(r.scheduled_for));
+      const now = Date.now();
+      scheduledDates.forEach(date => expect(date.getTime()).toBeGreaterThan(now));
+    });
   });
 });
 

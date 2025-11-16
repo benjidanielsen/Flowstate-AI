@@ -8,7 +8,8 @@ const aiCoordinationService = new AICoordinationService();
 export const sendTask = async (req: Request, res: Response) => {
   try {
     const { taskType, payload } = req.body;
-    const result = await aiCoordinationService.sendTaskToAIWorker(taskType, payload);
+    const correlationId = req.correlationId;
+    const result = await aiCoordinationService.sendTaskToAIWorker(taskType, payload, correlationId);
     res.status(200).json(result);
   } catch (error: any) {
     logger.error('Error sending task to AI worker:', error);
@@ -18,7 +19,8 @@ export const sendTask = async (req: Request, res: Response) => {
 
 export const getStatus = async (req: Request, res: Response) => {
   try {
-    const status = await aiCoordinationService.getAIWorkerStatus();
+    const correlationId = req.correlationId;
+    const status = await aiCoordinationService.getAIWorkerStatus(correlationId);
     res.status(200).json(status);
   } catch (error: any) {
     logger.error('Error getting AI worker status:', error);
