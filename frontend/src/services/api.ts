@@ -70,6 +70,7 @@ export const interactionApi = {
     interactionData: Omit<Interaction, 'id' | 'created_at' | 'updated_at'>
   ): Promise<Interaction> => {
     const payload: Record<string, unknown> = {
+      customer_id: interactionData.customer_id ?? customerId,
       type: interactionData.type,
       summary: interactionData.summary,
       notes: interactionData.notes,
