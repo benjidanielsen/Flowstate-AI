@@ -59,9 +59,13 @@ class CodeAnalyzer:
             # Analyze maintainability index
             maintainability_results = mi_visit(code_content, multi=True)
             maintainability_index = 0
-            
+
             if maintainability_results:
-                maintainability_scores = [m for m in maintainability_results]
+                if isinstance(maintainability_results, (list, tuple)):
+                    maintainability_scores = list(maintainability_results)
+                else:
+                    maintainability_scores = [maintainability_results]
+
                 maintainability_index = sum(maintainability_scores) / len(maintainability_scores)
             
             # Analyze raw metrics

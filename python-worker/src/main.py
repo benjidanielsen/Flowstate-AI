@@ -16,13 +16,22 @@ from evolution_framework.evolution_governor import EvolutionGovernor
 from evolution_framework.evolution_manager import FlowstateEvolutionManager
 from evolution_framework.anomaly_detector import AnomalyDetector
 from evolution_framework.metrics_collector import MetricsCollector
+from evolution_framework.knowledge_manager import VectorKnowledgeManager
 app = FastAPI(title="Flowstate-AI Worker", version="1.0.0")
 # Initialize Evolution Framework components
 metrics_collector = MetricsCollector("python_worker")
 evolution_manager = FlowstateEvolutionManager()
 anomaly_detector = AnomalyDetector(metrics_collector)
-evolution_governor = EvolutionGovernor(evolution_manager, anomaly_detector, metrics_collector)
-self_modification_orchestrator = SelfModificationOrchestrator(project_root="/home/ubuntu/Flowstate-AI", config_path=None)
+knowledge_manager = VectorKnowledgeManager()
+evolution_governor = EvolutionGovernor(
+    evolution_manager,
+    anomaly_detector,
+    metrics_collector,
+    knowledge_manager,
+)
+self_modification_orchestrator = SelfModificationOrchestrator(
+    project_root="/home/ubuntu/Flowstate-AI"
+)
 
 # CORS middleware
 app.add_middleware(

@@ -19,7 +19,13 @@ from enum import Enum
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Set, Tuple
 
-import aioredis
+try:  # pragma: no cover - exercised indirectly through tests
+    import aioredis  # type: ignore
+except Exception as exc:  # pragma: no cover - deterministic fallback
+    aioredis = None  # type: ignore[assignment]
+    _AIOREDIS_IMPORT_ERROR = exc
+else:  # pragma: no cover - logging only
+    _AIOREDIS_IMPORT_ERROR = None
 from aiosqlite import connect as aio_connect
 
 from ai_gods.logging_config import setup_logging
@@ -150,7 +156,7 @@ class ProjectManagerV2:
         self.db_path = self.project_root / DB_PATH
 
         # Redis connection (async)
-        self.redis: Optional[aioredis.Redis] = None
+        self.redis: Optional[Any] = None
         self.redis_available = False
 
         # Database connection (async)
@@ -204,6 +210,14 @@ class ProjectManagerV2:
 
     async def _init_redis(self):
         """Initialize Redis connection with retry logic"""
+        if aioredis is None:
+            logger.warning(
+                "⚠️ aioredis could not be imported (%s). Redis features are disabled.",
+                _AIOREDIS_IMPORT_ERROR,
+            )
+            self.redis_available = False
+            return
+
         max_retries = 3
         retry_delay = 2
 

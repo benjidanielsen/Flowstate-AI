@@ -31,7 +31,7 @@ class SelfModificationOrchestrator:
         self.config = config or EvolutionConfig()
         self.evolution_manager = EvolutionManager(config)
         self.knowledge_manager = VectorKnowledgeManager(config)
-        self.metrics_collector = MetricsCollector()
+        self.metrics_collector = MetricsCollector("self_modification_orchestrator")
         self.code_analyzer = CodeAnalyzer()
         self.logger = logging.getLogger("self_modification_orchestrator")
         

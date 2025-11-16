@@ -61,7 +61,7 @@ class EvolutionConfig:
     enable_detailed_logging: bool = True
     
     # Database connection
-    database_url: str = field(default_factory=lambda: os.getenv("DATABASE_URL", ""))
+    database_url: str = field(default_factory=lambda: os.getenv("DATABASE_URL", "memory://"))
     
     @classmethod
     def from_dict(cls, config_dict: Dict[str, Any]) -> "EvolutionConfig":
@@ -109,7 +109,10 @@ class EvolutionConfig:
         
         if not self.database_url:
             raise ValueError("database_url is required")
-        
+
+        if self.database_url.startswith("memory://"):
+            return True
+
         return True
 
 

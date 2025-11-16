@@ -1,3 +1,4 @@
+import json
 import logging
 from typing import Dict, Any, List
 
@@ -26,11 +27,17 @@ class XAINBA:
         customer_history = context.get("customer_history", {})
         product_interest = context.get("product_interest", [])
         
-        explanation["reasoning_factors"].append(f"Customer belongs to the \"{customer_segment}\" segment.")
-        if customer_history.get("last_purchase_date"): 
-            explanation["reasoning_factors"].append(f"Last purchase was on {customer_history["last_purchase_date"]}.")
+        explanation["reasoning_factors"].append(
+            f"Customer belongs to the \"{customer_segment}\" segment."
+        )
+        if customer_history.get("last_purchase_date"):
+            explanation["reasoning_factors"].append(
+                f"Last purchase was on {customer_history['last_purchase_date']}."
+            )
         if product_interest:
-            explanation["reasoning_factors"].append(f"Customer has shown interest in: {', '.join(product_interest)}.")
+            explanation["reasoning_factors"].append(
+                f"Customer has shown interest in: {', '.join(product_interest)}."
+            )
 
         action_type = recommendation.get("action_type", "")
         if action_type == "offer_discount":
@@ -43,12 +50,14 @@ class XAINBA:
         
         # Store explanation in knowledge manager
         self.knowledge_manager.store_knowledge(
-            f"nba_explanation_{recommendation.get("id", "unknown")}",
+            f"nba_explanation_{recommendation.get('id', 'unknown')}",
             json.dumps(explanation),
             tags=["xai", "nba_explanation", customer_segment]
         )
 
-        logger.info(f"Generated XAI explanation for NBA recommendation: {recommendation.get("id", "unknown")}")
+        logger.info(
+            f"Generated XAI explanation for NBA recommendation: {recommendation.get('id', 'unknown')}"
+        )
         return explanation
 
     def get_feature_importance(self, model_id: str) -> Dict[str, float]:
@@ -73,15 +82,18 @@ class XAINBA:
         In a real UI, this would be a rich graphical representation.
         """
         viz = f"--- NBA Recommendation Explanation ---\n"
-        viz += f"Recommendation: {explanation["recommendation"].get("action_type", "N/A")} for {explanation["recommendation"].get("customer_id", "N/A")}\n"
-        viz += f"Confidence: {explanation["confidence_score"]:.2f}\n"
+        viz += (
+            f"Recommendation: {explanation['recommendation'].get('action_type', 'N/A')} "
+            f"for {explanation['recommendation'].get('customer_id', 'N/A')}\n"
+        )
+        viz += f"Confidence: {explanation['confidence_score']:.2f}\n"
         viz += "\nReasoning Factors:\n"
         for factor in explanation["reasoning_factors"]:
             viz += f"- {factor}\n"
         if explanation["impact_analysis"]:
             viz += "\nExpected Impact:\n"
             for key, value in explanation["impact_analysis"].items():
-                viz += f"- {key.replace("_", " ").title()}: {value}\n"
+                viz += f"- {key.replace('_', ' ').title()}: {value}\n"
         viz += "------------------------------------\n"
         return viz
 
