@@ -1,8 +1,10 @@
 import express, { Request, Response } from 'express';
 import logger from '../utils/logger';
 import { authenticateToken } from '../middleware/authMiddleware';
+import { AICoordinationService } from '../services/aiCoordinationService';
 
 const router = express.Router();
+const aiCoordinationService = new AICoordinationService();
 
 // All evolution routes require authentication
 router.use(authenticateToken);
@@ -143,14 +145,23 @@ router.post('/safe-mode', async (req: Request, res: Response) => {
 router.post('/improvements/:id/approve', async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
+    const operatorEmail = (req as any)?.user?.email || 'operator';
+    const { rationale = 'Approved via API', decision_maker = operatorEmail } = req.body || {};
 
-    // In production, this would call the Evolution Manager to apply the improvement
     logger.info(`Approving improvement: ${id}`);
+    const decisionPayload = {
+      decision: 'approve' as const,
+      rationale,
+      decision_maker: decision_maker
+    };
+
+    await aiCoordinationService.submitApprovalDecision(id, decisionPayload);
 
     res.json({
       id,
       status: 'approved',
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
+      recorded_by: decision_maker
     });
   } catch (error) {
     logger.error('Error approving improvement:', error);
@@ -167,8 +178,12 @@ router.post('/improvements/:id/reject', async (req: Request, res: Response) => {
     const { id } = req.params;
     const { reason } = req.body;
 
-    // In production, this would call the Evolution Manager to reject the improvement
     logger.info(`Rejecting improvement: ${id}, reason: ${reason}`);
+    await aiCoordinationService.submitApprovalDecision(id, {
+      decision: 'reject',
+      rationale: reason || 'Rejected via API',
+      decision_maker: (req as any)?.user?.email || 'operator'
+    });
 
     res.json({
       id,
@@ -227,6 +242,48 @@ router.get('/governance/status', async (req: Request, res: Response) => {
   } catch (error) {
     logger.error('Error fetching governance status:', error);
     res.status(500).json({ error: 'Failed to fetch governance status' });
+  }
+});
+
+/**
+ * GET /api/evolution/agents
+ * Surface multi-agent coordinator state
+ */
+router.get('/agents', async (_req: Request, res: Response) => {
+  try {
+    const agents = await aiCoordinationService.getAgentStatuses();
+    res.json(agents);
+  } catch (error: any) {
+    logger.error('Error fetching agent status from worker', error);
+    res.status(502).json({ error: error.message || 'Failed to fetch agent status' });
+  }
+});
+
+/**
+ * GET /api/evolution/approvals
+ * Surface pending human approvals
+ */
+router.get('/approvals', async (_req: Request, res: Response) => {
+  try {
+    const approvals = await aiCoordinationService.getApprovalQueue();
+    res.json(approvals);
+  } catch (error: any) {
+    logger.error('Error fetching approvals from worker', error);
+    res.status(502).json({ error: error.message || 'Failed to fetch approval queue' });
+  }
+});
+
+/**
+ * POST /api/evolution/signals
+ * Forward KPI/CRM signals to the worker for agent coordination
+ */
+router.post('/signals', async (req: Request, res: Response) => {
+  try {
+    const result = await aiCoordinationService.sendEvolutionSignal(req.body);
+    res.json(result);
+  } catch (error: any) {
+    logger.error('Error sending evolution signal to worker', error);
+    res.status(502).json({ error: error.message || 'Failed to route evolution signal' });
   }
 });
 
