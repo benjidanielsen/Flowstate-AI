@@ -68,6 +68,12 @@ Please include the following information in your report:
 - Use parameterized queries to prevent SQL injection
 - Keep dependencies updated and scan for vulnerabilities
 
+### Logging Contract
+
+- Always import `safeLogger` from `backend/src/utils/piiRedaction.ts` when writing application logs. The wrapper applies the Winston redactors defined in `logger.ts`, recursively masks sensitive metadata fields (passwords, tokens, emails, phone numbers, SSNs, etc.), and automatically enriches entries with request-scoped correlation IDs.
+- Never instantiate or import raw Winston loggers in feature code. Doing so bypasses the masking logic, risks leaking PII, and can break the correlation-ID middleware in `backend/src/middleware/correlationId.ts`.
+- Treat all new structured log fields as potentially sensitive; if you introduce a novel credential- or identifier-like key, add it to the `SENSITIVE_FIELDS` allowlist in `piiRedaction.ts` so future messages are sanitized consistently.
+
 ## Security Features
 
 Flowstate-AI implements the following security measures:
