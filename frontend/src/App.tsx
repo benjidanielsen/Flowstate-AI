@@ -6,6 +6,8 @@ import Dashboard from './pages/Dashboard';
 import AIDecisionLogs from './pages/AIDecisionLogs';
 import EvolutionDashboard from './pages/EvolutionDashboard';
 import KPIDashboard from './pages/KPIDashboard';
+import AdminDashboard from './pages/AdminDashboard';
+import CRMBoard from './pages/CRMBoard';
 
 function App() {
   return (
@@ -49,6 +51,22 @@ function App() {
           element={
             <ProtectedRoute>
               <KPIDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute>
+              <AdminDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/crm"
+          element={
+            <ProtectedRoute>
+              <CRMBoard />
             </ProtectedRoute>
           }
         />

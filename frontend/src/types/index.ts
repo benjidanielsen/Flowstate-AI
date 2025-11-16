@@ -129,3 +129,92 @@ export enum ReminderType {
   OTHER = 'other'
 }
 
+export interface TrendPoint {
+  label: string;
+  value: number;
+}
+
+export interface KPIMetric {
+  id: string;
+  name: string;
+  value: number;
+  unit?: string;
+  change?: number;
+  direction?: 'up' | 'down' | 'flat';
+  description?: string;
+  target?: number;
+  status?: 'success' | 'warning' | 'danger';
+}
+
+export interface KpiDashboardPayload {
+  category: string;
+  metrics: KPIMetric[];
+  trend: TrendPoint[];
+  summary?: {
+    total: number;
+    delta: number;
+  };
+}
+
+export interface EvolutionMetrics {
+  totalEvents: number;
+  pendingImprovements: number;
+  appliedImprovements: number;
+  successRate: number;
+  averageConfidence: number;
+  safeModeActive: boolean;
+  lastEvolution: string;
+}
+
+export interface EvolutionAnomaly {
+  metricName: string;
+  latestValue: number;
+  mean: number;
+  zScore: number;
+  severity: 'low' | 'medium' | 'high' | 'critical';
+  timestamp: string;
+}
+
+export interface EvolutionPerformance {
+  nbaSuccessRate: number;
+  reminderSuccessRate: number;
+  avgResponseTime: number;
+}
+
+export interface ActivityLog {
+  id: string;
+  agentName: string;
+  action: string;
+  createdAt: string;
+  sentiment?: 'positive' | 'neutral' | 'negative';
+  details?: string;
+}
+
+export interface EvolutionDashboardPayload {
+  metrics: EvolutionMetrics;
+  anomalies: EvolutionAnomaly[];
+  performance: EvolutionPerformance;
+  activity: ActivityLog[];
+}
+
+export interface AgentProfile {
+  id: string;
+  name: string;
+  role: string;
+  status: 'online' | 'offline' | 'busy';
+  tasksInFlight: number;
+  lastActive: string;
+  specialty?: string;
+  avatarColor?: string;
+}
+
+export interface AdminTask {
+  id: string;
+  title: string;
+  owner: string;
+  dueDate: string;
+  status: 'todo' | 'in_progress' | 'blocked' | 'done';
+  priority: 'low' | 'medium' | 'high';
+  relatedCustomer?: string;
+}
+
