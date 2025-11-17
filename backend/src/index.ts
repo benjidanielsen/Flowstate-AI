@@ -1,19 +1,42 @@
-import express, { Request, Response, NextFunction } from 'express';
-import bodyParser from 'body-parser';
-import dotenv from 'dotenv';
+import bodyParser, { json } from 'body-parser';
 import cors from 'cors';
+import dotenv from 'dotenv';
+import express, { NextFunction, Request, Response } from 'express';
 import helmet from 'helmet';
 import http from 'http';
 import path from 'path';
 import swaggerUi from 'swagger-ui-express';
 import YAML from 'yamljs';
+import { openDb } from './db';
+import { createCustomersRouter } from './routes/customers';
 
-import routes from './routes';
-import performanceMiddleware from './middleware/performanceMiddleware';
-import { correlationIdMiddleware } from './middleware/correlationId'; // Import correlationId middleware
-import { idempotencyMiddleware } from './middleware/idempotency'; // Import idempotency middleware
+export function createApp(dbPath?: string) {
+import { CustomerController } from './controllers/customerController';
+  const app = express();
+  app.use(json());
+  const db = await openDb(dbPath);
+  const cc = new CustomerController(db);
+  app.use('/customers', createCustomersRouter(db));
+  app.get('/health', (_, res) => res.json({ status: 'ok' }));
+  return app;
+}
+
+export function startServer(port = 3001) {
+  const app = createApp();
+  const server = app.listen(port, () => console.log(`backend listening ${port}`));
+  return server;
+}
+
+if (require.main === module) {
+  startServer();
+}
+
 import DatabaseManager from './database';
 import { runMigrations } from './database/migrate';
+import { correlationIdMiddleware } from './middleware/correlationId'; // Import correlationId middleware
+import { idempotencyMiddleware } from './middleware/idempotency'; // Import idempotency middleware
+import performanceMiddleware from './middleware/performanceMiddleware';
+import routes from './routes';
 import { safeLogger } from './utils/piiRedaction'; // Use safeLogger
 import './utils/tracer'; // Initialize OpenTelemetry tracer
 

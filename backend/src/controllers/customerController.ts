@@ -1,8 +1,62 @@
 import { Request, Response } from 'express';
-import { CustomerService } from '../services/customerService';
-import { PipelineStatus } from '../types';
 import Joi from 'joi';
+import { Database } from 'sqlite';
+import { CustomerService } from '../services/customerService';
 import { StatsService } from '../services/statsService';
+import { PipelineStatus } from '../types';
+
+export class CustomerController {
+  db: Database;
+  constructor(db: Database) {
+    this.db = db;
+  }
+
+  async getAllCustomers(_req: Request, res: Response) {
+    const rows = await this.db.all('SELECT * FROM customers');
+    res.json(rows);
+  }
+
+  async getCustomerById(req: Request, res: Response) {
+    const id = Number(req.params.id);
+    const row = await this.db.get('SELECT * FROM customers WHERE id = ?', [id]);
+    if (!row) return res.status(404).json({ error: 'Not found' });
+    res.json(row);
+  }
+
+  async createCustomer(req: Request, res: Response) {
+    const body = req.body;
+    const stmt = await this.db.run('INSERT INTO customers (name, stage, createdAt) VALUES (?, ?, ?)', [body.name || 'Unnamed', 'Lead', new Date().toISOString()]);
+    const id = stmt.lastID;
+    const row = await this.db.get('SELECT * FROM customers WHERE id = ?', [id]);
+    res.status(201).json(row);
+  }
+
+  async updateCustomer(req: Request, res: Response) {
+    const id = Number(req.params.id);
+    const body = req.body;
+    await this.db.run('UPDATE customers SET name = ?, stage = ? WHERE id = ?', [body.name, body.stage, id]);
+    const row = await this.db.get('SELECT * FROM customers WHERE id = ?', [id]);
+    res.json(row);
+  }
+
+  async deleteCustomer(req: Request, res: Response) {
+    const id = Number(req.params.id);
+    await this.db.run('DELETE FROM customers WHERE id = ?', [id]);
+    res.status(204).send();
+  }
+
+  async moveToNextStage(req: Request, res: Response) {
+    const id = Number(req.params.id);
+    const row = await this.db.get('SELECT * FROM customers WHERE id = ?', [id]);
+    if (!row) return res.status(404).json({ error: 'Not found' });
+    const stages = ['Lead','Relationship','Invited','Qualified','Presentation Sent','Follow-up','SIGNED-UP'];
+    const idx = stages.indexOf(row.stage);
+    const next = idx >= 0 && idx < stages.length - 1 ? stages[idx + 1] : row.stage;
+    await this.db.run('UPDATE customers SET stage = ? WHERE id = ?', [next, id]);
+    const newRow = await this.db.get('SELECT * FROM customers WHERE id = ?', [id]);
+    res.json(newRow);
+  }
+}
 
 const SOURCE_ENUM = ['ig','messenger','whatsapp','web','ads','manual','other'];
 const customerCreateSchema = Joi.object({
