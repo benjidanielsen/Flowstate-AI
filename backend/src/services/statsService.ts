@@ -31,16 +31,30 @@ export class StatsService {
 
     const db = DatabaseManager.getInstance().getDb();
     const statuses = Object.values(PipelineStatus);
-    const result: Record<string, number> = {};
-    await Promise.all(statuses.map(s => new Promise<void>((resolve, reject) => {
-      db.get('SELECT COUNT(*) as c FROM customers WHERE status = ?', [s], (err, row: any) => {
-        if (err) return reject(err);
-        result[s] = row.c || 0;
-        resolve();
+
+    const rows = await new Promise<Array<{ status: string; count: number }>>((resolve, reject) => {
+      db.all('SELECT status, COUNT(*) as count FROM customers GROUP BY status', (err, data: any[]) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(data?.map(row => ({ status: row.status as string, count: Number(row.count) || 0 })) || []);
+        }
       });
-    })));
-    this.setCache(cacheKey, result);
-    return result;
+    });
+
+    const aggregated = statuses.reduce<Record<string, number>>((acc, status) => {
+      acc[status] = 0;
+      return acc;
+    }, {});
+
+    for (const row of rows) {
+      if (row.status) {
+        aggregated[row.status] = row.count;
+      }
+    }
+
+    this.setCache(cacheKey, aggregated);
+    return aggregated;
   }
 
   private dateRange() {

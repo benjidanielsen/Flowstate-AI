@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Plus, Search, Filter, ArrowRight, X, Calendar, Mail, Phone } from 'lucide-react';
 import { customerApi } from '../services/api';
-import { Customer, PipelineStatus } from '../types';
+import { Customer, PipelineStatus, PIPELINE_STATUS_LABELS } from '../types';
 import { useDebounce } from '../hooks/useDebounce';
 import HighlightText from '../components/HighlightText';
 
@@ -58,9 +58,9 @@ const Customers: React.FC = () => {
 
   const getStatusColor = (status: PipelineStatus) => {
     switch (status) {
-      case PipelineStatus.LEAD:
+      case PipelineStatus.NEW_LEAD:
         return 'bg-gray-100 text-gray-800';
-      case PipelineStatus.RELATIONSHIP:
+      case PipelineStatus.WARMING_UP:
         return 'bg-blue-100 text-blue-800';
       case PipelineStatus.INVITED:
         return 'bg-yellow-100 text-yellow-800';
@@ -70,8 +70,12 @@ const Customers: React.FC = () => {
         return 'bg-purple-100 text-purple-800';
       case PipelineStatus.FOLLOW_UP:
         return 'bg-indigo-100 text-indigo-800';
-      case PipelineStatus.SIGNED_UP:
+      case PipelineStatus.CLOSED_WON:
         return 'bg-green-100 text-green-800';
+      case PipelineStatus.NOT_NOW:
+        return 'bg-red-100 text-red-800';
+      case PipelineStatus.LONG_TERM_NURTURE:
+        return 'bg-teal-100 text-teal-800';
       default:
         return 'bg-gray-100 text-gray-800';
     }
@@ -202,7 +206,7 @@ const Customers: React.FC = () => {
               <option value="">All Statuses</option>
               {Object.values(PipelineStatus).map((status) => (
                 <option key={status} value={status}>
-                  {status}
+                  {PIPELINE_STATUS_LABELS[status] ?? status}
                 </option>
               ))}
             </select>
@@ -226,7 +230,11 @@ const Customers: React.FC = () => {
         ) : (
           <div className="divide-y divide-gray-200">
             {customers.map((customer) => (
-              <div key={customer.id} className="p-6 hover:bg-gray-50 transition-colors border-b border-gray-100 last:border-b-0">
+              <div
+                key={customer.id}
+                data-testid={`customer-card-${customer.id}`}
+                className="p-6 hover:bg-gray-50 transition-colors border-b border-gray-100 last:border-b-0"
+              >
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                   <div className="flex-1 min-w-0">
                     <h3 className="text-lg font-semibold text-gray-900 truncate">
@@ -284,10 +292,10 @@ const Customers: React.FC = () => {
                     <span
                       className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(customer.status)}`}
                     >
-                      {customer.status}
+                      {PIPELINE_STATUS_LABELS[customer.status] ?? customer.status}
                     </span>
-                    
-                    {customer.status !== PipelineStatus.SIGNED_UP && (
+
+                    {customer.status !== PipelineStatus.CLOSED_WON && (
                       <button
                         onClick={() => handleMoveToNextStage(customer.id)}
                         className="p-2 text-gray-400 hover:text-primary-600 transition-colors rounded-full bg-gray-100 hover:bg-gray-200"
@@ -324,23 +332,48 @@ interface CreateCustomerModalProps {
   onSuccess: () => void;
 }
 
+type CustomerCreateInput = Omit<Customer, 'id' | 'created_at' | 'updated_at'>;
+
 const CreateCustomerModal: React.FC<CreateCustomerModalProps> = ({ onClose, onSuccess }) => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     phone: '',
     notes: '',
-    status: PipelineStatus.LEAD,
+    status: PipelineStatus.NEW_LEAD,
   });
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.name) return;
+    const trimmedName = formData.name.trim();
+    if (!trimmedName) {
+      return;
+    }
 
     try {
       setLoading(true);
-      await customerApi.create(formData);
+      const payload: CustomerCreateInput = {
+        name: trimmedName,
+        status: formData.status,
+      };
+
+      const email = formData.email.trim();
+      if (email) {
+        payload.email = email;
+      }
+
+      const phone = formData.phone.trim();
+      if (phone) {
+        payload.phone = phone;
+      }
+
+      const notes = formData.notes.trim();
+      if (notes) {
+        payload.notes = notes;
+      }
+
+      await customerApi.create(payload);
       onSuccess();
     } catch (error) {
       console.error('Error creating customer:', error);
@@ -356,8 +389,9 @@ const CreateCustomerModal: React.FC<CreateCustomerModalProps> = ({ onClose, onSu
         
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Name *</label>
+            <label htmlFor="customer-name" className="block text-sm font-medium text-gray-700 mb-1">Name *</label>
             <input
+              id="customer-name"
               type="text"
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
@@ -365,45 +399,49 @@ const CreateCustomerModal: React.FC<CreateCustomerModalProps> = ({ onClose, onSu
               required
             />
           </div>
-          
+
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+            <label htmlFor="customer-email" className="block text-sm font-medium text-gray-700 mb-1">Email</label>
             <input
+              id="customer-email"
               type="email"
               value={formData.email}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
             />
           </div>
-          
+
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+            <label htmlFor="customer-phone" className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
             <input
+              id="customer-phone"
               type="tel"
               value={formData.phone}
               onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
             />
           </div>
-          
+
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+            <label htmlFor="customer-status" className="block text-sm font-medium text-gray-700 mb-1">Status</label>
             <select
+              id="customer-status"
               value={formData.status}
               onChange={(e) => setFormData({ ...formData, status: e.target.value as PipelineStatus })}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
             >
               {Object.values(PipelineStatus).map((status) => (
                 <option key={status} value={status}>
-                  {status}
+                  {PIPELINE_STATUS_LABELS[status] ?? status}
                 </option>
               ))}
             </select>
           </div>
           
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Notes</label>
+            <label htmlFor="customer-notes" className="block text-sm font-medium text-gray-700 mb-1">Notes</label>
             <textarea
+              id="customer-notes"
               value={formData.notes}
               onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
               rows={3}

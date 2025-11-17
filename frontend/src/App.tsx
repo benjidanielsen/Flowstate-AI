@@ -6,6 +6,8 @@ import Dashboard from './pages/Dashboard';
 import AIDecisionLogs from './pages/AIDecisionLogs';
 import EvolutionDashboard from './pages/EvolutionDashboard';
 import KPIDashboard from './pages/KPIDashboard';
+import Customers from './pages/Customers';
+import CustomerDetail from './pages/CustomerDetail';
 
 function App() {
   return (
@@ -17,6 +19,22 @@ function App() {
           element={
             <ProtectedRoute>
               <Home />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/customers"
+          element={
+            <ProtectedRoute>
+              <Customers />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/customers/:id"
+          element={
+            <ProtectedRoute>
+              <CustomerDetail />
             </ProtectedRoute>
           }
         />

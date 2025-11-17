@@ -1,9 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Title, Text, Metric, Flex, ProgressBar, Badge, TabGroup, TabList, Tab, TabPanels, TabPanel } from '@tremor/react';
-import { ChartBarIcon, ChartPieIcon, ArrowUpIcon, ArrowDownIcon, ExclamationTriangleIcon, CheckCircleIcon } from '@heroicons/react/24/outline';
-import { LineChart, BarChart } from '@tremor/react';
-import { api } from '../services/api';
-import logger from '../utils/logger';
+import axiosInstance from '../api/axiosInstance';
 
 interface KPI {
   name: string;
@@ -15,10 +11,13 @@ interface KPI {
   status?: 'success' | 'warning' | 'error' | 'info';
 }
 
-interface ChartData {
-  date: string;
-  value: number;
-}
+const TAB_CONFIG: Array<{ key: string; label: string; description: string }> = [
+  { key: 'executive', label: 'Executive Summary', description: 'High-level metrics that describe company performance.' },
+  { key: 'operational', label: 'Operational', description: 'System health, responsiveness, and uptime.' },
+  { key: 'business', label: 'Business Impact', description: 'Revenue, acquisition, and other commercial metrics.' },
+  { key: 'quality', label: 'Quality', description: 'Product quality and delivery metrics.' },
+  { key: 'learning', label: 'Learning & Evolution', description: 'Automation learning and continuous improvement signals.' },
+];
 
 const KPIDashboard: React.FC = () => {
   const [kpis, setKpis] = useState<KPI[]>([]);
@@ -35,131 +34,108 @@ const KPIDashboard: React.FC = () => {
     setError(null);
     try {
       // Simulate API call based on selectedTab
-      const response = await api.get(`/kpis?category=${selectedTab}`);
+      const response = await axiosInstance.get(`/kpis`, { params: { category: selectedTab } });
       setKpis(response.data);
     } catch (err) {
-      logger.error('Failed to fetch KPIs', err);
+      console.error('Failed to fetch KPIs', err);
       setError('Failed to load KPIs. Please try again later.');
     } finally {
       setLoading(false);
     }
   };
 
-  const renderKPIs = (category: string) => {
-    if (loading) return <Text>Loading KPIs...</Text>;
-    if (error) return <Text className="text-red-500">Error: {error}</Text>;
-    if (kpis.length === 0) return <Text>No KPIs available for this category.</Text>;
+  const renderKPIs = () => {
+    if (loading) return <p className="text-gray-600">Loading KPIs...</p>;
+    if (error) return <p className="text-red-500">Error: {error}</p>;
+    if (kpis.length === 0) return <p>No KPIs available for this category.</p>;
 
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <ul className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
         {kpis.map((kpi, index) => (
-          <Card key={index} className="flex flex-col justify-between">
-            <div>
-              <Flex justifyContent="between" alignItems="center">
-                <Text>{kpi.name}</Text>
-                {kpi.status && (
-                  <Badge color={kpi.status === 'success' ? 'emerald' : kpi.status === 'warning' ? 'amber' : 'rose'}>
-                    {kpi.status.toUpperCase()}
-                  </Badge>
-                )}
-              </Flex>
-              <Metric className="mt-2">
-                {typeof kpi.value === 'number' ? kpi.value.toLocaleString() : kpi.value}
-                {kpi.unit && <span className="text-sm text-gray-500"> {kpi.unit}</span>}
-              </Metric>
-              {kpi.change !== undefined && (
-                <Flex className="mt-4" justifyContent="start" alignItems="center">
-                  {kpi.changeType === 'increase' && <ArrowUpIcon className="h-4 w-4 text-emerald-500" />}
-                  {kpi.changeType === 'decrease' && <ArrowDownIcon className="h-4 w-4 text-rose-500" />}
-                  <Text className={`ml-1 ${kpi.changeType === 'increase' ? 'text-emerald-500' : kpi.changeType === 'decrease' ? 'text-rose-500' : ''}`}>
-                    {kpi.change > 0 ? '+' : ''}{kpi.change.toLocaleString()}{kpi.unit && <span className="text-sm text-gray-500"> {kpi.unit}</span>}
-                  </Text>
-                  <Text className="ml-2 text-gray-500">vs. previous period</Text>
-                </Flex>
+          <li key={index} className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
+            <div className="flex items-start justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-600">{kpi.name}</p>
+                <p className="mt-2 text-2xl font-semibold text-gray-900">
+                  {typeof kpi.value === 'number' ? kpi.value.toLocaleString() : kpi.value}
+                  {kpi.unit && <span className="ml-1 text-sm text-gray-500">{kpi.unit}</span>}
+                </p>
+              </div>
+              {kpi.status && (
+                <span
+                  className={`rounded-full px-2 py-1 text-xs font-semibold ${
+                    kpi.status === 'success'
+                      ? 'bg-emerald-100 text-emerald-700'
+                      : kpi.status === 'warning'
+                        ? 'bg-amber-100 text-amber-700'
+                        : kpi.status === 'error'
+                          ? 'bg-rose-100 text-rose-700'
+                          : 'bg-blue-100 text-blue-700'
+                  }`}
+                >
+                  {kpi.status.toUpperCase()}
+                </span>
               )}
             </div>
-            {kpi.description && <Text className="mt-4 text-sm text-gray-500">{kpi.description}</Text>}
-          </Card>
+            {kpi.change !== undefined && (
+              <p className="mt-3 text-sm text-gray-600">
+                <span
+                  className={
+                    kpi.changeType === 'increase'
+                      ? 'text-emerald-600'
+                      : kpi.changeType === 'decrease'
+                        ? 'text-rose-600'
+                        : 'text-gray-700'
+                  }
+                >
+                  {kpi.change > 0 ? '+' : ''}{kpi.change.toLocaleString()}
+                  {kpi.unit && <span className="ml-1 text-xs text-gray-500">{kpi.unit}</span>}
+                </span>
+                <span className="ml-2 text-xs text-gray-500">vs. previous period</span>
+              </p>
+            )}
+            {kpi.description && <p className="mt-4 text-sm text-gray-500">{kpi.description}</p>}
+          </li>
         ))}
-      </div>
+      </ul>
     );
   };
 
-  const chartData: ChartData[] = [
-    { date: 'Jan 23', value: 2890 }, { date: 'Feb 23', value: 2756 }, { date: 'Mar 23', value: 3322 },
-    { date: 'Apr 23', value: 3470 }, { date: 'May 23', value: 3750 }, { date: 'Jun 23', value: 3880 },
-    { date: 'Jul 23', value: 3830 }, { date: 'Aug 23', value: 3900 }, { date: 'Sep 23', value: 3950 },
-    { date: 'Oct 23', value: 4000 }, { date: 'Nov 23', value: 4100 }, { date: 'Dec 23', value: 4200 },
-  ];
-
   return (
-    <main className="p-6">
-      <Title>Flowstate-AI KPI Dashboard</Title>
-      <Text>Key Performance Indicators for Flowstate-AI operations and business impact.</Text>
+    <main className="space-y-6 p-6">
+      <header className="space-y-2">
+        <h1 className="text-3xl font-semibold text-gray-900">Flowstate-AI KPI Dashboard</h1>
+        <p className="text-gray-600">Key Performance Indicators for Flowstate-AI operations and business impact.</p>
+      </header>
 
-      <TabGroup className="mt-6" onIndexChange={(index) => setSelectedTab(['executive', 'operational', 'business', 'quality', 'learning'][index])}>
-        <TabList variant="line" defaultValue="executive">
-          <Tab value="executive" icon={ChartPieIcon}>Executive Summary</Tab>
-          <Tab value="operational" icon={ChartBarIcon}>Operational</Tab>
-          <Tab value="business" icon={ChartBarIcon}>Business Impact</Tab>
-          <Tab value="quality" icon={CheckCircleIcon}>Quality</Tab>
-          <Tab value="learning" icon={ExclamationTriangleIcon}>Learning & Evolution</Tab>
-        </TabList>
-        <TabPanels>
-          <TabPanel>
-            <div className="mt-6">
-              <Title>Executive Summary KPIs</Title>
-              {renderKPIs('executive')}
-              <Card className="mt-6">
-                <Title>Monthly Active Users</Title>
-                <LineChart
-                  className="mt-4 h-72"
-                  data={chartData}
-                  index="date"
-                  categories={['value']}
-                  colors={['blue']}
-                  yAxisWidth={30}
-                />
-              </Card>
-            </div>
-          </TabPanel>
-          <TabPanel>
-            <div className="mt-6">
-              <Title>Operational KPIs</Title>
-              {renderKPIs('operational')}
-              <Card className="mt-6">
-                <Title>API Latency (ms)</Title>
-                <BarChart
-                  className="mt-4 h-72"
-                  data={chartData.map(d => ({ ...d, value: d.value / 10 }))} // Simulate latency
-                  index="date"
-                  categories={['value']}
-                  colors={['teal']}
-                  yAxisWidth={30}
-                />
-              </Card>
-            </div>
-          </TabPanel>
-          <TabPanel>
-            <div className="mt-6">
-              <Title>Business Impact KPIs</Title>
-              {renderKPIs('business')}
-            </div>
-          </TabPanel>
-          <TabPanel>
-            <div className="mt-6">
-              <Title>Quality KPIs</Title>
-              {renderKPIs('quality')}
-            </div>
-          </TabPanel>
-          <TabPanel>
-            <div className="mt-6">
-              <Title>Learning & Evolution KPIs</Title>
-              {renderKPIs('learning')}
-            </div>
-          </TabPanel>
-        </TabPanels>
-      </TabGroup>
+      <nav className="flex flex-wrap gap-2" aria-label="KPI categories">
+        {TAB_CONFIG.map(tab => (
+          <button
+            key={tab.key}
+            type="button"
+            onClick={() => setSelectedTab(tab.key)}
+            className={`rounded-full border px-4 py-2 text-sm font-medium transition ${
+              selectedTab === tab.key
+                ? 'border-blue-500 bg-blue-50 text-blue-700'
+                : 'border-gray-200 bg-white text-gray-600 hover:border-blue-300 hover:text-blue-600'
+            }`}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </nav>
+
+      <section className="space-y-4" aria-live="polite">
+        <div>
+          <h2 className="text-xl font-semibold text-gray-900">
+            {TAB_CONFIG.find(tab => tab.key === selectedTab)?.label ?? 'KPIs'}
+          </h2>
+          <p className="text-sm text-gray-500">
+            {TAB_CONFIG.find(tab => tab.key === selectedTab)?.description ?? ''}
+          </p>
+        </div>
+        {renderKPIs()}
+      </section>
     </main>
   );
 };

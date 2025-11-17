@@ -16,3 +16,5 @@ export const authenticateToken = (req: Request, res: Response, next: NextFunctio
   });
 };
 
+export const requireAuth = authenticateToken;
+
