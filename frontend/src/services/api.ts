@@ -138,3 +138,5 @@ export const aiCoordinationApi = {
   },
 };
 
+export default axiosInstance;
+
