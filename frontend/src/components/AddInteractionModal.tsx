@@ -15,6 +15,7 @@ const AddInteractionModal: React.FC<AddInteractionModalProps> = ({ customerId, o
     summary: '',
     notes: '',
     interaction_date: new Date().toISOString().slice(0, 16), // YYYY-MM-DDTHH:MM
+    scheduled_for: '',
   });
   const [loading, setLoading] = useState(false);
 
@@ -27,10 +28,10 @@ const AddInteractionModal: React.FC<AddInteractionModalProps> = ({ customerId, o
       await interactionApi.create(customerId, {
         customer_id: customerId,
         type: formData.type,
-        content: formData.summary || '',
         summary: formData.summary,
         notes: formData.notes || undefined,
         interaction_date: new Date(formData.interaction_date),
+        scheduled_for: formData.scheduled_for ? new Date(formData.scheduled_for) : undefined,
         completed: false,
       });
       onSuccess();
@@ -94,6 +95,16 @@ const AddInteractionModal: React.FC<AddInteractionModalProps> = ({ customerId, o
               type="datetime-local"
               value={formData.interaction_date}
               onChange={(e) => setFormData({ ...formData, interaction_date: e.target.value })}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Scheduled Follow-up (Optional)</label>
+            <input
+              type="datetime-local"
+              value={formData.scheduled_for}
+              onChange={(e) => setFormData({ ...formData, scheduled_for: e.target.value })}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
             />
           </div>

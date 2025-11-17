@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { Users, TrendingUp, Calendar, AlertCircle, ArrowRight } from 'lucide-react';
 import { customerApi, interactionApi, statsApi } from '../services/api';
 import { useToast } from '../contexts/ToastContext';
-import { PipelineStats, Interaction, PipelineStatus, Stats } from '../types';
+import { PipelineStats, Interaction, PipelineStatus, Stats, PIPELINE_STATUS_LABELS } from '../types';
 
 const Dashboard: React.FC = () => {
   const [pipelineStats, setPipelineStats] = useState<PipelineStats>({});
@@ -36,13 +36,15 @@ const Dashboard: React.FC = () => {
   const totalCustomers = allStats ? Object.values(allStats.countsByStatus).reduce((sum, count) => sum + count, 0) : 0;
 
   const pipelineSteps = [
-    { key: PipelineStatus.LEAD, label: 'Leads', color: 'bg-gray-500' },
-    { key: PipelineStatus.RELATIONSHIP, label: 'Relationship', color: 'bg-blue-500' },
-    { key: PipelineStatus.INVITED, label: 'Invited', color: 'bg-yellow-500' },
-    { key: PipelineStatus.QUALIFIED, label: 'Qualified', color: 'bg-orange-500' },
-    { key: PipelineStatus.PRESENTATION_SENT, label: 'Presentation Sent', color: 'bg-purple-500' },
-    { key: PipelineStatus.FOLLOW_UP, label: 'Follow-up', color: 'bg-indigo-500' },
-    { key: PipelineStatus.SIGNED_UP, label: 'Signed Up', color: 'bg-green-500' },
+    { key: PipelineStatus.NEW_LEAD, label: PIPELINE_STATUS_LABELS[PipelineStatus.NEW_LEAD], color: 'bg-gray-500' },
+    { key: PipelineStatus.WARMING_UP, label: PIPELINE_STATUS_LABELS[PipelineStatus.WARMING_UP], color: 'bg-blue-500' },
+    { key: PipelineStatus.INVITED, label: PIPELINE_STATUS_LABELS[PipelineStatus.INVITED], color: 'bg-yellow-500' },
+    { key: PipelineStatus.QUALIFIED, label: PIPELINE_STATUS_LABELS[PipelineStatus.QUALIFIED], color: 'bg-orange-500' },
+    { key: PipelineStatus.PRESENTATION_SENT, label: PIPELINE_STATUS_LABELS[PipelineStatus.PRESENTATION_SENT], color: 'bg-purple-500' },
+    { key: PipelineStatus.FOLLOW_UP, label: PIPELINE_STATUS_LABELS[PipelineStatus.FOLLOW_UP], color: 'bg-indigo-500' },
+    { key: PipelineStatus.CLOSED_WON, label: PIPELINE_STATUS_LABELS[PipelineStatus.CLOSED_WON], color: 'bg-green-500' },
+    { key: PipelineStatus.NOT_NOW, label: PIPELINE_STATUS_LABELS[PipelineStatus.NOT_NOW], color: 'bg-red-500' },
+    { key: PipelineStatus.LONG_TERM_NURTURE, label: PIPELINE_STATUS_LABELS[PipelineStatus.LONG_TERM_NURTURE], color: 'bg-teal-500' },
   ];
 
   if (loading) {
@@ -89,8 +91,8 @@ const Dashboard: React.FC = () => {
               <TrendingUp className="h-8 w-8 text-green-600" />
             </div>
             <div className="ml-4">
-              <h2 className="text-sm font-medium text-gray-500">Signed Up</h2>
-              <p className="text-2xl font-bold text-gray-900">{pipelineStats[PipelineStatus.SIGNED_UP] || 0}</p>
+              <h2 className="text-sm font-medium text-gray-500">{PIPELINE_STATUS_LABELS[PipelineStatus.CLOSED_WON]}</h2>
+              <p className="text-2xl font-bold text-gray-900">{pipelineStats[PipelineStatus.CLOSED_WON] || 0}</p>
             </div>
           </div>
         </div>
@@ -240,13 +242,16 @@ const Dashboard: React.FC = () => {
                 <div key={interaction.id} className="flex items-center justify-between p-3 bg-gray-50 rounded">
                   <div>
                     <p className="text-sm font-medium text-gray-900">
-                      {interaction.type.charAt(0).toUpperCase() + interaction.type.slice(1)}
+                      {interaction.summary || interaction.type.charAt(0).toUpperCase() + interaction.type.slice(1)}
                     </p>
-                    <p className="text-xs text-gray-500">{interaction.content}</p>
+                    <p className="text-xs text-gray-500 capitalize">{interaction.type}</p>
                   </div>
                   <div className="flex items-center space-x-3">
                     <div className="text-xs text-gray-400">
-                      {interaction.scheduled_for && new Date(interaction.scheduled_for).toLocaleDateString()}
+                      {(() => {
+                        const scheduled = interaction.scheduled_for ?? interaction.interaction_date;
+                        return scheduled ? new Date(scheduled).toLocaleString() : '';
+                      })()}
                     </div>
                     <CompleteButton
                       interaction={interaction}

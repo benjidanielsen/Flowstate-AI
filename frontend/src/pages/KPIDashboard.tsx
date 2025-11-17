@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Title, Text, Metric, Flex, ProgressBar, Badge, TabGroup, TabList, Tab, TabPanels, TabPanel } from '@tremor/react';
+import { Card, Title, Text, Metric, Flex, Badge, TabGroup, TabList, Tab, TabPanels, TabPanel } from '@tremor/react';
 import { ChartBarIcon, ChartPieIcon, ArrowUpIcon, ArrowDownIcon, ExclamationTriangleIcon, CheckCircleIcon } from '@heroicons/react/24/outline';
 import { LineChart, BarChart } from '@tremor/react';
 import { api } from '../services/api';
@@ -45,7 +45,7 @@ const KPIDashboard: React.FC = () => {
     }
   };
 
-  const renderKPIs = (category: string) => {
+  const renderKPIs = () => {
     if (loading) return <Text>Loading KPIs...</Text>;
     if (error) return <Text className="text-red-500">Error: {error}</Text>;
     if (kpis.length === 0) return <Text>No KPIs available for this category.</Text>;
@@ -109,7 +109,7 @@ const KPIDashboard: React.FC = () => {
           <TabPanel>
             <div className="mt-6">
               <Title>Executive Summary KPIs</Title>
-              {renderKPIs('executive')}
+              {renderKPIs()}
               <Card className="mt-6">
                 <Title>Monthly Active Users</Title>
                 <LineChart
@@ -126,7 +126,7 @@ const KPIDashboard: React.FC = () => {
           <TabPanel>
             <div className="mt-6">
               <Title>Operational KPIs</Title>
-              {renderKPIs('operational')}
+              {renderKPIs()}
               <Card className="mt-6">
                 <Title>API Latency (ms)</Title>
                 <BarChart
@@ -143,19 +143,19 @@ const KPIDashboard: React.FC = () => {
           <TabPanel>
             <div className="mt-6">
               <Title>Business Impact KPIs</Title>
-              {renderKPIs('business')}
+              {renderKPIs()}
             </div>
           </TabPanel>
           <TabPanel>
             <div className="mt-6">
               <Title>Quality KPIs</Title>
-              {renderKPIs('quality')}
+              {renderKPIs()}
             </div>
           </TabPanel>
           <TabPanel>
             <div className="mt-6">
               <Title>Learning & Evolution KPIs</Title>
-              {renderKPIs('learning')}
+              {renderKPIs()}
             </div>
           </TabPanel>
         </TabPanels>

@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { safeLogger } from '../utils/piiRedaction';
-import { redisClient } from '../utils/cacheManager'; // Assuming cacheManager exports redisClient
+import { cacheManager, CacheOptions } from '../utils/cacheManager';
 
 const IDEMPOTENCY_KEY_PREFIX = 'idempotency:';
 const IDEMPOTENCY_KEY_TTL = 60 * 60; // 1 hour
@@ -16,10 +16,10 @@ export async function idempotencyMiddleware(req: Request, res: Response, next: N
     return next(); // No idempotency key provided, proceed as normal
   }
 
-  const cacheKey = IDEMPOTENCY_KEY_PREFIX + idempotencyKey;
+  const cacheOptions: CacheOptions = { ttl: IDEMPOTENCY_KEY_TTL, prefix: IDEMPOTENCY_KEY_PREFIX };
 
   try {
-    const cachedResponse = await redisClient.get(cacheKey);
+    const cachedResponse = await cacheManager.get<string>(idempotencyKey, cacheOptions);
 
     if (cachedResponse) {
       safeLogger.info(`Idempotency: Returning cached response for key: ${idempotencyKey}`);
@@ -36,8 +36,9 @@ export async function idempotencyMiddleware(req: Request, res: Response, next: N
         headers: res.getHeaders(),
         body: body,
       };
-      redisClient.setex(cacheKey, IDEMPOTENCY_KEY_TTL, JSON.stringify(responseToCache))
-        .catch(err => safeLogger.error(`Idempotency: Failed to cache response for key ${idempotencyKey}`, err));
+      cacheManager
+        .set(idempotencyKey, responseToCache, cacheOptions)
+        .catch((err: unknown) => safeLogger.error(`Idempotency: Failed to cache response for key ${idempotencyKey}`, err));
       return originalSend.apply(res, [body]);
     };
 

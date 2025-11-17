@@ -125,6 +125,19 @@ const migrations = [
       );
       CREATE INDEX IF NOT EXISTS idx_external_integrations_customer_id ON external_integrations(customer_id);
     `
+  },
+  {
+    version: 6,
+    up: `
+      ALTER TABLE interactions ADD COLUMN content TEXT;
+      ALTER TABLE interactions ADD COLUMN scheduled_for DATETIME;
+      ALTER TABLE interactions ADD COLUMN completed BOOLEAN DEFAULT 0;
+      UPDATE interactions SET content = summary WHERE content IS NULL;
+      UPDATE interactions SET scheduled_for = interaction_date WHERE scheduled_for IS NULL;
+      UPDATE interactions SET completed = COALESCE(completed, 0);
+      CREATE INDEX IF NOT EXISTS idx_interactions_completed ON interactions(completed);
+      CREATE INDEX IF NOT EXISTS idx_interactions_scheduled_for ON interactions(scheduled_for);
+    `
   }
 ];
 

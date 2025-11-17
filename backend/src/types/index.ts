@@ -36,8 +36,11 @@ export interface Interaction {
   customer_id: string;
   type: InteractionType;
   summary: string;
+  content?: string;
   notes?: string;
   interaction_date: Date;
+  scheduled_for?: Date | null;
+  completed: boolean;
   created_at: Date;
   updated_at: Date;
 }
