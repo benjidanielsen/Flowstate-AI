@@ -24,7 +24,8 @@ export class CacheManager {
       },
       maxRetriesPerRequest: 3,
       enableReadyCheck: true,
-      lazyConnect: false,
+      lazyConnect: true,
+      enableOfflineQueue: false,
     });
 
     this.redis.on('error', (err: Error) => {
@@ -40,6 +41,7 @@ export class CacheManager {
    * Get a value from cache
    */
   async get<T>(key: string, options?: CacheOptions): Promise<T | null> {
+    await this.ensureConnection();
     const fullKey = this.getFullKey(key, options?.prefix);
     const value = await this.redis.get(fullKey);
 
@@ -59,6 +61,7 @@ export class CacheManager {
    * Set a value in cache
    */
   async set<T>(key: string, value: T, options?: CacheOptions): Promise<void> {
+    await this.ensureConnection();
     const fullKey = this.getFullKey(key, options?.prefix);
     const ttl = options?.ttl || this.DEFAULT_TTL;
     const serialized = JSON.stringify(value);
@@ -70,6 +73,7 @@ export class CacheManager {
    * Delete a value from cache
    */
   async del(key: string, options?: CacheOptions): Promise<void> {
+    await this.ensureConnection();
     const fullKey = this.getFullKey(key, options?.prefix);
     await this.redis.del(fullKey);
   }
@@ -78,6 +82,7 @@ export class CacheManager {
    * Check if a key exists in cache
    */
   async exists(key: string, options?: CacheOptions): Promise<boolean> {
+    await this.ensureConnection();
     const fullKey = this.getFullKey(key, options?.prefix);
     const result = await this.redis.exists(fullKey);
     return result === 1;
@@ -91,6 +96,7 @@ export class CacheManager {
     factory: () => Promise<T>,
     options?: CacheOptions
   ): Promise<T> {
+    await this.ensureConnection();
     const cached = await this.get<T>(key, options);
 
     if (cached !== null) {
@@ -106,6 +112,7 @@ export class CacheManager {
    * Invalidate all cache keys matching a pattern
    */
   async invalidatePattern(pattern: string, options?: CacheOptions): Promise<number> {
+    await this.ensureConnection();
     const prefix = options?.prefix || this.DEFAULT_PREFIX;
     const fullPattern = `${prefix}${pattern}`;
     const keys = await this.redis.keys(fullPattern);
@@ -121,6 +128,7 @@ export class CacheManager {
    * Invalidate all cache with a specific prefix
    */
   async invalidatePrefix(prefix: string): Promise<number> {
+    await this.ensureConnection();
     const pattern = `${prefix}*`;
     const keys = await this.redis.keys(pattern);
 
@@ -135,6 +143,7 @@ export class CacheManager {
    * Get TTL for a key
    */
   async getTTL(key: string, options?: CacheOptions): Promise<number> {
+    await this.ensureConnection();
     const fullKey = this.getFullKey(key, options?.prefix);
     return await this.redis.ttl(fullKey);
   }
@@ -143,6 +152,7 @@ export class CacheManager {
    * Refresh TTL for a key
    */
   async refreshTTL(key: string, options?: CacheOptions): Promise<void> {
+    await this.ensureConnection();
     const fullKey = this.getFullKey(key, options?.prefix);
     const ttl = options?.ttl || this.DEFAULT_TTL;
     await this.redis.expire(fullKey, ttl);
@@ -152,6 +162,7 @@ export class CacheManager {
    * Increment a counter in cache
    */
   async increment(key: string, options?: CacheOptions): Promise<number> {
+    await this.ensureConnection();
     const fullKey = this.getFullKey(key, options?.prefix);
     const value = await this.redis.incr(fullKey);
 
@@ -167,6 +178,7 @@ export class CacheManager {
    * Decrement a counter in cache
    */
   async decrement(key: string, options?: CacheOptions): Promise<number> {
+    await this.ensureConnection();
     const fullKey = this.getFullKey(key, options?.prefix);
     return await this.redis.decr(fullKey);
   }
@@ -175,6 +187,7 @@ export class CacheManager {
    * Set multiple values at once
    */
   async mset(entries: Array<{ key: string; value: any }>, options?: CacheOptions): Promise<void> {
+    await this.ensureConnection();
     const pipeline = this.redis.pipeline();
     const ttl = options?.ttl || this.DEFAULT_TTL;
 
@@ -191,6 +204,7 @@ export class CacheManager {
    * Get multiple values at once
    */
   async mget<T>(keys: string[], options?: CacheOptions): Promise<Array<T | null>> {
+    await this.ensureConnection();
     const fullKeys = keys.map(k => this.getFullKey(k, options?.prefix));
     const values = await this.redis.mget(...fullKeys);
 
@@ -212,6 +226,7 @@ export class CacheManager {
     memoryUsed: string;
     hitRate?: number;
   }> {
+    await this.ensureConnection();
     const pattern = `${prefix || this.DEFAULT_PREFIX}*`;
     const keys = await this.redis.keys(pattern);
     const info = await this.redis.info('memory');
@@ -229,6 +244,7 @@ export class CacheManager {
    * Clear all cache
    */
   async clear(): Promise<void> {
+    await this.ensureConnection();
     await this.redis.flushdb();
   }
 
@@ -245,6 +261,18 @@ export class CacheManager {
   private getFullKey(key: string, prefix?: string): string {
     const p = prefix || this.DEFAULT_PREFIX;
     return `${p}${key}`;
+  }
+
+  private async ensureConnection(): Promise<void> {
+    if (!this.redis) return;
+    if (this.redis.status === 'ready' || this.redis.status === 'connecting') {
+      return;
+    }
+    try {
+      await this.redis.connect();
+    } catch (error) {
+      logger.error('Redis Cache Manager connection error:', error);
+    }
   }
 }
 

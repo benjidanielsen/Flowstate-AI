@@ -1,5 +1,31 @@
+import type { AxiosRequestConfig } from 'axios';
 import axiosInstance from '../api/axiosInstance';
 import { Customer, Interaction, PipelineStatus, Reminder, EventLog, PipelineStats, Stats } from '../types';
+
+type HttpMethod = 'get' | 'post' | 'put' | 'patch' | 'delete';
+
+const request = async <T>(
+  method: HttpMethod,
+  url: string,
+  payload?: unknown,
+  config?: AxiosRequestConfig
+): Promise<T> => {
+  switch (method) {
+    case 'get':
+    case 'delete': {
+      const response = await axiosInstance[method]<T>(url, config);
+      return response.data;
+    }
+    case 'post':
+    case 'put':
+    case 'patch': {
+      const response = await axiosInstance[method]<T>(url, payload, config);
+      return response.data;
+    }
+    default:
+      throw new Error(`Unsupported HTTP method: ${method satisfies never}`);
+  }
+};
 
 // Customer API
 export const aiDecisionLogApi = {
@@ -136,5 +162,13 @@ export const aiCoordinationApi = {
     const response = await axiosInstance.get("/ai/ai-status");
     return response.data;
   },
+};
+
+export const api = {
+  get: <T>(url: string, config?: AxiosRequestConfig) => request<T>('get', url, undefined, config),
+  post: <T, P = unknown>(url: string, payload?: P, config?: AxiosRequestConfig) => request<T>('post', url, payload, config),
+  put: <T, P = unknown>(url: string, payload?: P, config?: AxiosRequestConfig) => request<T>('put', url, payload, config),
+  patch: <T, P = unknown>(url: string, payload?: P, config?: AxiosRequestConfig) => request<T>('patch', url, payload, config),
+  delete: <T>(url: string, config?: AxiosRequestConfig) => request<T>('delete', url, undefined, config),
 };
 
