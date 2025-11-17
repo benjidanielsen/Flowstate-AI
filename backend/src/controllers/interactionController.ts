@@ -22,7 +22,18 @@ export const interactionController = {
   async getInteractionsByCustomerId(req: Request, res: Response) {
     try {
       const { customerId } = req.params;
-      const interactions = await interactionService.getByCustomerId(customerId);
+      const { page, pageSize, type, search, from, to } = req.query;
+      const filters = {
+        page: page ? parseInt(page as string, 10) : undefined,
+        pageSize: pageSize ? parseInt(pageSize as string, 10) : undefined,
+        type: type as string,
+        search: search as string,
+        from: from ? new Date(from as string) : undefined,
+        to: to ? new Date(to as string) : undefined,
+      };
+      if (filters.from && Number.isNaN(filters.from.getTime())) filters.from = undefined;
+      if (filters.to && Number.isNaN(filters.to.getTime())) filters.to = undefined;
+      const interactions = await interactionService.getByCustomerId(customerId, filters);
       res.status(200).json(interactions);
     } catch (error) {
       console.error("Error fetching interactions:", error);

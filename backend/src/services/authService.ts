@@ -3,26 +3,25 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import DatabaseManager from '../database';
 import { User } from '../types';
-
-const JWT_SECRET = process.env.JWT_SECRET || 'supersecretjwtkey';
+import { getActiveJwtSecret } from '../middleware/authMiddleware';
 
 export class AuthService {
   private db = DatabaseManager.getInstance().getDb();
 
-  async registerUser(username: string, password_plain: string): Promise<User> {
+  async registerUser(username: string, password_plain: string, role: string = process.env.DEFAULT_USER_ROLE || 'agent'): Promise<User> {
     const hashedPassword = await bcrypt.hash(password_plain, 10);
     const id = uuidv4();
     const now = new Date().toISOString();
 
     return new Promise((resolve, reject) => {
       this.db.run(
-        'INSERT INTO users (id, username, password, created_at, updated_at) VALUES (?, ?, ?, ?, ?)',
-        [id, username, hashedPassword, now, now],
+        'INSERT INTO users (id, username, password, role, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)',
+        [id, username, hashedPassword, role, now, now],
         function (err) {
           if (err) {
             reject(err);
           } else {
-            resolve({ id, username, created_at: new Date(now), updated_at: new Date(now) });
+            resolve({ id, username, role, created_at: new Date(now), updated_at: new Date(now) });
           }
         }
       );
@@ -52,7 +51,6 @@ export class AuthService {
     // Assuming password field is named 'password' in the database
     const isMatch = await bcrypt.compare(password_plain, (user as any).password);
     if (isMatch) {
-      // Remove password hash before returning user object
       const { password: _password, ...userWithoutPassword } = user as any; // eslint-disable-line @typescript-eslint/no-unused-vars
       return userWithoutPassword as User;
     }
@@ -60,12 +58,21 @@ export class AuthService {
   }
 
   generateToken(user: User): string {
-    return jwt.sign({ id: user.id, username: user.username }, JWT_SECRET, { expiresIn: '1h' });
+    const roles = (user as any).roles || (user.role ? [user.role] : ['agent']);
+    return jwt.sign(
+      { id: user.id, username: user.username, roles, provider: 'internal' },
+      getActiveJwtSecret(),
+      {
+        expiresIn: process.env.JWT_TTL || '1h',
+        issuer: process.env.JWT_ISSUER || 'flowstate-backend',
+        audience: process.env.JWT_AUDIENCE || 'flowstate-clients',
+      }
+    );
   }
 
   verifyToken(token: string): any {
     try {
-      return jwt.verify(token, JWT_SECRET);
+      return jwt.verify(token, getActiveJwtSecret());
     } catch (error) {
       return null;
     }

@@ -42,8 +42,8 @@ export class CustomerController {
 
   getAllCustomers = async (req: Request, res: Response) => {
     try {
-      const { status, search, source, country, language, next_action, sortBy, sortOrder } = req.query;
-      
+      const { status, search, source, country, language, next_action, sortBy, sortOrder, page, pageSize } = req.query;
+
       const customers = await this.customerService.getAllCustomers({
         status: status as PipelineStatus,
         search: search as string,
@@ -53,8 +53,10 @@ export class CustomerController {
         next_action: next_action as string,
         sortBy: sortBy as string,
         sortOrder: sortOrder as 'ASC' | 'DESC',
+        page: page ? parseInt(page as string, 10) : undefined,
+        pageSize: pageSize ? parseInt(pageSize as string, 10) : undefined,
       });
-      
+
       res.json(customers);
     } catch (error) {
       console.error("Error fetching customers:", error);

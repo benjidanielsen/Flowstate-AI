@@ -77,7 +77,7 @@ export class FollowUpService {
       const db = dbManager.getDb();
       const customers: any[] = await new Promise((resolve, reject) => {
         db.all(
-          'SELECT id, status FROM customers WHERE status != "Closed - Won"',
+          "SELECT id, status FROM customers WHERE status <> 'Closed - Won'",
           (err: Error | null, rows: any[]) => {
             if (err) reject(err);
             else resolve(rows || []);
@@ -110,9 +110,9 @@ export class FollowUpService {
           `SELECT r.*, c.name as customer_name, c.email, c.status
            FROM reminders r
            JOIN customers c ON r.customer_id = c.id
-           WHERE r.type = 'follow_up' 
+           WHERE r.type = 'follow_up'
            AND r.scheduled_for <= ?
-           AND r.completed = 0
+           AND r.completed = false
            ORDER BY r.scheduled_for ASC`,
           [futureDate.toISOString()],
           (err: Error | null, rows: any[]) => {

@@ -86,8 +86,15 @@ export class EventController {
 
   getAll = async (req: Request, res: Response) => {
     try {
-      const limit = Math.min(parseInt((req.query.limit as string) || '100', 10), 500);
-      const events = await this.eventLogService.getAllEvents(limit);
+      const { page, pageSize, source, from, to } = req.query;
+      const filters = {
+        page: page ? parseInt(page as string, 10) : undefined,
+        pageSize: pageSize ? parseInt(pageSize as string, 10) : undefined,
+        source: source as string,
+        from: from ? new Date(from as string) : undefined,
+        to: to ? new Date(to as string) : undefined,
+      };
+      const events = await this.eventLogService.getAllEvents(filters);
       res.json(events);
     } catch (err) {
       console.error('Error fetching events:', err);
@@ -98,8 +105,13 @@ export class EventController {
   getByCustomer = async (req: Request, res: Response) => {
     try {
       const { customerId } = req.params;
-      const limit = Math.min(parseInt((req.query.limit as string) || '50', 10), 500);
-      const events = await this.eventLogService.getEventsByCustomer(customerId, limit);
+      const { page, pageSize, from, to } = req.query;
+      const events = await this.eventLogService.getEventsByCustomer(customerId, {
+        page: page ? parseInt(page as string, 10) : undefined,
+        pageSize: pageSize ? parseInt(pageSize as string, 10) : undefined,
+        from: from ? new Date(from as string) : undefined,
+        to: to ? new Date(to as string) : undefined,
+      });
       res.json(events);
     } catch (err) {
       console.error('Error fetching customer events:', err);
@@ -110,11 +122,16 @@ export class EventController {
   getByType = async (req: Request, res: Response) => {
     try {
       const { type } = req.params;
-      const limit = Math.min(parseInt((req.query.limit as string) || '50', 10), 500);
       if (!AllowedEventTypes.includes(type)) {
         return res.status(400).json({ error: 'Unknown event type' });
       }
-      const events = await this.eventLogService.getEventsByType(type, limit);
+      const { page, pageSize, from, to } = req.query;
+      const events = await this.eventLogService.getEventsByType(type, {
+        page: page ? parseInt(page as string, 10) : undefined,
+        pageSize: pageSize ? parseInt(pageSize as string, 10) : undefined,
+        from: from ? new Date(from as string) : undefined,
+        to: to ? new Date(to as string) : undefined,
+      });
       res.json(events);
     } catch (err) {
       console.error('Error fetching events by type:', err);
