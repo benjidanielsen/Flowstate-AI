@@ -858,5 +858,60 @@
     "Auto-run tests before every commit",
     "Auto-deploy to staging on main branch push",
     "Auto-create backup before major changes"
-  ]
+  ],
+  "data_migration_acceptance": {
+    "description": "Definition of done for replaying Airtable data into the custom Postgres schema once Frazer-stage fidelity is guaranteed.",
+    "criteria": [
+      {
+        "id": "AC-DM-001",
+        "frazer_stage": "Relationship",
+        "definition_of_done": [
+          "100% of Airtable Prospects with stage=Relationship exist in Postgres `prospects` with matching owner and source",
+          "Automated comparison query shows < 0.5% variance between Airtable and Postgres record counts for this stage"
+        ],
+        "validation": "Run scripts/airtable_bridge.py --tables prospects followed by SELECT COUNT(*) checks in both databases",
+        "owner": "Data Quality Agent"
+      },
+      {
+        "id": "AC-DM-002",
+        "frazer_stage": "Invited",
+        "definition_of_done": [
+          "All scheduled invites in Airtable Follow-Up Automations convert into Postgres reminders with due dates and owners",
+          "Stage transition history for Invited prospects is present in Postgres activity_log with timestamps within ±5 minutes"
+        ],
+        "validation": "Execute reconciliation notebook (notebooks/data_migration.ipynb) section 2",
+        "owner": "CRM Lead"
+      },
+      {
+        "id": "AC-DM-003",
+        "frazer_stage": "Presentation Sent",
+        "definition_of_done": [
+          "For every Presentation Sent record, the corresponding Postgres task reflects the same Next Action and due date",
+          "Reminders generated at +24h/+72h/+120h exist in Postgres with status=pending unless Airtable marks them completed"
+        ],
+        "validation": "Run automated pytest `tests/data_migration/test_presentation_sent.py` (to be implemented) and verify green",
+        "owner": "Automation Engineer"
+      },
+      {
+        "id": "AC-DM-004",
+        "frazer_stage": "Follow-Up",
+        "definition_of_done": [
+          "AI Coaching Insights tied to Follow-Up prospects appear in Postgres quick_notes with identical priority labels",
+          "No prospect spends >5 days in Follow-Up in Airtable without a matching reminder chain in Postgres"
+        ],
+        "validation": "Compare `SELECT lead_name, reminder_datetime FROM reminders WHERE stage='Follow-Up'` vs. Airtable export",
+        "owner": "AI Coach"
+      },
+      {
+        "id": "AC-DM-005",
+        "frazer_stage": "Team Member",
+        "definition_of_done": [
+          "Graduated prospects sync to Postgres onboarding tables and are excluded from new-task generation",
+          "Historical activity_log entries remain immutable between Airtable and Postgres hashes"
+        ],
+        "validation": "Monthly checksum job compares SHA256 digests of activity logs",
+        "owner": "Ops Steward"
+      }
+    ]
+  }
 }
