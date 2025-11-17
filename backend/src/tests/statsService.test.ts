@@ -18,9 +18,9 @@ describe('StatsService', () => {
     // This is a simplification; in a real scenario, you might have a dedicated test database or transaction rollback
     await DatabaseManager.getInstance().getDb().run("DELETE FROM customers");
 
-    await customerService.createCustomer({ name: 'Stats Customer 1', email: 'stats1@example.com', status: PipelineStatus.NEW_LEAD });
-    await customerService.createCustomer({ name: 'Stats Customer 2', email: 'stats2@example.com', status: PipelineStatus.WARMING_UP });
-    await customerService.createCustomer({ name: 'Stats Customer 3', email: 'stats3@example.com', status: PipelineStatus.WARMING_UP });
+    await customerService.createCustomer({ name: 'Stats Customer 1', email: 'stats1@example.com', status: PipelineStatus.LEAD });
+    await customerService.createCustomer({ name: 'Stats Customer 2', email: 'stats2@example.com', status: PipelineStatus.RELATIONSHIP });
+    await customerService.createCustomer({ name: 'Stats Customer 3', email: 'stats3@example.com', status: PipelineStatus.RELATIONSHIP });
     await customerService.createCustomer({ name: 'Stats Customer 4', email: 'stats4@example.com', status: PipelineStatus.INVITED });
   });
 
@@ -33,8 +33,8 @@ describe('StatsService', () => {
       const statusCounts = await statsService.countsByStatus();
 
       expect(statusCounts).toBeDefined();
-      expect(statusCounts[PipelineStatus.NEW_LEAD]).toBe(1);
-      expect(statusCounts[PipelineStatus.WARMING_UP]).toBe(2);
+      expect(statusCounts[PipelineStatus.LEAD]).toBe(1);
+      expect(statusCounts[PipelineStatus.RELATIONSHIP]).toBe(2);
       expect(statusCounts[PipelineStatus.INVITED]).toBe(1);
       expect(statusCounts[PipelineStatus.PRESENTATION_SENT]).toBe(0);
       // Add more assertions for other statuses as needed

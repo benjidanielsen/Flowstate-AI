@@ -58,7 +58,7 @@ describe('FollowUpService', () => {
   describe('autoScheduleFollowUps', () => {
     it('should auto-schedule follow-ups for customers', async () => {
       // Ensure there are customers to schedule for
-      await customerService.createCustomer({ name: 'Auto Schedule Test 1', email: 'auto1@example.com', status: PipelineStatus.NEW_LEAD });
+      await customerService.createCustomer({ name: 'Auto Schedule Test 1', email: 'auto1@example.com', status: PipelineStatus.LEAD });
       await customerService.createCustomer({ name: 'Auto Schedule Test 2', email: 'auto2@example.com', status: PipelineStatus.QUALIFIED });
 
       const scheduledCount = await followUpService.autoScheduleFollowUps();

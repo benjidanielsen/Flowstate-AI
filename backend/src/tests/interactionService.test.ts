@@ -19,7 +19,7 @@ describe('InteractionService', () => {
     const customerData = {
       name: 'Interaction Test Customer',
       email: 'interaction@example.com',
-      status: PipelineStatus.NEW_LEAD,
+      status: PipelineStatus.LEAD,
     };
     const customer = await customerService.createCustomer(customerData);
     testCustomerId = customer.id;

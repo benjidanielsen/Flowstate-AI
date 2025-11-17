@@ -20,15 +20,13 @@ export interface Customer {
 }
 
 export enum PipelineStatus {
-  NEW_LEAD = 'New Lead',
-  WARMING_UP = 'Warming Up',
+  LEAD = 'Lead',
+  RELATIONSHIP = 'Relationship',
   INVITED = 'Invited',
   QUALIFIED = 'Qualified',
   PRESENTATION_SENT = 'Presentation Sent',
   FOLLOW_UP = 'Follow-up',
-  CLOSED_WON = 'Closed - Won',
-  NOT_NOW = 'Not Now',
-  LONG_TERM_NURTURE = 'Long-term Nurture'
+  SIGNED_UP = 'SIGNED-UP'
 }
 
 export interface Interaction {

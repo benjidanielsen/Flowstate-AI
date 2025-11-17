@@ -9,7 +9,7 @@ const sampleCustomers = [
     name: 'John Smith',
     email: 'john@example.com',
     phone: '+1-555-0123',
-    status: PipelineStatus.NEW_LEAD,
+    status: PipelineStatus.LEAD,
     notes: 'Met at networking event. Interested in fitness products.',
     next_action: 'Schedule initial call',
     next_action_date: new Date(Date.now() + 24 * 60 * 60 * 1000) // Tomorrow
@@ -19,7 +19,7 @@ const sampleCustomers = [
     name: 'Sarah Johnson',
     email: 'sarah@example.com',
     phone: '+1-555-0124', 
-    status: PipelineStatus.WARMING_UP,
+    status: PipelineStatus.RELATIONSHIP,
     notes: 'Building rapport. Has expressed interest in health supplements.',
     next_action: 'Send product information',
     next_action_date: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000) // 2 days
