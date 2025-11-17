@@ -85,3 +85,8 @@ playwright/.cache/
 
 # Databases
 *.db
+.venv/
+tmp_
+*.csv
+GODMODE-BACKUP/
+godmode-logs/
