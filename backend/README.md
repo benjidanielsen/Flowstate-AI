@@ -1,3 +1,23 @@
+# Flowstate Backend (Scaffold)
+
+This is an initial scaffold for the backend API written in TypeScript using Express.
+
+Quick start (local dev):
+
+```powershell
+cd backend
+npm ci
+npm run dev
+```
+
+Run tests:
+
+```powershell
+cd backend
+npm test
+```
+
+This initial scaffold implements the Customers endpoints (`GET /customers`, `POST /customers`) and basic tests using Jest and SuperTest.
 # Backend - Flowstate-AI
 
 Quick notes for local development and tests.

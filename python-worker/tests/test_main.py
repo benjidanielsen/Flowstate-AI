@@ -1,3 +1,21 @@
+from fastapi.testclient import TestClient
+from src.main import app
+
+client = TestClient(app)
+
+def test_read_root():
+    r = client.get('/')
+    assert r.status_code == 200
+    assert r.json() == {"status": "ok"}
+
+def test_create_and_get_reminder():
+    r = client.post('/reminders', json={'customer_id': 1, 'text': 'Call', 'due': '2025-11-17T00:00:00Z'})
+    assert r.status_code == 201
+    data = r.json()
+    assert data['id'] == 1
+    r2 = client.get('/reminders')
+    assert r2.status_code == 200
+    assert isinstance(r2.json(), list)
 import pytest
 import sys
 import os
