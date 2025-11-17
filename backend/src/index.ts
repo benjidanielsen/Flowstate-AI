@@ -7,12 +7,16 @@ import http from 'http';
 import path from 'path';
 import swaggerUi from 'swagger-ui-express';
 import YAML from 'yamljs';
-import customersRouter from './routes/customers';
+import { openDb } from './db';
+import { createCustomersRouter } from './routes/customers';
 
-export function createApp() {
+export function createApp(dbPath?: string) {
+import { CustomerController } from './controllers/customerController';
   const app = express();
   app.use(json());
-  app.use('/customers', customersRouter);
+  const db = await openDb(dbPath);
+  const cc = new CustomerController(db);
+  app.use('/customers', createCustomersRouter(db));
   app.get('/health', (_, res) => res.json({ status: 'ok' }));
   return app;
 }
