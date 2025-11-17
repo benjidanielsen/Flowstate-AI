@@ -1,13 +1,14 @@
 import logging
-from typing import Dict, Any
+from typing import Dict, Any, Optional
 
 from .evolution_manager import EvolutionManager
 from .config import EvolutionConfig
+from .observability import record_agent_action
 
 class CostOptimizer:
     """Automatically identifies and applies cost optimization strategies."""
 
-    def __init__(self, evolution_manager: EvolutionManager, config: EvolutionConfig):
+    def __init__(self, evolution_manager: Optional[EvolutionManager], config: EvolutionConfig):
         self.evolution_manager = evolution_manager
         self.config = config
         self.logger = logging.getLogger("cost_optimizer")
@@ -25,12 +26,19 @@ class CostOptimizer:
             confidence = 0.90
             metadata = {"proposed_action": "rightsize_instance_type"}
 
-            event_id = self.evolution_manager.propose_improvement(
-                component=component,
-                description=description,
-                improvement_type=improvement_type,
-                confidence=confidence,
-                metadata=metadata
+            event_id = None
+            if self.evolution_manager:
+                event_id = self.evolution_manager.propose_improvement(
+                    component=component,
+                    description=description,
+                    improvement_type=improvement_type,
+                    confidence=confidence,
+                    metadata=metadata
+                )
+            record_agent_action(
+                "cost_optimizer.proposal",
+                current_cost_metrics.get("correlation_id"),
+                {"component": component, **current_cost_metrics}
             )
             if event_id:
                 self.logger.info(f"Proposed cost optimization for {component}: {description}")
@@ -45,11 +53,21 @@ class CostOptimizer:
         # In a real scenario, this would interact with cloud provider APIs or container orchestrators
         # For simulation, we just log and return success
         success = True # Simulate successful application
-        if success:
+        if success and self.evolution_manager:
             self.evolution_manager.update_evolution_event(event_id, status="applied", metadata={"applied_action": "resource_rightsizing"})
             self.logger.info(f"Successfully applied resource optimization for {component}.")
-        else:
+        elif self.evolution_manager:
             self.evolution_manager.update_evolution_event(event_id, status="failed", metadata={"error": "Simulated failure"})
             self.logger.error(f"Failed to apply resource optimization for {component}.")
         return success
+
+    async def process_bottleneck_report(self, report: Dict[str, Any]) -> Dict[str, Any]:
+        correlation_id = report.get("correlation_id")
+        cost_metrics = report.get("cost_metrics", {})
+        record_agent_action(
+            "cost_optimizer.bottleneck",
+            correlation_id,
+            {"component": report.get("component"), **cost_metrics}
+        )
+        return await self.analyze_and_optimize(report.get("component", "unknown"), cost_metrics)
 

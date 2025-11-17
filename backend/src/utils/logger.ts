@@ -1,37 +1,47 @@
 import winston from 'winston';
 
-// Function to redact PII from log messages
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const LokiTransport = require('winston-loki');
+
+const serviceName = process.env.OTEL_SERVICE_NAME || 'flowstate-ai-backend';
+const environment = process.env.NODE_ENV || 'development';
+
 const redactPII = winston.format((info) => {
-  const message = info.message as string;
-  // Simple regex for common PII patterns (email, phone numbers, basic IDs)
-  // This is a basic example and should be expanded for production use
+  const message = typeof info.message === 'string' ? info.message : JSON.stringify(info.message);
   info.message = message
     .replace(/\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b/g, '[REDACTED_EMAIL]')
     .replace(/\b\d{3}[-.]?\d{3}[-.]?\d{4}\b/g, '[REDACTED_PHONE]')
-    .replace(/\b(user_id|customer_id|agent_id):\s*\S+/gi, '$1: [REDACTED_ID]');
+    .replace(/\b(?:customer|user|agent|deal)_id\s*[:=]\s*[^,\s]+/gi, '[REDACTED_ID]');
   return info;
 });
 
-const logger = winston.createLogger({
-  level: process.env.NODE_ENV === 'production' ? 'info' : 'debug',
+const transports: winston.transport[] = [
+  new winston.transports.Console({
+    handleExceptions: true,
+  }),
+];
+
+if (process.env.LOKI_URL) {
+  transports.push(new LokiTransport({
+    host: process.env.LOKI_URL,
+    labels: { service: serviceName, environment },
+    json: true,
+    batching: true,
+    timeout: 2000,
+  }));
+}
+
+const safeLogger = winston.createLogger({
+  level: process.env.LOG_LEVEL || (environment === 'production' ? 'info' : 'debug'),
+  defaultMeta: { service: serviceName, environment },
   format: winston.format.combine(
-    redactPII(), // Apply PII redaction
-    winston.format.colorize(),
+    redactPII(),
     winston.format.timestamp(),
-    winston.format.printf(({ timestamp, level, message }) => {
-      return `[${timestamp}] ${level}: ${message}`;
-    })
+    winston.format.errors({ stack: true }),
+    winston.format.json(),
   ),
-  transports: [
-    new winston.transports.Console(),
-    new winston.transports.File({ filename: 'error.log', level: 'error' }),
-    new winston.transports.File({ filename: 'combined.log' }),
-  ],
+  transports,
 });
 
-// Data retention policies (e.g., log rotation, archival, deletion) should be implemented in a production environment.
-// Consider using dedicated log management solutions (e.g., ELK stack, Splunk) or a log rotation library like 'winston-daily-rotate-file' for Node.js.
-// Ensure sensitive logs are retained only for necessary periods and then purged according to compliance requirements.
-
-export default logger;
-
+export { safeLogger };
+export default safeLogger;
