@@ -1,0 +1,22 @@
+# Launch Readiness Assessment
+
+## Current Functionality Snapshot
+- **Authenticated API surface:** The Express router exposes JWT-protected routes for customers, interactions, reminders, analytics, automations, and AI coordination, with only the auth endpoints public for login and registration flows.【F:backend/src/routes/index.ts†L1-L35】
+- **Database schema coverage:** SQLite migrations provision customers, interactions, reminders, event logs, user accounts, external integrations, and the new interaction scheduling fields that the UI consumes for upcoming/completed tracking.【F:backend/src/database/migrate.ts†L1-L116】
+- **Seed data for demos:** The seeding script can populate representative customers, interactions, and event logs so the dashboard is populated after migrations run.【F:backend/src/database/seed.ts†L1-L120】
+- **Front-end workflow:** The React SPA supports login, protected routing, a filters-rich customer pipeline view, and interaction/reminder management backed by the REST client bindings.【F:frontend/src/pages/Login.tsx†L1-L58】【F:frontend/src/pages/Customers.tsx†L1-L120】【F:frontend/src/services/api.ts†L1-L120】
+- **Authentication service resilience:** The auth service now lazily initializes its database connection before handling register/login calls, preventing startup crashes when the database has not been warmed up yet.【F:backend/src/services/authService.ts†L1-L94】
+
+## Critical Gaps Blocking Launch
+- **Database durability & scaling:** SQLite simplifies local development but will bottleneck concurrency and observability; production launch requires migrating to the intended Postgres deployment (or managed equivalent) and validating migrations in that environment.【F:backend/src/database/index.ts†L1-L52】
+- **Operational hardening:** There is no automated smoke/regression pipeline—the repo's lint checks already fail on legacy middleware/utilities, and CI should enforce linting, tests, and build verification before go-live.【F:backend/src/middleware/correlationId.ts†L1-L40】【F:backend/src/utils/dbOptimizer.ts†L1-L160】
+- **Continuous E2E provisioning:** The Playwright suites now authenticate and pass locally, but CI environments must provision the Chromium binaries and system dependencies (`npx playwright install chromium` plus `npx playwright install-deps chromium`) before running the tests or they will fail to launch.【F:e2e/utils/auth.ts†L1-L160】【F:docs/reports/system_test_summary_2025-10-23.md†L1-L37】
+- **Secrets & provisioning:** JWT secrets and OpenAI keys are sourced from environment variables but there is no documented vault/secret manager story for staging/production, nor infrastructure-as-code defining how the backend, frontend, and worker services deploy together.【F:backend/src/middleware/authMiddleware.ts†L1-L16】【F:docs/DEPLOYMENT_GUIDE.md†L1-L160】
+- **User lifecycle & compliance:** While registration/login works, there is no password reset, role management, or audit logging tying API actions back to users—essential for regulated customer data flows.【F:backend/src/controllers/authController.ts†L1-L40】【F:backend/src/services/interactionService.ts†L1-L200】
+
+## Recommended Next Steps & Launch Checklist
+1. **Stabilize the codebase:** Resolve outstanding lint/test failures, extend coverage around authentication, pipeline transitions, and reminder scheduling, then wire these checks into CI so every merge is launch-ready by default.【F:backend/src/tests/authService.test.ts†L1-L120】【F:backend/src/services/interactionService.ts†L1-L200】
+2. **Productionize the platform:** Containerize backend/frontend with consistent env contracts, stand up Postgres and Redis (if used), configure secret storage, and codify migrations/seeds into the deployment pipeline described in the deployment guide.【F:docs/DEPLOYMENT_GUIDE.md†L1-L160】【F:docker-compose.production.yml†L1-L200】
+3. **Finalize go-live operations:** Draft runbooks for monitoring, alerting, on-call response, and data retention; add at least one administrative UI/CLI path for managing users and permissions before onboarding external operators.【F:docs/OPS_RUNBOOK.md†L1-L200】【F:docs/DEPLOYMENT_RUNBOOK.md†L1-L200】
+4. **Conduct UAT and security reviews:** Populate staging with seeded data, walk target personas through end-to-end workflows, and complete vulnerability scanning plus manual penetration testing before flipping production traffic.【F:docs/QUALITY.md†L1-L200】【F:docs/SECURITY_SCANNING.md†L1-L200】
+

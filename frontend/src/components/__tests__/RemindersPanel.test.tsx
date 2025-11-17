@@ -1,10 +1,16 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+import type { Mock } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import RemindersPanel from '../RemindersPanel';
 
-// Mock fetch
-global.fetch = vi.fn();
+type FetchArgs = Parameters<typeof fetch>;
+type MockFetchResponse = { ok: boolean; json?: () => Promise<unknown>; status?: number };
+type FetchMock = Mock<FetchArgs, Promise<MockFetchResponse>>;
+
+const fetchMock: FetchMock = vi.fn<FetchArgs, Promise<MockFetchResponse>>();
+
+global.fetch = fetchMock as unknown as typeof fetch;
 
 describe('RemindersPanel', () => {
   const mockReminders = [
@@ -42,10 +48,11 @@ describe('RemindersPanel', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    fetchMock.mockReset();
   });
 
   it('renders loading state initially', () => {
-    (global.fetch as any).mockImplementation(
+    fetchMock.mockImplementation(
       () => new Promise(() => {}) // Never resolves
     );
 
@@ -56,7 +63,7 @@ describe('RemindersPanel', () => {
   });
 
   it('fetches and displays reminders', async () => {
-    (global.fetch as any).mockResolvedValue({
+    fetchMock.mockResolvedValue({
       ok: true,
       json: async () => mockReminders,
     });
@@ -73,7 +80,7 @@ describe('RemindersPanel', () => {
   });
 
   it('displays customer names', async () => {
-    (global.fetch as any).mockResolvedValue({
+    fetchMock.mockResolvedValue({
       ok: true,
       json: async () => mockReminders,
     });
@@ -89,7 +96,7 @@ describe('RemindersPanel', () => {
   });
 
   it('shows active reminder count', async () => {
-    (global.fetch as any).mockResolvedValue({
+    fetchMock.mockResolvedValue({
       ok: true,
       json: async () => mockReminders,
     });
@@ -102,7 +109,7 @@ describe('RemindersPanel', () => {
   });
 
   it('displays urgency indicators correctly', async () => {
-    (global.fetch as any).mockResolvedValue({
+    fetchMock.mockResolvedValue({
       ok: true,
       json: async () => mockReminders,
     });
@@ -123,7 +130,7 @@ describe('RemindersPanel', () => {
   });
 
   it('handles empty reminders list', async () => {
-    (global.fetch as any).mockResolvedValue({
+    fetchMock.mockResolvedValue({
       ok: true,
       json: async () => [],
     });
@@ -136,7 +143,7 @@ describe('RemindersPanel', () => {
   });
 
   it('handles fetch errors', async () => {
-    (global.fetch as any).mockRejectedValue(new Error('Network error'));
+    fetchMock.mockRejectedValue(new Error('Network error'));
 
     render(<RemindersPanel />);
 
@@ -146,7 +153,7 @@ describe('RemindersPanel', () => {
   });
 
   it('handles API errors', async () => {
-    (global.fetch as any).mockResolvedValue({
+    fetchMock.mockResolvedValue({
       ok: false,
     });
 
@@ -159,7 +166,7 @@ describe('RemindersPanel', () => {
 
   it('marks reminder as complete', async () => {
     const user = userEvent.setup();
-    (global.fetch as any)
+    fetchMock
       .mockResolvedValueOnce({
         ok: true,
         json: async () => mockReminders,
@@ -192,7 +199,7 @@ describe('RemindersPanel', () => {
   });
 
   it('fetches reminders for specific customer', async () => {
-    (global.fetch as any).mockResolvedValue({
+    fetchMock.mockResolvedValue({
       ok: true,
       json: async () => [mockReminders[0]],
     });
@@ -207,7 +214,7 @@ describe('RemindersPanel', () => {
   });
 
   it('applies limit parameter', async () => {
-    (global.fetch as any).mockResolvedValue({
+    fetchMock.mockResolvedValue({
       ok: true,
       json: async () => mockReminders,
     });
@@ -222,7 +229,7 @@ describe('RemindersPanel', () => {
   });
 
   it('styles completed reminders with opacity', async () => {
-    (global.fetch as any).mockResolvedValue({
+    fetchMock.mockResolvedValue({
       ok: true,
       json: async () => mockReminders,
     });
@@ -238,7 +245,7 @@ describe('RemindersPanel', () => {
   });
 
   it('does not show complete button for completed reminders', async () => {
-    (global.fetch as any).mockResolvedValue({
+    fetchMock.mockResolvedValue({
       ok: true,
       json: async () => mockReminders,
     });

@@ -117,7 +117,7 @@ const AddReminderModal: React.FC<AddReminderModalProps> = ({
           </div>
 
           <div>
-            <label htmlFor="repeatInterval" className="block text-sm font-medium text-gray-700">Repeat Interval (e.g., 'daily', 'weekly', 'monthly')</label>
+            <label htmlFor="repeatInterval" className="block text-sm font-medium text-gray-700">Repeat Interval (e.g., “daily”, “weekly”, “monthly”)</label>
             <input
               type="text"
               id="repeatInterval"

@@ -1,9 +1,15 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+import type { Mock } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import QualificationQuestionnaire from '../QualificationQuestionnaire';
 import { Customer, PipelineStatus } from '../../types';
 import * as api from '../../services/api';
+
+const updateMock = api.customerApi.update as Mock<
+  [string, Partial<Customer>],
+  Promise<Customer>
+>;
 
 // Mock the API
 vi.mock('../../services/api', () => ({
@@ -27,6 +33,7 @@ describe('QualificationQuestionnaire', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    updateMock.mockReset();
   });
 
   it('renders the qualification form correctly', () => {
@@ -79,7 +86,7 @@ describe('QualificationQuestionnaire', () => {
       status: PipelineStatus.QUALIFIED,
     };
 
-    (api.customerApi.update as any).mockResolvedValue(updatedCustomer);
+    updateMock.mockResolvedValue(updatedCustomer);
 
     render(
       <QualificationQuestionnaire
@@ -108,7 +115,7 @@ describe('QualificationQuestionnaire', () => {
 
   it('displays loading state during submission', async () => {
     const user = userEvent.setup();
-    (api.customerApi.update as any).mockImplementation(
+    updateMock.mockImplementation(
       () => new Promise((resolve) => setTimeout(resolve, 100))
     );
 
@@ -133,7 +140,7 @@ describe('QualificationQuestionnaire', () => {
   it('handles API errors gracefully', async () => {
     const user = userEvent.setup();
     const errorMessage = 'Failed to save qualification';
-    (api.customerApi.update as any).mockRejectedValue({
+    updateMock.mockRejectedValue({
       response: { data: { error: errorMessage } },
     });
 
@@ -197,7 +204,7 @@ describe('QualificationQuestionnaire', () => {
 
   it('disables buttons during loading', async () => {
     const user = userEvent.setup();
-    (api.customerApi.update as any).mockImplementation(
+    updateMock.mockImplementation(
       () => new Promise((resolve) => setTimeout(resolve, 100))
     );
 

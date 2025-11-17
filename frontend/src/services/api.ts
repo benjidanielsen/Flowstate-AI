@@ -1,14 +1,40 @@
 import axiosInstance from '../api/axiosInstance';
-import { Customer, Interaction, PipelineStatus, Reminder, EventLog, PipelineStats, Stats } from '../types';
+import {
+  Customer,
+  Interaction,
+  PipelineStatus,
+  Reminder,
+  EventLog,
+  PipelineStats,
+  Stats,
+  AIDecisionLog,
+  AICoordinationStatus,
+  AITaskPayload,
+  AITaskResponse,
+} from '../types';
+
+const toIsoString = (value?: Date | string | null) => {
+  if (!value) return undefined;
+  const date = value instanceof Date ? value : new Date(value);
+  if (Number.isNaN(date.getTime())) return undefined;
+  return date.toISOString();
+};
 
 // Customer API
 export const aiDecisionLogApi = {
-  getAIDecisionLogs: async () => {
-    const response = await axiosInstance.get('/ai/decision-logs');
+  getAIDecisionLogs: async (): Promise<AIDecisionLog[]> => {
+    const response = await axiosInstance.get<AIDecisionLog[]>('/ai/decision-logs');
     return response.data;
   },
-  updateDecisionStatus: async (id: number, newStatus: string, humanReviewer?: string) => {
-    const response = await axiosInstance.put(`/ai/decision-logs/${id}/status`, { newStatus, humanReviewer });
+  updateDecisionStatus: async (
+    id: number,
+    newStatus: string,
+    humanReviewer?: string
+  ): Promise<AIDecisionLog> => {
+    const response = await axiosInstance.put<AIDecisionLog>(
+      `/ai/decision-logs/${id}/status`,
+      { newStatus, humanReviewer }
+    );
     return response.data;
   },
 };
@@ -48,7 +74,7 @@ export const customerApi = {
   },
   getStats: async (): Promise<PipelineStats> => {
     const response = await axiosInstance.get('/customers/stats');
-    return response.data;
+    return response.data.counts_by_status ?? {};
   },
 };
 
@@ -58,12 +84,55 @@ export const interactionApi = {
     const response = await axiosInstance.get(`/customers/${customerId}/interactions`);
     return response.data;
   },
-  create: async (customerId: string, interactionData: Omit<Interaction, 'id' | 'created_at'>): Promise<Interaction> => {
-    const response = await axiosInstance.post(`/customers/${customerId}/interactions`, interactionData);
+  create: async (
+    customerId: string,
+    interactionData: Omit<Interaction, 'id' | 'created_at' | 'updated_at'>
+  ): Promise<Interaction> => {
+    const payload: Record<string, unknown> = {
+      type: interactionData.type,
+      summary: interactionData.summary,
+      notes: interactionData.notes,
+      completed: interactionData.completed ?? false,
+    };
+
+    const interactionDate = toIsoString(interactionData.interaction_date as Date | string | undefined);
+    if (interactionDate) {
+      payload.interaction_date = interactionDate;
+    }
+
+    const scheduledFor = interactionData.scheduled_for === null
+      ? null
+      : toIsoString(interactionData.scheduled_for as Date | string | undefined);
+    if (scheduledFor !== undefined) {
+      payload.scheduled_for = scheduledFor;
+    }
+
+    const response = await axiosInstance.post(`/customers/${customerId}/interactions`, payload);
     return response.data;
   },
   update: async (customerId: string, id: string, updates: Partial<Interaction>): Promise<Interaction> => {
-    const response = await axiosInstance.put(`/customers/${customerId}/interactions/${id}`, updates);
+    const payload: Record<string, unknown> = {};
+
+    if (updates.type !== undefined) payload.type = updates.type;
+    if (updates.summary !== undefined) payload.summary = updates.summary;
+    if (updates.notes !== undefined) payload.notes = updates.notes;
+    if (updates.completed !== undefined) payload.completed = updates.completed;
+
+    if (updates.interaction_date) {
+      const iso = toIsoString(updates.interaction_date as Date | string | undefined);
+      if (iso) payload.interaction_date = iso;
+    }
+
+    if (updates.scheduled_for !== undefined) {
+      if (updates.scheduled_for === null) {
+        payload.scheduled_for = null;
+      } else {
+        const iso = toIsoString(updates.scheduled_for as Date | string | undefined);
+        if (iso) payload.scheduled_for = iso;
+      }
+    }
+
+    const response = await axiosInstance.put(`/customers/${customerId}/interactions/${id}`, payload);
     return response.data;
   },
   delete: async (customerId: string, id: string): Promise<void> => {
@@ -86,11 +155,35 @@ export const reminderApi = {
     return response.data;
   },
   create: async (customerId: string, reminderData: Omit<Reminder, 'id' | 'created_at'>): Promise<Reminder> => {
-    const response = await axiosInstance.post(`/customers/${customerId}/reminders`, reminderData);
+    const payload: Record<string, unknown> = {
+      type: reminderData.type,
+      message: reminderData.message,
+      repeat_interval: reminderData.repeat_interval,
+    };
+
+    const scheduled = toIsoString(reminderData.scheduled_for as Date | string | undefined);
+    if (scheduled) {
+      payload.scheduled_for = scheduled;
+    }
+
+    const response = await axiosInstance.post(`/customers/${customerId}/reminders`, payload);
     return response.data;
   },
   update: async (customerId: string, id: string, updates: Partial<Reminder>): Promise<Reminder> => {
-    const response = await axiosInstance.put(`/customers/${customerId}/reminders/${id}`, updates);
+    const payload: Record<string, unknown> = {};
+    if (updates.type !== undefined) payload.type = updates.type;
+    if (updates.message !== undefined) payload.message = updates.message;
+    if (updates.repeat_interval !== undefined) payload.repeat_interval = updates.repeat_interval;
+    if (updates.completed !== undefined) payload.completed = updates.completed;
+
+    if (updates.scheduled_for !== undefined) {
+      const iso = toIsoString(updates.scheduled_for as Date | string | undefined);
+      if (iso) {
+        payload.scheduled_for = iso;
+      }
+    }
+
+    const response = await axiosInstance.put(`/customers/${customerId}/reminders/${id}`, payload);
     return response.data;
   },
   delete: async (customerId: string, id: string): Promise<void> => {
@@ -113,27 +206,34 @@ export const statsApi = {
     return response.data;
   },
   getPipelineStats: async (): Promise<PipelineStats> => {
-    const response = await axiosInstance.get('/stats/pipeline');
-    return response.data;
+    const response = await axiosInstance.get('/stats');
+    return response.data.countsByStatus ?? {};
   },
 };
 
 // AI Coordination API
 export const aiCoordinationApi = {
-  getDecisionLogs: async (status?: string): Promise<any> => {
-    const response = await axiosInstance.get("/ai/decision-logs", { params: { status } });
+  getDecisionLogs: async (status?: string): Promise<AIDecisionLog[]> => {
+    const response = await axiosInstance.get<AIDecisionLog[]>("/ai/decision-logs", { params: { status } });
     return response.data;
   },
-  updateDecisionStatus: async (id: number, newStatus: string, humanReviewer?: string): Promise<any> => {
-    const response = await axiosInstance.put(`/ai/decision-logs/${id}/status`, { newStatus, humanReviewer });
+  updateDecisionStatus: async (
+    id: number,
+    newStatus: string,
+    humanReviewer?: string
+  ): Promise<AIDecisionLog> => {
+    const response = await axiosInstance.put<AIDecisionLog>(
+      `/ai/decision-logs/${id}/status`,
+      { newStatus, humanReviewer }
+    );
     return response.data;
   },
-  sendTask: async (taskType: string, payload: any): Promise<any> => {
-    const response = await axiosInstance.post("/ai/ai-task", { taskType, payload });
+  sendTask: async (taskType: string, payload: AITaskPayload): Promise<AITaskResponse> => {
+    const response = await axiosInstance.post<AITaskResponse>("/ai/ai-task", { taskType, payload });
     return response.data;
   },
-  getAIStatus: async (): Promise<any> => {
-    const response = await axiosInstance.get("/ai/ai-status");
+  getAIStatus: async (): Promise<AICoordinationStatus> => {
+    const response = await axiosInstance.get<AICoordinationStatus>("/ai/ai-status");
     return response.data;
   },
 };
