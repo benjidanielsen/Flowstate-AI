@@ -1,319 +1,170 @@
-# Flowstate-AI
+# Flowstate-AI v2030
 
-Flowstate-AI is an AI-first, self-improving CRM-OS for network marketers and solo founders. It enforces the Frazer Method with a strict pipeline, automates follow-ups, tracks no-show and inactivity, and surfaces Next Best Actions (NBA). Built with React/Tailwind + Node/TypeScript and a Python AI worker, it learns from logs to get smarter with each iteration.
+Flowstate-AI is a next-generation, AI-powered CRM and business automation tool designed to streamline your workflow based on the **Frazer Brookes 4-part method**, expanded into a disciplined seven-stage lifecycle.
 
-## 🚀 GODMODE Brain Launch Sequence
+This project is in active development, refactoring from a 2-year concept into a professional, launch-ready application. The v2030 initiative embraces a clean repository, backend-first execution, and disciplined automation inspired by proven open-source systems.
 
-The "FlowState-AI GODMODE - Ultimate Autonomous AI Development System" now
-ships with a single source of truth for bringing the platform online:
+## Final System Overview
 
-- **Roadmap:** `docs/GODMODE_BRAIN_ROADMAP.md` distills the four historical
-  GODMODE planning docs into a nine-hour, three-phase playbook.
-- **Checklist:** `docs/launch/FINAL_LAUNCH_CHECKLIST.md` turns the roadmap into
-  claimable deliverables, readiness gates, and fast links for the launch team.
-- **Automation:** `ai-gods/godmode_brain.py` keeps the roadmap JSON
-  (`collective-memory/godmode_brain_plan.json`) and project status ledger in
-  sync so autonomous agents or humans can execute the sequence instantly.
-- **Validation:** `docs/launch/SYSTEM_VALIDATION.md` pairs with the
-  one-command scripts in `scripts/unix` and `scripts/windows` to certify the
-  stack before each launch milestone.
-- **Command Board:** `AUTONOMOUS_WORK_LOG.md` contains the mandatory
-  claim/complete task board. Update it before starting any task and include the
-  deliverables once finished.
+Flowstate-AI acts as a self-improving sales cockpit built for network marketers and solo founders. Logging in drops the user onto a Daily Action Board that spells out today’s mission—DMO targets, prioritized follow-ups, urgent no-shows, and AI-ranked "Next Best Actions." A strict Frazer pipeline prevents stage skipping, Customer Cards aggregate every detail about a prospect, intelligent reminders run on autopilot, and analytics/gamification keep motivation high. The AI handles the heavy lifting so the human can focus on authentic conversations.
 
-Advance phases or review progress with:
+## Table of Contents
 
-```bash
-python ai-gods/godmode_brain.py --show-plan
-python ai-gods/godmode_brain.py --set-phase phase_2_crm_delivery --mark-complete phase_1_ai_brain
-```
+1. [Core Features](#core-features)
+2. [Pipeline Management System](#pipeline-management-system)
+3. [Dashboard Experience](#dashboard-experience)
+4. [Customer Card System](#customer-card-system)
+5. [Reminder & Automation Engine](#reminder--automation-engine)
+6. [Analytics, Scoring & Gamification](#analytics-scoring--gamification)
+7. [ADHD-Friendly Product Principles](#adhd-friendly-product-principles)
+8. [Getting Started](#getting-started)
+9. [Project Status](#project-status)
+10. [Architecture Snapshot](#architecture-snapshot)
+11. [Contributing](#contributing)
+12. [Resources](#resources)
+13. [License](#license)
 
-This replaces the legacy Manus coordination stack; the best ideas from MACCS
-now live inside the GODMODE Brain principles.
+## Core Features
 
-## Repository Layout
+* **AI-Powered Dashboard:** Your central command center with weighted "Next Best Action" suggestions, urgency badges, and pipeline analytics.
+* **Frazer Brookes Pipeline (7 Stages):** Lead → Relationship → Invited → Qualified → Presentation Sent → Follow-up → Signed-Up, with guardrails, exception statuses, and conversion reporting.
+* **Customer Card System:** Complete customer profiles with interaction history, advanced filtering/search, next-step tracking, and embedded AI suggestions.
+* **Intelligent Reminder Engine:** Multi-interval reminders, automated escalation rules, and inline management surfaced directly within Customer Cards.
+* **Event Logging & Analytics:** Structured activity logs powering dashboards for demographics, interaction summaries, and pipeline performance.
+* **AI Agent Self-Improvement:** Continuous feedback loops that help NBA agents refine strategies and escalate issues automatically.
+* **Living Setup Script:** Guided onboarding that verifies dependencies, captures API keys, and provisions environment files automatically.
 
-- `ai-gods/` – Automation brain, project manager, and resilience helpers.
-- `backend/`, `frontend/`, `python-worker/` – Core FlowState-AI services.
-- `docs/godmode/` – Canonical GODMODE knowledge base and historical plans.
-- `docs/operations/` – Runbooks, status reports, and coordination rules.
-- `docs/launch/` – Final launch checklist and nine-hour execution aides.
-- `docs/windows/` – Pilot setup instructions and packaging guides for Windows.
-- `docs/integrations/` – VS Code integration research and setup notes.
-- `docs/reference/` – Architecture, API, and quick-start guides.
-- `scripts/windows/`, `scripts/unix/` – Platform-specific launch scripts.
-- `archive/` – Task history and packaged assets kept for reference only.
+## Pipeline Management System
 
-## Features
+* **Strict Seven-Stage Flow:** Leads advance from Lead → Relationship → Invited → Qualified → Presentation Sent → Follow-up → Signed-Up with no skipping; required fields (e.g., "Prospect’s Why") must be captured to progress.
+* **Exception Handling:** Special statuses such as No-Show, Skeptical, and Lost/Closed keep analytics intact while handling edge cases.
+* **Automation Hooks:** Moving a lead to key stages schedules automatic reminders (e.g., 24/48-hour follow-ups after presentations, multi-touch sequences for no-shows) and logs win/loss reasons.
+* **Flexible Views:** Drag-and-drop Kanban columns plus a filterable list view provide both visual and tabular management modes.
+* **Pipeline Intelligence:** Conversion rates, stage dwell times, and distribution metrics render in real time to gamify throughput.
 
-### 🎯 Frazer Pipeline Method
-- **7-Stage Pipeline**: Lead → Relationship → Invited → Qualified → Presentation Sent → Follow-up → SIGNED-UP
-- **Automated Stage Progression**: Smart recommendations for moving customers through the pipeline
-- **Pipeline Analytics**: Visual dashboard showing distribution and conversion rates
+## Dashboard Experience
 
-### 👤 Customer Card System
-- **Complete Customer Profiles**: Contact info, status, notes, and interaction history
-- **Enhanced Customer Management**: Advanced filtering, searching, and sorting capabilities for customer data.
-- **Interaction Tracking**: Log calls, emails, meetings, and notes with timestamps, with a dedicated UI for adding interactions.
-- **Next Step Management**: Define and track next actions with due dates
-- **Smart Recommendations**: AI-powered suggestions for next best actions
+* **Daily Method of Operation (DMO):** Progress bars track daily targets (new contacts, follow-ups, invitations, presentations) with instant visual feedback.
+* **Prioritized Lists:** Waiting for Response, No-Shows, Hot Leads, Inactive Leads, and Unfollowed queues ensure nothing slips through the cracks.
+* **Calendar Integration:** Syncs meetings (e.g., Google Calendar) and links directly to the relevant Customer Card for rapid prep.
+* **NBA Command Center:** AI ranks the highest-impact actions with urgency badges and just-in-time prompts ("Send booking link to Eve").
+* **Motivating Visuals:** Pipeline charts, performance trends, leaderboards, and habit trackers reward consistent action.
 
-### 🔔 Intelligent Reminder System
-- **Multi-Interval Reminders**: Support for flexible, recurring reminders with various intervals.
-- **Automated Escalation**: Progressive reminder sequences based on customer status.
-- **Comprehensive Management**: UI for creating, updating, and deleting reminders directly from customer profiles.
-- **Smart Processing**: Python worker automatically processes due reminders.
+## Customer Card System
 
-### 🧠 Next Best Action (NBA) Engine
-- **AI-Powered Recommendations**: Smart suggestions based on customer data and behavior
-- **Priority Scoring**: Weighted recommendations with urgency indicators
-- **Global & Customer-Specific**: Both overview and detailed individual recommendations
+* **360° Prospect Snapshot:** Contact info, preferred channel, pipeline status, tags, AI scores, and the "Next Step" tile stay visible at all times.
+* **Rich Interaction Timeline:** Calls, messages, meetings, notes, and tasks log chronologically with timestamps and channels.
+* **Advanced Filtering/Search:** Indexed fields support deep filtering (e.g., interest level, location, tags) for targeted outreach.
+* **AI Insights:** Relationship Level (1–5), Interest Level (1–5), Priority Grade (A/B/C), and AI conversion probability guide focus.
+* **Guided Actions:** Dedicated UI for adding interactions, scheduling next steps, and responding to AI recommendations without context switching.
 
-### 📊 Event Logging & Analytics
-- **Comprehensive Event Log**: JSON-based logging of all customer interactions and system events.
-- **Advanced Reporting & Analytics**: Dashboard includes customer demographics (by country, language, source), interaction summaries (by type, total, average per customer), and pipeline conversion rates.
-- **Performance Tracking**: Monitor pipeline effectiveness and conversion metrics.
-- **Data-Driven Insights**: Learn from historical data to improve recommendations.
+## Reminder & Automation Engine
 
-### 🤖 AI Agent Self-Improvement
-- **Iterative Feedback Loops**: Agents continuously refine their internal models and decision-making processes.
-- **Self-Evaluation**: Agents assess their own performance against predefined goals, identifying areas for improvement.
-- **Adaptive Learning**: Agents adjust strategies and parameters based on feedback and self-evaluation.
-- **Automated Issue Creation**: Performance issues can automatically trigger GitHub issues for human or AI intervention.
+* **Multi-Interval Cadences:** Configure single, recurring, or escalating reminders per lead or playbook.
+* **Status-Aware Escalation:** Automated sequences trigger for no-shows (e.g., 2h/1d/3d) and adjust cadence by pipeline stage.
+* **Inline Management:** Create, update, snooze, or cancel reminders directly from the Customer Card while seeing history.
+* **Python Worker Backbone:** Celery beat + workers process due reminders, send notifications, and update reminder states.
 
-### 🤝 GitHub Coordination for AI Agents
-- **Centralized Task Management**: GitHub Issues serve as the primary mechanism for assigning and tracking tasks for AI agents.
-- **Automated Workflows**: GitHub Actions automate repetitive tasks like testing, deployment, and issue triage.
-- **Transparent Collaboration**: All agent activities, including code changes and task progress, are visible on GitHub.
-- **Version Control**: Git is used for tracking changes to code, documentation, and configurations.
+## Analytics, Scoring & Gamification
 
-## Technology Stack
+* **Event Logging Fabric:** Structured JSON events capture interactions, pipeline transitions, reminders, and AI outcomes for downstream analytics.
+* **Insight Dashboards:** Demographics, interaction summaries (totals, averages per customer), conversion funnels, and win/loss trends surface in the UI.
+* **Lead Scoring:** Relationship, interest, priority, and AI probability combine to populate Hot Lead queues and NBA weighting.
+* **Gamified Momentum:** Stage counts, conversion bars, badges, streaks, and daily/weekly challenges keep users motivated.
 
-- **Frontend**: React 18 + TypeScript + Tailwind CSS + Vite
-- **Backend**: Node.js + Express + TypeScript + SQLite (dev) / PostgreSQL (prod)
-- **AI Worker**: Python + FastAPI for reminders and NBA processing
-- **Monitoring Dashboard**: Python + Flask + Flask-SocketIO + SQLite
-- **Database**: SQLite for development, PostgreSQL for production
-- **Containerization**: Docker + Docker Compose
-- **CI/CD**: GitHub Actions
+## ADHD-Friendly Product Principles
 
-## Quick Start
+* **One-Thing-at-a-Time UI:** Focused modals and collapsible sections expose only what matters now.
+* **Immediate Feedback:** Progress bars, celebratory animations, and alerts confirm every action.
+* **Visual Clarity:** Color coding, icons, and motion convey urgency and success with minimal cognitive load.
+* **Safe Exploration:** Undo options and confirmations make the system "dummy-proof." Users can’t accidentally break the pipeline.
+* **Always-On Guidance:** Inline tooltips and an AI help chat teach CRM concepts in context.
+
+## Getting Started
 
 ### Prerequisites
-- Node.js 18+ 
-- Python 3.11+
-- Docker & Docker Compose (optional)
-- Git
-- GitHub CLI (for GitHub integration features)
 
-### Option 1: Local Development
+* Python 3.11+
+* Node.js 18+
+* Docker & Docker Compose
+* An [OpenAI API Key](https://platform.openai.com/api-keys)
 
-1. **Clone and Setup**
-   ```bash
-   git clone https://github.com/benjidanielsen/Flowstate-AI.git
-   cd Flowstate-AI
-   npm run setup  # Installs all dependencies
-   ```
+### Installation & Setup
 
-2. **Configure Environment**
-   ```bash
-   cp backend/.env.example backend/.env
-   # Edit backend/.env with your configuration
-   
-   # For GitHub Integration, set your GitHub Token
-   export GITHUB_TOKEN="<YOUR_GITHUB_TOKEN>" # Replace with your actual GitHub token or personal access token
-   # On Windows, use: set GITHUB_TOKEN="<YOUR_GITHUB_TOKEN>" # Replace with your actual GitHub token or personal access token
-   ```
+1.  **Clone the repository:**
+    ```bash
+    git clone https://github.com/benjidanielsen/flowstate-ai-v2030.git
+    cd flowstate-ai-v2030
+    ```
 
-3. **Initialize Database**
-   ```bash
-   npm run db:migrate  # Run database migrations
-   npm run db:seed     # Seed with sample data
-   ```
+2.  **Run the interactive setup script:**
+    This script will help you create your `.env` file and set up your API keys.
+    ```bash
+    python3 scripts/setup.py
+    ```
 
-4. **Start Development Servers**
-   ```bash
-   npm run dev  # Starts all services concurrently
-   ```
+3.  **Launch (Docker Recommended):**
+    The easiest way to get started is with Docker.
+    ```bash
+    docker compose up --build
+    ```
 
-   Or start services individually:
-   ```bash
-   # Terminal 1 - Backend
-   cd backend && npm run dev
-   
-   # Terminal 2 - Frontend  
-   cd frontend && npm run dev
-   
-   # Terminal 3 - Python Worker
-   cd python-worker && python -m uvicorn src.main:app --reload
-   
-   # Terminal 4 - Godmode Monitoring Dashboard (from Flowstate-AI/godmode-dashboard)
-   cd godmode-dashboard && python app_enhanced.py
-   ```
+4. **Smoke Test the Backend:**
+    ```bash
+    curl http://localhost:8000/health
+    ```
 
-5. **Access Application**
-   - Frontend: http://localhost:3000
-   - Backend API: http://localhost:3001/api
-   - Python Worker: http://localhost:8000
-   - Godmode Dashboard: http://localhost:3333
-   - API Health: http://localhost:3001/api/health
+### Local Development (Manual)
 
-### Option 2: Docker Compose
+*Backend*
 
-1. **Clone Repository**
-   ```bash
-   git clone https://github.com/benjidanielsen/Flowstate-AI.git
-   cd Flowstate-AI
-   ```
-
-2. **Start with Docker Compose**
-   ```bash
-   docker-compose up -d
-   ```
-
-3. **Initialize Database**
-   ```bash
-   docker-compose exec backend npm run db:migrate
-   docker-compose exec backend npm run db:seed
-   ```
-
-## API Endpoints
-
-### Customers
-- `GET /api/customers` - List all customers
-- `GET /api/customers/:id` - Get customer details
-- `POST /api/customers` - Create new customer
-- `PUT /api/customers/:id` - Update customer
-- `DELETE /api/customers/:id` - Delete customer
-- `POST /api/customers/:id/next-stage` - Move to next pipeline stage
-- `GET /api/customers/stats` - Get pipeline statistics
-
-### Interactions
-- `GET /api/interactions/customer/:id` - Get customer interactions
-- `POST /api/interactions` - Create new interaction
-- `PUT /api/interactions/:id` - Update interaction
-- `DELETE /api/interactions/:id` - Delete interaction
-- `GET /api/interactions/upcoming` - Get upcoming scheduled interactions
-
-### Python Worker (NBA & Reminders)
-- `GET /nba` - Get Next Best Action recommendations
-- `POST /reminders` - Create reminder
-- `GET /reminders/due` - Get due reminders
-- `POST /reminders/process-due` - Process all due reminders
-
-### Godmode Monitoring Dashboard
-- `GET /` - Main dashboard page
-- `GET /api/status` - API endpoint for current status
-- `GET /api/ai/<ai_id>` - Get detailed info for specific AI
-
-## Project Structure
-
-```
-Flowstate-AI/
-├── backend/                 # Node.js/Express API
-│   ├── src/
-│   │   ├── controllers/     # Request handlers
-│   │   ├── services/        # Business logic
-│   │   ├── database/        # Database setup and migrations
-│   │   ├── routes/          # API routes
-│   │   ├── types/           # TypeScript types
-│   │   └── tests/           # Unit tests
-├── frontend/                # React application
-│   ├── src/
-│   │   ├── components/      # React components
-│   │   ├── pages/           # Page components
-│   │   ├── services/        # API client
-│   │   └── types/           # TypeScript types
-├── python-worker/           # AI worker service
-│   ├── src/                 # FastAPI application
-│   └── services/            # NBA and reminder services
-├── godmode-dashboard/       # AI Monitoring Dashboard (Python Flask)
-│   ├── app_enhanced.py      # Main Flask application with SocketIO
-│   ├── database.py          # SQLite database interactions
-│   ├── self_improvement.py  # AI agent self-improvement logic
-│   ├── github_integration.py# GitHub API integration for coordination
-│   ├── static/              # CSS, JS, profile pictures
-│   └── templates/           # HTML templates (dashboard.html)
-├── .github/workflows/       # CI/CD pipelines
-├── github_integration.py    # GitHub API integration (shared utility)
-└── docker-compose.yml       # Container orchestration
-```
-
-## Development
-
-### Testing
 ```bash
-# Run all tests
-npm test
-
-# Individual service tests
-npm run test:frontend
-npm run test:backend
-cd python-worker && python -m pytest
-cd godmode-dashboard && python -m pytest # (if tests are implemented)
+cd backend
+python -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt
+uvicorn app.main:app --reload
 ```
 
-### Linting
+*Frontend*
+
 ```bash
-# Lint all code
-npm run lint
-
-# Auto-fix issues
-npm run lint:fix
+cd frontend
+npm install
+npm run dev
 ```
 
-### Building
-```bash
-# Build all services
-npm run build
+## Project Status
 
-# Individual builds
-npm run build:frontend
-npm run build:backend
-```
+* **Phase:** Sprint 0 Preparation
+* **Backend Priority:** FastAPI service initialization, PostgreSQL schema, and health check endpoint.
+* **Pipeline Blueprint:** Seven-stage Frazer pipeline enumerated and analytics requirements captured in the Blueprint.
+* **Frontend Priority:** Post-backend scaffolding (Next.js dashboard shell).
+* **Automation Priority:** Celery worker skeleton with Redis broker and LangChain proof-of-concept for NBA suggestions and reminder processing.
 
-## Production Deployment
+## Architecture Snapshot
 
-1. **Environment Variables**
-   - Set `NODE_ENV=production`
-   - Configure PostgreSQL connection
-   - Set strong JWT secrets
-   - Configure Python worker endpoints
-   - Set `GITHUB_TOKEN` for GitHub integration
-
-2. **Database Migration**
-   ```bash
-   npm run db:migrate
-   ```
-
-3. **Docker Production Build**
-   ```bash
-   docker-compose -f docker-compose.yml up -d --profile production
-   ```
-
-## Cost-Free Operation and Windows Compatibility
-
-The Flowstate-AI system is designed for cost-free operation, leveraging open-source technologies like Python, Flask, Flask-SocketIO, and SQLite. It is also fully compatible with Windows operating systems, with specific considerations for setup and environment configuration detailed in the `cost_free_windows_compatibility.md` document.
+| Layer | Stack | Notes |
+| --- | --- | --- |
+| Backend | FastAPI · SQLAlchemy · Pydantic · Celery | Backend-first; API is the product surface area. |
+| Database | PostgreSQL · Alembic | Structured schemas for pipeline, customer cards, activities. |
+| AI | OpenAI API · LangChain · Redis Cache | Automations and NBA suggestions with cached prompts. |
+| Frontend | Next.js · TypeScript · Tailwind CSS | Dashboard-first UX; mirrors backend contract. |
+| Tooling | Docker Compose · Ruff · Black · ESLint · Playwright | Enforced via CI and pre-commit hooks. |
 
 ## Contributing
 
-1. Fork the repository
-2. Create a feature branch: `git checkout -b feature-name`
-3. Make your changes and add tests
-4. Run linting and tests: `npm run lint && npm test`
-5. Commit your changes: `git commit -m 'Add feature'`
-6. Push to branch: `git push origin feature-name`
-7. Submit a pull request
+1. Fork the repository.
+2. Create a feature branch (e.g., `feat/pipeline-stage-api`).
+3. Commit your changes with clear messages.
+4. Open a pull request referencing the relevant section of `PROJECT_BLUEPRINT.MD`.
+5. Ensure `docker compose up --build` and `pytest` succeed locally prior to review.
+
+## Resources
+
+* [Project Blueprint](docs/PROJECT_BLUEPRINT.MD)
+* [Developer Guide](docs/DEVELOPER_GUIDE.md)
+* [Legacy Repository (Archived)](https://github.com/benjidanielsen/Flowstate-AI/)
 
 ## License
 
-This project is licensed under the MIT License.
-
-## Support
-
-For support, please open an issue on GitHub or contact [support@flowstate-ai.com](mailto:support@flowstate-ai.com).
-
----
-
-Built with ❤️ for network marketers and solo founders who want to scale their relationships systematically.
-
+This project will adopt an open-source license in Sprint 1. Until then, all rights are reserved by the maintainers.

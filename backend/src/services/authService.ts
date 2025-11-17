@@ -7,15 +7,14 @@ import { User } from '../types';
 const JWT_SECRET = process.env.JWT_SECRET || 'supersecretjwtkey';
 
 export class AuthService {
-  private db = DatabaseManager.getInstance().getDb();
-
   async registerUser(username: string, password_plain: string): Promise<User> {
+    const db = DatabaseManager.getInstance().getDb();
     const hashedPassword = await bcrypt.hash(password_plain, 10);
     const id = uuidv4();
     const now = new Date().toISOString();
 
     return new Promise((resolve, reject) => {
-      this.db.run(
+      db.run(
         'INSERT INTO users (id, username, password, created_at, updated_at) VALUES (?, ?, ?, ?, ?)',
         [id, username, hashedPassword, now, now],
         function (err) {
@@ -30,8 +29,9 @@ export class AuthService {
   }
 
   async findUserByUsername(username: string): Promise<User | null> {
+    const db = DatabaseManager.getInstance().getDb();
     return new Promise((resolve, reject) => {
-      this.db.get('SELECT * FROM users WHERE username = ?', [username], (err, row: any) => {
+      db.get('SELECT * FROM users WHERE username = ?', [username], (err, row: any) => {
         if (err) {
           reject(err);
         } else if (!row) {

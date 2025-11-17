@@ -126,6 +126,14 @@ const migrations = [
       CREATE INDEX IF NOT EXISTS idx_external_integrations_customer_id ON external_integrations(customer_id);
     `
   }
+  ,
+  {
+    version: 6,
+    up: `
+      ALTER TABLE interactions ADD COLUMN completed BOOLEAN DEFAULT 0;
+      UPDATE interactions SET completed = COALESCE(completed, 0);
+    `
+  }
 ];
 
 export async function runMigrations(): Promise<void> {
