@@ -1,341 +1,203 @@
-import React, { useState, useEffect } from 'react';
-import {
-  Activity,
-  AlertTriangle,
-  CheckCircle,
-  TrendingUp,
-  Shield,
-  Zap,
-  BarChart3,
-  Clock
-} from 'lucide-react';
+import { Activity, AlertTriangle, BarChart3, CheckCircle2, Shield } from 'lucide-react';
+import ErrorState from '../components/ErrorState';
+import Skeleton from '../components/Skeleton';
+import { useEvolutionDashboard, useToggleSafeMode } from '../services/api';
 
-interface EvolutionMetrics {
-  total_events: number;
-  pending_improvements: number;
-  applied_improvements: number;
-  success_rate: number;
-  average_confidence: number;
-  safe_mode_active: boolean;
-  last_evolution: string;
-}
+const EvolutionDashboard = () => {
+  const { data, isLoading, isError, error, refetch, isFetching } = useEvolutionDashboard();
+  const toggleSafeMode = useToggleSafeMode();
 
-interface AnomalyData {
-  metric_name: string;
-  latest_value: number;
-  mean: number;
-  z_score: number;
-  severity: string;
-  timestamp: string;
-}
+  const metrics = data?.metrics;
+  const anomalies = data?.anomalies ?? [];
+  const performance = data?.performance;
+  const activity = data?.activity ?? [];
 
-interface PerformanceData {
-  nba_success_rate: number;
-  reminder_success_rate: number;
-  avg_response_time: number;
-}
+  const safeModeActive = metrics?.safeModeActive ?? false;
+  const optimisticSafeMode = toggleSafeMode.isPending ? !safeModeActive : safeModeActive;
 
-const EvolutionDashboard: React.FC = () => {
-  const [metrics, setMetrics] = useState<EvolutionMetrics | null>(null);
-  const [anomalies, setAnomalies] = useState<AnomalyData[]>([]);
-  const [performance, setPerformance] = useState<PerformanceData | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    fetchEvolutionData();
-    const interval = setInterval(fetchEvolutionData, 30000); // Refresh every 30s
-    return () => clearInterval(interval);
-  }, []);
-
-  const fetchEvolutionData = async () => {
-    try {
-      // In production, these would be real API calls
-      // For now, using mock data
-      setMetrics({
-        total_events: 42,
-        pending_improvements: 3,
-        applied_improvements: 39,
-        success_rate: 0.93,
-        average_confidence: 0.85,
-        safe_mode_active: false,
-        last_evolution: new Date().toISOString()
-      });
-
-      setAnomalies([]);
-
-      setPerformance({
-        nba_success_rate: 0.87,
-        reminder_success_rate: 0.92,
-        avg_response_time: 245
-      });
-
-      setLoading(false);
-    } catch (error) {
-      // console.error("Error fetching evolution data:", error); // Using logger for backend, but frontend console.error is acceptable for development
-      setLoading(false);
-    }
-  };
-
-  const toggleSafeMode = async () => {
-    try {
-      // In production, this would call the API to toggle safe mode
-      // console.log("Toggling safe mode..."); // Using logger for backend, but frontend console.log is acceptable for development
-      if (metrics) {
-        setMetrics({
-          ...metrics,
-          safe_mode_active: !metrics.safe_mode_active
-        });
-      }
-    } catch (error) {
-      // console.error("Error toggling safe mode:", error); // Using logger for backend, but frontend console.error is acceptable for development
-    }
-  };
-
-  if (loading) {
+  if (isError) {
     return (
-      <div className="flex items-center justify-center h-screen">
-        <div className="text-lg">Loading evolution dashboard...</div>
-      </div>
+      <main className="min-h-screen bg-slate-50 p-6">
+        <div className="mx-auto max-w-6xl">
+          <ErrorState message={error?.message ?? 'Unable to load evolution data'} onRetry={refetch} />
+        </div>
+      </main>
     );
   }
 
   return (
-    <div className="p-6 space-y-6">
-      {/* Header */}
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold">Evolution Dashboard</h1>
-          <p className="text-gray-600 mt-1">
-            Monitor and control the self-evolution framework
-          </p>
-        </div>
-        <div className="flex items-center space-x-4">
+    <main className="min-h-screen bg-slate-50 p-6">
+      <div className="mx-auto max-w-6xl space-y-8">
+        <header className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-wide text-slate-500">Evolution</p>
+            <h1 className="text-3xl font-bold text-slate-900">Self-evolution dashboard</h1>
+            <p className="text-sm text-slate-600">Shared query cache ensures consistent skeletons across KPI + CRM.</p>
+          </div>
           <button
-            onClick={toggleSafeMode}
-            className={`px-6 py-2 rounded-lg font-semibold flex items-center space-x-2 ${
-              metrics?.safe_mode_active
-                ? 'bg-red-500 hover:bg-red-600 text-white'
-                : 'bg-green-500 hover:bg-green-600 text-white'
+            type="button"
+            onClick={() => toggleSafeMode.mutate(!safeModeActive)}
+            disabled={toggleSafeMode.isPending}
+            className={`inline-flex items-center gap-2 rounded-md px-4 py-2 text-sm font-semibold text-white shadow-sm transition ${
+              optimisticSafeMode
+                ? 'bg-rose-600 hover:bg-rose-700'
+                : 'bg-emerald-600 hover:bg-emerald-700'
             }`}
           >
-            <Shield className="w-5 h-5" />
-            <span>
-              {metrics?.safe_mode_active ? 'Safe Mode: ON' : 'Safe Mode: OFF'}
-            </span>
+            <Shield className="h-4 w-4" aria-hidden="true" />
+            {optimisticSafeMode ? 'Safe mode enabled' : 'Safe mode disabled'}
           </button>
-        </div>
-      </div>
+        </header>
 
-      {/* Key Metrics */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="bg-white rounded-lg shadow p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-gray-600 text-sm">Total Evolution Events</p>
-              <p className="text-3xl font-bold mt-2">{metrics?.total_events}</p>
-            </div>
-            <Activity className="w-12 h-12 text-blue-500" />
-          </div>
-        </div>
-
-        <div className="bg-white rounded-lg shadow p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-gray-600 text-sm">Success Rate</p>
-              <p className="text-3xl font-bold mt-2">
-                {((metrics?.success_rate || 0) * 100).toFixed(1)}%
-              </p>
-            </div>
-            <TrendingUp className="w-12 h-12 text-green-500" />
-          </div>
-        </div>
-
-        <div className="bg-white rounded-lg shadow p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-gray-600 text-sm">Pending Improvements</p>
-              <p className="text-3xl font-bold mt-2">
-                {metrics?.pending_improvements}
-              </p>
-            </div>
-            <Clock className="w-12 h-12 text-yellow-500" />
-          </div>
-        </div>
-
-        <div className="bg-white rounded-lg shadow p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-gray-600 text-sm">Avg Confidence</p>
-              <p className="text-3xl font-bold mt-2">
-                {((metrics?.average_confidence || 0) * 100).toFixed(0)}%
-              </p>
-            </div>
-            <Zap className="w-12 h-12 text-purple-500" />
-          </div>
-        </div>
-      </div>
-
-      {/* Anomaly Detection */}
-      <div className="bg-white rounded-lg shadow p-6">
-        <h2 className="text-xl font-bold mb-4 flex items-center">
-          <AlertTriangle className="w-6 h-6 mr-2 text-orange-500" />
-          Anomaly Detection
-        </h2>
-        {anomalies.length === 0 ? (
-          <div className="flex items-center text-green-600">
-            <CheckCircle className="w-5 h-5 mr-2" />
-            <span>No anomalies detected</span>
-          </div>
-        ) : (
-          <div className="space-y-3">
-            {anomalies.map((anomaly, index) => (
-              <div
-                key={index}
-                className={`p-4 rounded-lg border-l-4 ${
-                  anomaly.severity === 'critical'
-                    ? 'border-red-500 bg-red-50'
-                    : anomaly.severity === 'high'
-                    ? 'border-orange-500 bg-orange-50'
-                    : 'border-yellow-500 bg-yellow-50'
-                }`}
-              >
-                <div className="flex justify-between items-start">
-                  <div>
-                    <p className="font-semibold">{anomaly.metric_name}</p>
-                    <p className="text-sm text-gray-600 mt-1">
-                      Value: {anomaly.latest_value.toFixed(2)} (Mean:{' '}
-                      {anomaly.mean.toFixed(2)}, Z-Score:{' '}
-                      {anomaly.z_score.toFixed(2)})
-                    </p>
-                  </div>
-                  <span
-                    className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                      anomaly.severity === 'critical'
-                        ? 'bg-red-200 text-red-800'
-                        : anomaly.severity === 'high'
-                        ? 'bg-orange-200 text-orange-800'
-                        : 'bg-yellow-200 text-yellow-800'
-                    }`}
-                  >
-                    {anomaly.severity.toUpperCase()}
-                  </span>
-                </div>
-              </div>
+        {(isLoading || isFetching) && (
+          <div className="grid gap-4 md:grid-cols-2" role="status" aria-live="polite">
+            {Array.from({ length: 4 }).map((_, index) => (
+              <Skeleton key={index} className="h-32 w-full" />
             ))}
           </div>
         )}
+
+        {!isLoading && metrics && (
+          <section className="grid gap-4 md:grid-cols-2 lg:grid-cols-4" aria-live="polite">
+            <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+              <p className="text-sm font-medium text-slate-500">Evolution events</p>
+              <p className="mt-2 text-3xl font-bold text-slate-900">{metrics.totalEvents}</p>
+              <p className="text-xs text-slate-500">Since last deployment</p>
+            </div>
+            <div className="rounded-xl border border-emerald-200 bg-white p-4 shadow-sm">
+              <p className="text-sm font-medium text-slate-500">Success rate</p>
+              <p className="mt-2 text-3xl font-bold text-emerald-600">{(metrics.successRate * 100).toFixed(1)}%</p>
+              <p className="text-xs text-emerald-600">Validated improvements</p>
+            </div>
+            <div className="rounded-xl border border-amber-200 bg-white p-4 shadow-sm">
+              <p className="text-sm font-medium text-slate-500">Pending improvements</p>
+              <p className="mt-2 text-3xl font-bold text-amber-600">{metrics.pendingImprovements}</p>
+              <p className="text-xs text-amber-600">Awaiting human review</p>
+            </div>
+            <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+              <p className="text-sm font-medium text-slate-500">Avg confidence</p>
+              <p className="mt-2 text-3xl font-bold text-slate-900">{(metrics.averageConfidence * 100).toFixed(0)}%</p>
+              <p className="text-xs text-slate-500">Across suggestions</p>
+            </div>
+          </section>
+        )}
+
+        {!isLoading && (
+          <section className="grid gap-6 lg:grid-cols-2">
+            <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+              <div className="flex items-center justify-between">
+                <h2 className="text-lg font-semibold text-slate-900">Anomaly detection</h2>
+                <AlertTriangle className="h-5 w-5 text-amber-500" aria-hidden="true" />
+              </div>
+              {anomalies.length === 0 ? (
+                <p className="mt-3 text-sm text-emerald-600">No anomalies detected.</p>
+              ) : (
+                <ul className="mt-4 space-y-3" aria-live="polite">
+                  {anomalies.map((anomaly) => (
+                    <li
+                      key={anomaly.metricName}
+                      className="rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900"
+                    >
+                      <p className="font-semibold">{anomaly.metricName}</p>
+                      <p className="text-xs text-amber-700">
+                        Latest {anomaly.latestValue.toFixed(2)} • μ {anomaly.mean.toFixed(2)} • z-score{' '}
+                        {anomaly.zScore.toFixed(2)}
+                      </p>
+                      <p className="text-xs text-amber-600">{new Date(anomaly.timestamp).toLocaleString()}</p>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+
+            <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+              <div className="flex items-center justify-between">
+                <h2 className="text-lg font-semibold text-slate-900">System performance</h2>
+                <Activity className="h-5 w-5 text-slate-400" aria-hidden="true" />
+              </div>
+              {performance ? (
+                <dl className="mt-4 space-y-4 text-sm text-slate-600">
+                  <div>
+                    <dt className="flex items-center justify-between">
+                      <span>NBA success</span>
+                      <span className="font-semibold text-slate-900">
+                        {(performance.nbaSuccessRate * 100).toFixed(1)}%
+                      </span>
+                    </dt>
+                    <div className="mt-2 h-2 rounded-full bg-slate-100">
+                      <div
+                        className="h-full rounded-full bg-emerald-500"
+                        style={{ width: `${performance.nbaSuccessRate * 100}%` }}
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <dt className="flex items-center justify-between">
+                      <span>Reminder success</span>
+                      <span className="font-semibold text-slate-900">
+                        {(performance.reminderSuccessRate * 100).toFixed(1)}%
+                      </span>
+                    </dt>
+                    <div className="mt-2 h-2 rounded-full bg-slate-100">
+                      <div
+                        className="h-full rounded-full bg-blue-500"
+                        style={{ width: `${performance.reminderSuccessRate * 100}%` }}
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <dt className="flex items-center justify-between">
+                      <span>Avg response time</span>
+                      <span className="font-semibold text-slate-900">{performance.avgResponseTime} ms</span>
+                    </dt>
+                    <div className="mt-2 h-2 rounded-full bg-slate-100">
+                      <div
+                        className="h-full rounded-full bg-amber-500"
+                        style={{ width: `${Math.min(performance.avgResponseTime / 10, 100)}%` }}
+                      />
+                    </div>
+                  </div>
+                </dl>
+              ) : (
+                <p className="mt-3 text-sm text-slate-500">No performance data.</p>
+              )}
+            </div>
+          </section>
+        )}
+
+        {!isLoading && (
+          <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+            <div className="flex items-center justify-between">
+              <h2 className="text-lg font-semibold text-slate-900">Recent evolution activity</h2>
+              <BarChart3 className="h-5 w-5 text-slate-400" aria-hidden="true" />
+            </div>
+            {activity.length === 0 ? (
+              <p className="mt-3 text-sm text-slate-500">No logged events.</p>
+            ) : (
+              <ul className="mt-4 space-y-3" aria-live="polite">
+                {activity.map((item) => (
+                  <li
+                    key={item.id}
+                    className="flex items-start justify-between rounded-lg border border-slate-100 p-4 text-sm text-slate-700"
+                  >
+                    <div>
+                      <p className="font-semibold text-slate-900">{item.agentName}</p>
+                      <p>{item.action}</p>
+                      {item.details && <p className="text-xs text-slate-500">{item.details}</p>}
+                    </div>
+                    <div className="text-right text-xs text-slate-500">
+                      <p>{new Date(item.createdAt).toLocaleTimeString()}</p>
+                      <CheckCircle2 className="mt-1 h-4 w-4 text-emerald-500" aria-hidden="true" />
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
+        )}
       </div>
-
-      {/* Performance Metrics */}
-      <div className="bg-white rounded-lg shadow p-6">
-        <h2 className="text-xl font-bold mb-4 flex items-center">
-          <BarChart3 className="w-6 h-6 mr-2 text-blue-500" />
-          System Performance
-        </h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div>
-            <p className="text-gray-600 text-sm mb-2">NBA Success Rate</p>
-            <div className="flex items-center">
-              <div className="flex-1 bg-gray-200 rounded-full h-4">
-                <div
-                  className="bg-green-500 h-4 rounded-full"
-                  style={{
-                    width: `${(performance?.nba_success_rate || 0) * 100}%`
-                  }}
-                ></div>
-              </div>
-              <span className="ml-3 font-semibold">
-                {((performance?.nba_success_rate || 0) * 100).toFixed(1)}%
-              </span>
-            </div>
-          </div>
-
-          <div>
-            <p className="text-gray-600 text-sm mb-2">Reminder Success Rate</p>
-            <div className="flex items-center">
-              <div className="flex-1 bg-gray-200 rounded-full h-4">
-                <div
-                  className="bg-blue-500 h-4 rounded-full"
-                  style={{
-                    width: `${(performance?.reminder_success_rate || 0) * 100}%`
-                  }}
-                ></div>
-              </div>
-              <span className="ml-3 font-semibold">
-                {((performance?.reminder_success_rate || 0) * 100).toFixed(1)}%
-              </span>
-            </div>
-          </div>
-
-          <div>
-            <p className="text-gray-600 text-sm mb-2">Avg Response Time</p>
-            <div className="flex items-center">
-              <div className="flex-1 bg-gray-200 rounded-full h-4">
-                <div
-                  className="bg-purple-500 h-4 rounded-full"
-                  style={{
-                    width: `${Math.min(
-                      ((performance?.avg_response_time || 0) / 1000) * 100,
-                      100
-                    )}%`
-                  }}
-                ></div>
-              </div>
-              <span className="ml-3 font-semibold">
-                {performance?.avg_response_time}ms
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Recent Evolution Events */}
-      <div className="bg-white rounded-lg shadow p-6">
-        <h2 className="text-xl font-bold mb-4">Recent Evolution Events</h2>
-        <div className="space-y-3">
-          <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-            <div className="flex items-center space-x-3">
-              <CheckCircle className="w-5 h-5 text-green-500" />
-              <div>
-                <p className="font-semibold">NBA Rule Optimization</p>
-                <p className="text-sm text-gray-600">
-                  Improved confidence threshold for customer segment A
-                </p>
-              </div>
-            </div>
-            <span className="text-sm text-gray-500">2 hours ago</span>
-          </div>
-
-          <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-            <div className="flex items-center space-x-3">
-              <CheckCircle className="w-5 h-5 text-green-500" />
-              <div>
-                <p className="font-semibold">Reminder Timing Optimization</p>
-                <p className="text-sm text-gray-600">
-                  Adjusted preferred hours based on response patterns
-                </p>
-              </div>
-            </div>
-            <span className="text-sm text-gray-500">5 hours ago</span>
-          </div>
-
-          <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-            <div className="flex items-center space-x-3">
-              <Clock className="w-5 h-5 text-yellow-500" />
-              <div>
-                <p className="font-semibold">Code Quality Improvement</p>
-                <p className="text-sm text-gray-600">
-                  Pending review: Refactored NBA decision engine
-                </p>
-              </div>
-            </div>
-            <span className="text-sm text-gray-500">1 day ago</span>
-          </div>
-        </div>
-      </div>
-    </div>
+    </main>
   );
 };
 
 export default EvolutionDashboard;
-
