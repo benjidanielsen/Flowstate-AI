@@ -1,13 +1,36 @@
 version: 2
 updates:
+  # Root npm dependencies
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "daily"
+  
+  # Backend npm dependencies
   - package-ecosystem: "npm"
     directory: "/backend"
     schedule:
       interval: "daily"
+  
+  # Frontend npm dependencies
   - package-ecosystem: "npm"
     directory: "/frontend"
     schedule:
       interval: "daily"
+  
+  # VSCode extension npm dependencies
+  - package-ecosystem: "npm"
+    directory: "/vscode-extension"
+    schedule:
+      interval: "daily"
+  
+  # Root Python dependencies
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "daily"
+  
+  # Python worker dependencies
   - package-ecosystem: "pip"
     directory: "/python-worker"
     schedule:
