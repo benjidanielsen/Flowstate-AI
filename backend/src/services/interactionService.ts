@@ -1,6 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import DatabaseManager from '../database';
-import { Interaction } from '../types';
+import { Interaction, InteractionType, PipelineStatus } from '../types';
+import { getStageDefinition } from './frazerStageConfig';
 
 export const interactionService = {
   async create(interaction: Omit<Interaction, 'id' | 'created_at' | 'updated_at'>): Promise<Interaction> {
@@ -137,7 +138,7 @@ export const interactionService = {
 
   async delete(id: string): Promise<void> {
     const db = DatabaseManager.getInstance().getDb();
-    
+
     return new Promise((resolve, reject) => {
       db.run(`DELETE FROM interactions WHERE id = ?`, [id], function(err) {
         if (err) return reject(err);
@@ -145,5 +146,60 @@ export const interactionService = {
       });
     });
   },
+
+  async logFrazerTouchpoint(
+    customerId: string,
+    stage: PipelineStatus,
+    options: {
+      summaryOverride?: string;
+      notes?: string;
+      interactionDate?: Date;
+      interactionTypeOverride?: InteractionType;
+    } = {}
+  ): Promise<Interaction> {
+    const stageDefinition = getStageDefinition(stage);
+    const summary = options.summaryOverride || stageDefinition.touchpoint.summary;
+    const notes = options.notes || stageDefinition.touchpoint.notesHint;
+    const interactionType = options.interactionTypeOverride || stageDefinition.touchpoint.type;
+
+    return this.create({
+      customer_id: customerId,
+      type: interactionType,
+      summary,
+      notes,
+      interaction_date: options.interactionDate || new Date()
+    });
+  },
+
+  async getActivityScore(
+    customerId: string,
+    lookbackHours = 72
+  ): Promise<{ touches: number; score: number; lastInteraction?: Date; recommendedAction: string }> {
+    const db = DatabaseManager.getInstance().getDb();
+    const since = new Date(Date.now() - lookbackHours * 60 * 60 * 1000).toISOString();
+
+    return new Promise((resolve, reject) => {
+      db.all(
+        `SELECT interaction_date FROM interactions
+         WHERE customer_id = ? AND interaction_date >= ?
+         ORDER BY interaction_date DESC`,
+        [customerId, since],
+        (err, rows: any[]) => {
+          if (err) return reject(err);
+          const touches = rows.length;
+          const lastInteraction = rows.length > 0 ? new Date(rows[0].interaction_date) : undefined;
+          const cappedTouches = Math.min(touches, 5);
+          const score = Math.round((cappedTouches / 5) * 100);
+          const recommendedAction = touches === 0
+            ? 'No activity recorded this cadence. Trigger a personal touch now.'
+            : touches < 2
+              ? 'Maintain daily touch – share a proof video or quick win.'
+              : 'Pipeline active – confirm decision timeline.';
+
+          resolve({ touches, score, lastInteraction, recommendedAction });
+        }
+      );
+    });
+  }
 };
 

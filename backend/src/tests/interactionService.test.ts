@@ -1,108 +1,69 @@
-import { InteractionService } from '../services/interactionService';
+import { interactionService } from '../services/interactionService';
 import { CustomerService } from '../services/customerService';
-import { InteractionType, PipelineStatus } from '../types';
 import DatabaseManager from '../database';
 import { runMigrations } from '../database/migrate';
+import { InteractionType, PipelineStatus } from '../types';
 
-describe('InteractionService', () => {
-  let interactionService: InteractionService;
-  let customerService: CustomerService;
-  let testCustomerId: string;
+const dbManager = DatabaseManager.getInstance();
+
+describe('interactionService', () => {
+  const customerService = new CustomerService();
+  let customerId: string;
 
   beforeEach(async () => {
-    await DatabaseManager.getInstance().connect();
+    await dbManager.connect();
+    await resetDatabase();
     await runMigrations();
-    interactionService = new InteractionService();
-    customerService = new CustomerService();
-
-    // Create a test customer for interactions
-    const customerData = {
-      name: 'Interaction Test Customer',
-      email: 'interaction@example.com',
-      status: PipelineStatus.NEW_LEAD,
-    };
-    const customer = await customerService.createCustomer(customerData);
-    testCustomerId = customer.id;
+    const customer = await customerService.createCustomer({
+      name: 'Interaction Demo',
+      email: `frazer-int-${Date.now()}@example.com`,
+      status: PipelineStatus.NEW_LEAD
+    });
+    customerId = customer.id;
   });
 
   afterEach(async () => {
-    await DatabaseManager.getInstance().close();
+    await dbManager.close();
   });
 
-  describe('createInteraction', () => {
-    it('should create a new interaction', async () => {
-      const interactionData = {
-        customer_id: testCustomerId, // Corrected to customer_id
-        type: InteractionType.CALL,
-        content: 'Called to follow up', // Corrected to content
-        scheduled_for: new Date(), // Corrected to scheduled_for and Date object
-        completed: false, // Added completed field
-      };
-
-      const interaction = await interactionService.createInteraction(interactionData);
-
-      expect(interaction).toBeDefined();
-      expect(interaction.customer_id).toBe(interactionData.customer_id); // Corrected to customer_id
-      expect(interaction.type).toBe(interactionData.type);
-      expect(interaction.content).toBe(interactionData.content); // Corrected to content
-      expect(interaction.id).toBeDefined();
+  it('creates and fetches interactions for a customer', async () => {
+    const created = await interactionService.create({
+      customer_id: customerId,
+      type: InteractionType.CALL,
+      summary: 'Initial connect call',
+      notes: 'Talked through WHY and confirmed invite',
+      interaction_date: new Date()
     });
+
+    expect(created.id).toBeDefined();
+    expect(created.customer_id).toBe(customerId);
+
+    const interactions = await interactionService.getByCustomerId(customerId);
+    expect(interactions.length).toBeGreaterThanOrEqual(1);
+    expect(interactions[0].summary).toContain('Initial connect');
   });
 
-  describe('getInteractionsByCustomer', () => {
-    it('should return all interactions for a given customer', async () => {
-      // Log an interaction first to ensure there's something to retrieve
-      await interactionService.createInteraction({
-        customer_id: testCustomerId,
-        type: InteractionType.NOTE,
-        content: 'Test note for retrieval',
-        scheduled_for: new Date(),
-        completed: false,
-      });
+  it('logs Frazer touchpoints and reports activity score', async () => {
+    await interactionService.logFrazerTouchpoint(customerId, PipelineStatus.WARMING_UP);
+    await interactionService.logFrazerTouchpoint(customerId, PipelineStatus.INVITED);
 
-      const interactions = await interactionService.getInteractionsByCustomer(testCustomerId); // Correct method name
-      expect(Array.isArray(interactions)).toBe(true);
-      expect(interactions.length).toBeGreaterThan(0);
-      expect(interactions[0].customer_id).toBe(testCustomerId);
-    });
-  });
+    const score = await interactionService.getActivityScore(customerId, 48);
 
-  describe('updateInteraction', () => {
-    it('should update an existing interaction', async () => {
-      const interactionData = {
-        customer_id: testCustomerId,
-        type: InteractionType.EMAIL,
-        content: 'Initial email sent',
-        scheduled_for: new Date(),
-        completed: false,
-      };
-      const createdInteraction = await interactionService.createInteraction(interactionData);
-
-      const updatedContent = 'Follow-up email sent';
-      const updatedInteraction = await interactionService.updateInteraction(createdInteraction.id, { content: updatedContent }); // Corrected to content
-
-      expect(updatedInteraction).toBeDefined();
-      expect(updatedInteraction?.content).toBe(updatedContent); // Corrected to content
-      expect(updatedInteraction?.id).toBe(createdInteraction.id);
-    });
-  });
-
-  describe('deleteInteraction', () => {
-    it('should delete an interaction', async () => {
-      const interactionData = {
-        customer_id: testCustomerId,
-        type: InteractionType.MEETING,
-        content: 'Meeting scheduled',
-        scheduled_for: new Date(),
-        completed: false,
-      };
-      const createdInteraction = await interactionService.createInteraction(interactionData);
-
-      await interactionService.deleteInteraction(createdInteraction.id);
-
-      const deletedInteraction = await interactionService.getInteractionById(createdInteraction.id);
-      expect(deletedInteraction).toBeNull(); // Expect null for not found
-    });
+    expect(score.touches).toBeGreaterThanOrEqual(2);
+    expect(score.score).toBeGreaterThan(0);
+    expect(score.recommendedAction.length).toBeGreaterThan(0);
   });
 });
 
+async function resetDatabase() {
+  const db = dbManager.getDb();
+  await new Promise<void>((resolve, reject) => {
+    db.exec(
+      'DROP TABLE IF EXISTS reminders; DROP TABLE IF EXISTS interactions; DROP TABLE IF EXISTS event_logs; DROP TABLE IF EXISTS customers;',
+      (err) => {
+        if (err) reject(err);
+        else resolve();
+      }
+    );
+  });
+}

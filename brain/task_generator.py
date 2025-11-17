@@ -5,11 +5,24 @@ Generates and prioritizes tasks for AI agents based on project goals and system 
 
 import json
 import time
+import os
 from datetime import datetime
 from typing import Dict, List, Optional, Any
 from pathlib import Path
 from openai import OpenAI
 import sqlite3
+
+FRAZER_STAGE_THRESHOLDS = {
+    "New Lead": 24,
+    "Warming Up": 36,
+    "Invited": 48,
+    "Qualified": 72,
+    "Presentation Sent": 72,
+    "Follow-up": 96,
+    "Closed - Won": 0,
+    "Not Now": 168,
+    "Long-term Nurture": 240,
+}
 
 class AutomaticTaskGenerator:
     """
@@ -23,9 +36,12 @@ class AutomaticTaskGenerator:
         Args:
             db_path: Path to the SQLite database
         """
-        self.db_path = Path(__file__).parent.parent / db_path
+        self.project_root = Path(__file__).parent.parent
+        self.db_path = self.project_root / db_path
+        default_crm_db = self.project_root / "backend" / "data" / "flowstate.db"
+        self.crm_db_path = Path(os.environ.get("CRM_DB_PATH", str(default_crm_db)))
         self.client = OpenAI()
-        self.log_file = Path(__file__).parent.parent / "logs" / "task_generator.log"
+        self.log_file = self.project_root / "logs" / "task_generator.log"
         
         # Task generation rules and priorities
         self.task_rules = {
@@ -111,6 +127,7 @@ class AutomaticTaskGenerator:
             "metrics": {}
         }
         
+        pending_tasks = 0
         try:
             # Connect to database
             conn = sqlite3.connect(self.db_path)
@@ -160,15 +177,72 @@ class AutomaticTaskGenerator:
                 "severity": "low",
                 "description": str(e)
             })
-        
+
+        crm_state = self.analyze_crm_state()
+        analysis["crm"].update(crm_state)
+
         # Identify opportunities
         if pending_tasks < 5:
             analysis["opportunities"].append({
                 "type": "capacity_available",
                 "description": "Low pending task count suggests capacity for new initiatives"
             })
-        
+
         return analysis
+
+    def analyze_crm_state(self) -> Dict[str, Any]:
+        """Inspect CRM pipeline health and stalled Frazer stages."""
+        summary = {
+            "status_counts": {},
+            "stalled_leads": []
+        }
+
+        if not self.crm_db_path.exists():
+            return summary
+
+        try:
+            conn = sqlite3.connect(self.crm_db_path)
+            conn.row_factory = sqlite3.Row
+            cursor = conn.cursor()
+
+            cursor.execute("SELECT status, COUNT(*) as count FROM customers GROUP BY status")
+            summary["status_counts"] = {row["status"]: row["count"] for row in cursor.fetchall()}
+
+            cursor.execute("SELECT id, name, status, updated_at FROM customers")
+            now = datetime.utcnow()
+            stalled = []
+
+            for row in cursor.fetchall():
+                status = row["status"]
+                threshold = FRAZER_STAGE_THRESHOLDS.get(status, 72)
+                updated_raw = row["updated_at"]
+                if not updated_raw or threshold == 0:
+                    continue
+                updated_at = None
+                try:
+                    updated_at = datetime.fromisoformat(str(updated_raw).replace("Z", "+00:00"))
+                except Exception:
+                    try:
+                        updated_at = datetime.fromisoformat(str(updated_raw))
+                    except Exception:
+                        continue
+
+                hours_since_update = (now - updated_at).total_seconds() / 3600
+                if hours_since_update > threshold:
+                    stalled.append({
+                        "id": row["id"],
+                        "name": row["name"],
+                        "status": status,
+                        "hours_stalled": round(hours_since_update, 1),
+                        "threshold": threshold
+                    })
+
+            summary["stalled_leads"] = stalled
+            conn.close()
+        except Exception as crm_error:
+            self.log(f"Error analyzing CRM state: {crm_error}")
+
+        return summary
     
     def generate_tasks_from_analysis(self, analysis: Dict[str, Any]) -> List[Dict[str, Any]]:
         """
@@ -204,6 +278,23 @@ class AutomaticTaskGenerator:
                     "estimated_hours": issue["count"] * 0.25
                 })
         
+        # Generate CRM follow-up work
+        crm_data = analysis.get("crm", {})
+        stalled_leads = crm_data.get("stalled_leads", [])
+        if stalled_leads:
+            stage_groups: Dict[str, List[Dict[str, Any]]] = {}
+            for lead in stalled_leads:
+                stage_groups.setdefault(lead["status"], []).append(lead)
+            for stage, leads in stage_groups.items():
+                max_age = max(lead.get("hours_stalled", 0) for lead in leads)
+                generated_tasks.append({
+                  "title": f"Re-engage {len(leads)} {stage} leads",
+                  "description": f"{len(leads)} leads are stalled in {stage} beyond the Frazer cadence ({max_age}h). Trigger AI follow-up workflows.",
+                  "priority": 8,
+                  "category": "crm_automation",
+                  "estimated_hours": max(1.0, len(leads) * 0.25)
+                })
+
         # Generate tasks for opportunities
         for opportunity in analysis.get("opportunities", []):
             if opportunity["type"] == "capacity_available":
@@ -214,7 +305,7 @@ class AutomaticTaskGenerator:
                     "category": "feature_development",
                     "estimated_hours": 2.0
                 })
-        
+
         return generated_tasks
     
     def generate_tasks_with_ai(self, context: Dict[str, Any], count: int = 5) -> List[Dict[str, Any]]:

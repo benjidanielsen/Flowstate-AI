@@ -3,14 +3,19 @@ import { Customer, PipelineStatus } from '../types';
 import { v4 as uuidv4 } from 'uuid';
 import { EventLogService } from './eventLogService';
 import { PipelineValidationService } from './pipelineValidationService';
+import { ReminderService } from './reminderService';
+import { interactionService } from './interactionService';
+import { FrazerStageDefinition, getStageDefinition } from './frazerStageConfig';
 
 export class CustomerService {
   private eventLogService: EventLogService;
   private pipelineValidationService: PipelineValidationService;
+  private reminderService: ReminderService;
 
   constructor() {
     this.eventLogService = new EventLogService();
     this.pipelineValidationService = new PipelineValidationService();
+    this.reminderService = new ReminderService();
   }
 
   async getAllCustomers(filters: { 
@@ -105,10 +110,16 @@ export class CustomerService {
     const id = uuidv4();
     const now = new Date();
 
+    const status = customerData.status || PipelineStatus.NEW_LEAD;
+    const stageDefinition = getStageDefinition(status);
+    const defaultNextAction = this.getNextActionForStage(stageDefinition);
+
     const customer: Customer = {
       id,
       ...customerData,
-      status: customerData.status || PipelineStatus.NEW_LEAD,
+      status,
+      next_action: customerData.next_action || defaultNextAction.action,
+      next_action_date: customerData.next_action_date || defaultNextAction.date,
       created_at: now,
       updated_at: now
     };
@@ -149,8 +160,16 @@ export class CustomerService {
           this.eventLogService.logEvent('customer_created', {
             customer_id: customer.id,
             name: customer.name,
-            status: customer.status
+            status: customer.status,
+            frazer_step: stageDefinition.frazerStep
           }, customer.id);
+
+          this.reminderService.scheduleStageReminder(customer.id, customer.status, {
+            context: 'New profile intake',
+            skipIfExists: true
+          }).catch((reminderError) => {
+            console.warn('Failed to schedule initial Frazer reminder', reminderError);
+          });
 
           resolve(customer);
         }
@@ -167,15 +186,40 @@ export class CustomerService {
     }
 
     const db = DatabaseManager.getInstance().getDb();
-    const updatedCustomer = {
+    const updatedAt = new Date();
+    const updatedCustomer: Customer = {
       ...existingCustomer,
       ...updates,
-      updated_at: new Date()
+      updated_at: updatedAt
     };
+    const stageChanged = Boolean(updates.status && updates.status !== existingCustomer.status);
+    let stageDefinition: FrazerStageDefinition | null = null;
+
+    if (stageChanged && updates.status) {
+      stageDefinition = getStageDefinition(updates.status);
+      const validationResult = await this.pipelineValidationService.validateStageTransition(
+        id,
+        existingCustomer.status,
+        updates.status
+      );
+
+      if (!validationResult.allowed) {
+        throw new Error(validationResult.reason || 'Stage transition not allowed');
+      }
+
+      const nextAction = this.getNextActionForStage(stageDefinition);
+      updatedCustomer.next_action = nextAction.action;
+      updatedCustomer.next_action_date = nextAction.date;
+    } else {
+      updatedCustomer.next_action = updates.next_action ?? existingCustomer.next_action;
+      updatedCustomer.next_action_date = updates.next_action_date ?? existingCustomer.next_action_date;
+    }
+
+    const hoursInPreviousStage = (updatedAt.getTime() - existingCustomer.updated_at.getTime()) / (1000 * 60 * 60);
 
     return new Promise((resolve, reject) => {
       const stmt = db.prepare(`
-        UPDATE customers 
+        UPDATE customers
         SET name = ?, email = ?, phone = ?, status = ?, notes = ?, next_action = ?, next_action_date = ?, updated_at = ?,
             source = ?, handle_ig = ?, handle_whatsapp = ?, country = ?, language = ?,
             consent_json = ?, utm_json = ?
@@ -199,17 +243,26 @@ export class CustomerService {
         (updates as any).consent_json ? JSON.stringify((updates as any).consent_json) : (existingCustomer as any).consent_json ? JSON.stringify((existingCustomer as any).consent_json) : null,
         (updates as any).utm_json ? JSON.stringify((updates as any).utm_json) : (existingCustomer as any).utm_json ? JSON.stringify((existingCustomer as any).utm_json) : null,
         id
-      ], (err) => {
+      ], async (err) => {
         if (err) {
           reject(err);
         } else {
-          // Log event if status changed
-          if (updates.status && updates.status !== existingCustomer.status) {
-            this.eventLogService.logEvent('status_changed', {
-              customer_id: id,
-              old_status: existingCustomer.status,
-              new_status: updates.status
-            }, id);
+          try {
+            if (stageChanged && updates.status && stageDefinition) {
+              await this.pipelineValidationService.logStageTransition(id, existingCustomer.status, updates.status);
+              await this.handleStageTransition(updatedCustomer, existingCustomer.status, updates.status, hoursInPreviousStage, stageDefinition);
+            }
+
+            if (stageChanged && updates.status) {
+              await this.eventLogService.logEvent('status_changed', {
+                customer_id: id,
+                old_status: existingCustomer.status,
+                new_status: updates.status,
+                frazer_step: stageDefinition?.frazerStep
+              }, id);
+            }
+          } catch (transitionError) {
+            return reject(transitionError);
           }
 
           resolve(updatedCustomer);
@@ -280,9 +333,6 @@ export class CustomerService {
       throw new Error(validationResult.reason || 'Stage transition not allowed');
     }
 
-    // Log the transition
-    await this.pipelineValidationService.logStageTransition(id, customer.status, nextStatus);
-
     return this.updateCustomer(id, { status: nextStatus });
   }
 
@@ -306,9 +356,6 @@ export class CustomerService {
       throw new Error(validationResult.reason || 'Stage transition not allowed');
     }
 
-    // Log the transition
-    await this.pipelineValidationService.logStageTransition(id, customer.status, targetStage);
-
     return this.updateCustomer(id, { status: targetStage });
   }
 
@@ -326,5 +373,60 @@ export class CustomerService {
     }
 
     return this.pipelineValidationService.getStageRecommendations(id, customer.status);
+  }
+
+  private getNextActionForStage(stageDefinition: FrazerStageDefinition): { action: string; date: Date } {
+    const action = `${stageDefinition.frazerStep}: ${stageDefinition.touchpoint.summary}`;
+    const date = new Date(Date.now() + stageDefinition.cadenceHours * 60 * 60 * 1000);
+    return { action, date };
+  }
+
+  private buildAIScoringPayload(stageDefinition: FrazerStageDefinition, hoursInPreviousStage: number, activityScore: number) {
+    const expectedHours = stageDefinition.cadenceHours || 1;
+    const cadenceRatio = Math.max(0, 1 - (hoursInPreviousStage / expectedHours));
+    const normalizedActivity = activityScore / 100;
+    const score = Math.round(40 + (cadenceRatio * 40) + (normalizedActivity * 20));
+    const risk_level = hoursInPreviousStage > expectedHours ? 'at_risk' : 'healthy';
+    return {
+      score: Math.min(100, Math.max(0, score)),
+      risk_level,
+      signals: stageDefinition.aiSignals
+    };
+  }
+
+  private async handleStageTransition(
+    customer: Customer,
+    previousStage: PipelineStatus,
+    nextStage: PipelineStatus,
+    hoursInPreviousStage: number,
+    stageDefinition: FrazerStageDefinition
+  ): Promise<void> {
+    const activitySnapshot = await interactionService.getActivityScore(customer.id, stageDefinition.cadenceHours);
+
+    await interactionService.logFrazerTouchpoint(customer.id, nextStage, {
+      summaryOverride: `Stage change: ${previousStage} → ${nextStage}`,
+      notes: `${stageDefinition.touchpoint.notesHint} | ${activitySnapshot.recommendedAction}`
+    });
+
+    await this.reminderService.scheduleStageReminder(customer.id, nextStage, {
+      cadenceHours: stageDefinition.cadenceHours,
+      context: `Next ${stageDefinition.frazerStep} touchpoint`,
+      skipIfExists: true
+    });
+
+    const aiScore = this.buildAIScoringPayload(stageDefinition, hoursInPreviousStage, activitySnapshot.score);
+
+    await this.eventLogService.logEvent('frazer_stage_transition', {
+      customer_id: customer.id,
+      from_stage: previousStage,
+      to_stage: nextStage,
+      frazer_step: stageDefinition.frazerStep,
+      cadence_hours: stageDefinition.cadenceHours,
+      ai_score: aiScore.score,
+      ai_signals: aiScore.signals,
+      risk_level: aiScore.risk_level,
+      activity_score: activitySnapshot.score,
+      touches_in_cadence: activitySnapshot.touches
+    }, customer.id);
   }
 }
