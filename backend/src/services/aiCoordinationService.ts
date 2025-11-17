@@ -32,5 +32,45 @@ export class AICoordinationService {
       throw new Error(`Failed to get AI worker status: ${error.message}`);
     }
   }
+
+  async getAgentStatuses(): Promise<any> {
+    try {
+      const response = await axios.get(`${this.pythonWorkerUrl}/evolution/agents`);
+      return response.data;
+    } catch (error: any) {
+      logger.error('Failed to fetch agent statuses from worker', { error: error.message });
+      throw new Error(`Failed to fetch agent statuses: ${error.message}`);
+    }
+  }
+
+  async getApprovalQueue(): Promise<any> {
+    try {
+      const response = await axios.get(`${this.pythonWorkerUrl}/evolution/approvals`);
+      return response.data;
+    } catch (error: any) {
+      logger.error('Failed to fetch approval queue from worker', { error: error.message });
+      throw new Error(`Failed to fetch approval queue: ${error.message}`);
+    }
+  }
+
+  async submitApprovalDecision(eventId: string, payload: { decision: 'approve' | 'reject'; rationale: string; decision_maker: string; }): Promise<any> {
+    try {
+      const response = await axios.post(`${this.pythonWorkerUrl}/evolution/approvals/${eventId}`, payload);
+      return response.data;
+    } catch (error: any) {
+      logger.error(`Failed to submit approval decision for ${eventId}`, { error: error.message });
+      throw new Error(`Failed to submit approval decision: ${error.message}`);
+    }
+  }
+
+  async sendEvolutionSignal(signal: any): Promise<any> {
+    try {
+      const response = await axios.post(`${this.pythonWorkerUrl}/evolution/signals`, signal);
+      return response.data;
+    } catch (error: any) {
+      logger.error('Failed to send evolution signal to worker', { error: error.message, signal });
+      throw new Error(`Failed to send evolution signal: ${error.message}`);
+    }
+  }
 }
 

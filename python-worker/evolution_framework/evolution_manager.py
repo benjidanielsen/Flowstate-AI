@@ -4,6 +4,7 @@ Evolution Manager
 Core orchestrator for the Evolution Framework, coordinating self-improvement activities.
 """
 
+import json
 import logging
 import uuid
 from datetime import datetime
@@ -416,4 +417,20 @@ class EvolutionManager:
         """Close database connection on cleanup."""
         if self._conn and not self._conn.closed:
             self._conn.close()
+
+
+class FlowstateEvolutionManager(EvolutionManager):
+    """Wrapper that loads configuration from a file when provided."""
+
+    def __init__(
+        self,
+        config: Optional[EvolutionConfig] = None,
+        config_path: Optional[str] = None,
+    ) -> None:
+        resolved_config = config
+        if resolved_config is None and config_path:
+            with open(config_path, "r", encoding="utf-8") as config_file:
+                config_data = json.load(config_file)
+            resolved_config = EvolutionConfig.from_dict(config_data)
+        super().__init__(config=resolved_config)
 
