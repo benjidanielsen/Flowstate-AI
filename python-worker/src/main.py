@@ -1,3 +1,33 @@
+from fastapi import FastAPI
+from pydantic import BaseModel
+from typing import List
+
+app = FastAPI()
+
+class Reminder(BaseModel):
+    id: int
+    customer_id: int
+    text: str
+    due: str
+
+_reminders: List[Reminder] = []
+_next = 1
+
+@app.get('/')
+def read_root():
+    return {"status": "ok"}
+
+@app.get('/reminders', response_model=List[Reminder])
+def get_reminders():
+    return _reminders
+
+@app.post('/reminders', response_model=Reminder, status_code=201)
+def create_reminder(rem: Reminder):
+    global _next
+    rem.id = _next
+    _next += 1
+    _reminders.append(rem)
+    return rem
 import json
 import logging
 import os
