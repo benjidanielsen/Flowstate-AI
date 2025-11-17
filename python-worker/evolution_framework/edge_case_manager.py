@@ -1,3 +1,4 @@
+import json
 import logging
 from typing import Dict, Any, List
 
@@ -37,7 +38,7 @@ class EdgeCaseManager:
             }
             self.edge_cases.append(edge_case_entry)
             self.knowledge_manager.store_knowledge(
-                f"edge_case_{edge_case_entry["id"]}",
+                f"edge_case_{edge_case_entry['id']}",
                 json.dumps(edge_case_entry),
                 tags=["edge_case", context]
             )
@@ -64,10 +65,14 @@ class EdgeCaseManager:
             raise ValueError(f"Edge case with ID {edge_case_id} not found.")
 
         # Simulate AI reasoning and solution generation
-        solution_description = f"Autonomous solution generated for edge case in {edge_case["context"]}. " \
-                               f"Adjusted parameters based on data: {edge_case["data"]}."
-        simulated_code_patch = f"// Simulated code patch for edge case {edge_case_id}\n" \
-                               f"// Logic to handle: {edge_case["data"]}\n"
+        solution_description = (
+            f"Autonomous solution generated for edge case in {edge_case['context']}. "
+            f"Adjusted parameters based on data: {edge_case['data']}."
+        )
+        simulated_code_patch = (
+            f"// Simulated code patch for edge case {edge_case_id}\n"
+            f"// Logic to handle: {edge_case['data']}\n"
+        )
 
         solution = {
             "description": solution_description,

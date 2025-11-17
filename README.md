@@ -147,9 +147,13 @@ now live inside the GODMODE Brain principles.
    # Terminal 3 - Python Worker
    cd python-worker && python -m uvicorn src.main:app --reload
    
-   # Terminal 4 - Godmode Monitoring Dashboard (from Flowstate-AI/godmode-dashboard)
+   # Terminal 4 - Godmode Monitoring Dashboard (from ./godmode-dashboard)
    cd godmode-dashboard && python app_enhanced.py
    ```
+
+   The dashboard respects `GODMODE_DASHBOARD_HOST`, `GODMODE_DASHBOARD_PORT`, and
+   `GODMODE_DASHBOARD_POLL_SECONDS` environment variables if you need to adjust
+   binding details or refresh cadence.
 
 5. **Access Application**
    - Frontend: http://localhost:3000

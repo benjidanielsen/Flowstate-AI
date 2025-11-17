@@ -19,10 +19,10 @@ class EvolutionGovernor:
     
     def __init__(
         self,
-        evolution_manager: EvolutionManager,
-        anomaly_detector: AnomalyDetector,
-        metrics_collector: MetricsCollector,
-        knowledge_manager: VectorKnowledgeManager,
+        evolution_manager: Optional[EvolutionManager] = None,
+        anomaly_detector: Optional[AnomalyDetector] = None,
+        metrics_collector: Optional[MetricsCollector] = None,
+        knowledge_manager: Optional[VectorKnowledgeManager] = None,
         config: Optional[EvolutionConfig] = None
     ):
         """
@@ -35,11 +35,20 @@ class EvolutionGovernor:
             knowledge_manager: Knowledge manager instance
             config: Evolution framework configuration
         """
-        self.evolution_manager = evolution_manager
-        self.anomaly_detector = anomaly_detector
-        self.metrics_collector = metrics_collector
-        self.knowledge_manager = knowledge_manager
+        if isinstance(evolution_manager, AnomalyDetector) and isinstance(anomaly_detector, MetricsCollector):
+            # Backwards compatibility with legacy constructor ordering
+            metrics_collector = anomaly_detector
+            anomaly_detector = evolution_manager
+            evolution_manager = None
+
         self.config = config or EvolutionConfig()
+        self.metrics_collector = metrics_collector or MetricsCollector(
+            "evolution_governor",
+            self.config,
+        )
+        self.evolution_manager = evolution_manager or EvolutionManager(self.config)
+        self.anomaly_detector = anomaly_detector or AnomalyDetector(self.metrics_collector)
+        self.knowledge_manager = knowledge_manager or VectorKnowledgeManager(self.config)
         self.logger = logging.getLogger("evolution_governor")
         
         # Track safe mode state

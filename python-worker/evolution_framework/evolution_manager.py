@@ -7,9 +7,17 @@ Core orchestrator for the Evolution Framework, coordinating self-improvement act
 import logging
 import uuid
 from datetime import datetime
-from typing import Dict, List, Any, Optional
-import psycopg2
-from psycopg2.extras import Json
+from typing import Any, Dict, List, Optional
+
+try:  # pragma: no cover - exercised indirectly via tests
+    import psycopg2
+    from psycopg2.extras import Json
+except ModuleNotFoundError:  # pragma: no cover - deterministic fallback
+    psycopg2 = None  # type: ignore[assignment]
+
+    def Json(value: Any) -> Any:  # type: ignore[misc]
+        return value
+
 import requests
 from .config import EvolutionConfig
 from .metrics_collector import MetricsCollector
@@ -30,13 +38,23 @@ class EvolutionManager:
         self.logger = logging.getLogger("evolution_manager")
         self.metrics_collector = MetricsCollector("evolution_manager", self.config)
         self._conn = None
-        
+        self._db_available = psycopg2 is not None
+        self._memory_events: Dict[str, Dict[str, Any]] = {}
+
         self.logger.info("Evolution Manager initialized")
         if self.config.safe_mode:
             self.logger.warning("Evolution Manager started in SAFE MODE")
-    
+
+        if not self._db_available:
+            self.logger.warning(
+                "psycopg2 is not installed; EvolutionManager will use in-memory storage"
+            )
+
     def _get_connection(self):
         """Get database connection."""
+        if psycopg2 is None:
+            raise RuntimeError("psycopg2 is required for database-backed operations")
+
         if self._conn is None or self._conn.closed:
             self._conn = psycopg2.connect(self.config.database_url)
         return self._conn
@@ -72,16 +90,34 @@ class EvolutionManager:
         Returns:
             Event ID if successful, None otherwise
         """
+        if not self._db_available:
+            event_id = str(uuid.uuid4())
+            self._memory_events[event_id] = {
+                "id": event_id,
+                "type": event_type,
+                "component": component,
+                "description": description,
+                "proposed_by": proposed_by,
+                "status": status,
+                "metrics_before": metrics_before or {},
+                "metrics_after": metrics_after or {},
+                "metadata": metadata or {},
+                "timestamp": datetime.now(),
+                "created_at": datetime.now(),
+                "updated_at": datetime.now(),
+            }
+            return event_id
+
         try:
             conn = self._get_connection()
             cursor = conn.cursor()
-            
+
             event_id = str(uuid.uuid4())
-            
+
             cursor.execute(
                 """
-                INSERT INTO evolution_events 
-                (id, type, component, description, proposed_by, status, 
+                INSERT INTO evolution_events
+                (id, type, component, description, proposed_by, status,
                  metrics_before, metrics_after, metadata)
                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
                 RETURNING id
@@ -98,15 +134,15 @@ class EvolutionManager:
                     Json(metadata or {})
                 )
             )
-            
+
             conn.commit()
             cursor.close()
-            
+
             self.logger.info(
                 f"Created evolution event: {event_id} - {event_type} for {component}"
             )
             return event_id
-            
+
         except Exception as e:
             self.logger.error(f"Error creating evolution event: {e}")
             return None
@@ -130,44 +166,58 @@ class EvolutionManager:
         Returns:
             True if successful, False otherwise
         """
+        if not self._db_available:
+            event = self._memory_events.get(event_id)
+            if not event:
+                return False
+
+            if status:
+                event["status"] = status
+            if metrics_after:
+                event["metrics_after"] = metrics_after
+            if metadata:
+                event.setdefault("metadata", {}).update(metadata)
+            event["updated_at"] = datetime.now()
+            return True
+
         try:
             conn = self._get_connection()
             cursor = conn.cursor()
-            
+
             updates = []
             params = []
-            
+
             if status:
                 updates.append("status = %s")
                 params.append(status)
-            
+
             if metrics_after:
                 updates.append("metrics_after = %s")
                 params.append(Json(metrics_after))
-            
+
             if metadata:
                 updates.append("metadata = %s")
                 params.append(Json(metadata))
-            
+
             if not updates:
                 return True
-            
+
             updates.append("updated_at = NOW()")
             params.append(event_id)
-            
+
             query = f"""
-                UPDATE evolution_events 
+                UPDATE evolution_events
                 SET {', '.join(updates)}
                 WHERE id = %s
             """
-            
+
             cursor.execute(query, params)
             conn.commit()
             cursor.close()
-            
+
             self.logger.info(f"Updated evolution event: {event_id}")
             return True
-            
+
         except Exception as e:
             self.logger.error(f"Error updating evolution event: {e}")
             return False
@@ -191,39 +241,50 @@ class EvolutionManager:
         Returns:
             List of evolution events
         """
+        if not self._db_available:
+            results = list(self._memory_events.values())
+            if event_type:
+                results = [r for r in results if r["type"] == event_type]
+            if component:
+                results = [r for r in results if r["component"] == component]
+            if status:
+                results = [r for r in results if r["status"] == status]
+            results.sort(key=lambda r: r["timestamp"], reverse=True)
+            return results[:limit]
+
         try:
             conn = self._get_connection()
             cursor = conn.cursor()
-            
+
             query = "SELECT * FROM evolution_events WHERE 1=1"
             params = []
-            
+
             if event_type:
                 query += " AND type = %s"
                 params.append(event_type)
-            
+
             if component:
                 query += " AND component = %s"
                 params.append(component)
-            
+
             if status:
                 query += " AND status = %s"
                 params.append(status)
-            
+
             query += " ORDER BY timestamp DESC LIMIT %s"
             params.append(limit)
-            
+
             cursor.execute(query, params)
-            
+
             columns = [desc[0] for desc in cursor.description]
             results = []
-            
+
             for row in cursor.fetchall():
                 results.append(dict(zip(columns, row)))
-            
+
             cursor.close()
             return results
-            
+
         except Exception as e:
             self.logger.error(f"Error retrieving evolution events: {e}")
             return []
@@ -416,4 +477,10 @@ class EvolutionManager:
         """Close database connection on cleanup."""
         if self._conn and not self._conn.closed:
             self._conn.close()
+
+
+class FlowstateEvolutionManager(EvolutionManager):
+    """Compatibility wrapper for legacy imports."""
+
+    pass
 

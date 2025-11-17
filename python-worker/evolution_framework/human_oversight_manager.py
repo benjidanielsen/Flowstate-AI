@@ -1,5 +1,5 @@
 import logging
-from typing import Dict, Any, List
+from typing import Any, Dict, List, Optional
 
 from .evolution_manager import EvolutionManager
 from .evolution_governor import EvolutionGovernor

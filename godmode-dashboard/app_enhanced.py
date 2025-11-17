@@ -4,40 +4,62 @@
 ⚡ Real-time AI activity and Project Manager Log
 """
 
-import json
-import time
-import threading
-import platform
-import sys
-import traceback
-from datetime import datetime
-from pathlib import Path
+from __future__ import annotations
+
 import logging
 import os
-from typing import Dict, List, Any
+import sys
+import time
 from collections import deque
+from datetime import datetime
+from pathlib import Path
+from typing import Optional
 
-from flask import Flask, render_template, jsonify, request
-from flask_socketio import SocketIO
+try:  # pragma: no cover - import guard exercised indirectly
+    from flask import Flask, jsonify, render_template, request
+    from flask_socketio import SocketIO
+except Exception as exc:  # pragma: no cover - exercised when Flask is missing
+    Flask = None  # type: ignore[assignment]
+    jsonify = None  # type: ignore[assignment]
+    render_template = None  # type: ignore[assignment]
+    request = None  # type: ignore[assignment]
+    SocketIO = None  # type: ignore[assignment]
+    FLASK_AVAILABLE = False
+    _FLASK_IMPORT_ERROR = exc
+else:  # pragma: no cover - logging only
+    FLASK_AVAILABLE = True
+    _FLASK_IMPORT_ERROR = None
+
 import psutil
 
 # --- Basic Configuration ---
 LOG_DIR = Path(__file__).parent / "logs"
 LOG_DIR.mkdir(exist_ok=True)
 
+DASHBOARD_HOST = os.getenv("GODMODE_DASHBOARD_HOST", "0.0.0.0")
+DASHBOARD_PORT = int(os.getenv("GODMODE_DASHBOARD_PORT", "3333"))
+POLL_INTERVAL_SECONDS = float(os.getenv("GODMODE_DASHBOARD_POLL_SECONDS", "5"))
+INSTALL_HINT = "pip install flask flask-socketio"
+
 logging.basicConfig(
     level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     handlers=[
-        logging.FileHandler(LOG_DIR / 'dashboard_v2.log'),
-        logging.StreamHandler(sys.stdout)
-    ]
+        logging.FileHandler(LOG_DIR / "dashboard_v2.log"),
+        logging.StreamHandler(sys.stdout),
+    ],
 )
 logger = logging.getLogger(__name__)
 
-app = Flask(__name__)
-app.config['SECRET_KEY'] = 'godmode-dashboard-v2-secret'
-socketio = SocketIO(app, cors_allowed_origins="*", async_mode='threading')
+if FLASK_AVAILABLE:
+    app: Optional[Flask] = Flask(__name__)
+    app.config["SECRET_KEY"] = "godmode-dashboard-v2-secret"
+    socketio: Optional[SocketIO] = SocketIO(
+        app, cors_allowed_origins="*", async_mode="threading"
+    )
+else:
+    app = None
+    socketio = None
 
 # --- In-Memory Data Store ---
 # Using deque for a capped-size, thread-safe list of log entries
@@ -63,58 +85,74 @@ def get_ai_agent_status():
         {"name": "Godmode Orchestrator", "status": "Active", "task": "Coordinating system overhaul."},
     ]
 
-def broadcast_update():
-    """Broadcasts a full update of system status to all clients."""
+def broadcast_update() -> None:
+    """Broadcast a full update of system status to all clients."""
+
+    if not (FLASK_AVAILABLE and app and socketio):
+        return
+
     with app.app_context():
         data = {
             "system_stats": get_system_stats(),
             "ai_agents": get_ai_agent_status(),
-            "log_entries": list(project_manager_log)
+            "log_entries": list(project_manager_log),
         }
-        socketio.emit('full_update', data)
+        socketio.emit("full_update", data)
 
 # --- Background Task ---
 
-def background_monitor():
-    """Continuously broadcasts updates in the background."""
+def background_monitor() -> None:
+    """Continuously broadcast updates in the background."""
+
     while True:
         try:
             broadcast_update()
-        except Exception as e:
-            logger.error(f"Error in background monitor: {e}")
-        socketio.sleep(5) # Broadcast every 5 seconds
+        except Exception as exc:  # pragma: no cover - defensive logging
+            logger.error("Error in background monitor: %s", exc)
+
+        if socketio is not None:
+            socketio.sleep(POLL_INTERVAL_SECONDS)
+        else:
+            time.sleep(POLL_INTERVAL_SECONDS)
 
 # --- Flask & SocketIO Routes ---
 
-@app.route('/')
-def index():
-    """Serves the main dashboard page."""
-    return render_template('dashboard.html')
+if FLASK_AVAILABLE:
 
-@app.route('/log', methods=['POST'])
-def receive_log():
-    """API endpoint for the Project Manager (or other AIs) to post log entries."""
-    data = request.json
-    if not data or 'entry' not in data:
-        return jsonify({"status": "error", "message": "Invalid log entry format"}), 400
-    
-    log_entry = {
-        "timestamp": datetime.now().strftime('%H:%M:%S'),
-        "entry": data['entry']
-    }
-    
-    # Add to our log and broadcast it
-    project_manager_log.appendleft(log_entry)
-    socketio.emit('new_log_entry', log_entry)
-    
-    return jsonify({"status": "success"}), 200
+    @app.route("/")
+    def index():
+        """Serve the main dashboard page."""
 
-@socketio.on('connect')
-def handle_connect():
-    """Handles a new client connection."""
-    logger.info("Client connected. Sending initial state.")
-    # Send a full update to the newly connected client
-    broadcast_update()
+        ensure_dashboard_template()
+        return render_template("dashboard.html")
+
+    @app.route("/log", methods=["POST"])
+    def receive_log():
+        """API endpoint for agents to post log entries."""
+
+        data = request.json
+        if not data or "entry" not in data:
+            return (
+                jsonify({"status": "error", "message": "Invalid log entry format"}),
+                400,
+            )
+
+        log_entry = {
+            "timestamp": datetime.now().strftime("%H:%M:%S"),
+            "entry": data["entry"],
+        }
+
+        project_manager_log.appendleft(log_entry)
+        socketio.emit("new_log_entry", log_entry)
+
+        return jsonify({"status": "success"}), 200
+
+    @socketio.on("connect")
+    def handle_connect():
+        """Handle a new client connection."""
+
+        logger.info("Client connected. Sending initial state.")
+        broadcast_update()
 
 # --- HTML Template ---
 # For simplicity, the HTML is embedded here. In a larger app, this would be in a separate file.
@@ -282,29 +320,62 @@ DASHBOARD_TEMPLATE = """
 </html>
 """;
 
-# --- Main Execution ---
 
-if __name__ == '__main__':
-    # Create templates directory and the dashboard file if they don't exist
+def ensure_dashboard_template() -> Path:
+    """Ensure the dashboard template exists on disk."""
+
     templates_dir = Path(__file__).parent / "templates"
-    templates_dir.mkdir(exist_ok=True)
+    templates_dir.mkdir(parents=True, exist_ok=True)
     dashboard_file = templates_dir / "dashboard.html"
     if not dashboard_file.exists():
         logger.info("Dashboard template not found, creating it.")
         dashboard_file.write_text(DASHBOARD_TEMPLATE)
+    return dashboard_file
 
-    # Start the background thread for monitoring
+
+def _dependency_error_message() -> str:
+    return (
+        "Flask and Flask-SocketIO are required to run the dashboard. "
+        f"Install them with: {INSTALL_HINT}"
+    )
+
+
+def main() -> int:
+    """Entry point used by the CLI and tooling."""
+
+    ensure_dashboard_template()
+
+    if not (FLASK_AVAILABLE and app and socketio):
+        message = _dependency_error_message()
+        logger.error(message)
+        if _FLASK_IMPORT_ERROR:
+            logger.debug("Underlying import error: %s", _FLASK_IMPORT_ERROR)
+        print(message)
+        if _FLASK_IMPORT_ERROR:
+            print(f"Import error: {_FLASK_IMPORT_ERROR}")
+        return 1
+
     socketio.start_background_task(target=background_monitor)
-    
-    logger.info("🚀 Starting GODMODE Dashboard v2.0...")
-    logger.info(f"🔗 Access it at http://localhost:3333")
-    
-    # Run the Flask app with SocketIO
+
+    public_host = (
+        "localhost" if DASHBOARD_HOST in {"0.0.0.0", "::"} else DASHBOARD_HOST
+    )
+    logger.info(
+        "🚀 Starting GODMODE Dashboard v2.0 on http://%s:%s",
+        public_host,
+        DASHBOARD_PORT,
+    )
+
     socketio.run(
         app,
-        host='0.0.0.0',
-        port=3333,
+        host=DASHBOARD_HOST,
+        port=DASHBOARD_PORT,
         debug=False,
-        use_reloader=False
+        use_reloader=False,
     )
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
  

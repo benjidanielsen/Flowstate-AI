@@ -52,27 +52,22 @@ class AnomalyDetector:
             Tuple of (is_anomaly, anomaly_details)
         """
         try:
-            # Get recent metric values
-            stats = self.metrics_collector.get_metric_stats(
-                metric_name,
-                component,
-                limit=self.window_size
-            )
-            
-            if not stats or stats['count'] < self.window_size:
-                self.logger.debug(
-                    f"Not enough data for anomaly detection: "
-                    f"{metric_name} ({stats['count'] if stats else 0}/{self.window_size})"
-                )
-                return False, None
-            
             # Get all values for statistical analysis
             values = self.metrics_collector.get_metric_values(
                 metric_name,
                 component,
                 limit=self.window_size
             )
-            
+
+            min_points = min(10, self.window_size)
+
+            if len(values) < min_points:
+                self.logger.debug(
+                    f"Not enough data for anomaly detection: "
+                    f"{metric_name} ({len(values)}/{min_points})"
+                )
+                return False, None
+
             if not values:
                 return False, None
             

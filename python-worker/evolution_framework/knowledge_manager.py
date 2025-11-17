@@ -5,12 +5,29 @@ Manages persistent knowledge storage using vector embeddings for semantic search
 """
 
 import logging
+import math
 import uuid
 from datetime import datetime, timedelta
-from typing import Dict, List, Any, Optional, Tuple
-from sentence_transformers import SentenceTransformer
-from qdrant_client import QdrantClient
-from qdrant_client.models import Distance, VectorParams, PointStruct, Filter, FieldCondition, MatchValue
+from typing import Any, Dict, List, Optional, Tuple
+
+try:  # pragma: no cover - exercised indirectly
+    from sentence_transformers import SentenceTransformer
+except Exception:  # pragma: no cover - deterministic fallback
+    SentenceTransformer = None  # type: ignore[assignment]
+
+try:  # pragma: no cover
+    from qdrant_client import QdrantClient
+    from qdrant_client.models import (
+        Distance,
+        VectorParams,
+        PointStruct,
+        Filter,
+        FieldCondition,
+        MatchValue,
+    )
+except Exception:  # pragma: no cover - deterministic fallback
+    QdrantClient = None  # type: ignore[assignment]
+    Distance = VectorParams = PointStruct = Filter = FieldCondition = MatchValue = None  # type: ignore[assignment]
 from .config import EvolutionConfig
 
 
@@ -27,28 +44,41 @@ class VectorKnowledgeManager:
         self.config = config or EvolutionConfig()
         self.logger = logging.getLogger("knowledge_manager")
         
-        # Initialize embedding model
-        self.logger.info(f"Loading embedding model: {self.config.embedding_model}")
-        self.embedding_model = SentenceTransformer(self.config.embedding_model)
-        self.embedding_dim = self.embedding_model.get_sentence_embedding_dimension()
-        
-        # Initialize vector database client
-        self.client = QdrantClient(
-            host=self.config.vector_db_host,
-            port=self.config.vector_db_port
+        self._using_memory_backend = (
+            SentenceTransformer is None or QdrantClient is None
         )
-        
-        # Ensure collection exists
-        self._ensure_collection()
-        
+        self._memory_store: Dict[str, Dict[str, Any]] = {}
+
+        if self._using_memory_backend:
+            self.embedding_model = None
+            self.embedding_dim = 64
+            self.client = None
+            self.logger.warning(
+                "Falling back to in-memory knowledge storage due to missing dependencies"
+            )
+        else:
+            self.logger.info(f"Loading embedding model: {self.config.embedding_model}")
+            self.embedding_model = SentenceTransformer(self.config.embedding_model)
+            self.embedding_dim = (
+                self.embedding_model.get_sentence_embedding_dimension()
+            )
+            self.client = QdrantClient(
+                host=self.config.vector_db_host,
+                port=self.config.vector_db_port
+            )
+            self._ensure_collection()
+
         self.logger.info("Vector Knowledge Manager initialized")
     
     def _ensure_collection(self) -> None:
         """Ensure the knowledge collection exists."""
+        if self._using_memory_backend:
+            return
+
         try:
             collections = self.client.get_collections().collections
             collection_names = [c.name for c in collections]
-            
+
             if self.config.vector_db_collection not in collection_names:
                 self.logger.info(
                     f"Creating collection: {self.config.vector_db_collection}"
@@ -86,8 +116,7 @@ class VectorKnowledgeManager:
             Knowledge ID if successful, None otherwise
         """
         try:
-            # Generate embedding
-            embedding = self.embedding_model.encode(content).tolist()
+            embedding = self._encode_text(content)
             
             # Create knowledge entry
             knowledge_id = str(uuid.uuid4())
@@ -104,17 +133,23 @@ class VectorKnowledgeManager:
                 **(metadata or {})
             }
             
-            # Store in vector database
-            self.client.upsert(
-                collection_name=self.config.vector_db_collection,
-                points=[
-                    PointStruct(
-                        id=knowledge_id,
-                        vector=embedding,
-                        payload=payload
-                    )
-                ]
-            )
+            if self._using_memory_backend:
+                self._memory_store[knowledge_id] = {
+                    "id": knowledge_id,
+                    "vector": embedding,
+                    "payload": payload,
+                }
+            else:
+                self.client.upsert(
+                    collection_name=self.config.vector_db_collection,
+                    points=[
+                        PointStruct(
+                            id=knowledge_id,
+                            vector=embedding,
+                            payload=payload
+                        )
+                    ]
+                )
             
             self.logger.info(
                 f"Added knowledge entry: {knowledge_id} - {category} from {source}"
@@ -147,8 +182,16 @@ class VectorKnowledgeManager:
             List of knowledge entries with similarity scores
         """
         try:
-            # Generate query embedding
-            query_embedding = self.embedding_model.encode(query).tolist()
+            query_embedding = self._encode_text(query)
+
+            if self._using_memory_backend:
+                return self._search_memory(
+                    query_embedding,
+                    category,
+                    source,
+                    limit,
+                    min_confidence,
+                )
             
             # Build filter conditions
             filter_conditions = []
@@ -215,36 +258,101 @@ class VectorKnowledgeManager:
     def _update_usage(self, knowledge_id: str) -> None:
         """
         Update usage statistics for a knowledge entry.
-        
+
         Args:
             knowledge_id: ID of the knowledge entry
         """
+        if self._using_memory_backend:
+            entry = self._memory_store.get(knowledge_id)
+            if not entry:
+                return
+
+            payload = entry["payload"]
+            payload["usage_count"] = payload.get("usage_count", 0) + 1
+            payload["last_accessed"] = datetime.now().isoformat()
+            return
+
         try:
-            # Retrieve current entry
             result = self.client.retrieve(
                 collection_name=self.config.vector_db_collection,
                 ids=[knowledge_id]
             )
-            
+
             if not result:
                 return
-            
+
             entry = result[0]
             payload = entry.payload
-            
-            # Update usage statistics
+
             payload["usage_count"] = payload.get("usage_count", 0) + 1
             payload["last_accessed"] = datetime.now().isoformat()
-            
-            # Update in database
+
             self.client.set_payload(
                 collection_name=self.config.vector_db_collection,
                 payload=payload,
                 points=[knowledge_id]
             )
-            
+
         except Exception as e:
             self.logger.error(f"Error updating usage for {knowledge_id}: {e}")
+
+    def _encode_text(self, text: str) -> List[float]:
+        if self.embedding_model:
+            return self.embedding_model.encode(text).tolist()
+        return self._simple_embedding(text)
+
+    def _simple_embedding(self, text: str) -> List[float]:
+        vector = [0.0] * self.embedding_dim
+        for idx, byte in enumerate(text.encode("utf-8")):
+            vector[idx % self.embedding_dim] += byte / 255.0
+
+        norm = math.sqrt(sum(value * value for value in vector)) or 1.0
+        return [value / norm for value in vector]
+
+    def _cosine_similarity(self, vector_a: List[float], vector_b: List[float]) -> float:
+        numerator = sum(a * b for a, b in zip(vector_a, vector_b))
+        denominator = math.sqrt(sum(a * a for a in vector_a)) * math.sqrt(
+            sum(b * b for b in vector_b)
+        )
+        if denominator == 0:
+            return 0.0
+        return numerator / denominator
+
+    def _search_memory(
+        self,
+        query_embedding: List[float],
+        category: Optional[str],
+        source: Optional[str],
+        limit: int,
+        min_confidence: float,
+    ) -> List[Dict[str, Any]]:
+        matches: List[Tuple[float, Dict[str, Any]]] = []
+
+        for entry in self._memory_store.values():
+            payload = entry["payload"]
+            if category and payload.get("category") != category:
+                continue
+            if source and payload.get("source") != source:
+                continue
+            if payload.get("confidence", 0.0) < min_confidence:
+                continue
+
+            score = self._cosine_similarity(query_embedding, entry["vector"])
+            matches.append((score, entry))
+
+        matches.sort(key=lambda item: item[0], reverse=True)
+
+        results = []
+        for score, entry in matches[:limit]:
+            self._update_usage(entry["id"])
+            record = {
+                "id": entry["id"],
+                "score": score,
+                **entry["payload"],
+            }
+            results.append(record)
+
+        return results
     
     def get_knowledge_by_id(self, knowledge_id: str) -> Optional[Dict[str, Any]]:
         """
