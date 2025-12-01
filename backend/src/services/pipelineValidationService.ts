@@ -19,26 +19,19 @@ export class PipelineValidationService {
   private qualificationService: QualificationService;
   private eventLogService: EventLogService;
   
-  // Define the Frazer Method pipeline flow
+  // Define the Frazer Method pipeline flow (7 stages)
   private stageOrder: PipelineStatus[] = [
-    PipelineStatus.NEW_LEAD,
-    PipelineStatus.WARMING_UP,
+    PipelineStatus.LEAD,
+    PipelineStatus.RELATIONSHIP,
     PipelineStatus.INVITED,
     PipelineStatus.QUALIFIED,
     PipelineStatus.PRESENTATION_SENT,
     PipelineStatus.FOLLOW_UP,
-    PipelineStatus.CLOSED_WON
+    PipelineStatus.SIGNED_UP
   ];
 
-  // Define alternative paths
-  private alternativePaths: { [key: string]: PipelineStatus[] } = {
-    [PipelineStatus.NEW_LEAD]: [PipelineStatus.NOT_NOW, PipelineStatus.LONG_TERM_NURTURE],
-    [PipelineStatus.WARMING_UP]: [PipelineStatus.NOT_NOW, PipelineStatus.LONG_TERM_NURTURE],
-    [PipelineStatus.INVITED]: [PipelineStatus.NOT_NOW, PipelineStatus.LONG_TERM_NURTURE],
-    [PipelineStatus.QUALIFIED]: [PipelineStatus.NOT_NOW, PipelineStatus.LONG_TERM_NURTURE],
-    [PipelineStatus.PRESENTATION_SENT]: [PipelineStatus.NOT_NOW, PipelineStatus.LONG_TERM_NURTURE],
-    [PipelineStatus.FOLLOW_UP]: [PipelineStatus.NOT_NOW, PipelineStatus.LONG_TERM_NURTURE, PipelineStatus.CLOSED_WON],
-  };
+  // Alternative paths can be defined here if needed (e.g., recycle/no-show) but default is strict progression
+  private alternativePaths: { [key: string]: PipelineStatus[] } = {};
 
   constructor() {
     this.qualificationService = new QualificationService();
@@ -133,7 +126,7 @@ export class PipelineValidationService {
       PipelineStatus.QUALIFIED,
       PipelineStatus.PRESENTATION_SENT,
       PipelineStatus.FOLLOW_UP,
-      PipelineStatus.CLOSED_WON
+      PipelineStatus.SIGNED_UP
     ];
 
     return qualificationRequiredStages.includes(stage);
@@ -149,11 +142,6 @@ export class PipelineValidationService {
     // Add the next stage in the main pipeline
     if (currentIndex !== -1 && currentIndex < this.stageOrder.length - 1) {
       nextStages.push(this.stageOrder[currentIndex + 1]);
-    }
-
-    // Add alternative paths
-    if (this.alternativePaths[currentStage]) {
-      nextStages.push(...this.alternativePaths[currentStage]);
     }
 
     return nextStages;
@@ -180,17 +168,17 @@ export class PipelineValidationService {
       confidence = 90;
       reasoning.push('Customer is fully qualified');
       reasoning.push('All required information has been collected');
-    } else if (qualificationResult.qualification_score >= 75 && currentStage === PipelineStatus.WARMING_UP) {
+    } else if (qualificationResult.qualification_score >= 75 && currentStage === PipelineStatus.RELATIONSHIP) {
       recommendedStage = PipelineStatus.INVITED;
       confidence = 80;
       reasoning.push('Customer shows strong engagement');
       reasoning.push('Most qualification criteria are met');
-    } else if (qualificationResult.qualification_score < 50 && 
-               [PipelineStatus.NEW_LEAD, PipelineStatus.WARMING_UP].includes(currentStage)) {
-      recommendedStage = PipelineStatus.LONG_TERM_NURTURE;
-      confidence = 70;
+    } else if (qualificationResult.qualification_score < 50 && currentStage === PipelineStatus.LEAD) {
+      // Stay in place but recommend more nurturing steps
+      recommendedStage = PipelineStatus.LEAD;
+      confidence = 65;
       reasoning.push('Low qualification score indicates need for more nurturing');
-      reasoning.push('Consider moving to long-term nurture for gradual engagement');
+      reasoning.push('Keep the lead engaged before inviting to next steps');
     } else {
       // Default recommendation: next stage in pipeline
       if (nextStages.length > 0) {

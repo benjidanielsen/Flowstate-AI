@@ -1,6 +1,6 @@
-import http from 'http';
 import request from 'supertest';
 import { shutdown, startServer } from '../index';
+import http from 'http';
 
 describe('server lifecycle', () => {
   let server: http.Server;

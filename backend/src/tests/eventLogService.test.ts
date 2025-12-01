@@ -19,7 +19,7 @@ describe('EventLogService', () => {
     const customerData = {
       name: 'Event Log Test Customer',
       email: 'eventlog@example.com',
-      status: PipelineStatus.NEW_LEAD,
+      status: PipelineStatus.LEAD,
     };
     const customer = await customerService.createCustomer(customerData);
     testCustomerId = customer.id;

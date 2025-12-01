@@ -17,7 +17,7 @@ import { runMigrations } from './database/migrate';
 import { safeLogger } from './utils/piiRedaction'; // Use safeLogger
 import './utils/tracer'; // Initialize OpenTelemetry tracer
 
-const swaggerDocument = YAML.load(path.resolve(__dirname, '../../openapi.yaml'));
+const swaggerDocument = YAML.load(path.resolve(__dirname, '../openapi.yaml'));
 
 dotenv.config();
 

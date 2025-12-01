@@ -28,7 +28,7 @@ describe('CustomerService', () => {
       const customerData = {
         name: 'Test Customer',
         email: 'test@example.com',
-        status: PipelineStatus.NEW_LEAD
+        status: PipelineStatus.LEAD
       };
 
       const customer = await customerService.createCustomer(customerData);
@@ -53,14 +53,14 @@ describe('CustomerService', () => {
       const customerData = {
         name: 'Pipeline Test Customer',
         email: 'pipeline@example.com',
-        status: PipelineStatus.NEW_LEAD
+        status: PipelineStatus.LEAD
       };
 
       const customer = await customerService.createCustomer(customerData);
       const updatedCustomer = await customerService.moveCustomerToNextStage(customer.id);
 
       expect(updatedCustomer).toBeDefined();
-      expect(updatedCustomer?.status).toBe(PipelineStatus.WARMING_UP);
+      expect(updatedCustomer?.status).toBe(PipelineStatus.RELATIONSHIP);
     });
   });
 });
