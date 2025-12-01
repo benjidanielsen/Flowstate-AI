@@ -7,7 +7,9 @@ import { User } from '../types';
 const JWT_SECRET = process.env.JWT_SECRET || 'supersecretjwtkey';
 
 export class AuthService {
-  private db = DatabaseManager.getInstance().getDb();
+  private get db() {
+    return DatabaseManager.getInstance().getDb();
+  }
 
   async registerUser(username: string, password_plain: string): Promise<User> {
     const hashedPassword = await bcrypt.hash(password_plain, 10);
